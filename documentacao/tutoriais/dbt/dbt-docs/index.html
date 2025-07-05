@@ -12,28 +12,28 @@
         <meta name="author" content="Lab Livre">
       
       
-        <link rel="canonical" href="https://govhub.github.io/govhub/sobre-projeto/gestao-dados/">
+        <link rel="canonical" href="https://govhub.github.io/govhub/documentacao/tutoriais/dbt/dbt-docs/">
       
       
-        <link rel="prev" href="../sistemas-estruturantes/">
+        <link rel="prev" href="../snapshots/">
       
       
-        <link rel="next" href="../replicacao/">
+        <link rel="next" href="../../sistemas-estruturantes/sistemas-estruturantes/">
       
       
-      <link rel="icon" href="../../assets/favicon.png">
+      <link rel="icon" href="../../../../assets/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
     
     
       
-        <title>Gestão Orientada a Dados - GovHubBR</title>
+        <title>DBT Docs - GovHubBR</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.342714a4.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -52,7 +52,7 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
   
@@ -69,7 +69,7 @@
     
     
     
-  <link rel="stylesheet" href="../../assets/stylesheets/custom.7c86dd97.min.css">
+  <link rel="stylesheet" href="../../../../assets/stylesheets/custom.7c86dd97.min.css">
 
   </head>
   
@@ -90,7 +90,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#gestao-orientada-a-dados-transformando-decisoes-no-setor-publico" class="md-skip">
+        <a href="#exemplo-de-documentacao-yaml" class="md-skip">
           Pular para conteúdo
         </a>
       
@@ -121,7 +121,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Cabeçalho">
-    <a href="../.." title="GovHubBR" class="md-header__button md-logo" aria-label="GovHubBR" data-md-component="logo">
+    <a href="../../../.." title="GovHubBR" class="md-header__button md-logo" aria-label="GovHubBR" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 89 89">
@@ -146,7 +146,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Gestão Orientada a Dados
+              DBT Docs
             
           </span>
         </div>
@@ -274,7 +274,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../.." class="md-tabs__link">
+      <a href="../../../.." class="md-tabs__link">
         
   
   
@@ -295,7 +295,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../getting-started.md" class="md-tabs__link">
+        <a href="../../../../getting-started.md" class="md-tabs__link">
           
   
   
@@ -313,13 +313,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../proposito-objetivo/" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../../../sobre-projeto/proposito-objetivo/" class="md-tabs__link">
           
   
   
@@ -337,11 +335,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../documentacao/instalacao/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../../instalacao/" class="md-tabs__link">
           
   
   
@@ -363,7 +363,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../comunidade/guia-contribuicao/" class="md-tabs__link">
+        <a href="../../../../comunidade/guia-contribuicao/" class="md-tabs__link">
           
   
   
@@ -399,7 +399,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegação" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="GovHubBR" class="md-nav__button md-logo" aria-label="GovHubBR" data-md-component="logo">
+    <a href="../../../.." title="GovHubBR" class="md-nav__button md-logo" aria-label="GovHubBR" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 89 89">
@@ -434,7 +434,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href="../../../.." class="md-nav__link">
         
   
   
@@ -503,7 +503,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting-started.md" class="md-nav__link">
+      <a href="../../../../getting-started.md" class="md-nav__link">
         
   
   
@@ -530,10 +530,8 @@
       
   
   
-    
   
   
-  
     
     
       
@@ -551,22 +549,19 @@
     
     
       
-        
-        
-      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
             
   
   
@@ -579,7 +574,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Sobre o Projeto
@@ -593,7 +588,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../proposito-objetivo/" class="md-nav__link">
+      <a href="../../../../sobre-projeto/proposito-objetivo/" class="md-nav__link">
         
   
   
@@ -616,7 +611,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../sistemas-estruturantes/" class="md-nav__link">
+      <a href="../../../../sobre-projeto/sistemas-estruturantes/" class="md-nav__link">
         
   
   
@@ -636,32 +631,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Gestão Orientada a Dados
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../../../sobre-projeto/gestao-dados/" class="md-nav__link">
         
   
   
@@ -672,128 +645,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Índice">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Índice
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#por-que-a-gestao-orientada-a-dados-e-essencial" class="md-nav__link">
-    <span class="md-ellipsis">
-      Por que a Gestão Orientada a Dados é Essencial?
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#elementos-centrais-da-gestao-orientada-a-dados" class="md-nav__link">
-    <span class="md-ellipsis">
-      Elementos Centrais da Gestão Orientada a Dados
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Elementos Centrais da Gestão Orientada a Dados">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#1-qualificacao-e-governanca-de-dados" class="md-nav__link">
-    <span class="md-ellipsis">
-      1. Qualificação e Governança de Dados
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#2-automacao-e-eficiencia-operacional" class="md-nav__link">
-    <span class="md-ellipsis">
-      2. Automação e Eficiência Operacional
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#3-modelagem-dimensional-e-integracao" class="md-nav__link">
-    <span class="md-ellipsis">
-      3. Modelagem Dimensional e Integração
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#beneficios-para-o-setor-publico" class="md-nav__link">
-    <span class="md-ellipsis">
-      Benefícios para o Setor Público
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Benefícios para o Setor Público">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#eficiencia-administrativa" class="md-nav__link">
-    <span class="md-ellipsis">
-      Eficiência Administrativa
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#tomada-de-decisao-baseada-em-dados" class="md-nav__link">
-    <span class="md-ellipsis">
-      Tomada de Decisão Baseada em Dados
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#responsabilidade-e-confianca" class="md-nav__link">
-    <span class="md-ellipsis">
-      Responsabilidade e Confiança
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#caminhos-para-o-futuro" class="md-nav__link">
-    <span class="md-ellipsis">
-      Caminhos para o Futuro
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -806,7 +657,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../replicacao/" class="md-nav__link">
+      <a href="../../../../sobre-projeto/replicacao/" class="md-nav__link">
         
   
   
@@ -829,7 +680,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../equipe/" class="md-nav__link">
+      <a href="../../../../sobre-projeto/equipe/" class="md-nav__link">
         
   
   
@@ -856,8 +707,10 @@
       
   
   
+    
   
   
+  
     
     
       
@@ -871,19 +724,22 @@
     
     
       
+        
+        
+      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
             
   
   
@@ -896,7 +752,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             Documentação
@@ -910,7 +766,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../documentacao/instalacao/" class="md-nav__link">
+      <a href="../../../instalacao/" class="md-nav__link">
         
   
   
@@ -933,7 +789,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../documentacao/arquitetura/" class="md-nav__link">
+      <a href="../../../arquitetura/" class="md-nav__link">
         
   
   
@@ -953,8 +809,10 @@
                 
   
   
+    
   
   
+  
     
     
       
@@ -971,18 +829,21 @@
     
       
       
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
         
           
-          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="">
             
   
   
@@ -995,7 +856,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4_3">
             <span class="md-nav__icon md-icon"></span>
             Tutoriais
@@ -1066,7 +927,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../documentacao/tutoriais/infraestrutura/cicd/" class="md-nav__link">
+      <a href="../../infraestrutura/cicd/" class="md-nav__link">
         
   
   
@@ -1089,7 +950,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../documentacao/tutoriais/infraestrutura/docker/" class="md-nav__link">
+      <a href="../../infraestrutura/docker/" class="md-nav__link">
         
   
   
@@ -1112,7 +973,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../documentacao/tutoriais/infraestrutura/kubernetes/" class="md-nav__link">
+      <a href="../../infraestrutura/kubernetes/" class="md-nav__link">
         
   
   
@@ -1135,7 +996,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../documentacao/tutoriais/infraestrutura/jupyter/" class="md-nav__link">
+      <a href="../../infraestrutura/jupyter/" class="md-nav__link">
         
   
   
@@ -1158,7 +1019,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../documentacao/tutoriais/infraestrutura/airflow/" class="md-nav__link">
+      <a href="../../infraestrutura/airflow/" class="md-nav__link">
         
   
   
@@ -1181,7 +1042,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../documentacao/tutoriais/infraestrutura/postgresql/" class="md-nav__link">
+      <a href="../../infraestrutura/postgresql/" class="md-nav__link">
         
   
   
@@ -1209,8 +1070,10 @@
                 
   
   
+    
   
   
+  
     
     
       
@@ -1237,11 +1100,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3_2" checked>
         
           
           <label class="md-nav__link" for="__nav_4_3_2" id="__nav_4_3_2_label" tabindex="0">
@@ -1257,7 +1120,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_3_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_3_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4_3_2">
             <span class="md-nav__icon md-icon"></span>
             DBT
@@ -1271,7 +1134,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../documentacao/tutoriais/dbt/modelos/" class="md-nav__link">
+      <a href="../modelos/" class="md-nav__link">
         
   
   
@@ -1294,7 +1157,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../documentacao/tutoriais/dbt/arquitetura-medallion/" class="md-nav__link">
+      <a href="../arquitetura-medallion/" class="md-nav__link">
         
   
   
@@ -1317,7 +1180,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../documentacao/tutoriais/dbt/cosmos/" class="md-nav__link">
+      <a href="../cosmos/" class="md-nav__link">
         
   
   
@@ -1340,7 +1203,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../documentacao/tutoriais/dbt/testes/" class="md-nav__link">
+      <a href="../testes/" class="md-nav__link">
         
   
   
@@ -1363,7 +1226,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../documentacao/tutoriais/dbt/macros/" class="md-nav__link">
+      <a href="../macros/" class="md-nav__link">
         
   
   
@@ -1386,7 +1249,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../documentacao/tutoriais/dbt/snapshots/" class="md-nav__link">
+      <a href="../snapshots/" class="md-nav__link">
         
   
   
@@ -1406,10 +1269,30 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../documentacao/tutoriais/dbt/dbt-docs/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    DBT Docs
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1420,6 +1303,60 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Índice">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Índice
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#exemplo-de-documentacao-yaml" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exemplo de Documentação YAML
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#como-utilizar" class="md-nav__link">
+    <span class="md-ellipsis">
+      Como Utilizar
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#principais-recursos" class="md-nav__link">
+    <span class="md-ellipsis">
+      Principais Recursos
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#boas-praticas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Boas Práticas
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1495,7 +1432,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../documentacao/tutoriais/superset/conexoes.md" class="md-nav__link">
+      <a href="../../superset/conexoes.md" class="md-nav__link">
         
   
   
@@ -1518,7 +1455,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../documentacao/tutoriais/superset/criando-chart.md" class="md-nav__link">
+      <a href="../../superset/criando-chart.md" class="md-nav__link">
         
   
   
@@ -1541,7 +1478,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../documentacao/tutoriais/superset/criando-dashboard.md" class="md-nav__link">
+      <a href="../../superset/criando-dashboard.md" class="md-nav__link">
         
   
   
@@ -1564,7 +1501,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../documentacao/tutoriais/superset/tabelas-virtuais.md" class="md-nav__link">
+      <a href="../../superset/tabelas-virtuais.md" class="md-nav__link">
         
   
   
@@ -1587,7 +1524,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../documentacao/tutoriais/superset/importando-exportando-dashboards.md" class="md-nav__link">
+      <a href="../../superset/importando-exportando-dashboards.md" class="md-nav__link">
         
   
   
@@ -1667,7 +1604,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../documentacao/tutoriais/sistemas-estruturantes/sistemas-estruturantes/" class="md-nav__link">
+      <a href="../../sistemas-estruturantes/sistemas-estruturantes/" class="md-nav__link">
         
   
   
@@ -1690,7 +1627,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../documentacao/tutoriais/sistemas-estruturantes/importar_bancos/" class="md-nav__link">
+      <a href="../../sistemas-estruturantes/importar_bancos/" class="md-nav__link">
         
   
   
@@ -1785,7 +1722,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../comunidade/guia-contribuicao/" class="md-nav__link">
+      <a href="../../../../comunidade/guia-contribuicao/" class="md-nav__link">
         
   
   
@@ -1808,7 +1745,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../comunidade/licenca/" class="md-nav__link">
+      <a href="../../../../comunidade/licenca/" class="md-nav__link">
         
   
   
@@ -1848,8 +1785,6 @@
   
   
   
-    
-  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -1858,102 +1793,36 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#por-que-a-gestao-orientada-a-dados-e-essencial" class="md-nav__link">
+  <a href="#exemplo-de-documentacao-yaml" class="md-nav__link">
     <span class="md-ellipsis">
-      Por que a Gestão Orientada a Dados é Essencial?
+      Exemplo de Documentação YAML
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#elementos-centrais-da-gestao-orientada-a-dados" class="md-nav__link">
+  <a href="#como-utilizar" class="md-nav__link">
     <span class="md-ellipsis">
-      Elementos Centrais da Gestão Orientada a Dados
+      Como Utilizar
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Elementos Centrais da Gestão Orientada a Dados">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#1-qualificacao-e-governanca-de-dados" class="md-nav__link">
-    <span class="md-ellipsis">
-      1. Qualificação e Governança de Dados
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#2-automacao-e-eficiencia-operacional" class="md-nav__link">
-    <span class="md-ellipsis">
-      2. Automação e Eficiência Operacional
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#3-modelagem-dimensional-e-integracao" class="md-nav__link">
-    <span class="md-ellipsis">
-      3. Modelagem Dimensional e Integração
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#beneficios-para-o-setor-publico" class="md-nav__link">
+  <a href="#principais-recursos" class="md-nav__link">
     <span class="md-ellipsis">
-      Benefícios para o Setor Público
+      Principais Recursos
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Benefícios para o Setor Público">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#eficiencia-administrativa" class="md-nav__link">
-    <span class="md-ellipsis">
-      Eficiência Administrativa
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#tomada-de-decisao-baseada-em-dados" class="md-nav__link">
-    <span class="md-ellipsis">
-      Tomada de Decisão Baseada em Dados
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#responsabilidade-e-confianca" class="md-nav__link">
-    <span class="md-ellipsis">
-      Responsabilidade e Confiança
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#caminhos-para-o-futuro" class="md-nav__link">
+  <a href="#boas-praticas" class="md-nav__link">
     <span class="md-ellipsis">
-      Caminhos para o Futuro
+      Boas Práticas
     </span>
   </a>
   
@@ -1975,7 +1844,7 @@
 
 
   
-    <a href="https://github.com/GovHub-br/govhub/edit/master/docs/sobre-projeto/gestao-dados.md" title="Editar esta página" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/GovHub-br/govhub/edit/master/docs/documentacao/tutoriais/dbt/dbt-docs.md" title="Editar esta página" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -1984,73 +1853,71 @@
     
       
     
-    <a href="https://github.com/GovHub-br/govhub/raw/master/docs/sobre-projeto/gestao-dados.md" title="Exibir fonte desta página" class="md-content__button md-icon">
+    <a href="https://github.com/GovHub-br/govhub/raw/master/docs/documentacao/tutoriais/dbt/dbt-docs.md" title="Exibir fonte desta página" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.2 8.2 0 0 1-1.23-2"/></svg>
     </a>
   
 
 
-<h1 id="gestao-orientada-a-dados-transformando-decisoes-no-setor-publico">Gestão Orientada a Dados: Transformando Decisões no Setor Público<a class="headerlink" href="#gestao-orientada-a-dados-transformando-decisoes-no-setor-publico" title="Permanent link">&para;</a></h1>
-<p>A gestão orientada a dados é uma abordagem estratégica que reconhece os dados como um dos ativos mais valiosos para a tomada de decisão. No contexto do setor público, essa prática tem o potencial de revolucionar a formulação e implementação de políticas públicas, garantindo eficiência, transparência e responsabilidade.</p>
-<hr />
-<h2 id="por-que-a-gestao-orientada-a-dados-e-essencial">Por que a Gestão Orientada a Dados é Essencial?<a class="headerlink" href="#por-que-a-gestao-orientada-a-dados-e-essencial" title="Permanent link">&para;</a></h2>
+  <h1>DBT Docs</h1>
+
+<p>DBT Docs é uma funcionalidade do DBT que gera automaticamente documentação para seus projetos de transformação de dados.</p>
+<p><a href="https://docs.getdbt.com/docs/build/documentation">https://docs.getdbt.com/docs/build/documentation</a></p>
+<h2 id="exemplo-de-documentacao-yaml">Exemplo de Documentação YAML<a class="headerlink" href="#exemplo-de-documentacao-yaml" title="Permanent link">&para;</a></h2>
+<p>Dentro da pasta <code>dags/dbt/ipea/models</code> está o arquivo <code>schema.yml</code> . O nome do arquivo pode ser alterado que ainda será corretamente processado. Abaixo está um trecho do código demonstrando como as informações devem constar.</p>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="nt">models</span><span class="p">:</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">contratos</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">      </span><span class="no">Tabela com informações sobre contratos, incluindo detalhes como o valor do contrato, a data de início e término, e o status do contrato.</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">      </span><span class="no">Esta tabela é fundamental para entender a execução e o cumprimento dos contratos firmados.</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">      </span><span class="no">A tabela é atualizada diariamente e contém dados de contratos firmados pelo IPEA.</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">    </span><span class="nt">columns</span><span class="p">:</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">id</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">          </span><span class="no">Identificador único do contrato, utilizado para referenciar o contrato em outras tabelas e análises.</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="nt">macros</span><span class="p">:</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">create_udfs</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">      </span><span class="no">Função que cria as UDFs necessárias para o funcionamento do projeto.</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w">      </span><span class="no">Essa função deve ser chamada no início de cada run para garantir que todas as UDFs estejam disponíveis.</span>
+</span></code></pre></div>
+<h2 id="como-utilizar">Como Utilizar<a class="headerlink" href="#como-utilizar" title="Permanent link">&para;</a></h2>
 <ol>
 <li>
-<p><strong>Decisões Baseadas em Evidências</strong><br />
-   Com dados confiáveis e bem estruturados, gestores podem fundamentar suas escolhas em análises concretas, reduzindo a dependência de intuições ou suposições.</p>
+<p>Execute o comando para gerar a documentação:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>dbt<span class="w"> </span>docs<span class="w"> </span>generate
+</span></code></pre></div>
+<p>Verifique se <code>catalog.json</code>  e <code>manifest.json</code>  foram criados na pastas target</p>
 </li>
 <li>
-<p><strong>Integração e Interoperabilidade</strong><br />
-   A abordagem integra informações provenientes de diferentes sistemas estruturantes, eliminando redundâncias e promovendo uma visão unificada.</p>
+<p>Garanta que você criou os modelos com <code>dbt run</code> ou <code>dbt build</code> para visualizar a documentação de todas as colunas, não apenas aquelas descritas no seu projeto.</p>
 </li>
 <li>
-<p><strong>Aumento da Transparência</strong><br />
-   O uso de dados facilita o acesso a informações estratégicas, permitindo maior prestação de contas e confiança pública.</p>
+<p>Inicie o servidor local de documentação:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>dbt<span class="w"> </span>docs<span class="w"> </span>serve
+</span></code></pre></div>
 </li>
 <li>
-<p><strong>Monitoramento de Resultados</strong><br />
-   Indicadores e métricas de desempenho ajudam a monitorar metas, avaliar impactos e ajustar estratégias de forma ágil.</p>
+<p>Acesse a documentação no navegador (geralmente em <a href="http://localhost:8080">http://localhost:8080</a>)</p>
 </li>
 </ol>
-<hr />
-<h2 id="elementos-centrais-da-gestao-orientada-a-dados">Elementos Centrais da Gestão Orientada a Dados<a class="headerlink" href="#elementos-centrais-da-gestao-orientada-a-dados" title="Permanent link">&para;</a></h2>
-<h3 id="1-qualificacao-e-governanca-de-dados">1. <strong>Qualificação e Governança de Dados</strong><a class="headerlink" href="#1-qualificacao-e-governanca-de-dados" title="Permanent link">&para;</a></h3>
-<p>A qualificação dos dados é a base para gerar informações úteis e acionáveis. Isso envolve:</p>
+<h2 id="principais-recursos">Principais Recursos<a class="headerlink" href="#principais-recursos" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Identificação de fontes confiáveis.</li>
-<li>Validação de dados para evitar inconsistências.</li>
-<li>Modelagem dos dados em tabelas organizadas para análises mais detalhadas.</li>
+<li>Visualização do DAG (Directed Acyclic Graph) dos modelos</li>
+<li>Documentação automática de modelos, colunas e testes</li>
+<li>Navegação interativa entre dependências</li>
+<li>Visualização do código SQL dos modelos</li>
 </ul>
-<h3 id="2-automacao-e-eficiencia-operacional">2. <strong>Automação e Eficiência Operacional</strong><a class="headerlink" href="#2-automacao-e-eficiencia-operacional" title="Permanent link">&para;</a></h3>
-<p>Ferramentas como <strong>Airflow</strong> são utilizadas para automatizar a coleta e o processamento de dados, permitindo:</p>
+<h2 id="boas-praticas">Boas Práticas<a class="headerlink" href="#boas-praticas" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Pipelines eficientes para grandes volumes de informações.</li>
-<li>Redução de erros operacionais através de processos automatizados.</li>
+<li>Documente seus modelos usando blocos de documentação em YAML</li>
+<li>Adicione descrições detalhadas para colunas importantes</li>
+<li>Mantenha a documentação atualizada conforme o projeto evolui</li>
+<li>Use tags para organizar melhor seus modelos</li>
 </ul>
-<h3 id="3-modelagem-dimensional-e-integracao">3. <strong>Modelagem Dimensional e Integração</strong><a class="headerlink" href="#3-modelagem-dimensional-e-integracao" title="Permanent link">&para;</a></h3>
-<p>Por meio do <strong>DBT (Data Build Tool)</strong>, os dados são transformados em modelos dimensionais que:</p>
-<ul>
-<li>Facilitam análises específicas.</li>
-<li>Garantem que tabelas estejam organizadas para integrações futuras entre diferentes sistemas estruturantes.</li>
-</ul>
-<hr />
-<h2 id="beneficios-para-o-setor-publico">Benefícios para o Setor Público<a class="headerlink" href="#beneficios-para-o-setor-publico" title="Permanent link">&para;</a></h2>
-<h3 id="eficiencia-administrativa">Eficiência Administrativa<a class="headerlink" href="#eficiencia-administrativa" title="Permanent link">&para;</a></h3>
-<p>A eliminação de tarefas redundantes e a automação de processos críticos reduzem custos e otimizam os recursos públicos.</p>
-<h3 id="tomada-de-decisao-baseada-em-dados">Tomada de Decisão Baseada em Dados<a class="headerlink" href="#tomada-de-decisao-baseada-em-dados" title="Permanent link">&para;</a></h3>
-<p>Com dashboards interativos e relatórios detalhados, gestores têm acesso a informações em tempo real para tomar decisões estratégicas.</p>
-<h3 id="responsabilidade-e-confianca">Responsabilidade e Confiança<a class="headerlink" href="#responsabilidade-e-confianca" title="Permanent link">&para;</a></h3>
-<p>Dados bem organizados e acessíveis fortalecem a confiança da sociedade na gestão pública, aumentando a transparência e permitindo maior controle social.</p>
-<hr />
-<h2 id="caminhos-para-o-futuro">Caminhos para o Futuro<a class="headerlink" href="#caminhos-para-o-futuro" title="Permanent link">&para;</a></h2>
-<p>O futuro da gestão orientada a dados está alinhado à adoção de padrões abertos, inteligência artificial e big data. Isso permitirá:</p>
-<ul>
-<li>Antecipação de tendências com base em análises preditivas.</li>
-<li>Tomada de decisão mais proativa e eficaz.</li>
-<li>Construção de um ecossistema integrado, onde os dados são tratados como ativos estratégicos e compartilhados de forma ética e segura.</li>
-</ul>
-<p>A gestão orientada a dados não é apenas uma tendência, mas um compromisso com a inovação e a eficiência no setor público.</p>
 
 
 
@@ -2088,7 +1955,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Rodapé" >
         
           
-          <a href="../sistemas-estruturantes/" class="md-footer__link md-footer__link--prev" aria-label="Anterior: Sistemas Estruturantes">
+          <a href="../snapshots/" class="md-footer__link md-footer__link--prev" aria-label="Anterior: Snaphots">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -2098,20 +1965,20 @@
                 Anterior
               </span>
               <div class="md-ellipsis">
-                Sistemas Estruturantes
+                Snaphots
               </div>
             </div>
           </a>
         
         
           
-          <a href="../replicacao/" class="md-footer__link md-footer__link--next" aria-label="Próximo: Replicação">
+          <a href="../../sistemas-estruturantes/sistemas-estruturantes/" class="md-footer__link md-footer__link--next" aria-label="Próximo: DAG de ingestão">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Próximo
               </span>
               <div class="md-ellipsis">
-                Replicação
+                DAG de ingestão
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -2166,14 +2033,14 @@
     
     
       
-      <script id="__config" type="application/json">{"base": "../..", "features": ["announce.dismiss", "content.action.edit", "content.action.view", "content.code.annotate", "content.code.copy", "content.tooltips", "navigation.footer", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado para \u00e1rea de transfer\u00eancia", "clipboard.copy": "Copiar para \u00e1rea de transfer\u00eancia", "search.result.more.one": "mais 1 nesta p\u00e1gina", "search.result.more.other": "# mais nesta p\u00e1gina", "search.result.none": "Nenhum documento encontrado", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Digite para iniciar a busca", "search.result.term.missing": "Ausente", "select.version": "Selecione a vers\u00e3o"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "../../../..", "features": ["announce.dismiss", "content.action.edit", "content.action.view", "content.code.annotate", "content.code.copy", "content.tooltips", "navigation.footer", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../../../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado para \u00e1rea de transfer\u00eancia", "clipboard.copy": "Copiar para \u00e1rea de transfer\u00eancia", "search.result.more.one": "mais 1 nesta p\u00e1gina", "search.result.more.other": "# mais nesta p\u00e1gina", "search.result.none": "Nenhum documento encontrado", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Digite para iniciar a busca", "search.result.term.missing": "Ausente", "select.version": "Selecione a vers\u00e3o"}, "version": null}</script>
     
     
   
-      <script src="../../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      <script src="../../../../assets/javascripts/bundle.56ea9cef.min.js"></script>
       
     
-  <script src="../../assets/javascripts/custom.00e08f28.min.js"></script>
+  <script src="../../../../assets/javascripts/custom.00e08f28.min.js"></script>
 
   </body>
 </html>

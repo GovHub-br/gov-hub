@@ -2,94 +2,118 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://govhub.github.io/govhub/</loc>
-         <lastmod>2025-04-18</lastmod>
-    </url>
-    <url>
-         <loc>https://govhub.github.io/govhub/getting-started/</loc>
-         <lastmod>2025-04-18</lastmod>
-    </url>
-    <url>
-         <loc>https://govhub.github.io/govhub/guia-usuario/</loc>
-         <lastmod>2025-04-18</lastmod>
+         <lastmod>2025-07-05</lastmod>
     </url>
     <url>
          <loc>https://govhub.github.io/govhub/blog/</loc>
-         <lastmod>2025-04-18</lastmod>
+         <lastmod>2025-07-05</lastmod>
     </url>
     <url>
-         <loc>https://govhub.github.io/govhub/contributing/arquitetura/</loc>
-         <lastmod>2025-04-18</lastmod>
+         <loc>https://govhub.github.io/govhub/comunidade/dashboards-templates/</loc>
+         <lastmod>2025-07-05</lastmod>
     </url>
     <url>
-         <loc>https://govhub.github.io/govhub/contributing/deploy/</loc>
-         <lastmod>2025-04-18</lastmod>
+         <loc>https://govhub.github.io/govhub/comunidade/guia-contribuicao/</loc>
+         <lastmod>2025-07-05</lastmod>
     </url>
     <url>
-         <loc>https://govhub.github.io/govhub/contributing/guia-contribuicao/</loc>
-         <lastmod>2025-04-18</lastmod>
+         <loc>https://govhub.github.io/govhub/comunidade/licenca/</loc>
+         <lastmod>2025-07-05</lastmod>
     </url>
     <url>
-         <loc>https://govhub.github.io/govhub/contributing/importar_bancos/</loc>
-         <lastmod>2025-04-18</lastmod>
+         <loc>https://govhub.github.io/govhub/comunidade/pre-requisitos/</loc>
+         <lastmod>2025-07-05</lastmod>
     </url>
     <url>
-         <loc>https://govhub.github.io/govhub/contributing/integrar/</loc>
-         <lastmod>2025-04-18</lastmod>
+         <loc>https://govhub.github.io/govhub/documentacao/arquitetura/</loc>
+         <lastmod>2025-07-05</lastmod>
     </url>
     <url>
-         <loc>https://govhub.github.io/govhub/contributing/praticas/</loc>
-         <lastmod>2025-04-18</lastmod>
+         <loc>https://govhub.github.io/govhub/documentacao/instalacao/</loc>
+         <lastmod>2025-07-05</lastmod>
     </url>
     <url>
-         <loc>https://govhub.github.io/govhub/contributing/qualificar/</loc>
-         <lastmod>2025-04-18</lastmod>
+         <loc>https://govhub.github.io/govhub/documentacao/tutoriais/dbt/arquitetura-medallion/</loc>
+         <lastmod>2025-07-05</lastmod>
     </url>
     <url>
-         <loc>https://govhub.github.io/govhub/contributing/tecnologias/</loc>
-         <lastmod>2025-04-18</lastmod>
+         <loc>https://govhub.github.io/govhub/documentacao/tutoriais/dbt/cosmos/</loc>
+         <lastmod>2025-07-05</lastmod>
     </url>
     <url>
-         <loc>https://govhub.github.io/govhub/contributing/visualizar_dashboards/</loc>
-         <lastmod>2025-04-18</lastmod>
+         <loc>https://govhub.github.io/govhub/documentacao/tutoriais/dbt/dbt-docs/</loc>
+         <lastmod>2025-07-05</lastmod>
     </url>
     <url>
-         <loc>https://govhub.github.io/govhub/replicacao/</loc>
-         <lastmod>2025-04-18</lastmod>
+         <loc>https://govhub.github.io/govhub/documentacao/tutoriais/dbt/macros/</loc>
+         <lastmod>2025-07-05</lastmod>
     </url>
     <url>
-         <loc>https://govhub.github.io/govhub/replicacao/arquitetura/</loc>
-         <lastmod>2025-04-18</lastmod>
+         <loc>https://govhub.github.io/govhub/documentacao/tutoriais/dbt/modelos/</loc>
+         <lastmod>2025-07-05</lastmod>
     </url>
     <url>
-         <loc>https://govhub.github.io/govhub/replicacao/dashboards-templates/</loc>
-         <lastmod>2025-04-18</lastmod>
+         <loc>https://govhub.github.io/govhub/documentacao/tutoriais/dbt/snapshots/</loc>
+         <lastmod>2025-07-05</lastmod>
     </url>
     <url>
-         <loc>https://govhub.github.io/govhub/replicacao/integracao-dados/</loc>
-         <lastmod>2025-04-18</lastmod>
+         <loc>https://govhub.github.io/govhub/documentacao/tutoriais/dbt/testes/</loc>
+         <lastmod>2025-07-05</lastmod>
     </url>
     <url>
-         <loc>https://govhub.github.io/govhub/replicacao/pre-requisitos/</loc>
-         <lastmod>2025-04-18</lastmod>
+         <loc>https://govhub.github.io/govhub/documentacao/tutoriais/infraestrutura/airflow/</loc>
+         <lastmod>2025-07-05</lastmod>
     </url>
     <url>
-         <loc>https://govhub.github.io/govhub/setup/</loc>
-         <lastmod>2025-04-18</lastmod>
+         <loc>https://govhub.github.io/govhub/documentacao/tutoriais/infraestrutura/cicd/</loc>
+         <lastmod>2025-07-05</lastmod>
+    </url>
+    <url>
+         <loc>https://govhub.github.io/govhub/documentacao/tutoriais/infraestrutura/docker/</loc>
+         <lastmod>2025-07-05</lastmod>
+    </url>
+    <url>
+         <loc>https://govhub.github.io/govhub/documentacao/tutoriais/infraestrutura/jupyter/</loc>
+         <lastmod>2025-07-05</lastmod>
+    </url>
+    <url>
+         <loc>https://govhub.github.io/govhub/documentacao/tutoriais/infraestrutura/kubernetes/</loc>
+         <lastmod>2025-07-05</lastmod>
+    </url>
+    <url>
+         <loc>https://govhub.github.io/govhub/documentacao/tutoriais/infraestrutura/postgresql/</loc>
+         <lastmod>2025-07-05</lastmod>
+    </url>
+    <url>
+         <loc>https://govhub.github.io/govhub/documentacao/tutoriais/sistemas-estruturantes/importar_bancos/</loc>
+         <lastmod>2025-07-05</lastmod>
+    </url>
+    <url>
+         <loc>https://govhub.github.io/govhub/documentacao/tutoriais/sistemas-estruturantes/sistemas-estruturantes/</loc>
+         <lastmod>2025-07-05</lastmod>
+    </url>
+    <url>
+         <loc>https://govhub.github.io/govhub/documentacao/tutoriais/superset/superset/</loc>
+         <lastmod>2025-07-05</lastmod>
     </url>
     <url>
          <loc>https://govhub.github.io/govhub/sobre-projeto/equipe/</loc>
-         <lastmod>2025-04-18</lastmod>
+         <lastmod>2025-07-05</lastmod>
     </url>
     <url>
          <loc>https://govhub.github.io/govhub/sobre-projeto/gestao-dados/</loc>
-         <lastmod>2025-04-18</lastmod>
+         <lastmod>2025-07-05</lastmod>
     </url>
     <url>
          <loc>https://govhub.github.io/govhub/sobre-projeto/proposito-objetivo/</loc>
-         <lastmod>2025-04-18</lastmod>
+         <lastmod>2025-07-05</lastmod>
+    </url>
+    <url>
+         <loc>https://govhub.github.io/govhub/sobre-projeto/replicacao/</loc>
+         <lastmod>2025-07-05</lastmod>
     </url>
     <url>
          <loc>https://govhub.github.io/govhub/sobre-projeto/sistemas-estruturantes/</loc>
-         <lastmod>2025-04-18</lastmod>
+         <lastmod>2025-07-05</lastmod>
     </url>
 </urlset>

@@ -205,7 +205,7 @@ nav:
         - Guia de sistemas: documentacao/tutoriais/sistemas-estruturantes/importar_bancos.md
         - Credenciais de acesso: documentacao/tutoriais/sistemas-estruturantes/acesso-apis-siafi-siape.md
         - DAG de ingestão: documentacao/tutoriais/sistemas-estruturantes/sistemas-estruturantes.md
-        - Configurando seu órgão: documentacao/tutoriais/sistemas-estruturantes/configuracao_orgaos.md
+        - Integrando novas bases de dados: documentacao/tutoriais/sistemas-estruturantes/integracao_bases.md
   - Comunidade: 
     - Documentação: comunidade/guia-contribuicao.md
     - Licença: comunidade/licenca.md

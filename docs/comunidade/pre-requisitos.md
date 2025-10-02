@@ -47,7 +47,7 @@ Nem todas as APIs públicas permitem acesso irrestrito. Algumas exigem:
 - **Token de autenticação gerado por sistemas internos**
 - **Liberação específica por parte da equipe responsável pela API**
 
-> Exemplo prático: durante os testes com dados do IBAMA, o acesso foi limitado por exigência de certificado digital. Portanto, o ideal é iniciar com APIs públicas e abertas, como as do [ComprasGov](https://compras.dados.gov.br) ou [TransfereGov](https://www.gov.br/pt-br/servicos/apresentar-propostas-de-transferencias-voluntarias).
+> Exemplo prático: durante os testes com dados do IBAMA, o acesso foi limitado por exigência de certificado digital. Portanto, o ideal é iniciar com APIs públicas e abertas, como as do [ComprasGov](https://compras.dados.gov.br) ou [TransfereGov](https://www.gov.br/transferegov/pt-br/ferramentas-gestao/dados-abertos).
 
 ---
 

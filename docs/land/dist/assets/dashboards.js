@@ -156,6 +156,44 @@ function getTooltipConfig(title) {
     };
 }
 
+// Carregar KPIs orçamentários a partir do JSON público
+function loadBudgetKpis() {
+    const dataUrl = '../public/data/visao_orcamentaria_total_ipea.json';
+    const urlWithBust = `${dataUrl}?v=${Date.now()}`;
+
+    function formatMillions(value) {
+        const millions = (Number(value) || 0) / 1_000_000;
+        return millions.toFixed(1).replace('.', ',') + 'M';
+    }
+
+    function setValue(id, value) {
+        const el = document.getElementById(id);
+        if (el) {
+            el.textContent = formatMillions(value);
+        }
+    }
+
+    fetch(urlWithBust, { cache: 'no-store' })
+        .then(resp => {
+            if (!resp.ok) throw new Error('fetch not ok');
+            return resp.json();
+        })
+        .then(json => {
+            const row = Array.isArray(json) ? json[0] : json;
+            if (!row) return;
+            setValue('total-budget', row.orcamento_total);
+            setValue('teds-budget', row.orcamento_recebido_teds);
+            setValue('agency-budget', row.dotacao_atualizada);
+            setValue('allocated-budget', row.orcamento_empenhado);
+            setValue('unused-budget', row.orcamento_a_liquidar);
+            setValue('programmed-expenses', row.despesas_a_pagar);
+            setValue('paid-expenses', row.despesas_pagas);
+        })
+        .catch(() => {
+            // mantém valores existentes se falhar
+        });
+}
+
 
 // Função para criar os gráficos de dashboard
 function createDashboardCharts() {
@@ -1011,6 +1049,7 @@ function initDashboards() {
             createBudgetChart();
             createContractsChart();
             createDashboardCharts();
+            loadBudgetKpis();
             createGenderVChart();
             createRaceTreemap();
         });
@@ -1018,6 +1057,7 @@ function initDashboards() {
         createBudgetChart();
         createContractsChart();
         createDashboardCharts();
+        loadBudgetKpis();
         createGenderVChart();
         createRaceTreemap();
     }

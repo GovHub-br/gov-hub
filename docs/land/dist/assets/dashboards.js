@@ -802,6 +802,253 @@ function createContractsChart() {
     new Chart(ctx, config);
 }
 
+// Carregar e desenhar os gráficos "Como o dinheiro está sendo gasto?" a partir do JSON
+function loadExpenseElementCharts() {
+    const dataUrl = '../public/data/orcamento_por_elemento_despesa.json';
+    const urlWithBust = `${dataUrl}?v=${Date.now()}`;
+
+    function safeNum(v) { return Number(v) || 0; }
+
+    // Mantém o esquema de cores original por gráfico
+    function getRingColors(canvasId) {
+        // [empenhado, pagas, aPagar]
+        const purple = ['#AA79FE', '#7A34F3', '#422278'];
+        const green = ['#AFD1AA', '#31652B', '#B2D1DA'];
+        const warm  = ['#AB2D2D', '#F19F42', '#E7D551'];
+        switch (canvasId) {
+            case 'retirementChart':
+            case 'salaryChart':
+                return purple;
+            case 'detailChart':
+                return warm;
+            // Segunda, terceira e quarta linhas originais usavam verdes
+            case 'retirementChart2':
+            case 'salaryChart2':
+            case 'scholarshipChart':
+            case 'retirementChart3':
+            case 'retirementChart4':
+            case 'salaryChart3':
+            case 'salaryChart4':
+            case 'detailChart2':
+            case 'detailChart3':
+                return green;
+            default:
+                return green;
+        }
+    }
+
+    function createElementDonut(canvasId, record) {
+        const ctx = document.getElementById(canvasId);
+        if (!ctx || !record) return;
+
+        // Base prioriza dotação; se ausente, usa empenhado; senão soma de pagas + a pagar
+        const dotacao = safeNum(record.dotacao);
+        const empenhado = safeNum(record.orcamento_alocado_empenhado);
+        const pagas = safeNum(record.despesas_pagas);
+        const aPagar = safeNum(record.despesas_programas_a_pagar);
+        const base = dotacao > 0 ? dotacao : (empenhado > 0 ? empenhado : (pagas + aPagar));
+        if (base <= 0) return;
+
+        const valEmpenhado = Math.max(Math.min(empenhado, base), 0);
+        const valPagas = Math.max(Math.min(pagas, base), 0);
+        const valAPagar = Math.max(Math.min(aPagar, base), 0);
+
+        // destrói gráfico anterior se existir
+        window.__govhubCharts = window.__govhubCharts || {};
+        if (window.__govhubCharts[canvasId]) {
+            try { window.__govhubCharts[canvasId].destroy(); } catch (e) {}
+        }
+
+        const [cEmp, cPag, cAPag] = getRingColors(canvasId);
+
+        const chartInstance = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                datasets: [
+                    { label: 'orcamento_alocado_empenhado', data: [valEmpenhado, Math.max(base - valEmpenhado, 0)], backgroundColor: [cEmp, 'rgba(0,0,0,0)'], borderWidth: 1, borderColor: '#F7F7F7', cutout: '60%' },
+                    { label: 'despesas_pagas', data: [valPagas, Math.max(base - valPagas, 0)], backgroundColor: [cPag, 'rgba(0,0,0,0)'], borderWidth: 1, borderColor: '#F7F7F7', cutout: '60%' },
+                    { label: 'despesas_programas_a_pagar', data: [valAPagar, Math.max(base - valAPagar, 0)], backgroundColor: [cAPag, 'rgba(0,0,0,0)'], borderWidth: 1, borderColor: '#F7F7F7', cutout: '60%' }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#422278',
+                        titleColor: '#FFFFFF',
+                        bodyColor: '#FFFFFF',
+                        padding: 12,
+                        borderColor: '#7A34F3',
+                        borderWidth: 1,
+                        displayColors: true,
+                        filter: function(item) { return item.dataIndex === 0; },
+                        callbacks: {
+                            title: function(items) {
+                                // mostra a chave do campo do JSON como título
+                                if (!items || !items.length) return '';
+                                const dsLabel = items[0].dataset.label || '';
+                                const map = {
+                                    'orcamento_alocado_empenhado': 'Orçamento alocado (empenhado)',
+                                    'despesas_pagas': 'Despesas pagas',
+                                    'despesas_programas_a_pagar': 'Despesas programadas (a pagar)'
+                                };
+                                return map[dsLabel] || dsLabel;
+                            },
+                            label: function(context) {
+                                const raw = context.parsed;
+                                const formatted = (typeof raw === 'number') ? raw.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : raw;
+                                return formatted;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        window.__govhubCharts[canvasId] = chartInstance;
+
+        // Atualiza o valor central como Dotação (ou base) em milhões
+        const totalMillions = Math.round((dotacao > 0 ? dotacao : base) / 1_000_000);
+        updateChartTotal(canvasId, totalMillions);
+
+        // Atualiza o título do card para o nome do elemento de despesa do JSON
+        const card = ctx.closest('.dashboard-card');
+        if (card) {
+            const titleEl = card.querySelector('.dashboard-title');
+            if (titleEl && record.elemento_despesa_desc) {
+                titleEl.textContent = record.elemento_despesa_desc;
+            }
+        }
+    }
+
+    function indexByDesc(rows) {
+        const map = new Map();
+        rows.forEach(r => map.set((r.elemento_despesa_desc || '').toUpperCase(), r));
+        return map;
+    }
+
+    fetch(urlWithBust, { cache: 'no-store' })
+        .then(r => { if (!r.ok) throw new Error('fetch not ok'); return r.json(); })
+        .then(json => {
+            let rows = Array.isArray(json) ? json.slice() : [];
+            // Empurra "[A DETALHAR]" para o final
+            rows.sort((a,b) => {
+                const ad = (a.elemento_despesa_desc || '').toUpperCase() === '[A DETALHAR]';
+                const bd = (b.elemento_despesa_desc || '').toUpperCase() === '[A DETALHAR]';
+                if (ad && !bd) return 1;
+                if (!ad && bd) return -1;
+                return 0;
+            });
+            const byDesc = indexByDesc(rows);
+
+            const mapping = [
+                { id: 'retirementChart', key: 'APOSENTADORIAS, RESERVA REMUNERADA E REFORMAS' },
+                { id: 'salaryChart', key: 'VENCIMENTOS E VANTAGENS FIXAS - PESSOAL CIVIL' },
+                { id: 'detailChart', key: '[A DETALHAR]' },
+                { id: 'retirementChart2', key: 'LOCACAO DE MAO-DE-OBRA' },
+                { id: 'salaryChart2', key: 'OBRIGACOES PATRONAIS' },
+                { id: 'scholarshipChart', key: 'AUXILIO FINANCEIRO A PESQUISADORES' },
+                { id: 'retirementChart3', key: 'PENSOES' },
+                { id: 'retirementChart4', key: 'INDENIZACOES E RESTITUICOES' },
+                { id: 'salaryChart3', key: 'SERVICOS DE TECNOLOGIA DA INFORMACAO E COMUNICACAO - PJ' },
+                { id: 'salaryChart4', key: 'CONTRIBUICAO A ENTIDADE FECHADA PREVIDENCIA' },
+                { id: 'detailChart2', key: 'OUTROS SERVICOS DE TERCEIROS PJ - OP.INT.ORC.' },
+                { id: 'detailChart3', key: 'DIARIAS - PESSOAL CIVIL' }
+            ];
+
+            const usedKeys = new Set();
+            mapping.forEach(({ id, key }) => {
+                const rec = byDesc.get(key);
+                if (rec) {
+                    usedKeys.add(key);
+                    createElementDonut(id, rec);
+                }
+            });
+
+            // Renderizar cartões adicionais para elementos não mapeados
+            const remaining = rows.filter(r => !usedKeys.has((r.elemento_despesa_desc || '').toUpperCase()));
+            if (remaining.length > 0) {
+                const container = document.querySelector('.expenses-section .container');
+                if (container) {
+                    let rowDiv = null;
+                    remaining.forEach((rec, idx) => {
+                        if (idx % 3 === 0) {
+                            rowDiv = document.createElement('div');
+                            rowDiv.className = 'row g-4 mb-4';
+                            container.appendChild(rowDiv);
+                        }
+                        const col = document.createElement('div');
+                        col.className = 'col-12 col-lg-4';
+                        const card = document.createElement('div');
+                        card.className = 'dashboard-card';
+                        const title = document.createElement('h6');
+                        title.className = 'dashboard-title';
+                        title.textContent = rec.elemento_despesa_desc || '';
+                        const chartContainer = document.createElement('div');
+                        chartContainer.className = 'dashboard-chart-container';
+                        const canvas = document.createElement('canvas');
+                        const canvasId = `dynamicChart_${idx}`;
+                        canvas.id = canvasId;
+                        canvas.width = 200;
+                        canvas.height = 200;
+                        const center = document.createElement('div');
+                        center.className = 'chart-center-text';
+                        const num = document.createElement('span');
+                        num.className = 'chart-total-number';
+                        num.textContent = '0M';
+                        const label = document.createElement('span');
+                        label.className = 'chart-total-label';
+                        label.textContent = 'Dotação';
+                        center.appendChild(num);
+                        center.appendChild(label);
+                        chartContainer.appendChild(canvas);
+                        chartContainer.appendChild(center);
+                        card.appendChild(title);
+                        card.appendChild(chartContainer);
+                        col.appendChild(card);
+                        rowDiv.appendChild(col);
+                        createElementDonut(canvasId, rec);
+                    });
+                }
+            }
+
+            // Mover todos os cards "[A DETALHAR]" para o final visualmente
+            const container = document.querySelector('.expenses-section .container');
+            if (container) {
+                const detailCols = Array.from(container.querySelectorAll('.dashboard-card .dashboard-title'))
+                    .filter(h => (h.textContent || '').trim().toUpperCase() === '[A DETALHAR]')
+                    .map(h => h.closest('.col-12.col-lg-4'));
+                if (detailCols.length) {
+                    // cria uma nova linha ao final para agrupar os "A DETALHAR"
+                    const detailRow = document.createElement('div');
+                    detailRow.className = 'row g-4 mb-4';
+                    container.appendChild(detailRow);
+                    detailCols.forEach(col => {
+                        if (col && col.parentElement) {
+                            detailRow.appendChild(col);
+                        }
+                    });
+                }
+                // Reflow: reconstroi as linhas em grupos de 3 para eliminar buracos visuais
+                const allCols = Array.from(container.querySelectorAll('.col-12.col-lg-4'));
+                // Remove todas as linhas atuais
+                Array.from(container.querySelectorAll('.row.g-4.mb-4')).forEach(row => row.remove());
+                // Recria as linhas com 3 colunas por linha
+                for (let i = 0; i < allCols.length; i += 3) {
+                    const row = document.createElement('div');
+                    row.className = 'row g-4 mb-4';
+                    container.appendChild(row);
+                    allCols.slice(i, i + 3).forEach(col => row.appendChild(col));
+                }
+            }
+        })
+        .catch(() => {
+            // mantém gráficos estáticos se falhar
+        });
+}
+
 // Função para inicializar funcionalidades específicas da página de dashboards
 function initDashboards() {
     // Criar o gráfico quando o DOM estiver carregado
@@ -1048,7 +1295,8 @@ function initDashboards() {
         document.addEventListener('DOMContentLoaded', () => {
             createBudgetChart();
             createContractsChart();
-            createDashboardCharts();
+            // createDashboardCharts(); // removido para evitar gráficos duplicados
+            loadExpenseElementCharts();
             loadBudgetKpis();
             createGenderVChart();
             createRaceTreemap();
@@ -1056,7 +1304,8 @@ function initDashboards() {
     } else {
         createBudgetChart();
         createContractsChart();
-        createDashboardCharts();
+        // createDashboardCharts(); // removido para evitar gráficos duplicados
+        loadExpenseElementCharts();
         loadBudgetKpis();
         createGenderVChart();
         createRaceTreemap();

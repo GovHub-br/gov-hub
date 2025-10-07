@@ -782,6 +782,249 @@ function initDashboards() {
     console.log('📊 Página Dashboards inicializada com sucesso!');
 }
 
+// ========================================
+// ECHARTS CHARTS - GENDER AND RACE DISTRIBUTION
+// ========================================
+
+// Função para criar o gráfico em formato V para distribuição por gênero
+function createGenderVChart() {
+    const container = document.getElementById('genderChart');
+    container.innerHTML = '';
+}
+
+// Função para criar o treemap de distribuição por raça/cor
+function createRaceTreemap() {
+    const chartDom = document.getElementById('raceChart');
+    if (!chartDom) return;
+    
+    const myChart = echarts.init(chartDom);
+    
+    const data = [
+        {
+            name: 'Brancos',
+            value: 700,
+            itemStyle: { 
+                color: '#FF8C00',
+                borderColor: '#ffffff',
+                borderWidth: 2
+            }
+        },
+        {
+            name: 'Pardos',
+            value: 230,
+            itemStyle: { 
+                color: '#FFA500',
+                borderColor: '#ffffff',
+                borderWidth: 2
+            }
+        },
+        {
+            name: 'Pretos',
+            value: 54,
+            itemStyle: { 
+                color: '#8A2BE2',
+                borderColor: '#ffffff',
+                borderWidth: 2
+            }
+        },
+        {
+            name: 'Amarelos',
+            value: 27,
+            itemStyle: { 
+                color: '#9370DB',
+                borderColor: '#ffffff',
+                borderWidth: 2
+            }
+        },
+        {
+            name: 'Não informados',
+            value: 18,
+            itemStyle: { 
+                color: '#DDA0DD',
+                borderColor: '#ffffff',
+                borderWidth: 2
+            }
+        },
+        {
+            name: 'Indígenas',
+            value: 3,
+            itemStyle: { 
+                color: '#9932CC',
+                borderColor: '#ffffff',
+                borderWidth: 2
+            }
+        }
+    ];
+    
+    const option = {
+        backgroundColor: 'transparent',
+        tooltip: {
+            trigger: 'item',
+            backgroundColor: '#422278',
+            borderColor: '#7A34F3',
+            borderWidth: 1,
+            textStyle: {
+                color: '#ffffff',
+                fontFamily: 'Inter'
+            },
+            formatter: function(params) {
+                return params.name + '<br/>' + params.value + ' funcionários';
+            }
+        },
+        series: [
+            {
+                name: 'Distribuição por Raça/Cor',
+                type: 'treemap',
+                data: data,
+                roam: false,
+                nodeClick: false,
+                breadcrumb: {
+                    show: false
+                },
+                label: {
+                    show: true,
+                    formatter: function(params) {
+                        // Mostrar números e nomes para blocos grandes
+                        // Blocos pequenos (Não informados e Indígenas) ficam sem texto
+                        if (params.value >= 20) {
+                            return params.value + '\n' + params.name;
+                        } else {
+                            return ''; // Sem texto para blocos pequenos
+                        }
+                    },
+                    fontSize: function(params) {
+                        // Tamanho de fonte baseado no valor
+                        if (params.value >= 500) return 16;
+                        if (params.value >= 100) return 14;
+                        if (params.value >= 50) return 12;
+                        return 10;
+                    },
+                    fontWeight: 'bold',
+                    color: '#ffffff',
+                    fontFamily: 'Inter',
+                    textShadowColor: 'rgba(0,0,0,0.5)',
+                    textShadowBlur: 2,
+                    position: 'inside',
+                    align: 'center',
+                    verticalAlign: 'middle'
+                },
+                upperLabel: {
+                    show: false
+                },
+                itemStyle: {
+                    borderColor: '#ffffff',
+                    borderWidth: 1,
+                    borderRadius: 0
+                },
+                emphasis: {
+                    itemStyle: {
+                        borderColor: '#7A34F3',
+                        borderWidth: 2
+                    }
+                },
+                gapWidth: 0,
+                gapHeight: 0,
+                levels: [
+                    {
+                        itemStyle: {
+                            borderColor: '#ffffff',
+                            borderWidth: 1,
+                            gapWidth: 0,
+                            gapHeight: 0
+                        }
+                    }
+                ]
+            }
+        ]
+    };
+    
+    myChart.setOption(option);
+    
+    // Adicionar legenda para "Não informados" e "Indígenas"
+    const legendContainer = document.createElement('div');
+    legendContainer.style.cssText = `
+        display: flex;
+        justify-content: right;
+        gap: 20px;
+        margin-top: 10px;
+        font-family: Inter, sans-serif;
+    `;
+    
+    const naoInformados = document.createElement('div');
+    naoInformados.style.cssText = `
+        display: flex;
+        align-items: right;
+        gap: 8px;
+        font-size: 14px;
+        color: #1f2937;
+    `;
+    
+    const naoInformadosDot = document.createElement('div');
+    naoInformadosDot.style.cssText = `
+        width: 12px;
+        height: 12px;
+        background-color: #DDA0DD;
+        border-radius: 50%;
+    `;
+    
+    naoInformados.appendChild(naoInformadosDot);
+    naoInformados.appendChild(document.createTextNode('18 Não informados'));
+    
+    const indigenas = document.createElement('div');
+    indigenas.style.cssText = `
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        color: #1f2937;
+    `;
+    
+    const indigenasDot = document.createElement('div');
+    indigenasDot.style.cssText = `
+        width: 12px;
+        height: 12px;
+        background-color: #9932CC;
+        border-radius: 50%;
+    `;
+    
+    indigenas.appendChild(indigenasDot);
+    indigenas.appendChild(document.createTextNode('4 Indígenas'));
+    
+    legendContainer.appendChild(naoInformados);
+    legendContainer.appendChild(indigenas);
+    
+    // Adicionar a legenda ao container do gráfico
+    const chartContainer = document.getElementById('raceChart').parentElement;
+    chartContainer.appendChild(legendContainer);
+    
+    // Responsive
+    window.addEventListener('resize', function() {
+        myChart.resize();
+    });
+}
+
+// Função para inicializar funcionalidades específicas da página de dashboards
+function initDashboards() {
+    // Criar o gráfico quando o DOM estiver carregado
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            createBudgetChart();
+            createContractsChart();
+            createDashboardCharts();
+            createGenderVChart();
+            createRaceTreemap();
+        });
+    } else {
+        createBudgetChart();
+        createContractsChart();
+        createDashboardCharts();
+        createGenderVChart();
+        createRaceTreemap();
+    }
+    
+    console.log('📊 Página Dashboards inicializada com sucesso!');
+}
+
 // Inicializar quando o script for carregado
 initDashboards();
 
@@ -789,5 +1032,7 @@ initDashboards();
 window.createBudgetChart = createBudgetChart;
 window.createContractsChart = createContractsChart;
 window.createDashboardCharts = createDashboardCharts;
+window.createGenderVChart = createGenderVChart;
+window.createRaceTreemap = createRaceTreemap;
 window.initDashboards = initDashboards;
 

@@ -24,6 +24,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- ApexCharts CDN -->
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <!-- ECharts CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
     <script src="./assets/dashboards.js"></script>
     
     <!-- Fonts -->
@@ -953,6 +955,76 @@
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Employees Section -->
+    <section class="employees-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="employees-section-title">Quantos funcionários ativos o IPEA tem?</h2>
+                </div>
+            </div>
+            
+            <!-- Employee Cards Row -->
+            <div class="employee-cards-container">
+                <div class="employee-card">
+                    <div class="employee-card-header">
+                        <h3 class="employee-card-title">SERVIDORES ATIVOS (SOMMANENTE)</h3>
+                    </div>
+                    <div class="employee-card-content">
+                        <span class="employee-value">301</span>
+                    </div>
+                </div>
+                
+                <div class="employee-card">
+                    <div class="employee-card-header">
+                        <h3 class="employee-card-title">ESTAGIÁRIOS</h3>
+                    </div>
+                    <div class="employee-card-content">
+                        <span class="employee-value">11</span>
+                    </div>
+                </div>
+                
+                <div class="employee-card">
+                    <div class="employee-card-header">
+                        <h3 class="employee-card-title">COLABORADORES TERCEIRIZADOS</h3>
+                    </div>
+                    <div class="employee-card-content">
+                        <span class="employee-value">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Distribution Subsection -->
+            <div class="row mt-5">
+                <div class="col-12">
+                    <h2 class="distribution-section-title">Como se distribuem?</h2>
+                </div>
+            </div>
+            
+            <div class="row g-4">
+                <!-- Gender Distribution Chart -->
+                <div class="col-12 col-lg-6">
+                    <div class="distribution-chart-card">
+                        <h3 class="distribution-chart-title">Distribuição por gênero</h3>
+                        <div class="gender-chart-container">
+                            <div id="genderChart" style="width: 100%; height: 400px;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Race Distribution Chart -->
+                <div class="col-12 col-lg-6">
+                    <div class="distribution-chart-card">
+                        <h3 class="distribution-chart-title">Por Raça/Cor</h3>
+                        <div class="race-chart-container">
+                            <div id="raceChart" style="width: 100%; height: 400px;"></div>
+                        </div>
                     </div>
                 </div>
             </div>

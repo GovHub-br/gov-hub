@@ -729,77 +729,188 @@ function createDashboardCharts() {
     }
 }
 
+// Função para atualizar a legenda do gráfico de contratos
+function updateContractsLegend(labels, counts, percentages) {
+    const chartCard = document.getElementById('contractsChart').closest('.chart-card');
+    if (!chartCard) return;
+    const legend = chartCard.querySelector('.chart-legend');
+    if (!legend) return;
+
+    const legendItems = Array.from(legend.querySelectorAll('.legend-item'));
+    const count = Math.min(legendItems.length, labels.length, counts.length, percentages.length);
+
+    for (let i = 0; i < count; i++) {
+        const item = legendItems[i];
+        const textEl = item.querySelector('.legend-text');
+        if (!textEl) continue;
+        
+        const countValue = counts[i];
+        const percentage = percentages[i];
+        const label = labels[i];
+        
+        // Formatar percentual com 1 casa decimal
+        const formattedPercentage = percentage.toFixed(1).replace('.', ',');
+        
+        textEl.innerHTML = `<span class="legend-number">${formattedPercentage}%</span> ${label}`;
+    }
+}
+
 // Função para criar o gráfico de contratos
 function createContractsChart() {
     const ctx = document.getElementById('contractsChart');
     if (!ctx) return;
 
-    const chartData = {
-        labels: [
-            'Serviços',
-            'Compras',
-            'Informática',
-            'Mão de obra',
-            'Serviços de Engenharia',
-            'Cessão'
-        ],
-        datasets: [{
-            data: [59.54, 24.81, 8.78, 3.82, 2.67, 0.38],
-            backgroundColor: [
-                '#AB2D2D',
-                '#FB8585',
-                '#31652B',
-                '#67A95E',
-                '#326879',
-                '#8B4513'
-            ],
-            borderWidth: 0,
-            cutout: '60%'
-        }]
-    };
+    const dataUrl = '../public/data/contratos.json';
+    const urlWithBust = `${dataUrl}?v=${Date.now()}`;
 
-    const config = {
-        type: 'doughnut',
-        data: chartData,
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    backgroundColor: '#422278',
-                    titleColor: '#FFFFFF',
-                    bodyColor: '#FFFFFF',
-                    padding: 16,
-                    cornerRadius: 8,
-                    displayColors: true,
-                    borderColor: '#7A34F3',
-                    borderWidth: 1,
-                    titleFont: {
-                        size: 14,
-                        weight: '600',
-                        family: 'Inter'
-                    },
-                    bodyFont: {
-                        size: 13,
-                        weight: '400',
-                        family: 'Inter'
-                    },
-                    callbacks: {
-                        title: function(context) {
-                            return 'Contratos por Categoria';
-                        },
-                        label: function(context) {
-                            return context.label + ': ' + context.parsed.toLocaleString('pt-BR') + '%';
+    fetch(urlWithBust, { cache: 'no-store' })
+        .then(resp => {
+            if (!resp.ok) throw new Error('fetch not ok');
+            return resp.json();
+        })
+        .then(json => {
+            const labels = json.map(item => item.categoria);
+            const counts = json.map(item => Number(item.count) || 0);
+            const total = counts.reduce((sum, count) => sum + count, 0);
+            
+            // Calcular percentuais
+            const percentages = counts.map(count => (count / total) * 100);
+
+            const chartData = {
+                labels: labels,
+                datasets: [{
+                    data: percentages,
+                    backgroundColor: [
+                        '#AB2D2D',
+                        '#FB8585',
+                        '#31652B',
+                        '#67A95E',
+                        '#326879',
+                        '#8B4513'
+                    ],
+                    borderWidth: 0,
+                    cutout: '60%'
+                }]
+            };
+
+            const config = {
+                type: 'doughnut',
+                data: chartData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#422278',
+                            titleColor: '#FFFFFF',
+                            bodyColor: '#FFFFFF',
+                            padding: 16,
+                            cornerRadius: 8,
+                            displayColors: true,
+                            borderColor: '#7A34F3',
+                            borderWidth: 1,
+                            titleFont: {
+                                size: 14,
+                                weight: '600',
+                                family: 'Inter'
+                            },
+                            bodyFont: {
+                                size: 13,
+                                weight: '400',
+                                family: 'Inter'
+                            },
+                            callbacks: {
+                                title: function(context) {
+                                    return 'Contratos por Categoria';
+                                },
+                                label: function(context) {
+                                    const index = context.dataIndex;
+                                    const count = counts[index];
+                                    const percentage = context.parsed;
+                                    return context.label + ': ' + count.toLocaleString('pt-BR') + ' contratos (' + percentage.toFixed(1).replace('.', ',') + '%)';
+                                }
+                            }
                         }
-                    }
+                    },
+                    elements: { arc: { borderWidth: 0 } }
                 }
-            },
-            elements: { arc: { borderWidth: 0 } }
-        }
-    };
+            };
 
-    new Chart(ctx, config);
+            new Chart(ctx, config);
+            
+            // Atualizar a legenda com os dados reais
+            updateContractsLegend(labels, counts, percentages);
+        })
+        .catch(() => {
+            // Fallback com dados estáticos caso o JSON não carregue
+            const chartData = {
+                labels: [
+                    'Serviços',
+                    'Compras',
+                    'Informática',
+                    'Mão de obra',
+                    'Serviços de Engenharia',
+                    'Cessão'
+                ],
+                datasets: [{
+                    data: [59.54, 24.81, 8.78, 3.82, 2.67, 0.38],
+                    backgroundColor: [
+                        '#AB2D2D',
+                        '#FB8585',
+                        '#31652B',
+                        '#67A95E',
+                        '#326879',
+                        '#8B4513'
+                    ],
+                    borderWidth: 0,
+                    cutout: '60%'
+                }]
+            };
+
+            const config = {
+                type: 'doughnut',
+                data: chartData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#422278',
+                            titleColor: '#FFFFFF',
+                            bodyColor: '#FFFFFF',
+                            padding: 16,
+                            cornerRadius: 8,
+                            displayColors: true,
+                            borderColor: '#7A34F3',
+                            borderWidth: 1,
+                            titleFont: {
+                                size: 14,
+                                weight: '600',
+                                family: 'Inter'
+                            },
+                            bodyFont: {
+                                size: 13,
+                                weight: '400',
+                                family: 'Inter'
+                            },
+                            callbacks: {
+                                title: function(context) {
+                                    return 'Contratos por Categoria';
+                                },
+                                label: function(context) {
+                                    return context.label + ': ' + context.parsed.toLocaleString('pt-BR') + '%';
+                                }
+                            }
+                        }
+                    },
+                    elements: { arc: { borderWidth: 0 } }
+                }
+            };
+
+            new Chart(ctx, config);
+        });
 }
 
 // Carregar e desenhar os gráficos "Como o dinheiro está sendo gasto?" a partir do JSON
@@ -1320,14 +1431,8 @@ function initDashboards() {
 
 // Função para carregar e popular a tabela de TEDs recebidos
 function loadTedsRecebidosTable() {
-    const dataUrl = '../public/data/detalhamento_teds_recebidos.json';
-    const urlWithBust = `${dataUrl}?v=${Date.now()}`;
-    
-    fetch(urlWithBust, { cache: 'no-store' })
-        .then(resp => {
-            if (!resp.ok) throw new Error('fetch not ok');
-            return resp.json();
-        })
+    fetch('../public/data/detalhamento_teds_recebidos.json')
+        .then(resp => resp.json())
         .then(json => {
             const tbody = document.getElementById('teds-recebidos-tbody');
             if (!tbody) return;
@@ -1371,22 +1476,13 @@ function loadTedsRecebidosTable() {
                 
                 tbody.appendChild(tr);
             });
-        })
-        .catch(error => {
-            console.error('Erro ao carregar TEDs recebidos:', error);
         });
 }
 
 // Função para carregar e popular a tabela de TEDs enviados
 function loadTedsEnviadosTable() {
-    const dataUrl = '../public/data/detalhamento_teds_enviados.json';
-    const urlWithBust = `${dataUrl}?v=${Date.now()}`;
-    
-    fetch(urlWithBust, { cache: 'no-store' })
-        .then(resp => {
-            if (!resp.ok) throw new Error('fetch not ok');
-            return resp.json();
-        })
+    fetch('../public/data/detalhamento_teds_enviados.json')
+        .then(resp => resp.json())
         .then(json => {
             const tbody = document.getElementById('teds-enviados-tbody');
             if (!tbody) return;
@@ -1457,9 +1553,6 @@ function loadTedsEnviadosTable() {
                 
                 tbody.appendChild(tr);
             });
-        })
-        .catch(error => {
-            console.error('Erro ao carregar TEDs enviados:', error);
         });
 }
 

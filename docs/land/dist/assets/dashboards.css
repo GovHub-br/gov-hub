@@ -630,13 +630,36 @@
     height: 8px;
     background: #EEE9FF;
     border-radius: 9999px;
-    overflow: hidden;
+    overflow: visible;
+    position: relative;
 }
 
 .teds-progress-bar {
     height: 100%;
     background: #7A34F3;
     border-radius: 9999px;
+    position: relative;
+    overflow: visible;
+}
+
+.teds-progress-handle {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 16px;
+    height: 16px;
+    background: #F19F42;
+    border: 3px solid #ffffff;
+    border-radius: 50%;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.teds-progress-handle:hover {
+    transform: translate(-50%, -50%) scale(1.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
 }
 
 .teds-legend {
@@ -861,13 +884,16 @@
     height: 8px;
     background: #EEE9FF;
     border-radius: 9999px;
-    overflow: hidden;
+    overflow: visible;
+    position: relative;
 }
 
 .teds-sent-progress-bar {
     height: 100%;
     background: #7A34F3;
     border-radius: 9999px;
+    position: relative;
+    overflow: visible;
     transition: width 0.3s ease;
 }
 

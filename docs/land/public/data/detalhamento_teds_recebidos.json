@@ -1,0 +1,178 @@
+[
+    {
+      "programa": "INCLUA - Igualdade Racial",
+      "unidade": "MIR/SENAPIR-MIR",
+      "vigencia": "26/06/2025 - 31/12/2028",
+      "valor_firmado": 1494580,
+      "percentual_conclusao": 0.0537,
+      "percentual_conclusao_orcamentaria": null
+    },
+    {
+      "programa": "1149 - Reconstrução, Ampliação e Aprofundamento da Participação Social e da Democracia",
+      "unidade": "PR/SG",
+      "vigencia": "01/07/2024 - 31/12/2026",
+      "valor_firmado": 693800,
+      "percentual_conclusao": 0.4699,
+      "percentual_conclusao_orcamentaria": 0.21
+    },
+    {
+      "programa": "Construção e a efetivação do Plano Nacional de Cuidados.",
+      "unidade": "MDS/MDS",
+      "vigencia": "06/12/2024 - 06/12/2026",
+      "valor_firmado": 1789894.5,
+      "percentual_conclusao": 0.3712,
+      "percentual_conclusao_orcamentaria": 0.0327
+    },
+    {
+      "programa": "Mestrado Profissional em Políticas Públicas e Desenvolvimento",
+      "unidade": "MPO/DGE",
+      "vigencia": "13/12/2023 - 30/11/2026",
+      "valor_firmado": 610000,
+      "percentual_conclusao": 0.5817,
+      "percentual_conclusao_orcamentaria": 0.1357
+    },
+    {
+      "programa": "Programa 1149 -Reconstrução, Ampliação e Aprofundamento da Participação Social e da Democracia",
+      "unidade": "SNDS/SNDS",
+      "vigencia": "01/08/2025 - 31/10/2026",
+      "valor_firmado": 891360,
+      "percentual_conclusao": 0.0724,
+      "percentual_conclusao_orcamentaria": null
+    },
+    {
+      "programa": "Estudos avançados sobre processos de gestão de pessoas no governo federal",
+      "unidade": "DFC/DFC",
+      "vigencia": "01/11/2023 - 31/10/2026",
+      "valor_firmado": 956520,
+      "percentual_conclusao": 0.6137,
+      "percentual_conclusao_orcamentaria": 0.4511
+    },
+    {
+      "programa": "Estudos e pesquisas para análise, monitoramento e avaliação dos programas e políticas do Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome - MDS",
+      "unidade": "MDS/MDS",
+      "vigencia": "25/10/2023 - 23/10/2026",
+      "valor_firmado": 3154400,
+      "percentual_conclusao": 0.6207,
+      "percentual_conclusao_orcamentaria": 0.1267
+    },
+    {
+      "programa": "IPEA/MIR pela Igualdade Racial",
+      "unidade": "MIR/SENAPIR-MIR",
+      "vigencia": "20/09/2023 - 20/09/2026",
+      "valor_firmado": 1285773.68,
+      "percentual_conclusao": 0.6515,
+      "percentual_conclusao_orcamentaria": 0.503
+    },
+    {
+      "programa": "Pesquisa - Estudos sobre a aderência dos currículos praticados nas instituições de ensino de segurança pública à MCN2014",
+      "unidade": "SENASP/SENASP",
+      "vigencia": "29/11/2024 - 30/07/2026",
+      "valor_firmado": 1205835.39,
+      "percentual_conclusao": 0.4572,
+      "percentual_conclusao_orcamentaria": 0.1101
+    },
+    {
+      "programa": "Apoio à Capacitação de Gestores e Agentes Sociais para o Desenvolvimento Urbano por meio do Programa Nacional de Capacitação das Cidades",
+      "unidade": "MCID/MCID",
+      "vigencia": "20/06/2024 - 20/06/2026",
+      "valor_firmado": 1086250.88,
+      "percentual_conclusao": 0.6027,
+      "percentual_conclusao_orcamentaria": 0.3445
+    },
+    {
+      "programa": "TED MTE IPEA",
+      "unidade": "SE/SEET",
+      "vigencia": "07/06/2024 - 06/06/2026",
+      "valor_firmado": 1115760,
+      "percentual_conclusao": 0.6214,
+      "percentual_conclusao_orcamentaria": 0.2409
+    },
+    {
+      "programa": "EFICIÊNCIA ALOCATIVA, EMENDAS PARLAMENTARES E AMBIENTE DE NEGÓCIOS",
+      "unidade": "SCPR-MDIC/SCPR-MDIC",
+      "vigencia": "31/05/2024 - 29/05/2026",
+      "valor_firmado": 1477480,
+      "percentual_conclusao": 0.6319,
+      "percentual_conclusao_orcamentaria": 0.5406
+    },
+    {
+      "programa": "O ESTADO REGULADOR BRASILEIRO",
+      "unidade": "SCPR-MDIC/SCPR-MDIC",
+      "vigencia": "15/07/2024 - 27/02/2026",
+      "valor_firmado": 332280,
+      "percentual_conclusao": 0.701,
+      "percentual_conclusao_orcamentaria": 0.6092
+    },
+    {
+      "programa": "Governança Ambiental",
+      "unidade": "MMA/MMA",
+      "vigencia": "12/08/2024 - 01/02/2026",
+      "valor_firmado": 329560,
+      "percentual_conclusao": 0.7193,
+      "percentual_conclusao_orcamentaria": 0.3556
+    },
+    {
+      "programa": "Promoção e Defesa dos Direitos Humanos Para Todos",
+      "unidade": "SNDH/SNDH",
+      "vigencia": "11/12/2023 - 11/01/2026",
+      "valor_firmado": 1026240,
+      "percentual_conclusao": 0.8294,
+      "percentual_conclusao_orcamentaria": 0.6008
+    },
+    {
+      "programa": "Construção de uma metodologia de avaliação padronizada de políticas públicas (MAPP)",
+      "unidade": "MPO/MPO",
+      "vigencia": "02/12/2024 - 30/12/2025",
+      "valor_firmado": 235200,
+      "percentual_conclusao": 0.6997,
+      "percentual_conclusao_orcamentaria": 0.5775
+    },
+    {
+      "programa": "Modelagem programática IPEA + IPHAN",
+      "unidade": "IPHAN/DEPAM",
+      "vigencia": "20/12/2023 - 20/12/2025",
+      "valor_firmado": 299788,
+      "percentual_conclusao": 0.8523,
+      "percentual_conclusao_orcamentaria": 0.6618
+    },
+    {
+      "programa": "Plano Nacional de Habitação (PlanHab 2040).",
+      "unidade": "MCID/MCID",
+      "vigencia": "07/06/2024 - 06/12/2025",
+      "valor_firmado": 1968244,
+      "percentual_conclusao": 0.8282,
+      "percentual_conclusao_orcamentaria": 0.3831
+    },
+    {
+      "programa": "TED SENASP/IPEA",
+      "unidade": "SEGEN/SENASP",
+      "vigencia": "30/05/2022 - 30/11/2024",
+      "valor_firmado": 1441000,
+      "percentual_conclusao": 1,
+      "percentual_conclusao_orcamentaria": 0.4294
+    },
+    {
+      "programa": "Atualização e Ampliação da base de dados para análises quantitativas da Categorização dos Municípios do Mapa do Turismo Brasileiro.",
+      "unidade": "MTur/MTur",
+      "vigencia": "03/11/2023 - 03/11/2024",
+      "valor_firmado": 246480,
+      "percentual_conclusao": 1,
+      "percentual_conclusao_orcamentaria": 0.6245
+    },
+    {
+      "programa": "PROGRAMA PARA DESENVOLVIMENTO DO COMPLEXO INDUSTRIAL DA SAÚDE",
+      "unidade": "MS/SECTICS",
+      "vigencia": "28/04/2022 - 28/10/2024",
+      "valor_firmado": 4479300,
+      "percentual_conclusao": 1,
+      "percentual_conclusao_orcamentaria": 0.4428
+    },
+    {
+      "programa": "Desenvolvimento Regional , Territorial e Urbano",
+      "unidade": "MIDR/MIDR",
+      "vigencia": "30/06/2023 - 30/06/2024",
+      "valor_firmado": 175410,
+      "percentual_conclusao": 1,
+      "percentual_conclusao_orcamentaria": null
+    }
+  ]

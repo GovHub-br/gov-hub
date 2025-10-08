@@ -1300,6 +1300,8 @@ function initDashboards() {
             loadBudgetKpis();
             createGenderVChart();
             createRaceTreemap();
+            loadTedsRecebidosTable();
+            loadTedsEnviadosTable();
         });
     } else {
         createBudgetChart();
@@ -1309,9 +1311,156 @@ function initDashboards() {
         loadBudgetKpis();
         createGenderVChart();
         createRaceTreemap();
+        loadTedsRecebidosTable();
+        loadTedsEnviadosTable();
     }
     
     console.log('📊 Página Dashboards inicializada com sucesso!');
+}
+
+// Função para carregar e popular a tabela de TEDs recebidos
+function loadTedsRecebidosTable() {
+    const dataUrl = '../public/data/detalhamento_teds_recebidos.json';
+    const urlWithBust = `${dataUrl}?v=${Date.now()}`;
+    
+    fetch(urlWithBust, { cache: 'no-store' })
+        .then(resp => {
+            if (!resp.ok) throw new Error('fetch not ok');
+            return resp.json();
+        })
+        .then(json => {
+            const tbody = document.getElementById('teds-recebidos-tbody');
+            if (!tbody) return;
+            
+            // Limpar tbody
+            tbody.innerHTML = '';
+            
+            // Para cada item do JSON, criar uma linha
+            json.forEach(item => {
+                const tr = document.createElement('tr');
+                
+                // Formatar valor monetário
+                const valorFormatado = (item.valor_firmado || 0).toLocaleString('pt-BR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+                
+                // Calcular percentuais
+                const percentualTemporal = ((item.percentual_conclusao || 0) * 100).toFixed(2);
+                const percentualOrcamentario = item.percentual_conclusao_orcamentaria 
+                    ? ((item.percentual_conclusao_orcamentaria || 0) * 100).toFixed(2)
+                    : '0';
+                
+                tr.innerHTML = `
+                    <td>
+                        <div class="teds-program">
+                            <div class="teds-program-code">${item.unidade || ''}</div>
+                            <div class="teds-program-text">${item.programa || ''}</div>
+                        </div>
+                    </td>
+                    <td>${item.vigencia || ''}</td>
+                    <td>${valorFormatado}</td>
+                    <td>
+                        <div class="teds-progress">
+                            <div class="teds-progress-bar" style="width: ${percentualTemporal}%">
+                                <span class="teds-progress-handle" style="left: ${percentualOrcamentario}%"></span>
+                            </div>
+                        </div>
+                    </td>
+                `;
+                
+                tbody.appendChild(tr);
+            });
+        })
+        .catch(error => {
+            console.error('Erro ao carregar TEDs recebidos:', error);
+        });
+}
+
+// Função para carregar e popular a tabela de TEDs enviados
+function loadTedsEnviadosTable() {
+    const dataUrl = '../public/data/detalhamento_teds_enviados.json';
+    const urlWithBust = `${dataUrl}?v=${Date.now()}`;
+    
+    fetch(urlWithBust, { cache: 'no-store' })
+        .then(resp => {
+            if (!resp.ok) throw new Error('fetch not ok');
+            return resp.json();
+        })
+        .then(json => {
+            const tbody = document.getElementById('teds-enviados-tbody');
+            if (!tbody) return;
+            
+            // Calcular KPIs
+            let totalValorFirmado = 0;
+            let totalDestaqueOrcamentario = 0;
+            
+            json.forEach(item => {
+                totalValorFirmado += (item.valor_firmado || 0);
+                totalDestaqueOrcamentario += (item.destaque_orcamentario_enviado || 0);
+            });
+            
+            // Atualizar KPIs
+            const valorFirmadoEl = document.getElementById('teds-enviados-valor-firmado');
+            const destaqueOrcamentarioEl = document.getElementById('teds-enviados-destaque-orcamentario');
+            
+            if (valorFirmadoEl) {
+                valorFirmadoEl.textContent = totalValorFirmado.toLocaleString('pt-BR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+            }
+            
+            if (destaqueOrcamentarioEl) {
+                destaqueOrcamentarioEl.textContent = totalDestaqueOrcamentario.toLocaleString('pt-BR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+            }
+            
+            // Limpar tbody
+            tbody.innerHTML = '';
+            
+            // Para cada item do JSON, criar uma linha
+            json.forEach(item => {
+                const tr = document.createElement('tr');
+                
+                // Formatar valor monetário
+                const valorFormatado = (item.valor_firmado || 0).toLocaleString('pt-BR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+                
+                // Calcular percentuais
+                const percentualTemporal = ((item.percentual_conclusao || 0) * 100).toFixed(2);
+                const percentualOrcamentario = item.percentual_conclusao_orcamentaria 
+                    ? ((item.percentual_conclusao_orcamentaria || 0) * 100).toFixed(2)
+                    : '0';
+                
+                tr.innerHTML = `
+                    <td>
+                        <div class="teds-sent-program">
+                            <div class="teds-sent-program-code">${item.unidade_descentralizadora_responsavel || ''}</div>
+                            <div class="teds-sent-program-text">${item.programa || ''}</div>
+                        </div>
+                    </td>
+                    <td>${item.vigencia || ''}</td>
+                    <td>${valorFormatado}</td>
+                    <td>
+                        <div class="teds-sent-progress">
+                            <div class="teds-sent-progress-bar" style="width: ${percentualTemporal}%">
+                                <span class="teds-progress-handle" style="left: ${percentualOrcamentario}%"></span>
+                            </div>
+                        </div>
+                    </td>
+                `;
+                
+                tbody.appendChild(tr);
+            });
+        })
+        .catch(error => {
+            console.error('Erro ao carregar TEDs enviados:', error);
+        });
 }
 
 // Inicializar quando o script for carregado
@@ -1323,5 +1472,7 @@ window.createContractsChart = createContractsChart;
 window.createDashboardCharts = createDashboardCharts;
 window.createGenderVChart = createGenderVChart;
 window.createRaceTreemap = createRaceTreemap;
+window.loadTedsRecebidosTable = loadTedsRecebidosTable;
+window.loadTedsEnviadosTable = loadTedsEnviadosTable;
 window.initDashboards = initDashboards;
 

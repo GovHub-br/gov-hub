@@ -738,7 +738,7 @@
                             <div class="legend-text">Locação de mão-de-obra</div>
                         </div>
                         <div class="legend-item">
-                            <div class="legend-color" style="background-color:#22c55e"></div>
+                            <div class="legend-color" style="background-color:#31652B"></div>
                             <div class="legend-text">Passagens e despesas com locomoção</div>
                         </div>
                     </div>
@@ -758,97 +758,8 @@
                                     <th>Conclusão</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <div class="teds-program">
-                                            <div class="teds-program-code">MIR/SENAPIR-MIR</div>
-                                            <div class="teds-program-text">INCLUA - Igualdade Racial</div>
-                                        </div>
-                                    </td>
-                                    <td>26/06/2025 → 31/12/2028</td>
-                                    <td>1,494,580.00</td>
-                                    <td>
-                                        <div class="teds-progress">
-                                            <div class="teds-progress-bar" style="width: 68%"></div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="teds-program">
-                                            <div class="teds-program-code">PR/SG</div>
-                                            <div class="teds-program-text">1149 - Reconstrução, Ampliação e Aprofundamento da Participação Social e da Democracia</div>
-                                        </div>
-                                    </td>
-                                    <td>01/07/2024 → 31/12/2026</td>
-                                    <td>693,800.00</td>
-                                    <td>
-                                        <div class="teds-progress">
-                                            <div class="teds-progress-bar" style="width: 52%"></div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="teds-program">
-                                            <div class="teds-program-code">MDS/MDS</div>
-                                            <div class="teds-program-text">Construção e a efetivação do Plano Nacional de Cuidados.</div>
-                                        </div>
-                                    </td>
-                                    <td>06/12/2023 → 06/12/2026</td>
-                                    <td>1,789,894.50</td>
-                                    <td>
-                                        <div class="teds-progress">
-                                            <div class="teds-progress-bar" style="width: 47%"></div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="teds-program">
-                                            <div class="teds-program-code">MPO/DGE</div>
-                                            <div class="teds-program-text">Mestrado Profissional em Políticas Públicas e Desenvolvimento</div>
-                                        </div>
-                                    </td>
-                                    <td>13/12/2023 → 31/10/2026</td>
-                                    <td>610,000.00</td>
-                                    <td>
-                                        <div class="teds-progress">
-                                            <div class="teds-progress-bar" style="width: 61%"></div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="teds-program">
-                                            <div class="teds-program-code">SNDS/SNDS</div>
-                                            <div class="teds-program-text">Programa 1149 - Reconstrução, Ampliação e Aprofundamento da Participação Social e da Democracia</div>
-                                        </div>
-                                    </td>
-                                    <td>01/08/2025 → 31/10/2026</td>
-                                    <td>891,360.00</td>
-                                    <td>
-                                        <div class="teds-progress">
-                                            <div class="teds-progress-bar" style="width: 39%"></div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="teds-program">
-                                            <div class="teds-program-code">DFC/DFC</div>
-                                            <div class="teds-program-text">Estudos avançados sobre processos de gestão de pessoas no governo federal</div>
-                                        </div>
-                                    </td>
-                                    <td>01/11/2023 → 31/10/2026</td>
-                                    <td>956,520.00</td>
-                                    <td>
-                                        <div class="teds-progress">
-                                            <div class="teds-progress-bar" style="width: 28%"></div>
-                                        </div>
-                                    </td>
-                                </tr>
+                            <tbody id="teds-recebidos-tbody">
+                                <!-- Linhas serão inseridas dinamicamente via JavaScript -->
                             </tbody>
                         </table>
                     </div>
@@ -875,7 +786,7 @@
                             <h3 class="budget-card-title">VALOR FIRMADO</h3>
                         </div>
                         <div class="budget-card-content">
-                            <span class="budget-value">1,444,320.00</span>
+                            <span class="budget-value" id="teds-enviados-valor-firmado">0,00</span>
                         </div>
                     </div>
                 </div>
@@ -885,7 +796,7 @@
                             <h3 class="budget-card-title">DESTINAÇÃO ORÇAMENTÁRIA ENVIADA</h3>
                         </div>
                         <div class="budget-card-content">
-                            <span class="budget-value">1,714,368.00</span>
+                            <span class="budget-value" id="teds-enviados-destaque-orcamentario">0,00</span>
                         </div>
                     </div>
                 </div>
@@ -907,52 +818,8 @@
                                     <th>CONCLUSÃO</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <div class="teds-sent-program">
-                                            <div class="teds-sent-program-code">IPEA/UNB</div>
-                                            <div class="teds-sent-program-text">Laboratório Avançado de Produção Pesquisa e Inovação em Software - LAPPIS/UnB GAMA</div>
-                                        </div>
-                                    </td>
-                                    <td>01/02/2024 - 31/01/2025</td>
-                                    <td>902.400,00</td>
-                                    <td>
-                                        <div class="teds-sent-progress">
-                                            <div class="teds-sent-progress-bar" style="width: 68%"></div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="teds-sent-program">
-                                            <div class="teds-sent-program-code">IPEA/UNB</div>
-                                            <div class="teds-sent-program-text">Mapeamento de Processos com Método Business Process Management (BPM) no Instituto de Pesquisa Econômica Aplicada (Ipea)</div>
-                                        </div>
-                                    </td>
-                                    <td>20/12/2023 - 20/02/2025</td>
-                                    <td>541.920,00</td>
-                                    <td>
-                                        <div class="teds-sent-progress">
-                                            <div class="teds-sent-progress-bar" style="width: 65%"></div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="teds-sent-program">
-                                            <div class="teds-sent-program-code">IPEA/UNB</div>
-                                            <div class="teds-sent-program-text">Laboratório Avançado de Produção Pesquisa e Inovação em Software - LAPPIS/UnB GAMA</div>
-                                        </div>
-                                    </td>
-                                    <td>01/02/2024 - 31/01/2025</td>
-                                    <td>0,0</td>
-                                    <td>
-                                        <div class="teds-sent-progress">
-                                            <div class="teds-sent-progress-bar" style="width: 0%"></div>
-                                        </div>
-                                    </td>
-                                </tr>
+                            <tbody id="teds-enviados-tbody">
+                                <!-- Linhas serão inseridas dinamicamente via JavaScript -->
                             </tbody>
                         </table>
                     </div>

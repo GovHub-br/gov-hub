@@ -327,6 +327,40 @@ function loadContractsBars() {
         });
 }
 
+// Carregar KPIs de TEDs recebidos
+function loadTedsRecebidosKpis() {
+    const dataUrl = '../public/data/teds_recebidos.json';
+    const urlWithBust = `${dataUrl}?v=${Date.now()}`;
+
+    function formatCurrency(value) {
+        return (Number(value) || 0).toLocaleString('pt-BR', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    }
+
+    function setValue(id, value) {
+        const el = document.getElementById(id);
+        if (el) {
+            el.textContent = value;
+        }
+    }
+
+    fetch(urlWithBust, { cache: 'no-store' })
+        .then(resp => {
+            if (!resp.ok) throw new Error('fetch not ok');
+            return resp.json();
+        })
+        .then(json => {
+            setValue('teds-recebidos-total', json.teds_recebidos);
+            setValue('teds-proximos-finalizar', json.teds_proximos_finalizar);
+            setValue('teds-despesas-liquidar', formatCurrency(json.despesas_a_liquidar_teds));
+        })
+        .catch(() => {
+            // mantém valores existentes se falhar
+        });
+}
+
 
 // Função para criar os gráficos de dashboard
 function createDashboardCharts() {
@@ -1544,6 +1578,7 @@ function initDashboards() {
             loadBudgetKpis();
             loadContractsKpis();
             loadContractsBars();
+            loadTedsRecebidosKpis();
             createGenderVChart();
             createRaceTreemap();
             loadTedsRecebidosTable();
@@ -1557,6 +1592,7 @@ function initDashboards() {
         loadBudgetKpis();
         loadContractsKpis();
         loadContractsBars();
+        loadTedsRecebidosKpis();
         createGenderVChart();
         createRaceTreemap();
         loadTedsRecebidosTable();

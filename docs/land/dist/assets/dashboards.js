@@ -194,6 +194,40 @@ function loadBudgetKpis() {
         });
 }
 
+// Carregar KPIs de contratos a partir do JSON público
+function loadContractsKpis() {
+    const dataUrl = '../public/data/orcamento_contratos.json';
+    const urlWithBust = `${dataUrl}?v=${Date.now()}`;
+
+    function formatCurrency(value) {
+        return (Number(value) || 0).toLocaleString('pt-BR', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    }
+
+    function setValue(id, value) {
+        const el = document.getElementById(id);
+        if (el) {
+            el.textContent = formatCurrency(value);
+        }
+    }
+
+    fetch(urlWithBust, { cache: 'no-store' })
+        .then(resp => {
+            if (!resp.ok) throw new Error('fetch not ok');
+            return resp.json();
+        })
+        .then(json => {
+            setValue('contratos-alocado-empenhado', json.orcamento_alocado_empenhado);
+            setValue('contratos-saldo-empenho', json.saldo_de_empenho_a_liquidar);
+            setValue('contratos-despesas-pagas', json.despesas_pagas);
+        })
+        .catch(() => {
+            // mantém valores existentes se falhar
+        });
+}
+
 
 // Função para criar os gráficos de dashboard
 function createDashboardCharts() {
@@ -1409,6 +1443,7 @@ function initDashboards() {
             // createDashboardCharts(); // removido para evitar gráficos duplicados
             loadExpenseElementCharts();
             loadBudgetKpis();
+            loadContractsKpis();
             createGenderVChart();
             createRaceTreemap();
             loadTedsRecebidosTable();
@@ -1420,6 +1455,7 @@ function initDashboards() {
         // createDashboardCharts(); // removido para evitar gráficos duplicados
         loadExpenseElementCharts();
         loadBudgetKpis();
+        loadContractsKpis();
         createGenderVChart();
         createRaceTreemap();
         loadTedsRecebidosTable();

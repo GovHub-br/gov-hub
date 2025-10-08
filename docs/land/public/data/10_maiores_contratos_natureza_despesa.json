@@ -1,0 +1,82 @@
+[
+  {
+    "ano_referencia": 2025,
+    "fornecedor_nome": "AIRES TURISMO LTDA",
+    "locacao_de_mao_de_obra": null,
+    "outros_servicos_de_terceiros_pj": null,
+    "passagens_e_despesas_com_locomocao": 710483.17,
+    "servicos_de_ti_pj": null
+  },
+  {
+    "ano_referencia": 2025,
+    "fornecedor_nome": "CAST INFORMATICA S/A",
+    "locacao_de_mao_de_obra": null,
+    "outros_servicos_de_terceiros_pj": null,
+    "passagens_e_despesas_com_locomocao": null,
+    "servicos_de_ti_pj": 540000
+  },
+  {
+    "ano_referencia": 2025,
+    "fornecedor_nome": "CLIMATICA ENGENHARIA LTDA",
+    "locacao_de_mao_de_obra": 425258.65,
+    "outros_servicos_de_terceiros_pj": null,
+    "passagens_e_despesas_com_locomocao": null,
+    "servicos_de_ti_pj": null
+  },
+  {
+    "ano_referencia": 2025,
+    "fornecedor_nome": "EVOLUX MULTI SERVICOS LTDA",
+    "locacao_de_mao_de_obra": 1653000,
+    "outros_servicos_de_terceiros_pj": null,
+    "passagens_e_despesas_com_locomocao": null,
+    "servicos_de_ti_pj": null
+  },
+  {
+    "ano_referencia": 2025,
+    "fornecedor_nome": "G&E SERVICOS TERCEIRIZADOS LTDA",
+    "locacao_de_mao_de_obra": 1200000,
+    "outros_servicos_de_terceiros_pj": null,
+    "passagens_e_despesas_com_locomocao": null,
+    "servicos_de_ti_pj": null
+  },
+  {
+    "ano_referencia": 2025,
+    "fornecedor_nome": "JK SEGURANCA PRIVADA LTDA",
+    "locacao_de_mao_de_obra": 335000,
+    "outros_servicos_de_terceiros_pj": null,
+    "passagens_e_despesas_com_locomocao": null,
+    "servicos_de_ti_pj": null
+  },
+  {
+    "ano_referencia": 2025,
+    "fornecedor_nome": "NEOENERGIA DISTRIBUICAO BRASILIA S.A.",
+    "locacao_de_mao_de_obra": null,
+    "outros_servicos_de_terceiros_pj": 473101.29,
+    "passagens_e_despesas_com_locomocao": null,
+    "servicos_de_ti_pj": null
+  },
+  {
+    "ano_referencia": 2025,
+    "fornecedor_nome": "R2 RADIODIFUSAO E TELECOMUNICACOES LTDA",
+    "locacao_de_mao_de_obra": 920000,
+    "outros_servicos_de_terceiros_pj": null,
+    "passagens_e_despesas_com_locomocao": null,
+    "servicos_de_ti_pj": null
+  },
+  {
+    "ano_referencia": 2025,
+    "fornecedor_nome": "T & S ENGENHARIA TELEMATICA E SISTEMAS LTDA",
+    "locacao_de_mao_de_obra": 1958243.08,
+    "outros_servicos_de_terceiros_pj": null,
+    "passagens_e_despesas_com_locomocao": null,
+    "servicos_de_ti_pj": null
+  },
+  {
+    "ano_referencia": 2025,
+    "fornecedor_nome": "UNISERVE COMERCIO E SERVICOS TERCEIRIZADOS LTDA",
+    "locacao_de_mao_de_obra": 423000,
+    "outros_servicos_de_terceiros_pj": null,
+    "passagens_e_despesas_com_locomocao": null,
+    "servicos_de_ti_pj": null
+  }
+]

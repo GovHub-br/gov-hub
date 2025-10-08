@@ -228,6 +228,105 @@ function loadContractsKpis() {
         });
 }
 
+// Carregar gráfico de barras dos maiores contratos
+function loadContractsBars() {
+    const dataUrl = '../public/data/10_maiores_contratos_natureza_despesa.json';
+    const urlWithBust = `${dataUrl}?v=${Date.now()}`;
+
+    function formatValue(value) {
+        const num = Number(value) || 0;
+        if (num >= 1000000) {
+            const millions = num / 1000000;
+            // Mostrar 2 casas decimais para valores em milhões para maior precisão
+            return millions.toFixed(2).replace('.', ',') + 'M';
+        } else if (num >= 1000) {
+            const thousands = num / 1000;
+            // Mostrar 1 casa decimal para valores em milhares
+            return thousands.toFixed(1).replace('.', ',') + 'k';
+        }
+        return num.toLocaleString('pt-BR', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    }
+
+    function getNaturezaDespesa(item) {
+        // Determina qual natureza de despesa tem valor
+        if (item.locacao_de_mao_de_obra) return 'Locação de mão de obra';
+        if (item.outros_servicos_de_terceiros_pj) return 'Outros serviços de terceiros - Pessoa Jurídica';
+        if (item.passagens_e_despesas_com_locomocao) return 'Passagens e despesas com locomoção';
+        if (item.servicos_de_ti_pj) return 'Serviços de TI - Pessoa Jurídica';
+        return 'Não especificado';
+    }
+
+    function getValorTotal(item) {
+        return (item.locacao_de_mao_de_obra || 0) + 
+               (item.outros_servicos_de_terceiros_pj || 0) + 
+               (item.passagens_e_despesas_com_locomocao || 0) + 
+               (item.servicos_de_ti_pj || 0);
+    }
+
+    function getCorNatureza(natureza) {
+        const cores = {
+            'Locação de mão de obra': '#7A34F3',
+            'Outros serviços de terceiros - Pessoa Jurídica': '#31652B',
+            'Passagens e despesas com locomoção': '#F59E0B',
+            'Serviços de TI - Pessoa Jurídica': '#AB2D2D',
+            'Não especificado': '#326879'
+        };
+        return cores[natureza] || '#326879';
+    }
+
+    fetch(urlWithBust, { cache: 'no-store' })
+        .then(resp => {
+            if (!resp.ok) throw new Error('fetch not ok');
+            return resp.json();
+        })
+        .then(json => {
+            const container = document.getElementById('contracts-bars-container');
+            if (!container) return;
+
+            // Ordenar por valor total (maior para menor)
+            const sortedData = json
+                .map(item => ({
+                    ...item,
+                    valorTotal: getValorTotal(item),
+                    natureza: getNaturezaDespesa(item)
+                }))
+                .sort((a, b) => b.valorTotal - a.valorTotal);
+
+            // Encontrar o valor máximo para calcular percentuais
+            const maxValue = Math.max(...sortedData.map(item => item.valorTotal));
+
+            // Limpar container
+            container.innerHTML = '';
+
+            // Criar barras dinamicamente
+            sortedData.forEach((item, index) => {
+                const percentage = (item.valorTotal / maxValue) * 100;
+                const formattedValue = formatValue(item.valorTotal);
+                const cor = getCorNatureza(item.natureza);
+
+                const barItem = document.createElement('div');
+                barItem.className = 'contracts-bar-item';
+                barItem.innerHTML = `
+                    <div class="contracts-bar-header">
+                        <span class="contracts-bar-value">${formattedValue}</span>
+                        <span class="contracts-bar-label">${item.fornecedor_nome}</span>
+                    </div>
+                    <div class="contracts-bar-track">
+                        <div class="contracts-bar-fill" style="width: ${percentage.toFixed(1)}%; background-color: ${cor};"></div>
+                    </div>
+                `;
+
+                container.appendChild(barItem);
+            });
+        })
+        .catch(() => {
+            // mantém valores existentes se falhar
+        });
+}
+
 
 // Função para criar os gráficos de dashboard
 function createDashboardCharts() {
@@ -1444,6 +1543,7 @@ function initDashboards() {
             loadExpenseElementCharts();
             loadBudgetKpis();
             loadContractsKpis();
+            loadContractsBars();
             createGenderVChart();
             createRaceTreemap();
             loadTedsRecebidosTable();
@@ -1456,6 +1556,7 @@ function initDashboards() {
         loadExpenseElementCharts();
         loadBudgetKpis();
         loadContractsKpis();
+        loadContractsBars();
         createGenderVChart();
         createRaceTreemap();
         loadTedsRecebidosTable();

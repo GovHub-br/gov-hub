@@ -361,6 +361,39 @@ function loadTedsRecebidosKpis() {
         });
 }
 
+// Carregar KPIs de TEDs enviados
+function loadTedsEnviadosKpis() {
+    const dataUrl = '../public/data/teds_enviados.json';
+    const urlWithBust = `${dataUrl}?v=${Date.now()}`;
+
+    function formatCurrency(value) {
+        return (Number(value) || 0).toLocaleString('pt-BR', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    }
+
+    function setValue(id, value) {
+        const el = document.getElementById(id);
+        if (el) {
+            el.textContent = formatCurrency(value);
+        }
+    }
+
+    fetch(urlWithBust, { cache: 'no-store' })
+        .then(resp => {
+            if (!resp.ok) throw new Error('fetch not ok');
+            return resp.json();
+        })
+        .then(json => {
+            setValue('teds-enviados-valor-firmado', json.valor_firmado);
+            setValue('teds-enviados-destaque-orcamentario', json.destaque_orcamentario_enviado);
+        })
+        .catch((err) => {
+            console.error('Erro ao carregar KPIs de TEDs enviados:', err);
+        });
+}
+
 
 // Função para criar os gráficos de dashboard
 function createDashboardCharts() {
@@ -1583,6 +1616,7 @@ function initDashboards() {
             createRaceTreemap();
             loadTedsRecebidosTable();
             loadTedsEnviadosTable();
+            loadTedsEnviadosKpis();
         });
     } else {
         createBudgetChart();
@@ -1597,6 +1631,7 @@ function initDashboards() {
         createRaceTreemap();
         loadTedsRecebidosTable();
         loadTedsEnviadosTable();
+        loadTedsEnviadosKpis();
     }
     
     console.log('📊 Página Dashboards inicializada com sucesso!');
@@ -1659,53 +1694,26 @@ function loadTedsEnviadosTable() {
         .then(json => {
             const tbody = document.getElementById('teds-enviados-tbody');
             if (!tbody) return;
-            
-            // Calcular KPIs
-            let totalValorFirmado = 0;
-            let totalDestaqueOrcamentario = 0;
-            
-            json.forEach(item => {
-                totalValorFirmado += (item.valor_firmado || 0);
-                totalDestaqueOrcamentario += (item.destaque_orcamentario_enviado || 0);
-            });
-            
-            // Atualizar KPIs
-            const valorFirmadoEl = document.getElementById('teds-enviados-valor-firmado');
-            const destaqueOrcamentarioEl = document.getElementById('teds-enviados-destaque-orcamentario');
-            
-            if (valorFirmadoEl) {
-                valorFirmadoEl.textContent = totalValorFirmado.toLocaleString('pt-BR', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                });
-            }
-            
-            if (destaqueOrcamentarioEl) {
-                destaqueOrcamentarioEl.textContent = totalDestaqueOrcamentario.toLocaleString('pt-BR', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                });
-            }
-            
+
             // Limpar tbody
             tbody.innerHTML = '';
-            
+
             // Para cada item do JSON, criar uma linha
             json.forEach(item => {
                 const tr = document.createElement('tr');
-                
+
                 // Formatar valor monetário
                 const valorFormatado = (item.valor_firmado || 0).toLocaleString('pt-BR', {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2
                 });
-                
+
                 // Calcular percentuais
                 const percentualTemporal = ((item.percentual_conclusao || 0) * 100).toFixed(2);
-                const percentualOrcamentario = item.percentual_conclusao_orcamentaria 
+                const percentualOrcamentario = item.percentual_conclusao_orcamentaria
                     ? ((item.percentual_conclusao_orcamentaria || 0) * 100).toFixed(2)
                     : '0';
-                
+
                 tr.innerHTML = `
                     <td>
                         <div class="teds-sent-program">
@@ -1723,7 +1731,7 @@ function loadTedsEnviadosTable() {
                         </div>
                     </td>
                 `;
-                
+
                 tbody.appendChild(tr);
             });
         });

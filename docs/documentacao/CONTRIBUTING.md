@@ -32,7 +32,7 @@ Contribuições podem incluir:
 
 -   correção de erros ou inconsistências
 
-Lembre-se de seguir as boas práticas de codificação e de escrever mensagens de commit claras e descritivas, neste projeto, utilize o seguinte [modelo de commit](.github/TEMPLATES/COMMIT_TEMPLATE.md). Teste e valide sua contribuição localmente antes de prosseguir.
+Lembre-se de seguir as boas práticas de codificação e de escrever mensagens de commit claras e descritivas, neste projeto, utilize o seguinte [modelo de commit](../../.github/TEMPLATES/COMMIT_TEMPLATE.md). Teste e valide sua contribuição localmente antes de prosseguir.
 
 ### 3. Sobre o pull request
 

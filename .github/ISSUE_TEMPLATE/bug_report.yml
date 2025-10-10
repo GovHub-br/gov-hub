@@ -1,0 +1,26 @@
+name: Bug report
+description: Reporte um problema no projeto
+labels: ["bug"]
+title: "[Bug]: "
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: O que aconteceu?
+      description: Descreva o bug e como reproduzir.
+      placeholder: Passos para reproduzir, resultado esperado vs. atual...
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Versão/commit
+      placeholder: v1.2.3 ou SHA
+  - type: dropdown
+    id: os
+    attributes:
+      label: Sistema operacional
+      options:
+        - Windows
+        - macOS
+        - Linux

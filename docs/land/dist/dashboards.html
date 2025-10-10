@@ -58,11 +58,11 @@
                     </div>
 
             <!-- Budget Cards Row -->
-            <div class="row g-3">
+            <div class="row g-3 mb-4">
                 <div class="col-12 col-lg-8">
                     <div class="row g-3">
                         <!-- Card 1 - Orçamento Total (Menor) -->
-                        <div class="col-12 col-md-3">
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                             <div class="budget-card budget-card-small">
                                 <div class="budget-card-header">
                                     <h3 class="budget-card-title">ORÇAMENTO TOTAL</h3>
@@ -70,23 +70,23 @@
                                 <div class="budget-card-content">
                                     <span class="budget-value" id="total-budget">466M</span>
                                 </div>
-                    </div>
-                </div>
+                            </div>
+                        </div>
 
                         <!-- Card 2 - Orçamento TEDS (Médio) -->
-                        <div class="col-12 col-md-4">
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                             <div class="budget-card budget-card-medium">
                                 <div class="budget-card-header">
                                     <h3 class="budget-card-title">ORÇAMENTO RECEBIDO DE TEDS</h3>
                                 </div>
                                 <div class="budget-card-content">
                                     <span class="budget-value" id="teds-budget">6.21M</span>
-                    </div>
-                </div>
-            </div>
+                                </div>
+                            </div>
+                        </div>
                         
                         <!-- Card 3 - Orçamento do Órgão (Maior) -->
-                        <div class="col-12 col-md-5">
+                        <div class="col-12 col-md-4 col-lg-5">
                             <div class="budget-card budget-card-large">
                                 <div class="budget-card-header">
                                     <h3 class="budget-card-title">ORÇAMENTO DO ORGÃO (DOTAÇÃO ATUALIZADA)</h3>
@@ -96,9 +96,9 @@
                                 </div>
                             </div>
                         </div>
-                        </div>
                     </div>
                 </div>
+            </div>
                 
             <!-- Chart Section Title -->
             <div class="row">
@@ -108,13 +108,13 @@
                             </div>
                             
             <!-- Chart Card -->
-            <div class="row">
-                <div class="col-12 col-lg-9">
+            <div class="row mb-4">
+                <div class="col-12 col-lg-10 col-xl-9">
                     <div class="chart-card">
                         <div class="chart-title">Distribuição de orçamento por ação</div>
                         <div class="row">
                             <!-- Gráfico de Rosca -->
-                            <div class="col-lg-4">
+                            <div class="col-12 col-lg-5 col-xl-4">
                                 <div class="chart-container">
                                     <div class="chart-wrapper">
                                         <canvas id="budgetChart" width="300" height="300"></canvas>
@@ -127,7 +127,7 @@
                             </div>
                             
                             <!-- Legenda -->
-                            <div class="col-lg-8">
+                            <div class="col-12 col-lg-7 col-xl-8">
                                 <div class="chart-legend">
                                     <div class="legend-item">
                                         <div class="legend-color" style="background-color: #AB2D2D;"></div>
@@ -180,9 +180,9 @@
             </div>
             
             <!-- Expenses Cards Row -->
-            <div class="row g-3">
+            <div class="row g-3 mb-4">
                 <!-- Card 1 - Orçamento Alocado (Empenhado) -->
-                <div class="col-12 col-md-3">
+                <div class="col-12 col-sm-6 col-md-6 col-lg-3">
                     <div class="budget-card budget-card-small">
                         <div class="budget-card-header">
                             <h3 class="budget-card-title">ORÇAMENTO ALOCADO (EMPENHADO)</h3>
@@ -194,7 +194,7 @@
                 </div>
                 
                 <!-- Card 2 - Orçamento Alocado Não Utilizado -->
-                <div class="col-12 col-md-4">
+                <div class="col-12 col-sm-6 col-md-6 col-lg-3">
                     <div class="budget-card budget-card-medium">
                         <div class="budget-card-header">
                             <h3 class="budget-card-title">ORÇAMENTO ALOCADO NÃO UTILIZADO (À LIQUIDAR)</h3>
@@ -206,7 +206,7 @@
                 </div>
                 
                 <!-- Card 3 - Despesas Programadas -->
-                <div class="col-12 col-md-3">
+                <div class="col-12 col-sm-6 col-md-6 col-lg-3">
                     <div class="budget-card budget-card-medium">
                         <div class="budget-card-header">
                             <h3 class="budget-card-title">DESPESAS PROGRAMADAS (À PAGAR)</h3>
@@ -218,7 +218,7 @@
                 </div>
                 
                 <!-- Card 4 - Despesas Pagas -->
-                <div class="col-12 col-md-2">
+                <div class="col-12 col-sm-6 col-md-6 col-lg-3">
                     <div class="budget-card budget-card-small">
                         <div class="budget-card-header">
                             <h3 class="budget-card-title">DESPESAS PAGAS</h3>
@@ -450,13 +450,13 @@
                 </div>
                 
             <!-- Chart Card -->
-            <div class="row">
-                <div class="col-12 col-lg-6">
+            <div class="row mb-4">
+                <div class="col-12 col-lg-10 col-xl-8 col-xxl-7">
                     <div class="chart-card">
                         <div class="chart-title">Contratos por Categoria</div>
-                <div class="row">
+                        <div class="row">
                             <!-- Gráfico de Rosca -->
-                            <div class="col-12 col-md-6">
+                            <div class="col-12 col-md-6 col-lg-5">
                                 <div class="chart-container">
                                     <div class="chart-wrapper">
                                         <canvas id="contractsChart" width="240" height="240"></canvas>
@@ -469,7 +469,7 @@
                             </div>
                             
                             <!-- Legenda -->
-                            <div class="col-12 col-md-6">
+                            <div class="col-12 col-md-6 col-lg-7">
                                 <div class="chart-legend">
                                     <div class="legend-item">
                                         <div class="legend-color" style="background-color: #AB2D2D;"></div>
@@ -513,30 +513,38 @@
                 </div>
             </div>
             
-            <div class="row g-4">
+            <div class="row g-4 mb-4">
                 <!-- Cards Laterais -->
-                <div class="col-12 col-lg-3">
-                    <!-- Card 1 - Orçamento Alocado -->
-                    <div class="allocation-card allocation-card-purple">
-                        <h3 class="allocation-card-label">ORÇAMENTO ALOCADO (EMPENHADO)</h3>
-                        <p class="allocation-card-value" id="contratos-alocado-empenhado">10,468,530.85</p>
-                    </div>
-                    
-                    <!-- Card 2 - Saldo de Empenho -->
-                    <div class="allocation-card allocation-card-purple">
-                        <h3 class="allocation-card-label">SALDO DE EMPENHO (À LIQUIDAR)</h3>
-                        <p class="allocation-card-value" id="contratos-saldo-empenho">3,855,196.17</p>
-                    </div>
-                    
-                    <!-- Card 3 - Despesas Pagas -->
-                    <div class="allocation-card allocation-card-purple">
-                        <h3 class="allocation-card-label">DESPESAS PAGAS</h3>
-                        <p class="allocation-card-value" id="contratos-despesas-pagas">4,094,929.86</p>
+                <div class="col-12 col-md-4 col-lg-3">
+                    <div class="row g-3">
+                        <!-- Card 1 - Orçamento Alocado -->
+                        <div class="col-12">
+                            <div class="allocation-card allocation-card-purple">
+                                <h3 class="allocation-card-label">ORÇAMENTO ALOCADO (EMPENHADO)</h3>
+                                <p class="allocation-card-value" id="contratos-alocado-empenhado">10,468,530.85</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Card 2 - Saldo de Empenho -->
+                        <div class="col-12">
+                            <div class="allocation-card allocation-card-purple">
+                                <h3 class="allocation-card-label">SALDO DE EMPENHO (À LIQUIDAR)</h3>
+                                <p class="allocation-card-value" id="contratos-saldo-empenho">3,855,196.17</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Card 3 - Despesas Pagas -->
+                        <div class="col-12">
+                            <div class="allocation-card allocation-card-purple">
+                                <h3 class="allocation-card-label">DESPESAS PAGAS</h3>
+                                <p class="allocation-card-value" id="contratos-despesas-pagas">4,094,929.86</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
                 <!-- Dashboard de Barras -->
-                <div class="col-12 col-lg-9">
+                <div class="col-12 col-md-8 col-lg-9">
                     <div class="bar-chart-card">
                         <h3 class="bar-chart-title">10 Maiores contratos pelo orçamento alocado (empenhado) e a natureza da despesa</h3>
                         
@@ -690,8 +698,8 @@
             </div>
 
             <!-- KPIs -->
-            <div class="row g-3 teds-kpis">
-                <div class="col-12 col-md-4">
+            <div class="row g-3 teds-kpis mb-4">
+                <div class="col-12 col-sm-6 col-md-4">
                     <div class="budget-card">
                         <div class="budget-card-header">
                             <h3 class="budget-card-title">TOTAL DE TEDS RECEBIDOS PELO IPEA</h3>
@@ -701,7 +709,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-md-4">
+                <div class="col-12 col-sm-6 col-md-4">
                     <div class="budget-card">
                         <div class="budget-card-header">
                             <h3 class="budget-card-title">TEDS PRÓXIMOS DE SEREM FINALIZADOS (EM 2025)</h3>
@@ -748,7 +756,7 @@
             <!-- Tabela -->
             <div class="row">
                 <div class="col-12">
-                    <div class="teds-table-wrapper">
+                    <div class="teds-table-wrapper table-responsive">
                         <table class="teds-table table">
                             <thead>
                                 <tr>
@@ -779,8 +787,8 @@
             </div>
 
             <!-- KPIs -->
-            <div class="row g-3 teds-sent-kpis">
-                <div class="col-12 col-md-6 col-lg-2">
+            <div class="row g-3 teds-sent-kpis mb-4">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                     <div class="budget-card">
                         <div class="budget-card-header">
                             <h3 class="budget-card-title">VALOR FIRMADO</h3>
@@ -790,7 +798,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-md-6 col-lg-3">
+                <div class="col-12 col-sm-6 col-md-8 col-lg-4">
                     <div class="budget-card">
                         <div class="budget-card-header">
                             <h3 class="budget-card-title">DESTINAÇÃO ORÇAMENTÁRIA ENVIADA</h3>
@@ -805,7 +813,7 @@
             <!-- Tabela -->
             <div class="row">
                 <div class="col-12">
-                    <div class="teds-sent-table-wrapper">
+                    <div class="teds-sent-table-wrapper table-responsive">
                         <table class="teds-sent-table table">
                             <thead>
                                 <tr>
@@ -868,15 +876,15 @@
             </div>
 
             <!-- Distribution Subsection -->
-            <div class="row mt-5">
+            <div class="row mt-5 mb-3">
                 <div class="col-12">
                     <h2 class="distribution-section-title">Como se distribuem?</h2>
                 </div>
             </div>
             
-            <div class="row g-4">
+            <div class="row g-4 mb-5">
                 <!-- Gender Distribution Chart -->
-                <div class="col-12 col-lg-6">
+                <div class="col-12 col-md-6">
                     <div class="distribution-chart-card">
                         <h3 class="distribution-chart-title">Distribuição por gênero</h3>
                         <div class="gender-chart-container">
@@ -886,7 +894,7 @@
                 </div>
                 
                 <!-- Race Distribution Chart -->
-                <div class="col-12 col-lg-6">
+                <div class="col-12 col-md-6">
                     <div class="distribution-chart-card">
                         <h3 class="distribution-chart-title">Por Raça/Cor</h3>
                         <div class="race-chart-container">

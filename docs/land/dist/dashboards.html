@@ -905,5 +905,54 @@
             </div>
         </div>
     </section>
+
+    <!-- Aposentadorias Section -->
+    <section class="aposentadorias-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="aposentadorias-section-title">Aposentadorias</h2>
+                </div>
+            </div>
+            
+            <!-- Aposentadorias Cards Row -->
+            <div class="row g-3 mb-4">
+                <!-- Card 1 - Total de Aposentadorias -->
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                    <div class="budget-card budget-card-small">
+                        <div class="budget-card-header">
+                            <h3 class="budget-card-title">TOTAL DE APOSENTADORIAS</h3>
+                        </div>
+                        <div class="budget-card-content">
+                            <span class="budget-value" id="total-aposentadorias">674</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Card 2 - Gráfico de Linha -->
+                <div class="col-12 col-sm-6 col-md-8 col-lg-9">
+                    <div class="aposentadorias-graph-card">
+                        <div class="chart-title">Quantos se aposentam nos próximos anos?</div>
+                        <div class="aposentadorias-chart-selector">
+                            <select class="form-select" id="aposentadorias-year-selector">
+                                <option value="2025">EM 2025</option>
+                                <option value="2026">EM 2026</option>
+                                <option value="2027">EM 2027</option>
+                            </select>
+                        </div>
+                        <div class="aposentadorias-chart-container">
+                            <canvas id="aposentadoriasChart" width="400" height="200"></canvas>
+                        </div>
+                        <div class="aposentadorias-chart-legend">
+                            <div class="legend-item">
+                                <div class="legend-color" style="background-color: #8b5cf6;"></div>
+                                <div class="legend-text">SUM (coalesce(siafi_valor_pago, 0))</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </body>
 </html>

@@ -1668,3 +1668,100 @@
         height: 300px;
     }
 }
+
+/* ==============================
+   APOSENTADORIAS SECTION
+   ============================== */
+
+.aposentadorias-section {
+    background: #f8fafc;
+    padding: 4rem 0;
+}
+
+.aposentadorias-section-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: #202020;
+    margin-bottom: 2rem;
+    text-align: left;
+}
+
+/* Estilos específicos para aposentadorias */
+.aposentadorias-chart-selector {
+    margin-bottom: 0.75rem;
+}
+
+.aposentadorias-chart-selector .form-select {
+    border: none;
+    border-radius: 0;
+    color: #8b5cf6;
+    font-weight: 700;
+    background-color: transparent;
+    padding: 0;
+    font-size: 1rem;
+    text-transform: uppercase;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%238b5cf6' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0 center;
+    background-repeat: no-repeat;
+    background-size: 1rem;
+    padding-right: 1.5rem;
+    cursor: pointer;
+    width: auto;
+    display: inline-block;
+}
+
+.aposentadorias-chart-selector .form-select:focus {
+    border: none;
+    box-shadow: none;
+    outline: none;
+}
+
+.aposentadorias-chart-container {
+    position: relative;
+    width: 100%;
+    height: 350px;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+}
+
+.aposentadorias-chart-container canvas {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+}
+
+.aposentadorias-chart-legend {
+    margin: 0;
+    padding: 0;
+}
+
+/* Card do gráfico de aposentadorias */
+.aposentadorias-graph-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    width: 80%;
+}
+
+/* Responsive Design for Aposentadorias Section */
+@media (max-width: 768px) {
+    .aposentadorias-section {
+        padding: 2rem 0;
+    }
+    
+    .aposentadorias-section-title {
+        font-size: 2rem;
+        text-align: center;
+    }
+    
+    .line-chart-container {
+        height: 250px;
+    }
+}

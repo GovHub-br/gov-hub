@@ -102,11 +102,19 @@ function createBudgetChart() {
 
 // Função para inicializar funcionalidades específicas da página de dashboards
 function initDashboards() {
+    console.log('🚀 Inicializando dashboards...');
+    
     // Criar o gráfico quando o DOM estiver carregado
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', createBudgetChart);
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('📄 DOM carregado, criando gráficos...');
+            createBudgetChart();
+            createAposentadoriasChart();
+        });
     } else {
+        console.log('📄 DOM já carregado, criando gráficos...');
         createBudgetChart();
+        createAposentadoriasChart();
     }
     
     console.log('📊 Página Dashboards inicializada com sucesso!');
@@ -1737,8 +1745,149 @@ function loadTedsEnviadosTable() {
         });
 }
 
+// Função para criar o gráfico de linha de aposentadorias
+// Baseado em exemplo externo do Chart.js adaptado para dados de aposentadorias
+function createAposentadoriasChart() {
+    console.log('🔍 Tentando criar gráfico de aposentadorias...');
+    const ctx = document.getElementById('aposentadoriasChart');
+    if (!ctx) {
+        console.error('❌ Canvas aposentadoriasChart não encontrado!');
+        return;
+    }
+    console.log('✅ Canvas encontrado, criando gráfico...');
+
+    // Verificar se Chart.js está carregado
+    if (typeof Chart === 'undefined') {
+        console.error('❌ Chart.js não está carregado!');
+        return;
+    }
+    console.log('✅ Chart.js carregado, prosseguindo...');
+
+    // Exemplo adaptado de gráfico de linha do Chart.js com dados de aposentadorias
+    const data = {
+        labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+        datasets: [{
+            label: 'Aposentadorias por Mês',
+            data: [0, 0, 0, 0, 11, 5, 15, 20, 37, 10, 1, 1],
+            borderColor: '#8b5cf6', // Cor roxa baseada em exemplo externo
+            backgroundColor: 'rgba(139, 92, 246, 0.1)',
+            borderWidth: 3,
+            fill: false,
+            tension: 0, // Linha mais angular, menos arredondada
+            pointRadius: 0, // Remove os pontos
+            pointHoverRadius: 0, // Remove os pontos no hover
+            pointBackgroundColor: 'transparent',
+            pointBorderColor: 'transparent',
+            pointBorderWidth: 0
+        }]
+    };
+
+    // Configuração baseada em exemplo externo do Chart.js
+    const config = {
+        type: 'line',
+        data: data,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(139, 92, 246, 0.9)',
+                    titleColor: '#ffffff',
+                    bodyColor: '#ffffff',
+                    borderColor: '#8b5cf6',
+                    borderWidth: 2,
+                    cornerRadius: 8,
+                    displayColors: false,
+                    callbacks: {
+                        title: function(context) {
+                            return `Mês: ${context[0].label}`;
+                        },
+                        label: function(context) {
+                            return `Aposentadorias: ${context.parsed.y}`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    display: true,
+                    grid: {
+                        color: '#e5e7eb',
+                        drawBorder: false,
+                        lineWidth: 1
+                    },
+                    ticks: {
+                        color: '#6b7280',
+                        font: {
+                            family: 'Inter',
+                            size: 12,
+                            weight: '500'
+                        },
+                        padding: 8
+                    }
+                },
+                y: {
+                    display: true,
+                    beginAtZero: true,
+                    max: 40,
+                    grid: {
+                        color: '#e5e7eb',
+                        drawBorder: false,
+                        lineWidth: 1
+                    },
+                    ticks: {
+                        color: '#6b7280',
+                        font: {
+                            family: 'Inter',
+                            size: 12,
+                            weight: '500'
+                        },
+                        stepSize: 10,
+                        padding: 8
+                    }
+                }
+            },
+            elements: {
+                line: {
+                    borderJoinStyle: 'miter', // Junções mais angulares
+                    borderCapStyle: 'butt'   // Pontas mais retas
+                },
+                point: {
+                    hoverBackgroundColor: 'transparent',
+                    hoverBorderColor: 'transparent',
+                    hoverBorderWidth: 0
+                }
+            }
+        }
+    };
+
+    new Chart(ctx, config);
+    console.log('✅ Gráfico de aposentadorias criado com sucesso!');
+}
+
+// Função de fallback para garantir que o gráfico seja criado
+function ensureAposentadoriasChart() {
+    setTimeout(() => {
+        const canvas = document.getElementById('aposentadoriasChart');
+        if (canvas && !canvas.chart) {
+            console.log('🔄 Tentando criar gráfico novamente...');
+            createAposentadoriasChart();
+        }
+    }, 1000);
+}
+
 // Inicializar quando o script for carregado
 initDashboards();
+
+// Garantir que o gráfico seja criado
+ensureAposentadoriasChart();
 
 // Exportar funções para uso global
 window.createBudgetChart = createBudgetChart;
@@ -1746,6 +1895,7 @@ window.createContractsChart = createContractsChart;
 window.createDashboardCharts = createDashboardCharts;
 window.createGenderVChart = createGenderVChart;
 window.createRaceTreemap = createRaceTreemap;
+window.createAposentadoriasChart = createAposentadoriasChart;
 window.loadTedsRecebidosTable = loadTedsRecebidosTable;
 window.loadTedsEnviadosTable = loadTedsEnviadosTable;
 window.initDashboards = initDashboards;

@@ -1650,6 +1650,73 @@
     position: relative;
     width: 100%;
     height: 400px;
+    overflow: hidden; /* Previne overflow do gráfico */
+}
+
+/* Estilos gerais da legenda com scroll horizontal */
+.race-chart-legend {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    margin-top: 10px;
+    font-family: Inter, sans-serif;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    box-sizing: border-box;
+    padding-bottom: 8px;
+    /* Estilizar a barra de rolagem */
+    scrollbar-width: thin;
+    scrollbar-color: #7A34F3 #f1f1f1;
+}
+
+.race-chart-legend::-webkit-scrollbar {
+    height: 6px;
+}
+
+.race-chart-legend::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.race-chart-legend::-webkit-scrollbar-thumb {
+    background: #7A34F3;
+    border-radius: 3px;
+}
+
+.race-chart-legend::-webkit-scrollbar-thumb:hover {
+    background: #6B2AE8;
+}
+
+.race-chart-legend > div {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #1f2937;
+    flex-shrink: 0;
+    white-space: nowrap;
+    min-width: fit-content;
+    box-sizing: border-box;
+}
+
+/* Desktop - Garantir que a legenda seja sempre visível */
+@media (min-width: 769px) {
+    .distribution-chart-card .race-chart-legend {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    .race-chart-container {
+        height: 400px;
+        overflow: visible;
+    }
+    
+    .race-chart-container #raceChart {
+        height: 400px !important;
+    }
 }
 
 /* Responsive Design for Distribution Charts */
@@ -1666,6 +1733,75 @@
     .gender-chart-container,
     .race-chart-container {
         height: 300px;
+    }
+    
+    /* Ajustes específicos para o gráfico de raça/cor no mobile */
+    .race-chart-container {
+        overflow: hidden;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .race-chart-container #raceChart {
+        width: 100% !important;
+        height: 100% !important;
+        max-width: 100%;
+        overflow: hidden;
+    }
+    
+    /* Ajustes da legenda no mobile */
+    .distribution-chart-card .race-chart-legend {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        overflow-x: auto !important;
+        gap: 15px !important;
+        margin-top: 8px !important;
+    }
+    
+    .distribution-chart-card .race-chart-legend > div {
+        flex-shrink: 0 !important;
+        font-size: 12px !important;
+        white-space: nowrap !important;
+    }
+}
+
+/* Ajustes para telas muito pequenas (576px) */
+@media (max-width: 576px) {
+    .race-chart-container {
+        height: 250px;
+        overflow: hidden;
+    }
+    
+    .race-chart-container #raceChart {
+        width: 100% !important;
+        height: 100% !important;
+        max-width: 100%;
+        overflow: hidden;
+    }
+    
+    /* Ajustar padding do card no mobile muito pequeno */
+    .distribution-chart-card {
+        padding: 1rem;
+    }
+    
+    /* Ajustes da legenda para telas muito pequenas */
+    .distribution-chart-card .race-chart-legend {
+        gap: 10px !important;
+        margin-top: 6px !important;
+        overflow-x: auto !important;
+    }
+    
+    .distribution-chart-card .race-chart-legend > div {
+        flex-shrink: 0 !important;
+        font-size: 11px !important;
+        gap: 6px !important;
+        white-space: nowrap !important;
+    }
+    
+    .distribution-chart-card .race-chart-legend > div > div:first-child {
+        width: 8px !important;
+        height: 8px !important;
     }
 }
 

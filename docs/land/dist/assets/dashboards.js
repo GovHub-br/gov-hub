@@ -1489,17 +1489,20 @@ function createRaceTreemap() {
                     breadcrumb: {
                         show: false
                     },
-                    label: {
-                        show: true,
-                        formatter: function(params) {
-                            // Mostrar números e nomes para blocos grandes
-                            // Blocos pequenos (Não informados e Indígenas) ficam sem texto
-                            if (params.value >= 20) {
-                                return params.value + '\n' + params.name;
-                            } else {
-                                return ''; // Sem texto para blocos pequenos
-                            }
-                        },
+                        label: {
+                            show: true,
+                            formatter: function(params) {
+                                // Definir limite de valor para mostrar rótulo dentro do treemap
+                                // Itens com valor abaixo deste limite terão o rótulo na legenda externa
+                                const minLabelValue = 28; // Baseado nos dados: 28 PRETA aparece, 1 e 2 não
+                                
+                                // Mostrar rótulo dentro do treemap apenas se o valor for maior ou igual ao limite
+                                if (params.value >= minLabelValue) {
+                                    return params.value + '\n' + params.name;
+                                } else {
+                                    return ''; // Ocultar rótulo para itens pequenos (aparecerão na legenda)
+                                }
+                            },
                         fontSize: function(params) {
                             // Tamanho de fonte baseado no valor
                             if (params.value >= 500) return 16;
@@ -1548,71 +1551,137 @@ function createRaceTreemap() {
 
         myChart.setOption(option);
         
-        // Adicionar legenda para "Não informados" e "Indígenas"
+        // Definir limite de valor para mostrar na legenda (mesmo valor usado no formatter)
+        const minLabelValue = 28;
+        
+        // Limpar legenda existente se houver
+        const chartContainer = document.getElementById('raceChart').parentElement;
+        const existingLegend = chartContainer.querySelector('.race-chart-legend');
+        if (existingLegend) {
+            existingLegend.remove();
+        }
+        
+        // Criar novo contêiner da legenda
         const legendContainer = document.createElement('div');
+        legendContainer.className = 'race-chart-legend';
         legendContainer.style.cssText = `
             display: flex;
-            justify-content: right;
+            flex-direction: row;
             gap: 20px;
             margin-top: 10px;
             font-family: Inter, sans-serif;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: auto;
+            overflow-y: hidden;
+            box-sizing: border-box;
+            padding-bottom: 8px;
+            scrollbar-width: thin;
+            scrollbar-color: #7A34F3 #f1f1f1;
         `;
         
-        const naoInformados = document.createElement('div');
-        naoInformados.style.cssText = `
-            display: flex;
-            align-items: right;
-            gap: 8px;
-            font-size: 14px;
-            color: #1f2937;
-        `;
+        // Gerar itens da legenda para categorias abaixo do limite
+        const legendItems = data.filter(item => item.value < minLabelValue);
         
-        const naoInformadosDot = document.createElement('div');
-        naoInformadosDot.style.cssText = `
-            width: 12px;
-            height: 12px;
-            background-color: #DDA0DD;
-            border-radius: 50%;
-        `;
+        legendItems.forEach(item => {
+            const legendItem = document.createElement('div');
+            legendItem.style.cssText = `
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-size: 14px;
+                color: #1f2937;
+                flex-shrink: 0;
+                white-space: nowrap;
+                min-width: fit-content;
+                box-sizing: border-box;
+            `;
+            
+            const legendDot = document.createElement('div');
+            legendDot.style.cssText = `
+                width: 12px;
+                height: 12px;
+                background-color: ${item.itemStyle.color};
+                border-radius: 50%;
+            `;
+            
+            legendItem.appendChild(legendDot);
+            
+            // Formatar nome para a legenda (com acentos e capitalização)
+            let displayName = item.name;
+            if (item.name === 'NAO INFORMADO') {
+                displayName = 'Não informados';
+            } else if (item.name === 'INDIGENA') {
+                displayName = 'Indígenas';
+            } else if (item.name === 'AMARELA') {
+                displayName = 'Amarelos';
+            } else if (item.name === 'PRETA') {
+                displayName = 'Pretos';
+            } else if (item.name === 'PARDA') {
+                displayName = 'Pardos';
+            } else if (item.name === 'BRANCA') {
+                displayName = 'Brancos';
+            }
+            
+            legendItem.appendChild(document.createTextNode(`${item.value} ${displayName}`));
+            legendContainer.appendChild(legendItem);
+        });
         
-        // Buscar valores dinâmicos dos dados
-        const naoInformadosData = data.find(item => item.name === 'NAO INFORMADO');
-        const indigenasData = data.find(item => item.name === 'INDIGENA');
+        // Adicionar a legenda ao container do gráfico apenas se houver itens
+        if (legendItems.length > 0) {
+            chartContainer.appendChild(legendContainer);
+        }
         
-        naoInformados.appendChild(naoInformadosDot);
-        naoInformados.appendChild(document.createTextNode(`${naoInformadosData ? naoInformadosData.value : 0} Não informados`));
-        
-        const indigenas = document.createElement('div');
-        indigenas.style.cssText = `
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-            color: #1f2937;
-        `;
-        
-        const indigenasDot = document.createElement('div');
-        indigenasDot.style.cssText = `
-            width: 12px;
-            height: 12px;
-            background-color: #9932CC;
-            border-radius: 50%;
-        `;
-        
-        indigenas.appendChild(indigenasDot);
-        indigenas.appendChild(document.createTextNode(`${indigenasData ? indigenasData.value : 0} Indígenas`));
-        
-        legendContainer.appendChild(naoInformados);
-        legendContainer.appendChild(indigenas);
-        
-        // Adicionar a legenda ao container do gráfico
-        const chartContainer = document.getElementById('raceChart').parentElement;
-        chartContainer.appendChild(legendContainer);
-        
-        // Responsive
+        // Responsive com ajuste para mobile e desktop
         window.addEventListener('resize', function() {
+            const chartDom = document.getElementById('raceChart');
+            const isMobile = window.innerWidth <= 768;
+            const isSmallMobile = window.innerWidth <= 576;
+            
+            if (chartDom) {
+                if (isMobile) {
+                    // Ajustar altura no mobile
+                    chartDom.style.height = isSmallMobile ? '250px' : '300px';
+                } else {
+                    // Voltar para altura desktop
+                    chartDom.style.height = '400px';
+                }
+            }
+            
+            // Forçar atualização da legenda
+            const legendContainer = chartContainer.querySelector('.race-chart-legend');
+            if (legendContainer) {
+                legendContainer.style.display = 'flex';
+                legendContainer.style.visibility = 'visible';
+                legendContainer.style.opacity = '1';
+            }
+            
             myChart.resize();
         });
+        
+        // Ajuste inicial baseado no tamanho da tela
+        const chartDom = document.getElementById('raceChart');
+        const isMobile = window.innerWidth <= 768;
+        const isSmallMobile = window.innerWidth <= 576;
+        
+        if (chartDom) {
+            if (isMobile) {
+                chartDom.style.height = isSmallMobile ? '250px' : '300px';
+            } else {
+                chartDom.style.height = '400px';
+            }
+            myChart.resize();
+        }
+        
+        // Garantir que a legenda seja visível
+        setTimeout(() => {
+            const legendContainer = chartContainer.querySelector('.race-chart-legend');
+            if (legendContainer) {
+                legendContainer.style.display = 'flex';
+                legendContainer.style.visibility = 'visible';
+                legendContainer.style.opacity = '1';
+            }
+        }, 100);
         
     }).catch(error => {
         console.error('❌ Erro ao criar gráfico de raça/cor:', error);

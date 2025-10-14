@@ -1768,9 +1768,9 @@ function createAposentadoriasChart() {
         labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
         datasets: [{
             label: 'Aposentadorias por Mês',
-            data: [0, 0, 0, 0, 11, 5, 15, 20, 37, 10, 1, 1],
-            borderColor: '#8b5cf6', // Cor roxa baseada em exemplo externo
-            backgroundColor: 'rgba(139, 92, 246, 0.1)',
+            data: [0, 0, 0, 0, 11, 5, 15, 20, 37, 10, 1, 0],
+            borderColor: '#66308F', // Cor roxa baseada em exemplo externo
+            backgroundColor: '#66308F',
             borderWidth: 3,
             fill: false,
             tension: 0, // Linha mais angular, menos arredondada
@@ -1793,28 +1793,45 @@ function createAposentadoriasChart() {
                 intersect: false,
                 mode: 'index'
             },
-            plugins: {
-                legend: {
-                    display: false
-                },
-                tooltip: {
-                    backgroundColor: 'rgba(139, 92, 246, 0.9)',
-                    titleColor: '#ffffff',
-                    bodyColor: '#ffffff',
-                    borderColor: '#8b5cf6',
-                    borderWidth: 2,
-                    cornerRadius: 8,
-                    displayColors: false,
-                    callbacks: {
-                        title: function(context) {
-                            return `Mês: ${context[0].label}`;
-                        },
-                        label: function(context) {
-                            return `Aposentadorias: ${context.parsed.y}`;
-                        }
-                    }
-                }
-            },
+             plugins: {
+                 legend: {
+                     display: false
+                 },
+                 tooltip: {
+                     enabled: true,
+                     backgroundColor: '#66308F',
+                     titleColor: '#ffffff',
+                     bodyColor: '#ffffff',
+                     borderColor: 'transparent',
+                     borderWidth: 0,
+                     cornerRadius: 8,
+                     displayColors: false,
+                     padding: 8,
+                     titleFont: {
+                         family: 'Inter',
+                         size: 0
+                     },
+                     bodyFont: {
+                         family: 'Inter',
+                         size: 14,
+                         weight: 'bold'
+                     },
+                     callbacks: {
+                         title: function() {
+                             return '';
+                         },
+                         label: function(context) {
+                             return context.parsed.y.toString();
+                         }
+                     },
+                     // Posicionamento para aparecer abaixo do ponto
+                     position: 'nearest',
+                     xAlign: 'center',
+                     yAlign: 'bottom',
+                     caretSize: 8,
+                     caretPadding: 4
+                 }
+             },
             scales: {
                 x: {
                     display: true,

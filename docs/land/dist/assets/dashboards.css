@@ -1674,7 +1674,7 @@
    ============================== */
 
 .aposentadorias-section {
-    background: #f8fafc;
+    background: #ffffff;
     padding: 4rem 0;
 }
 
@@ -1695,7 +1695,7 @@
 .aposentadorias-chart-selector .form-select {
     border: none;
     border-radius: 0;
-    color: #8b5cf6;
+    color: #9249CA;
     font-weight: 700;
     background-color: transparent;
     padding: 0;
@@ -1730,11 +1730,37 @@
     padding: 0;
 }
 
-.aposentadorias-chart-container canvas {
-    width: 100% !important;
-    height: 100% !important;
-    display: block;
-}
+ .aposentadorias-chart-container canvas {
+     width: 100% !important;
+     height: 100% !important;
+     display: block;
+ }
+
+ /* Tooltip customizado para o gráfico de aposentadorias */
+ .aposentadorias-chart-container .chartjs-tooltip {
+     background: #66308F !important;
+     border: none !important;
+     border-radius: 8px !important;
+     padding: 8px 12px !important;
+     font-family: 'Inter', sans-serif !important;
+     font-size: 14px !important;
+     font-weight: bold !important;
+     color: #ffffff !important;
+     box-shadow: 0 4px 12px rgba(102, 48, 143, 0.3) !important;
+ }
+
+ .aposentadorias-chart-container .chartjs-tooltip::before {
+     content: '';
+     position: absolute;
+     bottom: -8px;
+     left: 50%;
+     transform: translateX(-50%);
+     width: 0;
+     height: 0;
+     border-left: 8px solid transparent;
+     border-right: 8px solid transparent;
+     border-top: 8px solid #66308F;
+ }
 
 .aposentadorias-chart-legend {
     margin: 0;
@@ -1747,7 +1773,11 @@
     border-radius: 8px;
     padding: 1rem;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    width: 80%;
+}
+
+.aposentadorias-graph-card .chart-title {
+    font-size: 0.75rem;
+    text-transform: uppercase;
 }
 
 /* Responsive Design for Aposentadorias Section */

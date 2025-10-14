@@ -1,0 +1,30 @@
+[
+    {
+      "nome_cor": "",
+      "cor_ou_raca": 0
+    },
+    {
+      "nome_cor": "PRETA",
+      "cor_ou_raca": 28
+    },
+    {
+      "nome_cor": "PARDA",
+      "cor_ou_raca": 73
+    },
+    {
+      "nome_cor": "INDIGENA",
+      "cor_ou_raca": 2
+    },
+    {
+      "nome_cor": "AMARELA",
+      "cor_ou_raca": 6
+    },
+    {
+      "nome_cor": "BRANCA",
+      "cor_ou_raca": 257
+    },
+    {
+      "nome_cor": "NAO INFORMADO",
+      "cor_ou_raca": 1
+    }
+  ]

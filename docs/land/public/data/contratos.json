@@ -1,0 +1,32 @@
+[
+  { 
+    "ano_referencia": 2025,  
+    "categoria": "Serviços",
+    "count": 156 
+  },
+  { 
+    "ano_referencia": 2025,  
+    "categoria": "Compras",
+    "count": 65 
+  },
+  { 
+    "ano_referencia": 2025,  
+    "categoria": "Informática (TIC)",
+    "count": 23 
+  },
+  { 
+    "ano_referencia": 2025,  
+    "categoria": "Mão de Obra",
+    "count": 10 
+  },
+  { 
+    "ano_referencia": 2025,  
+    "categoria": "Serviços de Engenharia",
+    "count": 7 
+  },
+  { 
+    "ano_referencia": 2025,  
+    "categoria": "Cessão",
+    "count": 1 
+  }
+]

@@ -168,6 +168,25 @@
     }
 }
 
+/* Media query para tablets (768px a 992px) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .budget-card {
+        padding: 1rem 0.8rem;
+        min-height: 110px;
+    }
+    
+    .budget-card-title {
+        font-size: 0.75rem;
+        line-height: 1.2;
+        word-wrap: break-word;
+        hyphens: auto;
+    }
+    
+    .budget-value {
+        font-size: 1.4rem;
+    }
+}
+
 @media (max-width: 768px) {
     .budget-section {
         padding: 2rem 0;
@@ -181,7 +200,7 @@
     
     .budget-card {
         padding: 1rem 1.2rem;
-        margin-bottom: 1rem;
+        margin-bottom: 0;
         min-height: 100px;
         width: 100%;
     }
@@ -195,6 +214,17 @@
     
     .budget-value {
         font-size: 1.6rem;
+    }
+    
+    /* Melhorias gerais para mobile */
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    
+    .row {
+        margin-left: -15px;
+        margin-right: -15px;
     }
 }
 
@@ -393,61 +423,163 @@
     }
 }
 
+/* Media query para telas médias (768px para cima) - manter gráfico grande */
+@media (min-width: 768px) {    
+    .chart-wrapper {
+        width: 280px !important;
+        height: 280px !important;
+    }
+    
+    .chart-wrapper canvas {
+        width: 280px !important;
+        height: 280px !important;
+    }
+    
+    .chart-total-number {
+        font-size: 2.2rem;
+    }
+    
+    .chart-total-label {
+        font-size: 0.9rem;
+    }
+}
+
+/* Media query para evitar overlap em telas médias */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    .chart-card .row {
+        align-items: flex-start;
+    }
+    
+    .chart-container {
+        max-width: 280px;
+        margin: 0 auto;
+    }
+    
+    .chart-legend {
+        padding-left: 1rem;
+    }
+}
+
 @media (max-width: 768px) {
     .chart-card {
-        padding: 1.5rem;
+        padding: 1rem;
         min-height: 300px;
     }
     
     .chart-container {
-        height: 250px;
+        height: 150px;
+        margin-bottom: 1rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .chart-wrapper {
+        width: 150px !important;
+        height: 150px !important;
+    }
+    
+    .chart-wrapper canvas {
+        width: 150px !important;
+        height: 150px !important;
     }
     
     .chart-legend {
-        height: 250px;
+        height: auto;
+        margin-left: 0;
+        padding: 0;
+        max-height: 300px;
+        overflow-y: auto;
     }
     
     .chart-total-number {
-        font-size: 1.8rem;
+        font-size: 1.2rem;
     }
     
     .chart-total-label {
-        font-size: 0.8rem;
+        font-size: 0.65rem;
     }
     
     .legend-text {
-        font-size: 0.8rem;
+        font-size: 0.7rem;
+        line-height: 1.2;
+        word-wrap: break-word;
+    }
+    
+    .legend-number {
+        font-size: 0.7rem;
+        font-weight: 600;
+    }
+    
+    .legend-item {
+        margin-bottom: 0.4rem;
+        padding: 0.2rem 0;
+    }
+    
+    .legend-color {
+        width: 8px;
+        height: 8px;
+        margin-right: 0.5rem;
     }
 }
 
 @media (max-width: 576px) {
     .chart-card {
-        padding: 1rem;
+        padding: 0.8rem;
         min-height: 250px;
     }
     
     .chart-container {
-        height: 200px;
+        height: 120px;
+        margin-bottom: 0.8rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .chart-wrapper {
+        width: 120px !important;
+        height: 120px !important;
+    }
+    
+    .chart-wrapper canvas {
+        width: 120px !important;
+        height: 120px !important;
     }
     
     .chart-legend {
-        height: 200px;
+        max-height: 250px;
+        overflow-y: auto;
+        padding: 0;
     }
     
     .chart-total-number {
-        font-size: 1.5rem;
+        font-size: 1rem;
     }
     
     .chart-total-label {
-        font-size: 0.7rem;
+        font-size: 0.6rem;
     }
     
     .legend-item {
-        margin-bottom: 0.4rem;
+        margin-bottom: 0.3rem;
+        padding: 0.1rem 0;
     }
     
     .legend-text {
-        font-size: 0.75rem;
+        font-size: 0.65rem;
+        line-height: 1.1;
+    }
+    
+    .legend-number {
+        font-size: 0.65rem;
+        font-weight: 600;
+    }
+    
+    .legend-color {
+        width: 6px;
+        height: 6px;
+        margin-right: 0.4rem;
     }
 }
 
@@ -529,7 +661,8 @@
     background: #ffffff;
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.08);
-    overflow: hidden;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .table {
@@ -630,13 +763,36 @@
     height: 8px;
     background: #EEE9FF;
     border-radius: 9999px;
-    overflow: hidden;
+    overflow: visible;
+    position: relative;
 }
 
 .teds-progress-bar {
     height: 100%;
     background: #7A34F3;
     border-radius: 9999px;
+    position: relative;
+    overflow: visible;
+}
+
+.teds-progress-handle {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 16px;
+    height: 16px;
+    background: #F19F42;
+    border: 3px solid #ffffff;
+    border-radius: 50%;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.teds-progress-handle:hover {
+    transform: translate(-50%, -50%) scale(1.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
 }
 
 .teds-legend {
@@ -756,7 +912,8 @@
     background: #ffffff;
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.08);
-    overflow: hidden;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
     margin-top: 1rem;
 }
 
@@ -861,13 +1018,16 @@
     height: 8px;
     background: #EEE9FF;
     border-radius: 9999px;
-    overflow: hidden;
+    overflow: visible;
+    position: relative;
 }
 
 .teds-sent-progress-bar {
     height: 100%;
     background: #7A34F3;
     border-radius: 9999px;
+    position: relative;
+    overflow: visible;
     transition: width 0.3s ease;
 }
 
@@ -1355,5 +1515,419 @@
     
     .contracts-bars-list {
         gap: 1rem;
+    }
+}
+
+/* ==============================
+   EMPLOYEES SECTION
+   ============================== */
+
+.employees-section {
+    padding: 3rem 0;
+    background: #ffffff;
+}
+
+.employees-section-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 2rem;
+    font-weight: 600;
+    color: #202020;
+    margin-bottom: 2rem;
+    text-align: left;
+}
+
+.employee-cards-container {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.employee-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    height: auto;
+    width: fit-content;
+    min-width: 200px;
+}
+
+.employee-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.employee-card-header {
+    margin-bottom: 0.75rem;
+}
+
+.employee-card-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #7A34F3;
+    margin: 0;
+    line-height: 1.3;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-align: left;
+}
+
+.employee-card-content {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    min-height: auto;
+}
+
+.employee-value {
+    font-family: 'Inter', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+    text-align: left;
+}
+
+/* Responsive Design for Employees Section */
+@media (max-width: 768px) {
+    .employees-section-title {
+        font-size: 2rem;
+        text-align: center;
+    }
+    
+    .employee-value {
+        font-size: 2rem;
+    }
+    
+    .employee-cards-container {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .employee-card {
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
+/* ==============================
+   DISTRIBUTION CHARTS
+   ============================== */
+
+.distribution-section-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #202020;
+    margin-bottom: 2rem;
+    text-align: left;
+}
+
+.distribution-chart-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    height: 100%;
+}
+
+.distribution-chart-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #7A34F3;
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+.gender-chart-container,
+.race-chart-container {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    overflow: hidden; /* Previne overflow do gráfico */
+}
+
+/* Estilos gerais da legenda com scroll horizontal */
+.race-chart-legend {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    margin-top: 10px;
+    font-family: Inter, sans-serif;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    box-sizing: border-box;
+    padding-bottom: 8px;
+    /* Estilizar a barra de rolagem */
+    scrollbar-width: thin;
+    scrollbar-color: #7A34F3 #f1f1f1;
+}
+
+.race-chart-legend::-webkit-scrollbar {
+    height: 6px;
+}
+
+.race-chart-legend::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.race-chart-legend::-webkit-scrollbar-thumb {
+    background: #7A34F3;
+    border-radius: 3px;
+}
+
+.race-chart-legend::-webkit-scrollbar-thumb:hover {
+    background: #6B2AE8;
+}
+
+.race-chart-legend > div {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #1f2937;
+    flex-shrink: 0;
+    white-space: nowrap;
+    min-width: fit-content;
+    box-sizing: border-box;
+}
+
+/* Desktop - Garantir que a legenda seja sempre visível */
+@media (min-width: 769px) {
+    .distribution-chart-card .race-chart-legend {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    .race-chart-container {
+        height: 400px;
+        overflow: visible;
+    }
+    
+    .race-chart-container #raceChart {
+        height: 400px !important;
+    }
+}
+
+/* Responsive Design for Distribution Charts */
+@media (max-width: 768px) {
+    .distribution-section-title {
+        font-size: 2rem;
+        text-align: center;
+    }
+    
+    .distribution-chart-title {
+        font-size: 1.125rem;
+    }
+    
+    .gender-chart-container,
+    .race-chart-container {
+        height: 300px;
+    }
+    
+    /* Ajustes específicos para o gráfico de raça/cor no mobile */
+    .race-chart-container {
+        overflow: hidden;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .race-chart-container #raceChart {
+        width: 100% !important;
+        height: 100% !important;
+        max-width: 100%;
+        overflow: hidden;
+    }
+    
+    /* Ajustes da legenda no mobile */
+    .distribution-chart-card .race-chart-legend {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        overflow-x: auto !important;
+        gap: 15px !important;
+        margin-top: 8px !important;
+    }
+    
+    .distribution-chart-card .race-chart-legend > div {
+        flex-shrink: 0 !important;
+        font-size: 12px !important;
+        white-space: nowrap !important;
+    }
+}
+
+/* Ajustes para telas muito pequenas (576px) */
+@media (max-width: 576px) {
+    .race-chart-container {
+        height: 250px;
+        overflow: hidden;
+    }
+    
+    .race-chart-container #raceChart {
+        width: 100% !important;
+        height: 100% !important;
+        max-width: 100%;
+        overflow: hidden;
+    }
+    
+    /* Ajustar padding do card no mobile muito pequeno */
+    .distribution-chart-card {
+        padding: 1rem;
+    }
+    
+    /* Ajustes da legenda para telas muito pequenas */
+    .distribution-chart-card .race-chart-legend {
+        gap: 10px !important;
+        margin-top: 6px !important;
+        overflow-x: auto !important;
+    }
+    
+    .distribution-chart-card .race-chart-legend > div {
+        flex-shrink: 0 !important;
+        font-size: 11px !important;
+        gap: 6px !important;
+        white-space: nowrap !important;
+    }
+    
+    .distribution-chart-card .race-chart-legend > div > div:first-child {
+        width: 8px !important;
+        height: 8px !important;
+    }
+}
+
+/* ==============================
+   APOSENTADORIAS SECTION
+   ============================== */
+
+.aposentadorias-section {
+    background: #ffffff;
+    padding: 4rem 0;
+}
+
+.aposentadorias-section-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: #202020;
+    margin-bottom: 2rem;
+    text-align: left;
+}
+
+/* Estilos específicos para aposentadorias */
+.aposentadorias-chart-selector {
+    margin-bottom: 0.75rem;
+}
+
+.aposentadorias-chart-selector .form-select {
+    border: none;
+    border-radius: 0;
+    color: #9249CA;
+    font-weight: 700;
+    background-color: transparent;
+    padding: 0;
+    font-size: 1rem;
+    text-transform: uppercase;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%238b5cf6' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0 center;
+    background-repeat: no-repeat;
+    background-size: 1rem;
+    padding-right: 1.5rem;
+    cursor: pointer;
+    width: auto;
+    display: inline-block;
+}
+
+.aposentadorias-chart-selector .form-select:focus {
+    border: none;
+    box-shadow: none;
+    outline: none;
+}
+
+.aposentadorias-chart-container {
+    position: relative;
+    width: 100%;
+    height: 350px;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+}
+
+ .aposentadorias-chart-container canvas {
+     width: 100% !important;
+     height: 100% !important;
+     display: block;
+ }
+
+ /* Tooltip customizado para o gráfico de aposentadorias */
+ .aposentadorias-chart-container .chartjs-tooltip {
+     background: #66308F !important;
+     border: none !important;
+     border-radius: 8px !important;
+     padding: 8px 12px !important;
+     font-family: 'Inter', sans-serif !important;
+     font-size: 14px !important;
+     font-weight: bold !important;
+     color: #ffffff !important;
+     box-shadow: 0 4px 12px rgba(102, 48, 143, 0.3) !important;
+ }
+
+ .aposentadorias-chart-container .chartjs-tooltip::before {
+     content: '';
+     position: absolute;
+     bottom: -8px;
+     left: 50%;
+     transform: translateX(-50%);
+     width: 0;
+     height: 0;
+     border-left: 8px solid transparent;
+     border-right: 8px solid transparent;
+     border-top: 8px solid #66308F;
+ }
+
+.aposentadorias-chart-legend {
+    margin: 0;
+    padding: 0;
+}
+
+/* Card do gráfico de aposentadorias */
+.aposentadorias-graph-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.aposentadorias-graph-card .chart-title {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+}
+
+/* Responsive Design for Aposentadorias Section */
+@media (max-width: 768px) {
+    .aposentadorias-section {
+        padding: 2rem 0;
+    }
+    
+    .aposentadorias-section-title {
+        font-size: 2rem;
+        text-align: center;
+    }
+    
+    .line-chart-container {
+        height: 250px;
     }
 }

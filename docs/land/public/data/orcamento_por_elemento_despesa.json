@@ -1,0 +1,122 @@
+[
+  {
+    "ano_referencia": 2025,
+    "elemento_despesa_desc": "APOSENTADORIAS, RESERVA REMUNERADA E REFORMAS",
+    "despesas_pagas": 122518573.1,
+    "despesas_programas_a_pagar": null,
+    "dotacao": 202450124,
+    "orcamento_alocado_empenhado": 186821107
+  },
+  {
+    "ano_referencia": 2025,
+    "elemento_despesa_desc": "AUXILIO FINANCEIRO A ESTUDANTES",
+    "despesas_pagas": 1046374.01,
+    "despesas_programas_a_pagar": null,
+    "dotacao": null,
+    "orcamento_alocado_empenhado": 2856040.2
+  },
+  {
+    "ano_referencia": 2025,
+    "elemento_despesa_desc": "AUXILIO FINANCEIRO A PESQUISADORES",
+    "despesas_pagas": 4372761.2,
+    "despesas_programas_a_pagar": null,
+    "dotacao": 4367664.72,
+    "orcamento_alocado_empenhado": 5876406.64
+  },
+  {
+    "ano_referencia": 2025,
+    "elemento_despesa_desc": "AUXILIO-ALIMENTACAO",
+    "despesas_pagas": 2284246.39,
+    "despesas_programas_a_pagar": null,
+    "dotacao": 3145128,
+    "orcamento_alocado_empenhado": 3145128
+  },
+  {
+    "ano_referencia": 2025,
+    "elemento_despesa_desc": "CONTRIBUICAO A ENTIDADE FECHADA PREVIDENCIA",
+    "despesas_pagas": 1450086.71,
+    "despesas_programas_a_pagar": null,
+    "dotacao": 2000000,
+    "orcamento_alocado_empenhado": 2000000
+  },
+  {
+    "ano_referencia": 2025,
+    "elemento_despesa_desc": "DIARIAS - PESSOAL CIVIL",
+    "despesas_pagas": null,
+    "despesas_programas_a_pagar": null,
+    "dotacao": 1025102.31,
+    "orcamento_alocado_empenhado": 1263535.66
+  },
+  {
+    "ano_referencia": 2025,
+    "elemento_despesa_desc": "INDENIZACOES E RESTITUICOES",
+    "despesas_pagas": 1355068.1,
+    "despesas_programas_a_pagar": null,
+    "dotacao": 2464853.43,
+    "orcamento_alocado_empenhado": 2464853.43
+  },
+  {
+    "ano_referencia": 2025,
+    "elemento_despesa_desc": "LOCACAO DE MAO-DE-OBRA",
+    "despesas_pagas": 27224481.54,
+    "despesas_programas_a_pagar": null,
+    "dotacao": 27283396.85,
+    "orcamento_alocado_empenhado": 28069129.97
+  },
+  {
+    "ano_referencia": 2025,
+    "elemento_despesa_desc": "OBRIGACOES PATRONAIS",
+    "despesas_pagas": 25874733.59,
+    "despesas_programas_a_pagar": null,
+    "dotacao": 41230176,
+    "orcamento_alocado_empenhado": 41230176
+  },
+  {
+    "ano_referencia": 2025,
+    "elemento_despesa_desc": "OUTROS SERVICOS DE TERCEIROS PJ - OP.INT.ORC.",
+    "despesas_pagas": 3599967,
+    "despesas_programas_a_pagar": null,
+    "dotacao": 6260580.12,
+    "orcamento_alocado_empenhado": 4404193.1
+  },
+  {
+    "ano_referencia": 2025,
+    "elemento_despesa_desc": "PASSAGENS E DESPESAS COM LOCOMOCAO",
+    "despesas_pagas": null,
+    "despesas_programas_a_pagar": null,
+    "dotacao": null,
+    "orcamento_alocado_empenhado": 1506340.57
+  },
+  {
+    "ano_referencia": 2025,
+    "elemento_despesa_desc": "PENSOES",
+    "despesas_pagas": 23356051.38,
+    "despesas_programas_a_pagar": null,
+    "dotacao": 50640221,
+    "orcamento_alocado_empenhado": 50640221
+  },
+  {
+    "ano_referencia": 2025,
+    "elemento_despesa_desc": "SERVICOS DE TECNOLOGIA DA INFORMACAO E COMUNICACAO - PJ",
+    "despesas_pagas": 1287314.61,
+    "despesas_programas_a_pagar": null,
+    "dotacao": 1323598.39,
+    "orcamento_alocado_empenhado": 1664705.11
+  },
+  {
+    "ano_referencia": 2025,
+    "elemento_despesa_desc": "VENCIMENTOS E VANTAGENS FIXAS - PESSOAL CIVIL",
+    "despesas_pagas": 140594774.25,
+    "despesas_programas_a_pagar": 4403606.83,
+    "dotacao": 259724114,
+    "orcamento_alocado_empenhado": 259724114
+  },
+  {
+    "ano_referencia": 2025,
+    "elemento_despesa_desc": "[A DETALHAR]",
+    "despesas_pagas": null,
+    "despesas_programas_a_pagar": null,
+    "dotacao": 61987868.79,
+    "orcamento_alocado_empenhado": null
+  }
+]

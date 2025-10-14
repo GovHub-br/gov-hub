@@ -24,6 +24,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- ApexCharts CDN -->
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <!-- ECharts CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
     <script src="./assets/dashboards.js"></script>
     
     <!-- Fonts -->
@@ -56,11 +58,11 @@
                     </div>
 
             <!-- Budget Cards Row -->
-            <div class="row g-3">
+            <div class="row g-3 mb-4">
                 <div class="col-12 col-lg-8">
                     <div class="row g-3">
                         <!-- Card 1 - Orçamento Total (Menor) -->
-                        <div class="col-12 col-md-3">
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                             <div class="budget-card budget-card-small">
                                 <div class="budget-card-header">
                                     <h3 class="budget-card-title">ORÇAMENTO TOTAL</h3>
@@ -68,23 +70,23 @@
                                 <div class="budget-card-content">
                                     <span class="budget-value" id="total-budget">466M</span>
                                 </div>
-                    </div>
-                </div>
+                            </div>
+                        </div>
 
                         <!-- Card 2 - Orçamento TEDS (Médio) -->
-                        <div class="col-12 col-md-4">
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                             <div class="budget-card budget-card-medium">
                                 <div class="budget-card-header">
                                     <h3 class="budget-card-title">ORÇAMENTO RECEBIDO DE TEDS</h3>
                                 </div>
                                 <div class="budget-card-content">
                                     <span class="budget-value" id="teds-budget">6.21M</span>
-                    </div>
-                </div>
-            </div>
+                                </div>
+                            </div>
+                        </div>
                         
                         <!-- Card 3 - Orçamento do Órgão (Maior) -->
-                        <div class="col-12 col-md-5">
+                        <div class="col-12 col-md-4 col-lg-5">
                             <div class="budget-card budget-card-large">
                                 <div class="budget-card-header">
                                     <h3 class="budget-card-title">ORÇAMENTO DO ORGÃO (DOTAÇÃO ATUALIZADA)</h3>
@@ -94,9 +96,9 @@
                                 </div>
                             </div>
                         </div>
-                        </div>
                     </div>
                 </div>
+            </div>
                 
             <!-- Chart Section Title -->
             <div class="row">
@@ -106,13 +108,13 @@
                             </div>
                             
             <!-- Chart Card -->
-            <div class="row">
-                <div class="col-12 col-lg-9">
+            <div class="row mb-4">
+                <div class="col-12 col-lg-10 col-xl-9">
                     <div class="chart-card">
                         <div class="chart-title">Distribuição de orçamento por ação</div>
                         <div class="row">
                             <!-- Gráfico de Rosca -->
-                            <div class="col-lg-4">
+                            <div class="col-12 col-lg-5 col-xl-4">
                                 <div class="chart-container">
                                     <div class="chart-wrapper">
                                         <canvas id="budgetChart" width="300" height="300"></canvas>
@@ -125,7 +127,7 @@
                             </div>
                             
                             <!-- Legenda -->
-                            <div class="col-lg-8">
+                            <div class="col-12 col-lg-7 col-xl-8">
                                 <div class="chart-legend">
                                     <div class="legend-item">
                                         <div class="legend-color" style="background-color: #AB2D2D;"></div>
@@ -178,9 +180,9 @@
             </div>
             
             <!-- Expenses Cards Row -->
-            <div class="row g-3">
+            <div class="row g-3 mb-4">
                 <!-- Card 1 - Orçamento Alocado (Empenhado) -->
-                <div class="col-12 col-md-3">
+                <div class="col-12 col-sm-6 col-md-6 col-lg-3">
                     <div class="budget-card budget-card-small">
                         <div class="budget-card-header">
                             <h3 class="budget-card-title">ORÇAMENTO ALOCADO (EMPENHADO)</h3>
@@ -192,7 +194,7 @@
                 </div>
                 
                 <!-- Card 2 - Orçamento Alocado Não Utilizado -->
-                <div class="col-12 col-md-4">
+                <div class="col-12 col-sm-6 col-md-6 col-lg-3">
                     <div class="budget-card budget-card-medium">
                         <div class="budget-card-header">
                             <h3 class="budget-card-title">ORÇAMENTO ALOCADO NÃO UTILIZADO (À LIQUIDAR)</h3>
@@ -204,7 +206,7 @@
                 </div>
                 
                 <!-- Card 3 - Despesas Programadas -->
-                <div class="col-12 col-md-3">
+                <div class="col-12 col-sm-6 col-md-6 col-lg-3">
                     <div class="budget-card budget-card-medium">
                         <div class="budget-card-header">
                             <h3 class="budget-card-title">DESPESAS PROGRAMADAS (À PAGAR)</h3>
@@ -216,7 +218,7 @@
                 </div>
                 
                 <!-- Card 4 - Despesas Pagas -->
-                <div class="col-12 col-md-2">
+                <div class="col-12 col-sm-6 col-md-6 col-lg-3">
                     <div class="budget-card budget-card-small">
                         <div class="budget-card-header">
                             <h3 class="budget-card-title">DESPESAS PAGAS</h3>
@@ -448,13 +450,13 @@
                 </div>
                 
             <!-- Chart Card -->
-            <div class="row">
-                <div class="col-12 col-lg-6">
+            <div class="row mb-4">
+                <div class="col-12 col-lg-10 col-xl-8 col-xxl-7">
                     <div class="chart-card">
                         <div class="chart-title">Contratos por Categoria</div>
-                <div class="row">
+                        <div class="row">
                             <!-- Gráfico de Rosca -->
-                            <div class="col-12 col-md-6">
+                            <div class="col-12 col-md-6 col-lg-5">
                                 <div class="chart-container">
                                     <div class="chart-wrapper">
                                         <canvas id="contractsChart" width="240" height="240"></canvas>
@@ -467,7 +469,7 @@
                             </div>
                             
                             <!-- Legenda -->
-                            <div class="col-12 col-md-6">
+                            <div class="col-12 col-md-6 col-lg-7">
                                 <div class="chart-legend">
                                     <div class="legend-item">
                                         <div class="legend-color" style="background-color: #AB2D2D;"></div>
@@ -511,30 +513,38 @@
                 </div>
             </div>
             
-            <div class="row g-4">
+            <div class="row g-4 mb-4">
                 <!-- Cards Laterais -->
-                <div class="col-12 col-lg-3">
-                    <!-- Card 1 - Orçamento Alocado -->
-                    <div class="allocation-card allocation-card-purple">
-                        <h3 class="allocation-card-label">ORÇAMENTO ALOCADO (EMPENHADO)</h3>
-                        <p class="allocation-card-value">10,468,530.85</p>
-                    </div>
-                    
-                    <!-- Card 2 - Saldo de Empenho -->
-                    <div class="allocation-card allocation-card-purple">
-                        <h3 class="allocation-card-label">SALDO DE EMPENHO (À LIQUIDAR)</h3>
-                        <p class="allocation-card-value">3,855,196.17</p>
-                    </div>
-                    
-                    <!-- Card 3 - Despesas Pagas -->
-                    <div class="allocation-card allocation-card-purple">
-                        <h3 class="allocation-card-label">DESPESAS PAGAS</h3>
-                        <p class="allocation-card-value">4,094,929.86</p>
+                <div class="col-12 col-md-4 col-lg-3">
+                    <div class="row g-3">
+                        <!-- Card 1 - Orçamento Alocado -->
+                        <div class="col-12">
+                            <div class="allocation-card allocation-card-purple">
+                                <h3 class="allocation-card-label">ORÇAMENTO ALOCADO (EMPENHADO)</h3>
+                                <p class="allocation-card-value" id="contratos-alocado-empenhado">10,468,530.85</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Card 2 - Saldo de Empenho -->
+                        <div class="col-12">
+                            <div class="allocation-card allocation-card-purple">
+                                <h3 class="allocation-card-label">SALDO DE EMPENHO (À LIQUIDAR)</h3>
+                                <p class="allocation-card-value" id="contratos-saldo-empenho">3,855,196.17</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Card 3 - Despesas Pagas -->
+                        <div class="col-12">
+                            <div class="allocation-card allocation-card-purple">
+                                <h3 class="allocation-card-label">DESPESAS PAGAS</h3>
+                                <p class="allocation-card-value" id="contratos-despesas-pagas">4,094,929.86</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
                 <!-- Dashboard de Barras -->
-                <div class="col-12 col-lg-9">
+                <div class="col-12 col-md-8 col-lg-9">
                     <div class="bar-chart-card">
                         <h3 class="bar-chart-title">10 Maiores contratos pelo orçamento alocado (empenhado) e a natureza da despesa</h3>
                         
@@ -560,7 +570,7 @@
                         </div>
                         
                         <!-- Gráfico - Barras de Progresso -->
-                        <div class="contracts-bars-list">
+                        <div class="contracts-bars-list" id="contracts-bars-container">
                             <!-- Item 1 -->
                             <div class="contracts-bar-item">
                                 <div class="contracts-bar-header">
@@ -688,24 +698,24 @@
             </div>
 
             <!-- KPIs -->
-            <div class="row g-3 teds-kpis">
-                <div class="col-12 col-md-4">
+            <div class="row g-3 teds-kpis mb-4">
+                <div class="col-12 col-sm-6 col-md-4">
                     <div class="budget-card">
                         <div class="budget-card-header">
                             <h3 class="budget-card-title">TOTAL DE TEDS RECEBIDOS PELO IPEA</h3>
                         </div>
                         <div class="budget-card-content">
-                            <span class="budget-value">34</span>
+                            <span class="budget-value" id="teds-recebidos-total">34</span>
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-md-4">
+                <div class="col-12 col-sm-6 col-md-4">
                     <div class="budget-card">
                         <div class="budget-card-header">
                             <h3 class="budget-card-title">TEDS PRÓXIMOS DE SEREM FINALIZADOS (EM 2025)</h3>
                         </div>
                         <div class="budget-card-content">
-                            <span class="budget-value">5</span>
+                            <span class="budget-value" id="teds-proximos-finalizar">5</span>
                         </div>
                     </div>
                 </div>
@@ -715,7 +725,7 @@
                             <h3 class="budget-card-title">TEDS DESPESAS A LIQUIDAR</h3>
                         </div>
                         <div class="budget-card-content">
-                            <span class="budget-value">4,601,082.01</span>
+                            <span class="budget-value" id="teds-despesas-liquidar">4,601,082.01</span>
                         </div>
                     </div>
                 </div>
@@ -736,7 +746,7 @@
                             <div class="legend-text">Locação de mão-de-obra</div>
                         </div>
                         <div class="legend-item">
-                            <div class="legend-color" style="background-color:#22c55e"></div>
+                            <div class="legend-color" style="background-color:#31652B"></div>
                             <div class="legend-text">Passagens e despesas com locomoção</div>
                         </div>
                     </div>
@@ -746,7 +756,7 @@
             <!-- Tabela -->
             <div class="row">
                 <div class="col-12">
-                    <div class="teds-table-wrapper">
+                    <div class="teds-table-wrapper table-responsive">
                         <table class="teds-table table">
                             <thead>
                                 <tr>
@@ -756,97 +766,8 @@
                                     <th>Conclusão</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <div class="teds-program">
-                                            <div class="teds-program-code">MIR/SENAPIR-MIR</div>
-                                            <div class="teds-program-text">INCLUA - Igualdade Racial</div>
-                                        </div>
-                                    </td>
-                                    <td>26/06/2025 → 31/12/2028</td>
-                                    <td>1,494,580.00</td>
-                                    <td>
-                                        <div class="teds-progress">
-                                            <div class="teds-progress-bar" style="width: 68%"></div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="teds-program">
-                                            <div class="teds-program-code">PR/SG</div>
-                                            <div class="teds-program-text">1149 - Reconstrução, Ampliação e Aprofundamento da Participação Social e da Democracia</div>
-                                        </div>
-                                    </td>
-                                    <td>01/07/2024 → 31/12/2026</td>
-                                    <td>693,800.00</td>
-                                    <td>
-                                        <div class="teds-progress">
-                                            <div class="teds-progress-bar" style="width: 52%"></div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="teds-program">
-                                            <div class="teds-program-code">MDS/MDS</div>
-                                            <div class="teds-program-text">Construção e a efetivação do Plano Nacional de Cuidados.</div>
-                                        </div>
-                                    </td>
-                                    <td>06/12/2023 → 06/12/2026</td>
-                                    <td>1,789,894.50</td>
-                                    <td>
-                                        <div class="teds-progress">
-                                            <div class="teds-progress-bar" style="width: 47%"></div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="teds-program">
-                                            <div class="teds-program-code">MPO/DGE</div>
-                                            <div class="teds-program-text">Mestrado Profissional em Políticas Públicas e Desenvolvimento</div>
-                                        </div>
-                                    </td>
-                                    <td>13/12/2023 → 31/10/2026</td>
-                                    <td>610,000.00</td>
-                                    <td>
-                                        <div class="teds-progress">
-                                            <div class="teds-progress-bar" style="width: 61%"></div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="teds-program">
-                                            <div class="teds-program-code">SNDS/SNDS</div>
-                                            <div class="teds-program-text">Programa 1149 - Reconstrução, Ampliação e Aprofundamento da Participação Social e da Democracia</div>
-                                        </div>
-                                    </td>
-                                    <td>01/08/2025 → 31/10/2026</td>
-                                    <td>891,360.00</td>
-                                    <td>
-                                        <div class="teds-progress">
-                                            <div class="teds-progress-bar" style="width: 39%"></div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="teds-program">
-                                            <div class="teds-program-code">DFC/DFC</div>
-                                            <div class="teds-program-text">Estudos avançados sobre processos de gestão de pessoas no governo federal</div>
-                                        </div>
-                                    </td>
-                                    <td>01/11/2023 → 31/10/2026</td>
-                                    <td>956,520.00</td>
-                                    <td>
-                                        <div class="teds-progress">
-                                            <div class="teds-progress-bar" style="width: 28%"></div>
-                                        </div>
-                                    </td>
-                                </tr>
+                            <tbody id="teds-recebidos-tbody">
+                                <!-- Linhas serão inseridas dinamicamente via JavaScript -->
                             </tbody>
                         </table>
                     </div>
@@ -866,24 +787,24 @@
             </div>
 
             <!-- KPIs -->
-            <div class="row g-3 teds-sent-kpis">
-                <div class="col-12 col-md-6 col-lg-2">
+            <div class="row g-3 teds-sent-kpis mb-4">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                     <div class="budget-card">
                         <div class="budget-card-header">
                             <h3 class="budget-card-title">VALOR FIRMADO</h3>
                         </div>
                         <div class="budget-card-content">
-                            <span class="budget-value">1,444,320.00</span>
+                            <span class="budget-value" id="teds-enviados-valor-firmado">0,00</span>
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-md-6 col-lg-3">
+                <div class="col-12 col-sm-6 col-md-8 col-lg-4">
                     <div class="budget-card">
                         <div class="budget-card-header">
                             <h3 class="budget-card-title">DESTINAÇÃO ORÇAMENTÁRIA ENVIADA</h3>
                         </div>
                         <div class="budget-card-content">
-                            <span class="budget-value">1,714,368.00</span>
+                            <span class="budget-value" id="teds-enviados-destaque-orcamentario">0,00</span>
                         </div>
                     </div>
                 </div>
@@ -892,7 +813,7 @@
             <!-- Tabela -->
             <div class="row">
                 <div class="col-12">
-                    <div class="teds-sent-table-wrapper">
+                    <div class="teds-sent-table-wrapper table-responsive">
                         <table class="teds-sent-table table">
                             <thead>
                                 <tr>
@@ -905,54 +826,129 @@
                                     <th>CONCLUSÃO</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <div class="teds-sent-program">
-                                            <div class="teds-sent-program-code">IPEA/UNB</div>
-                                            <div class="teds-sent-program-text">Laboratório Avançado de Produção Pesquisa e Inovação em Software - LAPPIS/UnB GAMA</div>
-                                        </div>
-                                    </td>
-                                    <td>01/02/2024 - 31/01/2025</td>
-                                    <td>902.400,00</td>
-                                    <td>
-                                        <div class="teds-sent-progress">
-                                            <div class="teds-sent-progress-bar" style="width: 68%"></div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="teds-sent-program">
-                                            <div class="teds-sent-program-code">IPEA/UNB</div>
-                                            <div class="teds-sent-program-text">Mapeamento de Processos com Método Business Process Management (BPM) no Instituto de Pesquisa Econômica Aplicada (Ipea)</div>
-                                        </div>
-                                    </td>
-                                    <td>20/12/2023 - 20/02/2025</td>
-                                    <td>541.920,00</td>
-                                    <td>
-                                        <div class="teds-sent-progress">
-                                            <div class="teds-sent-progress-bar" style="width: 65%"></div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="teds-sent-program">
-                                            <div class="teds-sent-program-code">IPEA/UNB</div>
-                                            <div class="teds-sent-program-text">Laboratório Avançado de Produção Pesquisa e Inovação em Software - LAPPIS/UnB GAMA</div>
-                                        </div>
-                                    </td>
-                                    <td>01/02/2024 - 31/01/2025</td>
-                                    <td>0,0</td>
-                                    <td>
-                                        <div class="teds-sent-progress">
-                                            <div class="teds-sent-progress-bar" style="width: 0%"></div>
-                                        </div>
-                                    </td>
-                                </tr>
+                            <tbody id="teds-enviados-tbody">
+                                <!-- Linhas serão inseridas dinamicamente via JavaScript -->
                             </tbody>
                         </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Employees Section -->
+    <section class="employees-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="employees-section-title">Quantos funcionários ativos o IPEA tem?</h2>
+                </div>
+            </div>
+            
+            <!-- Employee Cards Row -->
+            <div class="employee-cards-container">
+                <div class="employee-card">
+                    <div class="employee-card-header">
+                        <h3 class="employee-card-title">SERVIDORES ATIVOS (SOMMANENTE)</h3>
+                    </div>
+                    <div class="employee-card-content">
+                        <span class="employee-value">301</span>
+                    </div>
+                </div>
+                
+                <div class="employee-card">
+                    <div class="employee-card-header">
+                        <h3 class="employee-card-title">ESTAGIÁRIOS</h3>
+                    </div>
+                    <div class="employee-card-content">
+                        <span class="employee-value">11</span>
+                    </div>
+                </div>
+                
+                <div class="employee-card">
+                    <div class="employee-card-header">
+                        <h3 class="employee-card-title">COLABORADORES TERCEIRIZADOS</h3>
+                    </div>
+                    <div class="employee-card-content">
+                        <span class="employee-value">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Distribution Subsection -->
+            <div class="row mt-5 mb-3">
+                <div class="col-12">
+                    <h2 class="distribution-section-title">Como se distribuem?</h2>
+                </div>
+            </div>
+            
+            <div class="row g-4 mb-5">
+                <!-- Gender Distribution Chart -->
+                <div class="col-12 col-md-6">
+                    <div class="distribution-chart-card">
+                        <h3 class="distribution-chart-title">Distribuição por gênero</h3>
+                        <div class="gender-chart-container">
+                            <div id="genderChart" style="width: 100%; height: 400px;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Race Distribution Chart -->
+                <div class="col-12 col-md-6">
+                    <div class="distribution-chart-card">
+                        <h3 class="distribution-chart-title">Por Raça/Cor</h3>
+                        <div class="race-chart-container">
+                            <div id="raceChart" style="width: 100%; height: 400px; overflow: hidden;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Aposentadorias Section -->
+    <section class="aposentadorias-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="aposentadorias-section-title">Aposentadorias</h2>
+                </div>
+            </div>
+            
+            <!-- Aposentadorias Cards Row -->
+            <div class="row g-3 mb-4">
+                <!-- Card 1 - Total de Aposentadorias -->
+                <div class="col-12 col-md-3 col-lg-3">
+                    <div class="budget-card budget-card-small">
+                        <div class="budget-card-header">
+                            <h3 class="budget-card-title">TOTAL DE APOSENTADORIAS</h3>
+                        </div>
+                        <div class="budget-card-content">
+                            <span class="budget-value" id="total-aposentadorias">674</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Card 2 - Gráfico de Linha -->
+                <div class="col-12 col-md-9 col-lg-6">
+                    <div class="aposentadorias-graph-card">
+                        <div class="chart-title">Quantos se aposentam nos próximos anos?</div>
+                        <div class="aposentadorias-chart-selector">
+                            <select class="form-select" id="aposentadorias-year-selector">
+                                <option value="2025">EM 2025</option>
+                                <option value="2026">EM 2026</option>
+                                <option value="2027">EM 2027</option>
+                            </select>
+                        </div>
+                        <div class="aposentadorias-chart-container">
+                            <canvas id="aposentadoriasChart" width="400" height="200"></canvas>
+                        </div>
+                        <div class="aposentadorias-chart-legend">
+                            <div class="legend-item">
+                                <div class="legend-color" style="background-color: #8b5cf6;"></div>
+                                <div class="legend-text">SUM (coalesce(siafi_valor_pago, 0))</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

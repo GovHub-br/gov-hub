@@ -2,7 +2,7 @@
 
 ## 1. Acessar a seção de conexões de banco
 
-![Superset](../../../../assets/images/db_connection.png)
+![Superset](../../../assets/images/db_connection.png)
 
 1. No menu superior direito, clique em **Settings**.
 2. No menu suspenso, em **Data**, selecione **Database Connections**.
@@ -27,7 +27,7 @@ No caso de exemplo, foi selecionado **PostgreSQL**.
 
 ## 3. Inserir credenciais do banco
 
-![Superset](../../../../assets/images/db_credentials.png)
+![Superset](../../../assets/images/db_credentials.png)
 
 
 Na etapa de configuração do PostgreSQL, preencha os campos obrigatórios:

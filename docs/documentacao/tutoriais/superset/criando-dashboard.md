@@ -8,7 +8,7 @@ Um **dashboard** no Superset é um painel interativo que agrega **diversos gráf
 
 ## 1. Acessar a seção de Dashboards
 
-![Superset](../../../../assets/images/painel_dash.png)
+![Superset](../../../assets/images/painel_dash.png)
 
 * No menu superior, clique em **Dashboards**.
 * Você verá a lista de dashboards existentes.
@@ -33,7 +33,7 @@ Um **dashboard** no Superset é um painel interativo que agrega **diversos gráf
 
 ## 3. Adicionar gráficos ao Dashboard
 
-![Superset](../../../../assets/images/creating_dashboard.png)
+![Superset](../../../assets/images/creating_dashboard.png)
 
 No painel lateral direito, você verá a aba **Charts**, que lista os gráficos disponíveis.
 

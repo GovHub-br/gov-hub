@@ -179,18 +179,6 @@
     transform: scale(1.1);
 }
 
-/* Bottom Section - Copyright */
-.footer-bottom {
-    text-align: left;
-    padding-top: 2rem;
-    margin-left: 0;
-}
-
-.footer-bottom p {
-    margin: 0;
-    font-size: 1rem;
-    font-weight: 700;
-}
 
 /* Responsive Design - Alinhado com Bootstrap Grid System */
 
@@ -208,10 +196,6 @@
     }
     
     
-    /* Desktop: Esconder área de contatos mobile */
-    .footer-contact-mobile {
-        display: none;
-    }
     
     /* Desktop: Esconder footer mobile */
     .footer-mobile {
@@ -231,9 +215,7 @@
     }
     
     /* Esconder footer desktop no mobile */
-    .footer-middle,
-    .footer-contact-mobile,
-    .footer-bottom {
+    .footer-middle {
         display: none !important;
     }
     

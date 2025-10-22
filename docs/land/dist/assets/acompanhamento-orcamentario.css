@@ -171,24 +171,25 @@
     line-height: 1.2;
 }
 
-.contractual-data-note {
+.info-note {
     font-family: 'Inter', sans-serif;
-    font-size: 0.875rem;
-    color: #6b7280;
+    font-size: 1rem;
+    font-weight: 400;
+    color: #202020;
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    margin-top: 1rem;
     padding: 0;
     background: none;
     border: none;
     border-radius: 0;
 }
 
-.contractual-data-note svg {
+.info-note svg {
     width: 16px;
     height: 16px;
     flex-shrink: 0;
+    stroke: #202020;
 }
 
 /* Responsive Design para Dados Contratuais */
@@ -206,6 +207,120 @@
     }
     
     .contractual-data-card {
+        min-height: 100px;
+        padding: 1.25rem;
+    }
+}
+
+/* ===================================
+   INDICADORES ORÇAMENTÁRIOS SECTION
+   =================================== */
+
+.budgetary-indicators-section {
+    background: #ffffff;
+    padding: 4rem 0;
+}
+
+.budgetary-indicators-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 2.25rem;
+    font-weight: 600;
+    color: #202020;
+    margin-bottom: 3rem;
+    text-align: left;
+}
+
+.subsection-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+.subsection-title-purple {
+    color: #A95EA1;
+}
+
+.subsection-title-orange {
+    color: #9F5528;
+}
+
+.indicator-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.indicator-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.indicator-card-purple {
+    background: #FFF2FE;
+}
+
+.indicator-card-orange {
+    background: #FFF3EC;
+}
+
+.indicator-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    display: block;
+}
+
+.indicator-label-purple {
+    color: #A95EA1;
+}
+
+.indicator-label-orange {
+    color: #9F5528;
+}
+
+.indicator-value {
+    font-family: 'Inter', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #202020;
+    line-height: 1.2;
+}
+
+.info-note svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+/* Responsive Design para Indicadores Orçamentários */
+@media (max-width: 768px) {
+    .budgetary-indicators-section {
+        padding: 3rem 0;
+    }
+    
+    .budgetary-indicators-title {
+        font-size: 1.875rem;
+    }
+    
+    .subsection-title {
+        font-size: 1.25rem;
+    }
+    
+    .indicator-value {
+        font-size: 1.5rem;
+    }
+    
+    .indicator-card {
         min-height: 100px;
         padding: 1.25rem;
     }

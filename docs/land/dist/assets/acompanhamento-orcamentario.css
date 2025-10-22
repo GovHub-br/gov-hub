@@ -1,0 +1,102 @@
+/* ===================================
+   ACOMPANHAMENTO ORÇAMENTÁRIO - GOVHUB
+   =================================== */
+
+/* Hero Section - Title Override */
+.ipea-hero-title {
+    font-size: 3.75rem; /* 60px */
+    font-weight: 300; /* Light */
+    color: #F7F7F7;
+    text-align: left;
+    line-height: 1.1;
+}
+
+/* Hero Section - Subtitle */
+.ipea-hero-subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.5rem; /* 24px */
+    font-weight: 600; /* Semi-bold */
+    color: #F7F7F7;
+    margin-top: 1rem;
+    margin-bottom: 0;
+    text-align: left;
+}
+
+/* Responsive Design para Title */
+@media (max-width: 1200px) {
+    .ipea-hero-title {
+        font-size: 3.25rem; /* 52px */
+    }
+}
+
+@media (max-width: 992px) {
+    .ipea-hero-title {
+        font-size: 2.75rem; /* 44px */
+    }
+}
+
+@media (max-width: 768px) {
+    .ipea-hero-title {
+        font-size: 2.25rem; /* 36px */
+        text-align: center;
+    }
+    
+    .ipea-hero-subtitle {
+        font-size: 1.25rem; /* 20px */
+        text-align: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .ipea-hero-title {
+        font-size: 1.875rem; /* 30px */
+    }
+    
+    .ipea-hero-subtitle {
+        font-size: 1.125rem; /* 18px */
+    }
+}
+
+/* Contract Detail Groups (sem card) */
+.contract-detail-group {
+    margin-bottom: 1.5rem;
+}
+
+.contract-detail-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #7A34F3;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.contract-detail-value {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #202020;
+    line-height: 1.4;
+}
+
+/* Objetivo Text Styling */
+.objective-text {
+    font-weight: 400;
+    line-height: 1.6;
+    text-align: justify;
+    font-size: 1rem;
+}
+
+/* Responsive Design para Objetivo */
+@media (max-width: 768px) {
+    .objective-text {
+        font-size: 0.85rem;
+        line-height: 1.5;
+    }
+    
+    .contract-detail-value {
+        font-size: 0.9rem;
+    }
+}

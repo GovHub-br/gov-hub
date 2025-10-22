@@ -4,6 +4,8 @@ body {
     font-family: 'Inter', sans-serif;
     margin: 0;
     padding: 0;
+    width: 100%;
+    overflow-x: hidden;
 }
 
 .header-section {
@@ -15,6 +17,8 @@ body {
     align-items: center;
     position: relative;
     overflow: hidden;
+    width: 100%;
+    margin: 0;
 }
 
 .header-title {
@@ -236,6 +240,37 @@ body {
     .nav-tabs .nav-link {
         font-size: 1rem;
     }
+    
+    .bar-label {
+        min-width: 80px;
+        font-size: 0.8rem;
+    }
+    
+    .bar-container {
+        height: 20px;
+    }
+    
+    .bar-value {
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #000000;
+        text-shadow: 0 1px 2px rgba(255, 255, 255, 0.9);
+    }
+    
+    .chart-card {
+        min-height: 350px;
+        padding: 2rem;
+    }
+    
+    .chart-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .chart-legend {
+        flex-wrap: wrap;
+    }
 }
 
 @media (max-width: 576px) {
@@ -276,5 +311,447 @@ body {
     
     .metric-value {
         font-size: 2rem;
+    }
+}
+
+/* ==============================
+   BAR CHART STYLES - GRÁFICO DE GÊNERO
+   ============================== */
+
+.bar-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    position: relative;
+    width: 100%;
+    min-height: 200px;
+}
+
+.bars-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 0 1rem;
+    position: relative;
+}
+
+
+.chart-axis {
+    display: none;
+}
+
+
+
+.bar-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    min-height: 30px;
+    visibility: visible;
+}
+
+.bar-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    min-width: 100px;
+    width: 100px;
+    flex-shrink: 0;
+}
+
+.bar-container {
+    flex: 1;
+    position: relative;
+    height: 40px;
+    background: #F3F4F6;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-left: 0;
+    margin-right: 0;
+    min-width: 100px;
+    visibility: visible;
+    display: flex;
+    align-items: center;
+}
+
+.bar-container::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background-color: #E5E7EB;
+    z-index: 1;
+}
+
+.bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+    display: block;
+    visibility: visible;
+    opacity: 1;
+}
+
+.bar-fill.feminino {
+    background: #8B5CF6;
+}
+
+.bar-fill.masculino {
+    background: #22D3EE;
+}
+
+.bar-value {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #000000;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+    z-index: 10;
+}
+
+/* Legend Styles */
+.legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+}
+
+.legend-masculino {
+    background-color: #22D3EE;
+}
+
+.legend-feminino {
+    background-color: #8B5CF6;
+}
+
+/* ==============================
+   CHART CARDS STYLES
+   ============================== */
+
+.chart-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3) !important;
+    transition: all 0.3s ease;
+    height: 100%;
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+.chart-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+    flex-shrink: 0;
+}
+
+.chart-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #7A34F3;
+    margin: 0;
+    line-height: 1;
+    margin-bottom: 1rem;
+}
+
+.chart-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.race-chart-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chart-legend {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+}
+
+.legend-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #6B7280;
+}
+
+.chart-controls {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.control-btn {
+    padding: 0.25rem 0.75rem;
+    border: 1px solid #D1D5DB;
+    background: #ffffff;
+    border-radius: 4px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #6B7280;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.control-btn.active {
+    background: #7A34F3;
+    color: #ffffff;
+    border-color: #7A34F3;
+}
+
+.control-btn:hover {
+    border-color: #7A34F3;
+    color: #7A34F3;
+}
+
+/* Responsividade para Chart Cards */
+@media (max-width: 1199px) {
+    .chart-card {
+        min-height: 400px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .chart-axis {
+        padding-left: calc(1rem + 120px);
+        padding-right: 1rem;
+        margin: 0 1rem;
+        width: calc(100% - 2rem);
+    }
+    
+    .axis-labels {
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 1161px) {
+    .chart-card {
+        min-height: 400px;
+        padding: 1.5rem;
+    }
+    
+    .chart-axis {
+        padding-left: calc(1rem + 120px);
+        padding-right: 1rem;
+        margin: 0 1rem;
+        width: calc(100% - 2rem);
+    }
+    
+    .axis-labels {
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 992px) {
+    .chart-card {
+        min-height: 400px;
+        padding: 2rem;
+    }
+    
+    .bar-item {
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .bar-label {
+        min-width: 120px;
+        width: 120px;
+        flex-shrink: 0;
+    }
+    
+    .bar-container {
+        width: 100%;
+        height: 40px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .chart-axis {
+        padding-left: calc(1rem + 120px);
+        padding-right: 1rem;
+        margin: 0 1rem;
+        width: calc(100% - 2rem);
+    }
+    
+    .axis-labels {
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .chart-card {
+        min-height: 350px;
+        padding: 1.5rem;
+    }
+    
+    .chart-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .chart-legend {
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+    
+    .bar-item {
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .bar-label {
+        min-width: 100px;
+        width: 100px;
+        flex-shrink: 0;
+    }
+    
+    .bar-container {
+        width: 100%;
+        height: 24px;
+        margin-left: 0;
+        margin-right: 0;
+        display: flex;
+        align-items: center;
+    }
+    
+    .bar-value {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #000000;
+        text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+    }
+    
+    
+    .bars-container {
+        padding: 0 0.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .chart-card {
+        min-height: 300px;
+        padding: 1rem;
+    }
+    
+    .chart-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .chart-legend {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .bar-item {
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .bar-label {
+        min-width: 80px;
+        width: 80px;
+        flex-shrink: 0;
+    }
+    
+    .bar-container {
+        width: 100%;
+        height: 24px;
+        margin-left: 0;
+        margin-right: 0;
+        display: flex;
+        align-items: center;
+    }
+    
+    .bar-value {
+        font-size: 0.7rem;
+        font-weight: 700;
+        color: #000000;
+        text-shadow: 0 1px 2px rgba(255, 255, 255, 1);
+    }
+    
+    
+    .bars-container {
+        padding: 0 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .chart-card {
+        min-height: 280px;
+        padding: 0.8rem;
+    }
+    
+    .bar-item {
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .bar-label {
+        min-width: 70px;
+        width: 70px;
+        flex-shrink: 0;
+        font-size: 0.8rem;
+    }
+    
+    .bar-container {
+        width: 100%;
+        height: 40px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .bar-value {
+        font-size: 0.6rem;
+        font-weight: 700;
+        color: #000000;
+        text-shadow: 0 1px 2px rgba(255, 255, 255, 1);
+    }
+    
+    
+    .bars-container {
+        padding: 0 0.3rem;
     }
 }

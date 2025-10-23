@@ -1113,6 +1113,7 @@ body {
     
     .functional-situation-chart .chart-axis {
         padding-left: calc(1rem + 50px + 0.5rem + 100px + 0.5rem);
+        padding-right: 1rem;
     }
 }
 
@@ -1166,6 +1167,7 @@ body {
     
     .functional-situation-chart .chart-axis {
         padding-left: calc(1rem + 50px + 0.5rem + 90px + 0.5rem);
+        padding-right: 1rem;
     }
     
     .functional-situation-chart .axis-labels {
@@ -1214,6 +1216,7 @@ body {
     
     .functional-situation-chart .chart-axis {
         padding-left: calc(1rem + 50px + 80px + 0.5rem);
+        padding-right: 1rem;
     }
     
     .functional-situation-chart .axis-labels {

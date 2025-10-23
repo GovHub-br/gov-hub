@@ -251,5 +251,199 @@ function initializeDashboard() {
     }
 }
 
+// Dados do mapa do Brasil com porcentagens aleatórias
+const brazilMapData = {
+    'RJ': { name: 'RIO DE JANEIRO', value: 0, percentage: '0%' },
+    'SP': { name: 'SÃO PAULO', value: 45, percentage: '45%' },
+    'MG': { name: 'MINAS GERAIS', value: 32, percentage: '32%' },
+    'RS': { name: 'RIO GRANDE DO SUL', value: 28, percentage: '28%' },
+    'PR': { name: 'PARANÁ', value: 15, percentage: '15%' },
+    'SC': { name: 'SANTA CATARINA', value: 22, percentage: '22%' },
+    'BA': { name: 'BAHIA', value: 38, percentage: '38%' },
+    'GO': { name: 'GOIÁS', value: 12, percentage: '12%' },
+    'DF': { name: 'DISTRITO FEDERAL', value: 80, percentage: '80%' },
+    'CE': { name: 'CEARÁ', value: 8, percentage: '8%' },
+    'PE': { name: 'PERNAMBUCO', value: 18, percentage: '18%' },
+    'PA': { name: 'PARÁ', value: 5, percentage: '5%' },
+    'AM': { name: 'AMAZONAS', value: 3, percentage: '3%' },
+    'AC': { name: 'ACRE', value: 2, percentage: '2%' },
+    'RO': { name: 'RONDÔNIA', value: 4, percentage: '4%' },
+    'RR': { name: 'RORAIMA', value: 1, percentage: '1%' },
+    'AP': { name: 'AMAPÁ', value: 2, percentage: '2%' },
+    'TO': { name: 'TOCANTINS', value: 6, percentage: '6%' },
+    'MT': { name: 'MATO GROSSO', value: 9, percentage: '9%' },
+    'MS': { name: 'MATO GROSSO DO SUL', value: 7, percentage: '7%' },
+    'ES': { name: 'ESPÍRITO SANTO', value: 25, percentage: '25%' },
+    'AL': { name: 'ALAGOAS', value: 14, percentage: '14%' },
+    'SE': { name: 'SERGIPE', value: 11, percentage: '11%' },
+    'PB': { name: 'PARAÍBA', value: 16, percentage: '16%' },
+    'RN': { name: 'RIO GRANDE DO NORTE', value: 13, percentage: '13%' },
+    'MA': { name: 'MARANHÃO', value: 4, percentage: '4%' },
+    'PI': { name: 'PIAUÍ', value: 6, percentage: '6%' }
+};
+
+// Mapeamento de nomes completos para siglas
+const stateNameMapping = {
+    'ACRE': 'AC',
+    'AMAZONAS': 'AM', 
+    'RORAIMA': 'RR',
+    'RONDÔNIA': 'RO',
+    'AMAPÁ': 'AP',
+    'PARÁ': 'PA',
+    'MARANHÃO': 'MA',
+    'PIAUÍ': 'PI',
+    'CEARÁ': 'CE',
+    'RIO GRANDE DO NORTE': 'RN',
+    'PARAÍBA': 'PB',
+    'PERNAMBUCO': 'PE',
+    'ALAGOAS': 'AL',
+    'SERGIPE': 'SE',
+    'BAHIA': 'BA',
+    'GOIÁS': 'GO',
+    'DISTRITO FEDERAL': 'DF',
+    'MATO GROSSO': 'MT',
+    'MATO GROSSO DO SUL': 'MS',
+    'TOCANTINS': 'TO',
+    'MINAS GERAIS': 'MG',
+    'ESPÍRITO SANTO': 'ES',
+    'RIO DE JANEIRO': 'RJ',
+    'SÃO PAULO': 'SP',
+    'PARANÁ': 'PR',
+    'SANTA CATARINA': 'SC',
+    'RIO GRANDE DO SUL': 'RS'
+};
+
+// Função para carregar o SVG do mapa do Brasil
+function loadBrazilMap() {
+    const mapContainer = document.getElementById('brazilMap');
+    if (!mapContainer) return;
+
+    // Carregar o SVG
+    fetch('./images/Map-Brasil.svg')
+        .then(response => response.text())
+        .then(svgText => {
+            mapContainer.innerHTML = svgText;
+            initializeMapInteractivity();
+        })
+        .catch(error => {
+            console.error('Erro ao carregar o mapa do Brasil:', error);
+            mapContainer.innerHTML = '<p>Erro ao carregar o mapa</p>';
+        });
+}
+
+// Função para inicializar a interatividade do mapa
+function initializeMapInteractivity() {
+    const mapContainer = document.getElementById('brazilMap');
+    const svg = mapContainer.querySelector('svg');
+    if (!svg) return;
+
+    // Criar tooltip
+    const tooltip = document.createElement('div');
+    tooltip.className = 'map-tooltip';
+    mapContainer.appendChild(tooltip);
+
+    // Aplicar dados aos estados
+    const paths = svg.querySelectorAll('path');
+    console.log('Total de paths encontrados:', paths.length);
+    
+    paths.forEach((path, index) => {
+        // Tentar diferentes formas de identificar o estado
+        let stateId = path.getAttribute('id') || 
+                     path.getAttribute('data-state') || 
+                     path.getAttribute('data-id') ||
+                     path.getAttribute('class');
+        
+        // Se não encontrar ID, tentar pelo índice ou nome do path
+        if (!stateId) {
+            // Lista de estados em ordem aproximada no mapa
+            const stateOrder = ['AC', 'AM', 'RR', 'RO', 'AP', 'PA', 'MA', 'PI', 'CE', 'RN', 'PB', 'PE', 'AL', 'SE', 'BA', 'GO', 'DF', 'MT', 'MS', 'TO', 'MG', 'ES', 'RJ', 'SP', 'PR', 'SC', 'RS'];
+            if (index < stateOrder.length) {
+                stateId = stateOrder[index];
+            }
+        }
+        
+        // Limpar o ID se necessário
+        if (stateId) {
+            stateId = stateId.replace(/[^A-ZÀ-ÿ\s]/g, '').toUpperCase().trim();
+        }
+        
+        console.log(`Path ${index}: ID = ${stateId}`);
+        
+        // Tentar mapear nome completo para sigla
+        let finalStateId = stateId;
+        if (stateNameMapping[stateId]) {
+            finalStateId = stateNameMapping[stateId];
+            console.log(`Mapeado ${stateId} -> ${finalStateId}`);
+        }
+        
+        // Verificar se temos dados para este estado
+        const data = brazilMapData[finalStateId];
+        if (data) {
+            console.log(`Dados encontrados para ${finalStateId}:`, data);
+            
+            // NÃO adicionar classe highlighted - todos ficam brancos por padrão
+            console.log(`Estado ${finalStateId} com dados: ${data.percentage}`);
+
+            // Adicionar eventos de hover
+            path.addEventListener('mouseenter', function(e) {
+                const rect = mapContainer.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                tooltip.textContent = `${data.name} ${data.percentage}`;
+                tooltip.style.left = x + 'px';
+                tooltip.style.top = (y - 40) + 'px';
+                tooltip.classList.add('show');
+                
+                console.log(`Hover em ${data.name}: ${data.percentage}`);
+            });
+
+            path.addEventListener('mouseleave', function() {
+                tooltip.classList.remove('show');
+            });
+
+            path.addEventListener('mousemove', function(e) {
+                const rect = mapContainer.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                tooltip.style.left = x + 'px';
+                tooltip.style.top = (y - 40) + 'px';
+            });
+        } else {
+            // Para estados sem dados, mostrar nome genérico
+            path.addEventListener('mouseenter', function(e) {
+                const rect = mapContainer.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const displayName = stateId || `ESTADO ${index + 1}`;
+                tooltip.textContent = displayName;
+                tooltip.style.left = x + 'px';
+                tooltip.style.top = (y - 40) + 'px';
+                tooltip.classList.add('show');
+                
+                console.log(`Hover em estado sem dados: ${displayName}`);
+            });
+
+            path.addEventListener('mouseleave', function() {
+                tooltip.classList.remove('show');
+            });
+
+            path.addEventListener('mousemove', function(e) {
+                const rect = mapContainer.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                tooltip.style.left = x + 'px';
+                tooltip.style.top = (y - 40) + 'px';
+            });
+        }
+    });
+}
+
 // Inicializar o dashboard
 initDashboard();
+
+// Carregar o mapa do Brasil
+loadBrazilMap();

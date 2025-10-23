@@ -832,7 +832,7 @@ body {
 .map-container {
     position: relative;
     width: 100%;
-    height: 400px;
+    height: 450px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -841,7 +841,7 @@ body {
 
 .brazil-map {
     width: 100%;
-    height: 350px;
+    height: 400px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -852,7 +852,7 @@ body {
     width: 100%;
     height: 100%;
     max-width: 500px;
-    max-height: 350px;
+    max-height: 400px;
 }
 
 .brazil-map svg path {
@@ -917,7 +917,24 @@ body {
     opacity: 1;
 }
 
+
+
 /* Responsividade do mapa */
+@media (max-width: 992px) {
+    .map-container {
+        height: 400px;
+    }
+    
+    .brazil-map {
+        height: 350px;
+    }
+    
+    .brazil-map svg {
+        max-width: 100%;
+        max-height: 350px;
+    }
+}
+
 @media (max-width: 768px) {
     .map-container {
         height: 300px;
@@ -939,6 +956,7 @@ body {
     .legend-labels {
         font-size: 0.75rem;
     }
+    
 }
 
 @media (max-width: 576px) {
@@ -953,4 +971,5 @@ body {
     .brazil-map svg {
         max-height: 200px;
     }
+    
 }

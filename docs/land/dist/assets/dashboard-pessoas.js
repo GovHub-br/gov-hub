@@ -119,18 +119,41 @@ function initializeCharts() {
 
 // Função para animar as barras do gráfico de gênero
 function animateGenderBars() {
-    const bars = document.querySelectorAll('.bar-fill');
+    const bars = document.querySelectorAll('.bar-fill:not(.functional-bar)');
     
     bars.forEach((bar, index) => {
         setTimeout(() => {
+            // Obter a largura atual do elemento (do CSS ou style inline)
+            const computedStyle = window.getComputedStyle(bar);
+            const currentWidth = computedStyle.width;
+            
             bar.style.transition = 'width 1s ease-out';
-            const width = bar.style.width;
             bar.style.width = '0%';
             
             setTimeout(() => {
-                bar.style.width = width;
+                bar.style.width = currentWidth;
             }, 100);
         }, index * 200);
+    });
+}
+
+// Função para animar as barras do gráfico de situação funcional
+function animateFunctionalBars() {
+    const functionalBars = document.querySelectorAll('.functional-situation-chart .bar-fill');
+    
+    functionalBars.forEach((bar, index) => {
+        setTimeout(() => {
+            // Obter a largura atual do elemento (do CSS ou style inline)
+            const computedStyle = window.getComputedStyle(bar);
+            const currentWidth = computedStyle.width;
+            
+            bar.style.transition = 'width 1.2s ease-out';
+            bar.style.width = '0%';
+            
+            setTimeout(() => {
+                bar.style.width = currentWidth;
+            }, 150);
+        }, index * 300);
     });
 }
 
@@ -239,6 +262,7 @@ function initializeDashboard() {
         setTimeout(() => {
             animateKPIs();
             animateGenderBars();
+            animateFunctionalBars();
         }, 500);
         
         // Configurar responsividade

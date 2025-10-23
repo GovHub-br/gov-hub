@@ -325,3 +325,147 @@
         padding: 1.25rem;
     }
 }
+
+/* ===================================
+   HISTÓRICO ORÇAMENTÁRIO SECTION
+   =================================== */
+
+.budgetary-history-section {
+    background: #ffffff;
+    padding: 4rem 0;
+}
+
+.budgetary-history-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 2.25rem;
+    font-weight: 600;
+    color: #202020;
+    margin-bottom: 1rem;
+    text-align: left;
+}
+
+.budgetary-history-subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: #202020;
+    margin-bottom: 0.5rem;
+    text-align: left;
+}
+
+.budgetary-history-description {
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    color: #202020;
+    margin-bottom: 3rem;
+    text-align: left;
+}
+
+.chart-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    height: 320px;
+}
+
+.chart-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.chart-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #66308F;
+    margin-bottom: 0.5rem;
+}
+
+.chart-subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
+    color: #66308F;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Estilos específicos para o gráfico ComprasNet */
+.budgetary-history-section .row.g-4 > div.col-12.col-lg-6:nth-child(2) .chart-title {
+    color: #9F5528 !important;
+}
+
+.budgetary-history-section .row.g-4 > div.col-12.col-lg-6:nth-child(2) .chart-subtitle {
+    color: #9F5528 !important;
+}
+
+.chart-container {
+    position: relative;
+    height: 200px;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.chart-container canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.budgetary-history-section .chart-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    height: auto;
+    margin-top: 0.3rem;
+    margin-bottom: 0;
+    padding: 0;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+.legend-text {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #202020;
+}
+
+/* Responsive Design para Histórico Orçamentário */
+@media (max-width: 768px) {
+    .budgetary-history-section {
+        padding: 3rem 0;
+    }
+    
+    .budgetary-history-title {
+        font-size: 1.875rem;
+    }
+    
+    .budgetary-history-subtitle {
+        font-size: 1.125rem;
+    }
+    
+    .chart-container {
+        height: 180px;
+    }
+    
+    .chart-card {
+        padding: 0.5rem;
+        height: 280px;
+    }
+}

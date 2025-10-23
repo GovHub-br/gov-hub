@@ -21,6 +21,9 @@
     
     <!-- JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="./assets/acompanhamento-orcamentario.js"></script>
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -145,7 +148,7 @@
                         </div>
                     </div>
                 </div>
-
+                
                 <div class="col-12 col-sm-6 col-md-2">
                     <div class="contractual-data-card">
                         <div class="contractual-data-header">
@@ -158,7 +161,7 @@
                         </div>
                     </div>
                 </div>
-
+                
                 <div class="col-12 col-sm-6 col-md-2">
                     <div class="contractual-data-card">
                         <div class="contractual-data-header">
@@ -263,6 +266,60 @@
                             <path d="M12 8h.01"></path>
                         </svg>
                         Master Engenharia e Segurança Patrimonial LTDA.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Histórico Orçamentário Section -->
+    <section class="budgetary-history-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="budgetary-history-title">Histórico Orçamentário</h2>
+                    <h3 class="budgetary-history-subtitle">Movimentação financeira a respeito do contrato mês a mês</h3>
+                    <p class="budgetary-history-description">Aqui estão exibidos dados passados para a execução e futuros dentro do cronograma</p>
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div class="row g-4">
+                <!-- Tesouro Gerencial Chart -->
+                <div class="col-12 col-lg-6">
+                    <div class="chart-card">
+                        <div class="chart-title">Tesouro Gerencial</div>
+                        <div class="chart-subtitle">EXECUÇÃO ORÇAMENTARIA MENSAL</div>
+                        <div class="chart-container">
+                            <canvas id="tesouroGerencialChart"></canvas>
+                        </div>
+                        <div class="chart-legend">
+                            <div class="legend-item">
+                                <div class="legend-color" style="background-color: #66308F;"></div>
+                                <div class="legend-text">SUM (coalesce(siafi_valor_pago, 0))</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ComprasNet Chart -->
+                <div class="col-12 col-lg-6">
+                    <div class="chart-card">
+                        <div class="chart-title">ComprasNet</div>
+                        <div class="chart-subtitle">VALORES PLANEJADOS (CRONOGRAMA) X GASTOS (FATURAS)</div>
+                        <div class="chart-container">
+                            <canvas id="comprasNetChart"></canvas>
+                        </div>
+                        <div class="chart-legend">
+                            <div class="legend-item">
+                                <div class="legend-color" style="background-color: #9F5528;"></div>
+                                <div class="legend-text">SUM (coalesce(comprasgov_valor_pago, 0))</div>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background-color: #F59E0B;"></div>
+                                <div class="legend-text">SUM (coalesce(comprasgov_valor_cronograma, 0))</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

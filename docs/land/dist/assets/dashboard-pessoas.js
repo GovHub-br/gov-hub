@@ -351,29 +351,50 @@ function initializeMapInteractivity() {
         let stateId = path.getAttribute('id') || 
                      path.getAttribute('data-state') || 
                      path.getAttribute('data-id') ||
-                     path.getAttribute('class');
-        
-        // Se não encontrar ID, tentar pelo índice ou nome do path
-        if (!stateId) {
-            // Lista de estados em ordem aproximada no mapa
-            const stateOrder = ['AC', 'AM', 'RR', 'RO', 'AP', 'PA', 'MA', 'PI', 'CE', 'RN', 'PB', 'PE', 'AL', 'SE', 'BA', 'GO', 'DF', 'MT', 'MS', 'TO', 'MG', 'ES', 'RJ', 'SP', 'PR', 'SC', 'RS'];
-            if (index < stateOrder.length) {
-                stateId = stateOrder[index];
-            }
-        }
+                     path.getAttribute('class') ||
+                     path.getAttribute('name') ||
+                     path.getAttribute('title') ||
+                     path.getAttribute('aria-label');
         
         // Limpar o ID se necessário
         if (stateId) {
             stateId = stateId.replace(/[^A-ZÀ-ÿ\s]/g, '').toUpperCase().trim();
         }
         
-        console.log(`Path ${index}: ID = ${stateId}`);
+        console.log(`Path ${index}: ID original = ${stateId}`);
+        console.log(`Path ${index}: Atributos:`, {
+            id: path.getAttribute('id'),
+            class: path.getAttribute('class'),
+            name: path.getAttribute('name'),
+            title: path.getAttribute('title')
+        });
         
         // Tentar mapear nome completo para sigla
         let finalStateId = stateId;
         if (stateNameMapping[stateId]) {
             finalStateId = stateNameMapping[stateId];
             console.log(`Mapeado ${stateId} -> ${finalStateId}`);
+        }
+        
+        // Se ainda não encontrou ID, tentar por posição aproximada
+        if (!finalStateId) {
+            // Lista de estados em ordem real do SVG (baseado na posição geográfica do mapa)
+            const svgOrder = [
+                // Norte (de oeste para leste)
+                'AC', 'AM', 'RR', 'RO', 'AP', 'PA', 'TO',
+                // Nordeste (de oeste para leste, norte para sul)
+                'MA', 'PI', 'CE', 'RN', 'PB', 'PE', 'AL', 'SE', 'BA',
+                // Centro-Oeste (de norte para sul)
+                'MT', 'GO', 'DF', 'MS',
+                // Sudeste (de oeste para leste)
+                'MG', 'ES', 'RJ', 'SP',
+                // Sul (de norte para sul)
+                'PR', 'SC', 'RS'
+            ];
+            if (index < svgOrder.length) {
+                finalStateId = svgOrder[index];
+                console.log(`Usando ordem do SVG: ${index} -> ${finalStateId}`);
+            }
         }
         
         // Verificar se temos dados para este estado

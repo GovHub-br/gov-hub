@@ -1392,8 +1392,64 @@ function initDashboards() {
 
 // Função para criar o gráfico em formato V para distribuição por gênero
 function createGenderVChart() {
-    const container = document.getElementById('genderChart');
-    container.innerHTML = '';
+    // Gráfico de gênero agora é HTML/CSS estático, não precisa de JavaScript
+    return;
+}
+
+// Função para atualizar o gráfico de gênero com dados do JSON
+async function updateGenderChart() {
+    try {
+        // Carregar dados do JSON
+        const response = await fetch('../public/data/servidores_sexo.json');
+        if (!response.ok) {
+            throw new Error('Erro ao carregar dados de gênero');
+        }
+        const data = await response.json();
+        
+        // Encontrar os dados de feminino e masculino
+        let femininoPercent = 0;
+        let masculinoPercent = 0;
+        
+        data.forEach(item => {
+            if (item.nome_sexo === 'FEMININO' && item.feminino !== null) {
+                femininoPercent = item.feminino * 100;
+            } else if (item.nome_sexo === 'MASCULINO' && item.masculino !== null) {
+                masculinoPercent = item.masculino * 100;
+            }
+        });
+        
+        // Atualizar as barras do gráfico
+        const femininoBar = document.querySelector('.bar-fill.feminino');
+        const masculinoBar = document.querySelector('.bar-fill.masculino');
+        const femininoValue = document.querySelector('.bar-item:first-child .bar-value');
+        const masculinoValue = document.querySelector('.bar-item:last-child .bar-value');
+        
+        if (femininoBar && femininoValue) {
+            femininoBar.style.width = `${femininoPercent}%`;
+            femininoValue.textContent = `${femininoPercent.toFixed(1)}%`;
+        }
+        
+        if (masculinoBar && masculinoValue) {
+            masculinoBar.style.width = `${masculinoPercent}%`;
+            masculinoValue.textContent = `${masculinoPercent.toFixed(1)}%`;
+        }
+        
+        console.log('Gráfico de gênero atualizado com sucesso');
+        
+    } catch (error) {
+        console.error('Erro ao atualizar gráfico de gênero:', error);
+    }
+}
+
+// Função para atualizar o gráfico automaticamente a cada 30 segundos
+function startGenderChartAutoUpdate() {
+    // Atualizar imediatamente
+    updateGenderChart();
+    
+    // Configurar atualização automática a cada 30 segundos
+    setInterval(updateGenderChart, 30000);
+    
+    console.log('Atualização automática do gráfico de gênero iniciada (30s)');
 }
 
 // Função para criar o treemap de distribuição por raça/cor
@@ -1702,6 +1758,7 @@ function initDashboards() {
             loadContractsBars();
             loadTedsRecebidosKpis();
             createGenderVChart();
+            startGenderChartAutoUpdate();
             createRaceTreemap();
             loadTedsRecebidosTable();
             loadTedsEnviadosTable();
@@ -1719,6 +1776,7 @@ function initDashboards() {
         loadContractsBars();
         loadTedsRecebidosKpis();
         createGenderVChart();
+        startGenderChartAutoUpdate();
         createRaceTreemap();
         loadTedsRecebidosTable();
         loadTedsEnviadosTable();
@@ -2129,6 +2187,8 @@ window.createBudgetChart = createBudgetChart;
 window.createContractsChart = createContractsChart;
 window.createDashboardCharts = createDashboardCharts;
 window.createGenderVChart = createGenderVChart;
+window.updateGenderChart = updateGenderChart;
+window.startGenderChartAutoUpdate = startGenderChartAutoUpdate;
 window.createRaceTreemap = createRaceTreemap;
 window.createAposentadoriasChart = createAposentadoriasChart;
 window.loadTedsRecebidosTable = loadTedsRecebidosTable;

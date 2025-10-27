@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acompanhamento da execução orçamentária e financeira dos contratos - GovHub</title>
+
+    <!-- Meta SEO -->
+    <meta name="description" content="Acompanhamento da execução orçamentária e financeira dos contratos. Comparativo entre ComprasNet e Tesouro Gerencial.">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="GovHub">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="./assets/dashboards.css">
+    <link rel="stylesheet" href="./assets/acompanhamento-orcamentario.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="./assets/acompanhamento-orcamentario.js"></script>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Hero Section - Acompanhamento Orçamentário -->
+    <section class="ipea-hero">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-lg-7">
+                    <h1 class="ipea-hero-title">Acompanhamento da execução orçamentária e financeira dos contratos.</h1>
+                    <h2 class="ipea-hero-subtitle">Comparativo entre ComprasNet e Tesouro Gerencial</h2>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Informações do Contrato Section -->
+    <section class="budget-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="budget-section-title">Informações de contrato</h2>
+                </div>
+            </div>
+
+            <!-- Contract Details Row -->
+            <div class="row g-3 mb-4">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+                    <div class="budget-card budget-card-small">
+                        <div class="budget-card-header">
+                            <h3 class="budget-card-title">NUMERO</h3>
+                        </div>
+                        <div class="budget-card-content">
+                            <span class="budget-value">00001/2022</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+                    <div class="budget-card budget-card-small">
+                        <div class="budget-card-header">
+                            <h3 class="budget-card-title">CATEGORIA</h3>
+                        </div>
+                        <div class="budget-card-content">
+                            <span class="budget-value">Mão de obra</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fornecedor Section (sem card) -->
+            <div class="row mb-4">
+                <div class="col-12 col-lg-8">
+                    <div class="contract-detail-group">
+                        <label class="contract-detail-label">FORNECEDOR</label>
+                        <div class="contract-detail-value">Master Engenharia e Segurança Patrimonial LTDA.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Objetivo Section (sem card) -->
+            <div class="row">
+                <div class="col-12 col-lg-8">
+                    <div class="contract-detail-group">
+                        <label class="contract-detail-label">OBJETIVO</label>
+                        <div class="contract-detail-value objective-text">
+                            Prestação de serviços contínuos de operação de manutenção predial preventiva, corretiva e preditiva, com fornecimento de peças, materiais de consumo, ferramentas e insumos sob demanda, bem como mão de obra especializada para a realização de serviços inerentes e/ou exigidos nos sistemas, equipamentos e instalações prediais utilizados pelo instituto de pesquisa econômica aplicada – ipea e pelo instituto do patrimônio histórico e artístico nacional – iphan, que serão prestados nas condições e detalhamentos do termo de referência, anexo i.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dados Contratuais Section -->
+    <section class="contractual-data-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="contractual-data-title">Dados Contratuais</h2>
+                </div>
+            </div>
+
+            <!-- Contractual Data Cards Row -->
+            <div class="row g-3 mb-4">
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="contractual-data-card">
+                        <div class="contractual-data-header">
+                            <div class="contractual-data-label">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7A34F3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <path d="M12 16v-4"></path>
+                                    <path d="M12 8h.01"></path>
+                                </svg>
+                                Valor contratado (R$):
+                            </div>
+                        </div>
+                        <div class="contractual-data-content">
+                            <span class="contractual-data-value">1.18M</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="contractual-data-card">
+                        <div class="contractual-data-header">
+                            <div class="contractual-data-label">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7A34F3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <path d="M12 16v-4"></path>
+                                    <path d="M12 8h.01"></path>
+                                </svg>
+                                Valor da parcela (R$):
+                            </div>
+                        </div>
+                        <div class="contractual-data-content">
+                            <span class="contractual-data-value">145k</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-12 col-sm-6 col-md-2">
+                    <div class="contractual-data-card">
+                        <div class="contractual-data-header">
+                            <div class="contractual-data-label">
+                                Número de parcelas:
+                            </div>
+                        </div>
+                        <div class="contractual-data-content">
+                            <span class="contractual-data-value">12</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-12 col-sm-6 col-md-2">
+                    <div class="contractual-data-card">
+                        <div class="contractual-data-header">
+                            <div class="contractual-data-label">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7A34F3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <path d="M12 16v-4"></path>
+                                    <path d="M12 8h.01"></path>
+                                </svg>
+                                Valor global:
+                            </div>
+                        </div>
+                        <div class="contractual-data-content">
+                            <span class="contractual-data-value">1.74M</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Explanatory Note -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="info-note">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7A34F3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M12 16v-4"></path>
+                            <path d="M12 8h.01"></path>
+                        </svg>
+                        Valor contratado pode diferir do valor global por conta de alterações feitas durante o período de vigência.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Indicadores Orçamentários Section -->
+    <section class="budgetary-indicators-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="budgetary-indicators-title">Indicadores Orçamentários</h2>
+                </div>
+            </div>
+
+            <!-- Tesouro Gerencial Sub-section -->
+            <div class="row mb-5">
+                <div class="col-12">
+                    <h3 class="subsection-title subsection-title-purple">Tesouro Gerencial</h3>
+                </div>
+                <div class="col-12 col-md-3 mb-3">
+                    <div class="indicator-card indicator-card-purple">
+                        <div class="indicator-label indicator-label-purple">Valor empenhado (R$):</div>
+                        <div class="indicator-value">950,138.37</div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-2 mb-3">
+                    <div class="indicator-card indicator-card-purple">
+                        <div class="indicator-label indicator-label-purple">Valor a liquidar (R$):</div>
+                        <div class="indicator-value">0.00</div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-3 mb-3">
+                    <div class="indicator-card indicator-card-purple">
+                        <div class="indicator-label indicator-label-purple">Valor pago (R$):</div>
+                        <div class="indicator-value">950,138.37</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Compras Net Sub-section -->
+            <div class="row">
+                <div class="col-12">
+                    <h3 class="subsection-title subsection-title-orange">Compras Net</h3>
+                </div>
+                <div class="col-12 col-md-3 mb-3">
+                    <div class="indicator-card indicator-card-orange">
+                        <div class="indicator-label indicator-label-orange">Valor cronogramas (R$):</div>
+                        <div class="indicator-value">12,534,240.09</div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-3 mb-3">
+                    <div class="indicator-card indicator-card-orange">
+                        <div class="indicator-label indicator-label-orange">Valor faturado (R$):</div>
+                        <div class="indicator-value">15,534,240.09</div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-3 mb-3">
+                    <div class="indicator-card indicator-card-orange">
+                        <div class="indicator-label indicator-label-orange">Valor contratual disponível (R$):</div>
+                        <div class="indicator-value">-13,807,113.170</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Copyright Info -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="info-note">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7A34F3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M12 16v-4"></path>
+                            <path d="M12 8h.01"></path>
+                        </svg>
+                        Master Engenharia e Segurança Patrimonial LTDA.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Histórico Orçamentário Section -->
+    <section class="budgetary-history-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="budgetary-history-title">Histórico Orçamentário</h2>
+                    <h3 class="budgetary-history-subtitle">Movimentação financeira a respeito do contrato mês a mês</h3>
+                    <p class="budgetary-history-description">Aqui estão exibidos dados passados para a execução e futuros dentro do cronograma</p>
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div class="row g-4">
+                <!-- Tesouro Gerencial Chart -->
+                <div class="col-12 col-lg-6">
+                    <div class="chart-card">
+                        <div class="chart-title">Tesouro Gerencial</div>
+                        <div class="chart-subtitle">EXECUÇÃO ORÇAMENTARIA MENSAL</div>
+                        <div class="chart-container">
+                            <canvas id="tesouroGerencialChart"></canvas>
+                        </div>
+                        <div class="chart-legend">
+                            <div class="legend-item">
+                                <div class="legend-color" style="background-color: #66308F;"></div>
+                                <div class="legend-text">SUM (coalesce(siafi_valor_pago, 0))</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ComprasNet Chart -->
+                <div class="col-12 col-lg-6">
+                    <div class="chart-card">
+                        <div class="chart-title">ComprasNet</div>
+                        <div class="chart-subtitle">VALORES PLANEJADOS (CRONOGRAMA) X GASTOS (FATURAS)</div>
+                        <div class="chart-container">
+                            <canvas id="comprasNetChart"></canvas>
+                        </div>
+                        <div class="chart-legend">
+                            <div class="legend-item">
+                                <div class="legend-color" style="background-color: #9F5528;"></div>
+                                <div class="legend-text">SUM (coalesce(comprasgov_valor_pago, 0))</div>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background-color: #F59E0B;"></div>
+                                <div class="legend-text">SUM (coalesce(comprasgov_valor_cronograma, 0))</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>

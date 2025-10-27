@@ -11,7 +11,7 @@ Abaixo, o guia de cada uma.
 
 ## 1) Export (metadados) — pela lista de Dashboards
 
-![Superset](../../../../assets/images/export.png)
+![Superset](../../../assets/images/export.png)
 
 **Quando usar:**
 
@@ -38,7 +38,7 @@ Abaixo, o guia de cada uma.
 
 ## 2) Download de snapshot — dentro do dashboard (PDF ou Imagem)
 
-![Superset](../../../../assets/images/export_pdf.png)
+![Superset](../../../assets/images/export_pdf.png)
 
 **Quando usar:**
 
@@ -86,7 +86,7 @@ Abaixo, o guia de cada uma.
 
 # Importação de Dashboards no Superset
 
-![Superset](../../../../assets/images/import.png)
+![Superset](../../../assets/images/import.png)
 
 ## Passo a passo
 

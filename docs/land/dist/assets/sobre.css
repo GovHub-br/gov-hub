@@ -11,11 +11,7 @@ body {
     padding: 0;
 }
 
-/* Bootstrap Grid Customization */
-:root {
-    --bs-gutter-x: 20px;
-    --bs-gutter-y: 20px;
-}
+/* Bootstrap Grid Customization removed (unused) */
 
 /* Content Section */
 .content-section {
@@ -72,13 +68,7 @@ body {
     transform: scale(1.2);
 }
 
-.chart-note {
-    color: #6c757d;
-    font-style: italic;
-    font-size: 0.9rem;
-    margin: 0;
-    text-align: center;
-}
+/* .chart-note removed (unused) */
 
 /* Text Column */
 .text-column {
@@ -159,8 +149,7 @@ body {
     padding: 6rem 0;
 }
 
-.technologies-column h2,
-.requirements-column h2 {
+.technologies-column h2 {
     color: #202020;
     font-size: 2.25rem;
     font-weight: 600;

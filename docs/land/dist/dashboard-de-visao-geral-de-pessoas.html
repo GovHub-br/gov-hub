@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Visão Geral de Pessoas - GovHub</title>
+    
+    <!-- Meta SEO -->
+    <meta name="title" content="Dashboard de Visão Geral de Pessoas - GovHub">
+    <meta name="description" content="Dashboard para visualização geral de dados de pessoal do governo">
+    <meta name="robots" content="index, follow">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="language" content="Portuguese">
+    <meta name="author" content="GovHub">
+
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="./favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png">
+    <link rel="manifest" href="./site.webmanifest">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#673AB7">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="./assets/dashboard-pessoas.css">
+</head>
+<body>
+    <!-- Header Section -->
+    <div class="header-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="header-title">
+                        Dashboard de visão<br>
+                        geral de pessoal
+                    </h1>
+                    <p class="header-date">2025_06_10T12</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Section -->
+    <div class="navigation-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <ul class="nav nav-tabs" id="dashboardTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="forca-trabalho-tab" data-bs-toggle="tab" 
+                                    data-bs-target="#forca-trabalho" type="button" role="tab" 
+                                    aria-controls="forca-trabalho" aria-selected="true">
+                                Força de trabalho
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="perfil-tab" data-bs-toggle="tab" 
+                                    data-bs-target="#perfil" type="button" role="tab" 
+                                    aria-controls="perfil" aria-selected="false">
+                                Perfil
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="escolaridade-tab" data-bs-toggle="tab" 
+                                    data-bs-target="#escolaridade" type="button" role="tab" 
+                                    aria-controls="escolaridade" aria-selected="false">
+                                Escolaridade
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="terceirizados-tab" data-bs-toggle="tab" 
+                                    data-bs-target="#terceirizados" type="button" role="tab" 
+                                    aria-controls="terceirizados" aria-selected="false">
+                                Terceirizados
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="estagiarios-tab" data-bs-toggle="tab" 
+                                    data-bs-target="#estagiarios" type="button" role="tab" 
+                                    aria-controls="estagiarios" aria-selected="false">
+                                Estagiários
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Section -->
+    <div class="content-section">
+        <div class="container">
+            <div class="tab-content" id="dashboardTabsContent">
+                <!-- Força de Trabalho Tab -->
+                <div class="tab-pane fade show active" id="forca-trabalho" role="tabpanel" 
+                     aria-labelledby="forca-trabalho-tab">
+                    <div class="row">
+                        <div class="col-12">
+                            <h2 class="budget-section-title">Visão geral</h2>
+                        </div>
+                    </div>
+
+                    <!-- KPI Cards Row -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-12 col-lg-8">
+                            <div class="row g-3">
+                                <!-- Card 1 - Total de Servidores -->
+                                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                                    <div class="budget-card budget-card-small">
+                                        <div class="budget-card-header">
+                                            <h3 class="budget-card-title">TOTAL DE SERVIDORES</h3>
+                                        </div>
+                                        <div class="budget-card-content">
+                                            <span class="budget-value">1.12k</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Card 2 - Servidores Ativos Permanentes -->
+                                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                                    <div class="budget-card budget-card-small">
+                                        <div class="budget-card-header">
+                                            <h3 class="budget-card-title">SERVIDORES ATIVOS PERMANENTES</h3>
+                                        </div>
+                                        <div class="budget-card-content">
+                                            <span class="budget-value">300</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Card 3 - Aposentados -->
+                                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                                    <div class="budget-card budget-card-small">
+                                        <div class="budget-card-header">
+                                            <h3 class="budget-card-title">APOSENTADOS</h3>
+                                        </div>
+                                        <div class="budget-card-content">
+                                            <span class="budget-value">675</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Card 4 - Estagiários -->
+                                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                                    <div class="budget-card budget-card-small">
+                                        <div class="budget-card-header">
+                                            <h3 class="budget-card-title">ESTAGIÁRIOS</h3>
+                                        </div>
+                                        <div class="budget-card-content">
+                                            <span class="budget-value">11</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Section -->
+                    <div class="row g-4 mb-4">
+                        <!-- Por Gênero Chart -->
+                        <div class="col-12 col-xl-6">
+                            <div class="chart-card">
+                                <div class="chart-header">
+                                    <h3 class="chart-title">Por gênero</h3>
+                                    <div class="chart-legend">
+                                        <div class="legend-item">
+                                            <span class="legend-color legend-masculino"></span>
+                                            <span class="legend-label">MASCULINO</span>
+                                        </div>
+                                        <div class="legend-item">
+                                            <span class="legend-color legend-feminino"></span>
+                                            <span class="legend-label">FEMININO</span>
+                                        </div>
+                                        <div class="chart-controls">
+                                            <button class="control-btn active">All</button>
+                                            <button class="control-btn">Inv</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="chart-content">
+                                    <div class="bar-chart">
+                                        <div class="bars-container">
+                                            <div class="bar-item">
+                                                <div class="bar-label">FEMININO</div>
+                                                <div class="bar-container">
+                                                    <div class="bar-fill feminino" style="width: 31.375%"></div>
+                                                    <span class="bar-value">25.1%</span>
+                                                </div>
+                                            </div>
+                                            <div class="bar-item">
+                                                <div class="bar-label">MASCULINO</div>
+                                                <div class="bar-container">
+                                                    <div class="bar-fill masculino" style="width: 93.625%"></div>
+                                                    <span class="bar-value">74.9%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Por Raça/Cor Chart -->
+                        <div class="col-12 col-xl-6">
+                            <div class="chart-card">
+                                <div class="chart-header">
+                                    <h3 class="chart-title">Por raça/cor</h3>
+                                </div>
+                                <div class="chart-content">
+                                    <div class="race-chart-container">
+                                        <div id="raceChart" style="width: 100%; height: 300px;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gráficos de Distribuição -->
+                    <div class="row mt-4">
+                        <!-- Mapa do Brasil -->
+                        <div class="col-12 col-lg-5">
+                            <div class="chart-card">
+                                <div class="chart-header">
+                                    <h3 class="chart-title">Distribuição por localidade</h3>
+                                </div>
+                                <div class="chart-content">
+                                    <div class="map-container">
+                                        <div id="brazilMap" class="brazil-map"></div>
+                                        <div class="map-legend">
+                                            <div class="legend-gradient"></div>
+                                            <div class="legend-labels">
+                                                <span>0</span>
+                                                <span>100</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Gráfico de Situação Funcional -->
+                        <div class="col-12 col-lg-7">
+                            <div class="chart-card">
+                                <div class="chart-header">
+                                    <h3 class="chart-title">Distribuição por situação funcional</h3>
+                                </div>
+                                <div class="chart-content">
+                                    <div class="functional-situation-chart">
+                                        <div class="bars-container">
+                                            <div class="bar-item">
+                                                <div class="bar-value">675</div>
+                                                <div class="bar-label">Aposentado</div>
+                                                <div class="bar-container">
+                                                    <div class="bar-fill functional-bar" style="width: 96.4%"></div>
+                                                </div>
+                                            </div>
+                                            <div class="bar-item">
+                                                <div class="bar-value">54</div>
+                                                <div class="bar-label">Ativo em outro órgão</div>
+                                                <div class="bar-container">
+                                                    <div class="bar-fill functional-bar" style="width: 7.7%"></div>
+                                                </div>
+                                            </div>
+                                            <div class="bar-item">
+                                                <div class="bar-value">300</div>
+                                                <div class="bar-label">Ativo permanente</div>
+                                                <div class="bar-container">
+                                                    <div class="bar-fill functional-bar" style="width: 42.9%"></div>
+                                                </div>
+                                            </div>
+                                            <div class="bar-item">
+                                                <div class="bar-value">10</div>
+                                                <div class="bar-label">Cedido/Requisitado</div>
+                                                <div class="bar-container">
+                                                    <div class="bar-fill functional-bar" style="width: 1.4%"></div>
+                                                </div>
+                                            </div>
+                                            <div class="bar-item">
+                                                <div class="bar-value">11</div>
+                                                <div class="bar-label">Estagiário (ativos)</div>
+                                                <div class="bar-container">
+                                                    <div class="bar-fill functional-bar" style="width: 1.6%"></div>
+                                                </div>
+                                            </div>
+                                            <div class="bar-item">
+                                                <div class="bar-value">40</div>
+                                                <div class="bar-label">Exerc. distent. carre</div>
+                                                <div class="bar-container">
+                                                    <div class="bar-fill functional-bar" style="width: 5.7%"></div>
+                                                </div>
+                                            </div>
+                                            <div class="bar-item">
+                                                <div class="bar-value">30</div>
+                                                <div class="bar-label">Exerc. f./art 93, inc. II</div>
+                                                <div class="bar-container">
+                                                    <div class="bar-fill functional-bar" style="width: 4.3%"></div>
+                                                </div>
+                                            </div>
+                                            <div class="bar-item">
+                                                <div class="bar-value">1</div>
+                                                <div class="bar-label">Número cargo comiss.</div>
+                                                <div class="bar-container">
+                                                    <div class="bar-fill functional-bar" style="width: 0.1%"></div>
+                                                </div>
+                                            </div>
+                                            <div class="bar-item">
+                                                <div class="bar-value">1</div>
+                                                <div class="bar-label">Redistribuído</div>
+                                                <div class="bar-container">
+                                                    <div class="bar-fill functional-bar" style="width: 0.1%"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="chart-axis">
+                                            <div class="axis-labels">
+                                                <span>0</span>
+                                                <span>700</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Perfil Tab -->
+                <div class="tab-pane fade" id="perfil" role="tabpanel" 
+                     aria-labelledby="perfil-tab">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="dashboard-card">
+                                <h3 class="mb-4">Perfil dos Servidores</h3>
+                                <p>Conteúdo do perfil dos servidores será exibido aqui.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Escolaridade Tab -->
+                <div class="tab-pane fade" id="escolaridade" role="tabpanel" 
+                     aria-labelledby="escolaridade-tab">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="dashboard-card">
+                                <h3 class="mb-4">Distribuição por Escolaridade</h3>
+                                <p>Conteúdo da escolaridade será exibido aqui.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Terceirizados Tab -->
+                <div class="tab-pane fade" id="terceirizados" role="tabpanel" 
+                     aria-labelledby="terceirizados-tab">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="dashboard-card">
+                                <h3 class="mb-4">Dados dos Terceirizados</h3>
+                                <p>Conteúdo dos terceirizados será exibido aqui.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Estagiários Tab -->
+                <div class="tab-pane fade" id="estagiarios" role="tabpanel" 
+                     aria-labelledby="estagiarios-tab">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="dashboard-card">
+                                <h3 class="mb-4">Dados dos Estagiários</h3>
+                                <p>Conteúdo dos estagiários será exibido aqui.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- ECharts CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script src="./assets/dashboard-pessoas.js"></script>
+</body>
+</html>

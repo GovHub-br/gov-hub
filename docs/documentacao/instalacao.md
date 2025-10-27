@@ -196,11 +196,11 @@ Senha: `airflow`
 
 - Após subir os containers via Docker (`docker compose up -d`), é necessário configurar as variáveis de ambiente no **Airflow → Admin → Variables**.
 
-![Fluxo de Dados](../../assets/images/variables.png)
+![Fluxo de Dados](../assets/images/variables.png)
 
 - Clique em "+" para adicionar uma nova variável de ambiente
 
-![Fluxo de Dados](../../assets/images/add_variable.png)
+![Fluxo de Dados](../assets/images/add_variable.png)
 
 
 - Adicione as duas Key & Value, uma de cada vez, e salve-as:
@@ -245,11 +245,11 @@ Senha: `airflow`
 
 - Clique em connections:
 
-![Fluxo de Dados](../../assets/images/connections.png)<br><br>
+![Fluxo de Dados](../assets/images/connections.png)<br><br>
 
 - Busque pela conexão pré configurada do postgres e clique em edit record:
 
-![Fluxo de Dados](../../assets/images/banco_postgres.png) <br><br>
+![Fluxo de Dados](../assets/images/banco_postgres.png) <br><br>
 
 - Altere apenas Host, Database, Login, Password e Porta
 

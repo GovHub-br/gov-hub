@@ -13,7 +13,7 @@ No Superset, uma visualização é chamada de **Chart** (Gráfico). Cada chart �
 
 ## 1. Acessar a área de gráficos (Charts)
 
-![Superset](../../../../assets/images/superset_charts.png)
+![Superset](../../../assets/images/superset_charts.png)
 
 ### Etapas:
 
@@ -32,7 +32,7 @@ No Superset, uma visualização é chamada de **Chart** (Gráfico). Cada chart �
 
 ## 2. Criar um novo gráfico
 
-![Superset](../../../../assets/images/chart.png)
+![Superset](../../../assets/images/chart.png)
 
 ### Etapas:
 
@@ -46,7 +46,7 @@ No Superset, uma visualização é chamada de **Chart** (Gráfico). Cada chart �
 
 ## 3. Escolher um dataset
 
-![Superset](../../../../assets/images/select_dataset.png)
+![Superset](../../../assets/images/select_dataset.png)
 
 ### Etapas:
 
@@ -84,7 +84,7 @@ No Superset, uma visualização é chamada de **Chart** (Gráfico). Cada chart �
 
 Após escolher o dataset e o tipo de gráfico, você será levado à tela de configuração do chart. Essa etapa é fundamental, pois é onde definimos **quais colunas e métricas** vão alimentar a visualização.
 
-![Superset](../../../../assets/images/bar_chart.png)
+![Superset](../../../assets/images/bar_chart.png)
 
 Na imagem, temos um exemplo de **Bar Chart (Gráfico de Barras)** baseado no dataset `contratos.contratos_faturas`.
 

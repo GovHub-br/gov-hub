@@ -13,12 +13,12 @@ body {
     color: white;
     padding: 2rem 0;
     min-height: 15vh;
+    margin-top: 60px;
     display: flex;
     align-items: center;
     position: relative;
     overflow: hidden;
     width: 100%;
-    margin: 0;
 }
 
 .header-title {

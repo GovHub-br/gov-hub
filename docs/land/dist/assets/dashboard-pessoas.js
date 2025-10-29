@@ -363,8 +363,80 @@ function initializeMapInteractivity() {
     });
 }
 
+// Função para configurar a pesquisa da tabela de servidores
+function setupServidoresSearch() {
+    const searchWrapper = document.getElementById('servidoresSearchWrapper');
+    const searchInput = document.getElementById('servidoresSearchInput');
+    const searchIcon = document.querySelector('.servidores-search-icon');
+    const tableBody = document.getElementById('servidoresTableBody');
+    
+    if (!searchWrapper || !searchInput || !tableBody) return;
+    
+    // Abrir/fechar campo de pesquisa ao clicar
+    searchWrapper.addEventListener('click', function(e) {
+        // Não fechar se clicar no input
+        if (e.target === searchInput) return;
+        
+        searchWrapper.classList.toggle('active');
+        
+        // Focar no input quando abrir
+        if (searchWrapper.classList.contains('active')) {
+            setTimeout(() => {
+                searchInput.focus();
+            }, 100);
+        }
+    });
+    
+    // Não fechar ao clicar dentro do input
+    searchInput.addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
+    
+    // Fechar quando clicar fora
+    document.addEventListener('click', function(e) {
+        if (!searchWrapper.contains(e.target)) {
+            searchWrapper.classList.remove('active');
+        }
+    });
+    
+    // Filtrar tabela ao digitar
+    searchInput.addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase().trim();
+        const rows = tableBody.querySelectorAll('tr');
+        
+        rows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            let found = false;
+            
+            // Verificar se algum texto da linha contém o termo de pesquisa
+            cells.forEach(cell => {
+                const cellText = cell.textContent.toLowerCase();
+                if (cellText.includes(searchTerm)) {
+                    found = true;
+                }
+            });
+            
+            // Mostrar ou ocultar a linha baseado no resultado
+            if (found || searchTerm === '') {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+}
+
 // Inicializar o dashboard
 initDashboard();
 
 // Carregar o mapa do Brasil
 loadBrazilMap();
+
+// Configurar pesquisa da tabela quando o DOM estiver pronto
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+        setupServidoresSearch();
+    });
+} else {
+    setupServidoresSearch();
+}

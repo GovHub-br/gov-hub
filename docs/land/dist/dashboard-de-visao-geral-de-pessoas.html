@@ -29,6 +29,9 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <!-- Custom CSS -->
     <link rel="stylesheet" href="./assets/dashboard-pessoas.css">
 </head>
@@ -382,6 +385,111 @@
                                 <p>Conteúdo dos estagiários será exibido aqui.</p>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabela Resumo de Servidores Section -->
+    <div class="content-section servidores-table-section">
+        <div class="container">
+            <!-- Header da Tabela -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="servidores-table-header">
+                        <div class="servidores-table-title-section">
+                            <h2 class="servidores-table-title">Tabela resumo de servidores</h2>
+                            <p class="servidores-table-subtitle">por cargo, gênero, situação funcional e localidade</p>
+                        </div>
+                        <div class="servidores-search-section">
+                            <div class="servidores-search-wrapper" id="servidoresSearchWrapper">
+                                <span class="servidores-search-label">PESQUISAR</span>
+                                <i class="fas fa-search servidores-search-icon"></i>
+                                <input type="text" class="servidores-search-input" id="servidoresSearchInput" placeholder="Pesquisar...">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Tabela -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="teds-table-wrapper table-responsive">
+                        <table class="teds-table table">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        NOME
+                                        <i class="fas fa-chevron-down"></i>
+                                    </th>
+                                    <th>
+                                        VALOR EM REAL
+                                        <i class="fas fa-chevron-down"></i>
+                                    </th>
+                                    <th>%</th>
+                                    <th>CIDADE</th>
+                                    <th>ESTADO</th>
+                                    <th>TOTAL DE SERVIDORES</th>
+                                </tr>
+                            </thead>
+                            <tbody id="servidoresTableBody">
+                                <tr>
+                                    <td>Técnico de planejamento e pesquisa</td>
+                                    <td>Masculino</td>
+                                    <td>Ativo Permanente</td>
+                                    <td>Brasilia</td>
+                                    <td>DF</td>
+                                    <td>185</td>
+                                </tr>
+                                <tr>
+                                    <td>Técnico de planejamento e pesquisa</td>
+                                    <td>Masculino</td>
+                                    <td>Aposentado</td>
+                                    <td>Brasilia</td>
+                                    <td>DF</td>
+                                    <td>172</td>
+                                </tr>
+                                <tr>
+                                    <td>Técnico de planejamento e pesquisa</td>
+                                    <td>Feminino</td>
+                                    <td>Ativo Permanente</td>
+                                    <td>Brasilia</td>
+                                    <td>DF</td>
+                                    <td>74</td>
+                                </tr>
+                                <tr>
+                                    <td>Secretário</td>
+                                    <td>Feminino</td>
+                                    <td>Aposentado</td>
+                                    <td>Brasilia</td>
+                                    <td>DF</td>
+                                    <td>68</td>
+                                </tr>
+                                <tr>
+                                    <td>Auxiliar técnico</td>
+                                    <td>Masculino</td>
+                                    <td>Aposentado</td>
+                                    <td>Brasilia</td>
+                                    <td>DF</td>
+                                    <td>52</td>
+                                </tr>
+                                <tr>
+                                    <td>Auxiliar técnico</td>
+                                    <td>Feminino</td>
+                                    <td>Aposentado</td>
+                                    <td>Brasilia</td>
+                                    <td>DF</td>
+                                    <td>48</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Botão Carregar Mais -->
+                    <div class="servidores-load-more-wrapper">
+                        <button class="servidores-load-more-btn" id="servidoresLoadMoreBtn">
+                            CARREGAR MAIS PUBLICAÇÕES
+                        </button>
                     </div>
                 </div>
             </div>

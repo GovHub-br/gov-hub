@@ -169,8 +169,7 @@ function setupGenderControls() {
             // Adicionar classe active ao botão clicado
             this.classList.add('active');
             
-            // Aqui você pode adicionar lógica para filtrar os dados
-            console.log('Filtro selecionado:', this.textContent);
+            // TODO: Adicionar lógica para filtrar os dados quando necessário
         });
     });
 }
@@ -222,17 +221,6 @@ function animateKPIs() {
     });
 }
 
-// Função para setup de responsividade
-function setupResponsiveCharts() {
-    const raceChart = echarts.getInstanceByDom(document.getElementById('raceChart'));
-    
-    window.addEventListener('resize', function() {
-        if (raceChart) {
-            raceChart.resize();
-        }
-    });
-}
-
 // Função principal de inicialização
 function initDashboard() {
     console.log('🎯 Inicializando Dashboard de Pessoas...');
@@ -264,9 +252,6 @@ function initializeDashboard() {
             animateGenderBars();
             animateFunctionalBars();
         }, 500);
-        
-        // Configurar responsividade
-        setupResponsiveCharts();
         
         console.log('✅ Dashboard de Pessoas inicializado com sucesso!');
         
@@ -306,36 +291,6 @@ const brazilMapData = {
     'PI': { name: 'PIAUÍ', value: 6, percentage: '6%' }
 };
 
-// Mapeamento de nomes completos para siglas
-const stateNameMapping = {
-    'ACRE': 'AC',
-    'AMAZONAS': 'AM', 
-    'RORAIMA': 'RR',
-    'RONDÔNIA': 'RO',
-    'AMAPÁ': 'AP',
-    'PARÁ': 'PA',
-    'MARANHÃO': 'MA',
-    'PIAUÍ': 'PI',
-    'CEARÁ': 'CE',
-    'RIO GRANDE DO NORTE': 'RN',
-    'PARAÍBA': 'PB',
-    'PERNAMBUCO': 'PE',
-    'ALAGOAS': 'AL',
-    'SERGIPE': 'SE',
-    'BAHIA': 'BA',
-    'GOIÁS': 'GO',
-    'DISTRITO FEDERAL': 'DF',
-    'MATO GROSSO': 'MT',
-    'MATO GROSSO DO SUL': 'MS',
-    'TOCANTINS': 'TO',
-    'MINAS GERAIS': 'MG',
-    'ESPÍRITO SANTO': 'ES',
-    'RIO DE JANEIRO': 'RJ',
-    'SÃO PAULO': 'SP',
-    'PARANÁ': 'PR',
-    'SANTA CATARINA': 'SC',
-    'RIO GRANDE DO SUL': 'RS'
-};
 
 // Função para carregar o SVG do mapa do Brasil
 function loadBrazilMap() {
@@ -368,122 +323,43 @@ function initializeMapInteractivity() {
 
     // Aplicar dados aos estados
     const paths = svg.querySelectorAll('path');
-    console.log('Total de paths encontrados:', paths.length);
     
-    paths.forEach((path, index) => {
-        // Tentar diferentes formas de identificar o estado
-        let stateId = path.getAttribute('id') || 
-                     path.getAttribute('data-state') || 
-                     path.getAttribute('data-id') ||
-                     path.getAttribute('class') ||
-                     path.getAttribute('name') ||
-                     path.getAttribute('title') ||
-                     path.getAttribute('aria-label');
-        
-        // Limpar o ID se necessário
+    // Função auxiliar para atualizar posição do tooltip
+    const updateTooltipPosition = (e, tooltip) => {
+        const rect = mapContainer.getBoundingClientRect();
+        tooltip.style.left = (e.clientX - rect.left) + 'px';
+        tooltip.style.top = (e.clientY - rect.top - 40) + 'px';
+    };
+    
+    paths.forEach((path) => {
+        // Obter e normalizar o ID do path
+        let stateId = path.getAttribute('id');
         if (stateId) {
-            stateId = stateId.replace(/[^A-ZÀ-ÿ\s]/g, '').toUpperCase().trim();
-        }
-        
-        console.log(`Path ${index}: ID original = ${stateId}`);
-        console.log(`Path ${index}: Atributos:`, {
-            id: path.getAttribute('id'),
-            class: path.getAttribute('class'),
-            name: path.getAttribute('name'),
-            title: path.getAttribute('title')
-        });
-        
-        // Tentar mapear nome completo para sigla
-        let finalStateId = stateId;
-        if (stateNameMapping[stateId]) {
-            finalStateId = stateNameMapping[stateId];
-            console.log(`Mapeado ${stateId} -> ${finalStateId}`);
-        }
-        
-        // Se ainda não encontrou ID, tentar por posição aproximada
-        if (!finalStateId) {
-            // Lista de estados em ordem real do SVG (baseado na posição geográfica do mapa)
-            const svgOrder = [
-                // Norte (de oeste para leste)
-                'AC', 'AM', 'RR', 'RO', 'AP', 'PA', 'TO',
-                // Nordeste (de oeste para leste, norte para sul)
-                'MA', 'PI', 'CE', 'RN', 'PB', 'PE', 'AL', 'SE', 'BA',
-                // Centro-Oeste (de norte para sul)
-                'MT', 'GO', 'DF', 'MS',
-                // Sudeste (de oeste para leste)
-                'MG', 'ES', 'RJ', 'SP',
-                // Sul (de norte para sul)
-                'PR', 'SC', 'RS'
-            ];
-            if (index < svgOrder.length) {
-                finalStateId = svgOrder[index];
-                console.log(`Usando ordem do SVG: ${index} -> ${finalStateId}`);
-            }
+            stateId = stateId.toUpperCase().trim();
         }
         
         // Verificar se temos dados para este estado
-        const data = brazilMapData[finalStateId];
-        if (data) {
-            console.log(`Dados encontrados para ${finalStateId}:`, data);
-            
-            // NÃO adicionar classe highlighted - todos ficam brancos por padrão
-            console.log(`Estado ${finalStateId} com dados: ${data.percentage}`);
+        const data = brazilMapData[stateId];
+        const tooltipText = data 
+            ? `${data.name} ${data.percentage}` 
+            : stateId || 'Estado';
 
-            // Adicionar eventos de hover
-            path.addEventListener('mouseenter', function(e) {
-                const rect = mapContainer.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                
-                tooltip.textContent = `${data.name} ${data.percentage}`;
-                tooltip.style.left = x + 'px';
-                tooltip.style.top = (y - 40) + 'px';
-                tooltip.classList.add('show');
-                
-                console.log(`Hover em ${data.name}: ${data.percentage}`);
-            });
+        // Adicionar eventos de hover (unificados para todos os estados)
+        path.addEventListener('mouseenter', function(e) {
+            tooltip.textContent = tooltipText;
+            updateTooltipPosition(e, tooltip);
+            tooltip.classList.add('show');
+        });
 
-            path.addEventListener('mouseleave', function() {
-                tooltip.classList.remove('show');
-            });
+        path.addEventListener('mouseleave', function() {
+            tooltip.classList.remove('show');
+        });
 
-            path.addEventListener('mousemove', function(e) {
-                const rect = mapContainer.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                
-                tooltip.style.left = x + 'px';
-                tooltip.style.top = (y - 40) + 'px';
-            });
-        } else {
-            // Para estados sem dados, mostrar nome genérico
-            path.addEventListener('mouseenter', function(e) {
-                const rect = mapContainer.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                
-                const displayName = stateId || `ESTADO ${index + 1}`;
-                tooltip.textContent = displayName;
-                tooltip.style.left = x + 'px';
-                tooltip.style.top = (y - 40) + 'px';
-                tooltip.classList.add('show');
-                
-                console.log(`Hover em estado sem dados: ${displayName}`);
-            });
-
-            path.addEventListener('mouseleave', function() {
-                tooltip.classList.remove('show');
-            });
-
-            path.addEventListener('mousemove', function(e) {
-                const rect = mapContainer.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                
-                tooltip.style.left = x + 'px';
-                tooltip.style.top = (y - 40) + 'px';
-            });
-        }
+        path.addEventListener('mousemove', function(e) {
+            if (tooltip.classList.contains('show')) {
+                updateTooltipPosition(e, tooltip);
+            }
+        });
     });
 }
 

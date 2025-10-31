@@ -25,6 +25,12 @@
     text-align: left;
 }
 
+/* Tooltip externo do Chart.js para rosca */
+.chartjs-external-tooltip {
+    z-index: 9999;
+    pointer-events: none;
+}
+
 /* Responsive Design */
 @media (max-width: 1200px) {
     .ipea-hero-title {

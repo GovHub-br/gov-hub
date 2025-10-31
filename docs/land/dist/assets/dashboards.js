@@ -100,6 +100,69 @@ function createBudgetChart() {
         });
 }
 
+// Tooltip HTML externo (evita ficar atrás do texto central)
+function externalDoughnutTooltipHandler(context) {
+    const { chart, tooltip } = context;
+    // Criar elemento do tooltip se não existir
+    let tooltipEl = chart.canvas.parentNode.querySelector('.chartjs-external-tooltip');
+    if (!tooltipEl) {
+        tooltipEl = document.createElement('div');
+        tooltipEl.className = 'chartjs-external-tooltip';
+        tooltipEl.style.position = 'absolute';
+        tooltipEl.style.pointerEvents = 'none';
+        tooltipEl.style.transform = 'translate(-50%, -100%)';
+        tooltipEl.style.zIndex = '9999';
+        tooltipEl.style.minWidth = '120px';
+        tooltipEl.style.maxWidth = '280px';
+        tooltipEl.style.background = '#422278';
+        tooltipEl.style.color = '#FFFFFF';
+        tooltipEl.style.border = '1px solid #7A34F3';
+        tooltipEl.style.borderRadius = '8px';
+        tooltipEl.style.padding = '8px 10px';
+        tooltipEl.style.fontFamily = 'Inter, sans-serif';
+        tooltipEl.style.fontSize = '12px';
+        tooltipEl.style.boxShadow = '0 6px 20px rgba(0,0,0,0.18)';
+        tooltipEl.style.whiteSpace = 'nowrap';
+        tooltipEl.style.opacity = '0';
+        chart.canvas.parentNode.appendChild(tooltipEl);
+    }
+
+    // Esconder se não ativo
+    if (tooltip.opacity === 0) {
+        tooltipEl.style.opacity = '0';
+        return;
+    }
+
+    // Conteúdo
+    if (tooltip.body) {
+        const titleLines = tooltip.title || [];
+        const bodyLines = tooltip.body.map(b => b.lines);
+        tooltipEl.innerHTML = '';
+
+        const title = document.createElement('div');
+        title.style.fontWeight = '600';
+        title.style.marginBottom = '4px';
+        title.textContent = titleLines.join(' ');
+        tooltipEl.appendChild(title);
+
+        bodyLines.forEach((body) => {
+            const div = document.createElement('div');
+            div.textContent = body.join(' ');
+            tooltipEl.appendChild(div);
+        });
+    }
+
+    // Posição
+    const { offsetLeft: positionX, offsetTop: positionY } = chart.canvas;
+    const caret = tooltip.caretX !== undefined ? tooltip.caretX : 0;
+    const baseX = positionX + caret;
+    const baseY = positionY + (tooltip.caretY || 0) - 12;
+
+    tooltipEl.style.left = baseX + 'px';
+    tooltipEl.style.top = baseY + 'px';
+    tooltipEl.style.opacity = '1';
+}
+
 // Função para inicializar funcionalidades específicas da página de dashboards
 function initDashboards() {
     console.log('🚀 Inicializando dashboards...');
@@ -131,6 +194,8 @@ function updateChartTotal(chartId, totalValue) {
 // Função para criar configuração padrão de tooltip
 function getTooltipConfig(title) {
     return {
+        enabled: false, // desativa tooltip padrão (canvas)
+        external: externalDoughnutTooltipHandler, // usa HTML externo para sobrepor o centro
         backgroundColor: '#422278',
         titleColor: '#FFFFFF',
         bodyColor: '#FFFFFF',

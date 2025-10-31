@@ -264,6 +264,27 @@ function loadBrazilMap() {
         });
 }
 
+function hexToRgb(hex) {
+    const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return m ? { r: parseInt(m[1], 16), g: parseInt(m[2], 16), b: parseInt(m[3], 16) } : { r: 0, g: 0, b: 0 };
+}
+
+function rgbToHex(r, g, b) {
+    const toHex = (v) => v.toString(16).padStart(2, '0');
+    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+}
+
+function lerp(a, b, t) { return a + (b - a) * t; }
+
+function lerpColor(startHex, endHex, t) {
+    const s = hexToRgb(startHex);
+    const e = hexToRgb(endHex);
+    const r = Math.round(lerp(s.r, e.r, t));
+    const g = Math.round(lerp(s.g, e.g, t));
+    const b = Math.round(lerp(s.b, e.b, t));
+    return rgbToHex(r, g, b);
+}
+
 function initializeMapInteractivity() {
     const mapContainer = document.getElementById('brazilMap');
     const svg = mapContainer.querySelector('svg');
@@ -280,18 +301,58 @@ function initializeMapInteractivity() {
         tooltip.style.top = (e.clientY - rect.top - 40) + 'px';
     };
     
+    // Cores para o gradiente (0% -> 100%)
+    const START_HEX = '#67A95E'; // verde
+    const END_HEX = '#7A34F3';   // roxo
+    
     paths.forEach((path) => {
         let stateId = path.getAttribute('id');
         if (stateId) stateId = stateId.toUpperCase().trim();
         const data = brazilMapData[stateId];
         const tooltipText = data ? `${data.name} ${data.percentage}` : stateId || 'Estado';
+
+        // transição suave
+        path.style.transition = 'fill 0.2s ease';
+
         path.addEventListener('mouseenter', function(e) {
+            // salvar estado original APENAS uma vez
+            if (!path.dataset.origFillSaved) {
+                path.dataset.origFill = path.getAttribute('fill') ?? '';
+                path.dataset.origStyle = path.getAttribute('style') ?? '';
+                path.dataset.origFillSaved = '1';
+            }
+
             tooltip.textContent = tooltipText;
             updateTooltipPosition(e, tooltip);
             tooltip.classList.add('show');
+
+            const pctStr = (data && data.percentage) ? String(data.percentage) : '0%';
+            const pct = Math.max(0, Math.min(100, parseFloat(pctStr) || 0));
+            const t = pct / 100;
+            const hoverColor = lerpColor(START_HEX, END_HEX, t);
+            path.style.fill = hoverColor;
         });
-        path.addEventListener('mouseleave', function() { tooltip.classList.remove('show'); });
-        path.addEventListener('mousemove', function(e) { if (tooltip.classList.contains('show')) updateTooltipPosition(e, tooltip); });
+        
+        path.addEventListener('mouseleave', function() {
+            tooltip.classList.remove('show');
+            // restaurar exatamente o que havia antes
+            const origStyle = path.dataset.origStyle ?? '';
+            const origFill = path.dataset.origFill ?? '';
+            if (origStyle !== '') {
+                path.setAttribute('style', origStyle);
+            } else {
+                path.removeAttribute('style');
+            }
+            if (origFill !== '') {
+                path.setAttribute('fill', origFill);
+            } else {
+                path.removeAttribute('fill');
+            }
+        });
+        
+        path.addEventListener('mousemove', function(e) {
+            if (tooltip.classList.contains('show')) updateTooltipPosition(e, tooltip);
+        });
     });
 }
 

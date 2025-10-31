@@ -2,43 +2,125 @@
 // DASHBOARD DE PESSOAS - JAVASCRIPT FILE
 // ========================================
 
-// Dados mockados para o gráfico de raça/cor
-const raceData = [
-    { name: 'BRANCA', value: 250 },
-    { name: 'PARDA', value: 72 },
-    { name: 'PRETA', value: 25 },
-    { name: 'AMARELA', value: 8 },
-    { name: 'INDÍGENA', value: 3 },
-    { name: 'NÃO DECLARADA', value: 2 }
+const PESSOAS_DATA_PATHS = [
+    '../public/data/pessoas_visao_geral.json'
 ];
 
-// Mapeamento de cores para cada raça/cor (seguindo o padrão da página dashboards)
+// Cores para raça/cor
 const colorMap = {
     'BRANCA': '#FF8C00',
     'PARDA': '#FFA500', 
     'PRETA': '#8A2BE2',
     'AMARELA': '#9370DB',
     'INDÍGENA': '#9932CC',
-    'NÃO DECLARADA': '#DDA0DD'
+    'NÃO DECLARADA': '#DDA0DD',
+    'NAO INFORMADO': '#DDA0DD'
 };
 
-// Função para criar o gráfico de raça/cor (treemap)
-function createRaceTreemap() {
+async function fetchPessoasData() {
+    for (const basePath of PESSOAS_DATA_PATHS) {
+        try {
+            const urlWithBust = `${basePath}?v=${Date.now()}`;
+            const resp = await fetch(urlWithBust, { cache: 'no-store' });
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+            return await resp.json();
+        } catch (e) {
+            // tenta próximo caminho
+        }
+    }
+    const hdr = document.querySelector('.header-date');
+    if (hdr) hdr.textContent = 'Erro ao carregar dados';
+    console.error('Não foi possível carregar pessoas_visao_geral.json');
+    return null;
+}
+
+function setHeaderDateFromData(data) {
+    const el = document.querySelector('.header-date');
+    if (!el || !data || !data.meta || !data.meta.atualizado_em) return;
+    el.textContent = data.meta.atualizado_em;
+}
+
+function setKpisFromData(data) {
+    if (!data || !data.kpis) return;
+    const { total_servidores, servidores_ativos_permanentes, aposentados, estagiarios } = data.kpis;
+
+    const idMap = [
+        ['kpi-total-servidores', total_servidores],
+        ['kpi-ativos-permanentes', servidores_ativos_permanentes],
+        ['kpi-aposentados', aposentados],
+        ['kpi-estagiarios', estagiarios]
+    ];
+    let appliedById = 0;
+    idMap.forEach(([id, value]) => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.textContent = formatKpi(Number(value) || 0);
+            appliedById++;
+        }
+    });
+
+    if (appliedById === idMap.length) return;
+
+    const cards = Array.from(document.querySelectorAll('.budget-card'));
+    cards.forEach(card => {
+        const title = card.querySelector('.budget-card-title');
+        const valueEl = card.querySelector('.budget-value');
+        if (!title || !valueEl) return;
+        const t = (title.textContent || '').toUpperCase();
+        if (t.includes('TOTAL DE SERVIDORES')) valueEl.textContent = formatKpi(total_servidores);
+        else if (t.includes('SERVIDORES ATIVOS PERMANENTES')) valueEl.textContent = formatKpi(servidores_ativos_permanentes);
+        else if (t.includes('APOSENTADOS')) valueEl.textContent = formatKpi(aposentados);
+        else if (t.includes('ESTAGIÁRIOS')) valueEl.textContent = formatKpi(estagiarios);
+    });
+}
+
+function formatKpi(n) {
+    if (n >= 1000) {
+        const k = (n / 1000);
+        return (Math.round(k * 100) / 100) + 'k';
+    }
+    return String(n);
+}
+
+function setGeneroFromData(data) {
+    if (!data || !data.genero) return;
+    const fem = Number(data.genero.feminino_percent) || 0;
+    const masc = Number(data.genero.masculino_percent) || 0;
+
+    const barItems = document.querySelectorAll('.chart-card .bars-container .bar-item');
+    barItems.forEach(item => {
+        const label = (item.querySelector('.bar-label')?.textContent || '').trim().toUpperCase();
+        const fill = item.querySelector('.bar-fill');
+        const value = item.querySelector('.bar-value');
+        if (!fill || !value) return;
+        if (label.includes('FEMININO')) {
+            fill.style.width = fem + '%';
+            value.textContent = fem.toFixed(1) + '%';
+        } else if (label.includes('MASCULINO')) {
+            fill.style.width = masc + '%';
+            value.textContent = masc.toFixed(1) + '%';
+        }
+    });
+}
+
+function createRaceTreemapFromData(data) {
     const chartDom = document.getElementById('raceChart');
     if (!chartDom) return;
-    
+    if (!data || !Array.isArray(data.raca_cor) || data.raca_cor.length === 0) {
+        chartDom.innerHTML = '<div style="color:#b91c1c;font-size:12px;">Sem dados de raça/cor</div>';
+        return;
+    }
+
     const myChart = echarts.init(chartDom);
-    
-    // Mapear dados para o formato do ECharts
-    const chartData = raceData.map(item => ({
-        name: item.name,
-        value: item.value,
+    const mapped = data.raca_cor.map(item => ({
+        name: item.nome_cor,
+        value: item.valor,
         itemStyle: { 
-            color: colorMap[item.name] || '#DDA0DD',
+            color: colorMap[item.nome_cor] || '#DDA0DD',
             borderColor: '#ffffff',
             borderWidth: 2
         }
-    })).sort((a, b) => b.value - a.value); // Ordenar por valor decrescente
+    })).sort((a, b) => b.value - a.value);
 
     const option = {
         backgroundColor: 'transparent',
@@ -47,27 +129,19 @@ function createRaceTreemap() {
             backgroundColor: '#422278',
             borderColor: '#7A34F3',
             borderWidth: 1,
-            textStyle: {
-                color: '#ffffff',
-                fontFamily: 'Inter'
-            },
-            formatter: function(params) {
-                return params.name + '<br/>' + params.value + ' funcionários';
-            }
+            textStyle: { color: '#ffffff', fontFamily: 'Inter' },
+            formatter: function(params) { return params.name + '<br/>' + params.value + ' funcionários'; }
         },
         series: [
             {
                 type: 'treemap',
-                data: chartData,
+                data: mapped,
                 roam: false,
                 nodeClick: false,
-                breadcrumb: {
-                    show: false
-                },
+                breadcrumb: { show: false },
                 label: {
                     show: true,
                     formatter: function(params) {
-                        // Mostrar apenas para os blocos individuais, não para o total
                         if (params.treePathInfo && params.treePathInfo.length > 1) {
                             return params.name + '\n' + params.value;
                         }
@@ -79,111 +153,56 @@ function createRaceTreemap() {
                     textShadowColor: 'rgba(0, 0, 0, 0.5)',
                     textShadowBlur: 2
                 },
-                upperLabel: {
-                    show: false
-                },
-                itemStyle: {
-                    borderColor: '#ffffff',
-                    borderWidth: 2,
-                    gapWidth: 2
-                },
-                emphasis: {
-                    itemStyle: {
-                        borderColor: '#7A34F3',
-                        borderWidth: 3
-                    }
-                }
+                upperLabel: { show: false },
+                itemStyle: { borderColor: '#ffffff', borderWidth: 2, gapWidth: 2 },
+                emphasis: { itemStyle: { borderColor: '#7A34F3', borderWidth: 3 } }
             }
         ]
     };
 
     myChart.setOption(option);
-
-    // Responsividade
-    window.addEventListener('resize', function() {
-        myChart.resize();
-    });
-
+    window.addEventListener('resize', function() { myChart.resize(); });
     return myChart;
 }
 
-// Função para inicializar todos os gráficos
-function initializeCharts() {
-    console.log('🚀 Inicializando gráficos do dashboard de pessoas...');
-    
-    // Criar gráfico de raça/cor
-    createRaceTreemap();
-    
-    console.log('✅ Gráficos inicializados com sucesso!');
-}
+function setSituacaoFuncionalFromData(data) {
+    if (!data || !Array.isArray(data.situacao_funcional)) return;
+    const items = data.situacao_funcional;
+    const maxValor = Math.max(...items.map(i => i.valor || 0), 1);
 
-// Função para animar as barras do gráfico de gênero
-function animateGenderBars() {
-    const bars = document.querySelectorAll('.bar-fill:not(.functional-bar)');
-    
-    bars.forEach((bar, index) => {
-        setTimeout(() => {
-            // Obter a largura atual do elemento (do CSS ou style inline)
-            const computedStyle = window.getComputedStyle(bar);
-            const currentWidth = computedStyle.width;
-            
-            bar.style.transition = 'width 1s ease-out';
-            bar.style.width = '0%';
-            
-            setTimeout(() => {
-                bar.style.width = currentWidth;
-            }, 100);
-        }, index * 200);
+    const containerItems = document.querySelectorAll('.functional-situation-chart .bar-item');
+    containerItems.forEach(ci => {
+        const labelEl = ci.querySelector('.bar-label');
+        const valueEl = ci.querySelector('.bar-value');
+        const fillEl = ci.querySelector('.bar-fill');
+        if (!labelEl || !valueEl || !fillEl) return;
+        const label = (labelEl.textContent || '').trim();
+        const found = items.find(i => (i.label || '').trim() === label);
+        if (found) {
+            valueEl.textContent = String(found.valor);
+            const percent = (found.valor / maxValor) * 100;
+            fillEl.style.width = percent.toFixed(1) + '%';
+        }
     });
 }
 
-// Função para animar as barras do gráfico de situação funcional
-function animateFunctionalBars() {
-    const functionalBars = document.querySelectorAll('.functional-situation-chart .bar-fill');
-    
-    functionalBars.forEach((bar, index) => {
-        setTimeout(() => {
-            // Obter a largura atual do elemento (do CSS ou style inline)
-            const computedStyle = window.getComputedStyle(bar);
-            const currentWidth = computedStyle.width;
-            
-            bar.style.transition = 'width 1.2s ease-out';
-            bar.style.width = '0%';
-            
-            setTimeout(() => {
-                bar.style.width = currentWidth;
-            }, 150);
-        }, index * 300);
-    });
-}
-
-// Função para controlar os botões All/Inv do gráfico de gênero
 function setupGenderControls() {
     const controlBtns = document.querySelectorAll('.control-btn');
-    
     controlBtns.forEach(btn => {
         btn.addEventListener('click', function() {
-            // Remover classe active de todos os botões
             controlBtns.forEach(b => b.classList.remove('active'));
-            
-            // Adicionar classe active ao botão clicado
             this.classList.add('active');
-            
-            // TODO: Adicionar lógica para filtrar os dados quando necessário
         });
     });
 }
 
-// Função para adicionar hover effects aos cards
 function setupCardHoverEffects() {
     const cards = document.querySelectorAll('.chart-card, .budget-card');
-    
     cards.forEach(card => {
         card.addEventListener('mouseenter', function() {
             this.style.transform = 'translateY(-2px)';
             this.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.1)';
         });
-        
         card.addEventListener('mouseleave', function() {
             this.style.transform = 'translateY(0)';
             this.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.05)';
@@ -191,29 +210,24 @@ function setupCardHoverEffects() {
     });
 }
 
-// Função para animar os valores dos KPIs
 function animateKPIs() {
     const kpiValues = document.querySelectorAll('.budget-value');
-    
     kpiValues.forEach((element, index) => {
         const finalValue = element.textContent;
         const isKValue = finalValue.includes('k');
-        const numericValue = parseFloat(finalValue.replace('k', ''));
-        
+        const numericValue = parseFloat(finalValue.replace('k', '')) || 0;
         element.textContent = '0';
-        
         setTimeout(() => {
             let currentValue = 0;
-            const increment = numericValue / 50; // 50 steps para a animação
-            
+            const steps = 50;
+            const increment = numericValue / steps;
             const timer = setInterval(() => {
                 currentValue += increment;
-                
                 if (currentValue >= numericValue) {
                     element.textContent = finalValue;
                     clearInterval(timer);
                 } else {
-                    const displayValue = Math.floor(currentValue);
+                    const displayValue = Math.floor(currentValue * 100) / 100;
                     element.textContent = isKValue ? displayValue + 'k' : displayValue.toString();
                 }
             }, 20);
@@ -221,83 +235,23 @@ function animateKPIs() {
     });
 }
 
-// Função principal de inicialização
-function initDashboard() {
-    console.log('🎯 Inicializando Dashboard de Pessoas...');
-    
-    // Aguardar o DOM estar pronto
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeDashboard();
-        });
-    } else {
-        initializeDashboard();
-    }
+function overrideBrazilMapDataFromJson(data) {
+    if (!data || !data.mapa_uf) return;
+    const src = data.mapa_uf;
+    Object.keys(src).forEach(uf => {
+        const it = src[uf];
+        brazilMapData[uf] = {
+            name: it.nome || it.name || uf,
+            value: it.valor || it.value || 0,
+            percentage: it.percentual || it.percentage || '0%'
+        };
+    });
 }
 
-function initializeDashboard() {
-    try {
-        // Inicializar gráficos
-        initializeCharts();
-        
-        // Configurar controles
-        setupGenderControls();
-        
-        // Configurar efeitos visuais
-        setupCardHoverEffects();
-        
-        // Animar elementos
-        setTimeout(() => {
-            animateKPIs();
-            animateGenderBars();
-            animateFunctionalBars();
-        }, 500);
-        
-        console.log('✅ Dashboard de Pessoas inicializado com sucesso!');
-        
-    } catch (error) {
-        console.error('❌ Erro ao inicializar dashboard:', error);
-    }
-}
-
-// Dados do mapa do Brasil com porcentagens aleatórias
-const brazilMapData = {
-    'RJ': { name: 'RIO DE JANEIRO', value: 0, percentage: '0%' },
-    'SP': { name: 'SÃO PAULO', value: 45, percentage: '45%' },
-    'MG': { name: 'MINAS GERAIS', value: 32, percentage: '32%' },
-    'RS': { name: 'RIO GRANDE DO SUL', value: 28, percentage: '28%' },
-    'PR': { name: 'PARANÁ', value: 15, percentage: '15%' },
-    'SC': { name: 'SANTA CATARINA', value: 22, percentage: '22%' },
-    'BA': { name: 'BAHIA', value: 38, percentage: '38%' },
-    'GO': { name: 'GOIÁS', value: 12, percentage: '12%' },
-    'DF': { name: 'DISTRITO FEDERAL', value: 80, percentage: '80%' },
-    'CE': { name: 'CEARÁ', value: 8, percentage: '8%' },
-    'PE': { name: 'PERNAMBUCO', value: 18, percentage: '18%' },
-    'PA': { name: 'PARÁ', value: 5, percentage: '5%' },
-    'AM': { name: 'AMAZONAS', value: 3, percentage: '3%' },
-    'AC': { name: 'ACRE', value: 2, percentage: '2%' },
-    'RO': { name: 'RONDÔNIA', value: 4, percentage: '4%' },
-    'RR': { name: 'RORAIMA', value: 1, percentage: '1%' },
-    'AP': { name: 'AMAPÁ', value: 2, percentage: '2%' },
-    'TO': { name: 'TOCANTINS', value: 6, percentage: '6%' },
-    'MT': { name: 'MATO GROSSO', value: 9, percentage: '9%' },
-    'MS': { name: 'MATO GROSSO DO SUL', value: 7, percentage: '7%' },
-    'ES': { name: 'ESPÍRITO SANTO', value: 25, percentage: '25%' },
-    'AL': { name: 'ALAGOAS', value: 14, percentage: '14%' },
-    'SE': { name: 'SERGIPE', value: 11, percentage: '11%' },
-    'PB': { name: 'PARAÍBA', value: 16, percentage: '16%' },
-    'RN': { name: 'RIO GRANDE DO NORTE', value: 13, percentage: '13%' },
-    'MA': { name: 'MARANHÃO', value: 4, percentage: '4%' },
-    'PI': { name: 'PIAUÍ', value: 6, percentage: '6%' }
-};
-
-
-// Função para carregar o SVG do mapa do Brasil
 function loadBrazilMap() {
     const mapContainer = document.getElementById('brazilMap');
     if (!mapContainer) return;
 
-    // Carregar o SVG
     fetch('./images/Map-Brasil.svg')
         .then(response => response.text())
         .then(svgText => {
@@ -310,21 +264,16 @@ function loadBrazilMap() {
         });
 }
 
-// Função para inicializar a interatividade do mapa
 function initializeMapInteractivity() {
     const mapContainer = document.getElementById('brazilMap');
     const svg = mapContainer.querySelector('svg');
     if (!svg) return;
 
-    // Criar tooltip
     const tooltip = document.createElement('div');
     tooltip.className = 'map-tooltip';
     mapContainer.appendChild(tooltip);
 
-    // Aplicar dados aos estados
     const paths = svg.querySelectorAll('path');
-    
-    // Função auxiliar para atualizar posição do tooltip
     const updateTooltipPosition = (e, tooltip) => {
         const rect = mapContainer.getBoundingClientRect();
         tooltip.style.left = (e.clientX - rect.left) + 'px';
@@ -332,111 +281,102 @@ function initializeMapInteractivity() {
     };
     
     paths.forEach((path) => {
-        // Obter e normalizar o ID do path
         let stateId = path.getAttribute('id');
-        if (stateId) {
-            stateId = stateId.toUpperCase().trim();
-        }
-        
-        // Verificar se temos dados para este estado
+        if (stateId) stateId = stateId.toUpperCase().trim();
         const data = brazilMapData[stateId];
-        const tooltipText = data 
-            ? `${data.name} ${data.percentage}` 
-            : stateId || 'Estado';
-
-        // Adicionar eventos de hover (unificados para todos os estados)
+        const tooltipText = data ? `${data.name} ${data.percentage}` : stateId || 'Estado';
         path.addEventListener('mouseenter', function(e) {
             tooltip.textContent = tooltipText;
             updateTooltipPosition(e, tooltip);
             tooltip.classList.add('show');
         });
-
-        path.addEventListener('mouseleave', function() {
-            tooltip.classList.remove('show');
-        });
-
-        path.addEventListener('mousemove', function(e) {
-            if (tooltip.classList.contains('show')) {
-                updateTooltipPosition(e, tooltip);
-            }
-        });
+        path.addEventListener('mouseleave', function() { tooltip.classList.remove('show'); });
+        path.addEventListener('mousemove', function(e) { if (tooltip.classList.contains('show')) updateTooltipPosition(e, tooltip); });
     });
 }
 
-// Função para configurar a pesquisa da tabela de servidores
+async function populateServidoresTableFromData(data) {
+    const tbody = document.getElementById('servidoresTableBody');
+    if (!tbody) return;
+    if (!data || !Array.isArray(data.tabela_servidores)) {
+        tbody.innerHTML = '';
+        return;
+    }
+    tbody.innerHTML = '';
+    data.tabela_servidores.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${row.cargo}</td>
+            <td>${row.genero}</td>
+            <td>${row.situacao}</td>
+            <td>${row.cidade}</td>
+            <td>${row.estado}</td>
+            <td>${row.total}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
 function setupServidoresSearch() {
     const searchWrapper = document.getElementById('servidoresSearchWrapper');
     const searchInput = document.getElementById('servidoresSearchInput');
-    const searchIcon = document.querySelector('.servidores-search-icon');
     const tableBody = document.getElementById('servidoresTableBody');
-    
     if (!searchWrapper || !searchInput || !tableBody) return;
-    
-    // Abrir/fechar campo de pesquisa ao clicar
     searchWrapper.addEventListener('click', function(e) {
-        // Não fechar se clicar no input
         if (e.target === searchInput) return;
-        
         searchWrapper.classList.toggle('active');
-        
-        // Focar no input quando abrir
-        if (searchWrapper.classList.contains('active')) {
-            setTimeout(() => {
-                searchInput.focus();
-            }, 100);
-        }
+        if (searchWrapper.classList.contains('active')) setTimeout(() => { searchInput.focus(); }, 100);
     });
-    
-    // Não fechar ao clicar dentro do input
-    searchInput.addEventListener('click', function(e) {
-        e.stopPropagation();
-    });
-    
-    // Fechar quando clicar fora
-    document.addEventListener('click', function(e) {
-        if (!searchWrapper.contains(e.target)) {
-            searchWrapper.classList.remove('active');
-        }
-    });
-    
-    // Filtrar tabela ao digitar
+    searchInput.addEventListener('click', function(e) { e.stopPropagation(); });
+    document.addEventListener('click', function(e) { if (!searchWrapper.contains(e.target)) searchWrapper.classList.remove('active'); });
     searchInput.addEventListener('input', function(e) {
         const searchTerm = e.target.value.toLowerCase().trim();
         const rows = tableBody.querySelectorAll('tr');
-        
         rows.forEach(row => {
             const cells = row.querySelectorAll('td');
             let found = false;
-            
-            // Verificar se algum texto da linha contém o termo de pesquisa
-            cells.forEach(cell => {
-                const cellText = cell.textContent.toLowerCase();
-                if (cellText.includes(searchTerm)) {
-                    found = true;
-                }
-            });
-            
-            // Mostrar ou ocultar a linha baseado no resultado
-            if (found || searchTerm === '') {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
+            cells.forEach(cell => { if (cell.textContent.toLowerCase().includes(searchTerm)) found = true; });
+            row.style.display = (found || searchTerm === '') ? '' : 'none';
         });
     });
 }
 
-// Inicializar o dashboard
+function initDashboard() {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() { initializeDashboard(); });
+    } else {
+        initializeDashboard();
+    }
+}
+
+async function initializeDashboard() {
+    try {
+        const data = await fetchPessoasData();
+        if (data) {
+            setHeaderDateFromData(data);
+            setKpisFromData(data);
+            setGeneroFromData(data);
+            createRaceTreemapFromData(data);
+            setSituacaoFuncionalFromData(data);
+            overrideBrazilMapDataFromJson(data);
+        }
+
+        loadBrazilMap();
+        await populateServidoresTableFromData(data);
+        setupGenderControls();
+        setupCardHoverEffects();
+        setTimeout(() => { animateKPIs(); animateGenderBars(); animateFunctionalBars(); }, 500);
+    } catch (error) {
+        console.error('Erro ao inicializar dashboard:', error);
+    }
+}
+
+const brazilMapData = {};
+
 initDashboard();
 
-// Carregar o mapa do Brasil
-loadBrazilMap();
-
-// Configurar pesquisa da tabela quando o DOM estiver pronto
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() {
-        setupServidoresSearch();
-    });
+    document.addEventListener('DOMContentLoaded', function() { setupServidoresSearch(); });
 } else {
     setupServidoresSearch();
 }

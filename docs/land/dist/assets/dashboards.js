@@ -1075,6 +1075,8 @@ function createContractsChart() {
                     plugins: {
                         legend: { display: false },
                         tooltip: {
+                            enabled: false,
+                            external: externalDoughnutTooltipHandler,
                             backgroundColor: '#422278',
                             titleColor: '#FFFFFF',
                             bodyColor: '#FFFFFF',
@@ -1150,6 +1152,8 @@ function createContractsChart() {
                     plugins: {
                         legend: { display: false },
                         tooltip: {
+                            enabled: false,
+                            external: externalDoughnutTooltipHandler,
                             backgroundColor: '#422278',
                             titleColor: '#FFFFFF',
                             bodyColor: '#FFFFFF',
@@ -1173,7 +1177,7 @@ function createContractsChart() {
                                     return 'Contratos por Categoria';
                                 },
                                 label: function(context) {
-                                    return context.label + ': ' + context.parsed.toLocaleString('pt-BR') + '%';
+                                    return context.label + ': ' + context.parsed.toFixed(2).replace('.', ',') + '%';
                                 }
                             }
                         }

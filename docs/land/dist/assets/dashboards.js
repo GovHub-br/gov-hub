@@ -1260,6 +1260,8 @@ function loadExpenseElementCharts() {
                 plugins: {
                     legend: { display: false },
                     tooltip: {
+                        enabled: false,
+                        external: externalDoughnutTooltipHandler,
                         backgroundColor: '#422278',
                         titleColor: '#FFFFFF',
                         bodyColor: '#FFFFFF',
@@ -1270,7 +1272,6 @@ function loadExpenseElementCharts() {
                         filter: function(item) { return item.dataIndex === 0; },
                         callbacks: {
                             title: function(items) {
-                                // mostra a chave do campo do JSON como título
                                 if (!items || !items.length) return '';
                                 const dsLabel = items[0].dataset.label || '';
                                 const map = {

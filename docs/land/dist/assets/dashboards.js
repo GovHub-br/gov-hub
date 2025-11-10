@@ -2045,40 +2045,10 @@ function updateEmployeeCards(servidoresData) {
 }
 
 // Função para gerar dados do gráfico baseados nos dados reais
-function generateAposentadoriasChartData(servidoresData) {
-    if (!servidoresData || servidoresData.length === 0) {
-        // Dados de fallback se não conseguir carregar o JSON
-        return [0, 0, 0, 0, 11, 5, 15, 20, 37, 10, 1, 0];
-    }
+const MOCK_APOSENTADORIAS_SERIE = [15, 15, 14, 13, 14, 12, 14, 15, 12, 12, 13, 14];
 
-    const totalAposentados = servidoresData[0].aposentados;
-    const servidoresAtivos = servidoresData[0].servidores_ativos;
-    
-    // Calcular uma estimativa realística baseada nos dados
-    // Assumindo que cerca de 2-3% dos servidores ativos se aposentam por ano
-    const percentualAnual = (totalAposentados / servidoresAtivos) * 100;
-    
-    // Gerar dados mensais mais realísticos baseados no total
-    const baseValue = Math.round(totalAposentados * 0.02); // 2% do total como base mensal
-    const variation = Math.round(baseValue * 0.3); // 30% de variação
-    
-    const monthlyData = [
-        Math.max(0, baseValue + Math.floor(Math.random() * variation - variation/2)),
-        Math.max(0, baseValue + Math.floor(Math.random() * variation - variation/2)),
-        Math.max(0, baseValue + Math.floor(Math.random() * variation - variation/2)),
-        Math.max(0, baseValue + Math.floor(Math.random() * variation - variation/2)),
-        Math.max(0, baseValue + Math.floor(Math.random() * variation - variation/2)),
-        Math.max(0, baseValue + Math.floor(Math.random() * variation - variation/2)),
-        Math.max(0, baseValue + Math.floor(Math.random() * variation - variation/2)),
-        Math.max(0, baseValue + Math.floor(Math.random() * variation - variation/2)),
-        Math.max(0, baseValue + Math.floor(Math.random() * variation - variation/2)),
-        Math.max(0, baseValue + Math.floor(Math.random() * variation - variation/2)),
-        Math.max(0, baseValue + Math.floor(Math.random() * variation - variation/2)),
-        Math.max(0, baseValue + Math.floor(Math.random() * variation - variation/2))
-    ];
-    
-    console.log('📊 Dados do gráfico gerados baseados nos dados reais:', monthlyData);
-    return monthlyData;
+function generateAposentadoriasChartData() {
+    return [...MOCK_APOSENTADORIAS_SERIE];
 }
 
 // Função para criar o gráfico de linha de aposentadorias

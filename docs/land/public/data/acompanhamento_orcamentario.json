@@ -1,0 +1,33 @@
+{
+    "contract": {
+        "numero": "00001/2022",
+        "categoria": "Mão de obra",
+        "fornecedor": "Master Engenharia e Segurança Patrimonial LTDA.",
+        "objetivo": "Prestação de serviços contínuos de operação de manutenção predial preventiva, corretiva e preditiva, com fornecimento de peças, materiais de consumo, ferramentas e insumos sob demanda, bem como mão de obra especializada para a realização de serviços inerentes e/ou exigidos nos sistemas, equipamentos e instalações prediais utilizados pelo instituto de pesquisa econômica aplicada \u2013 ipea e pelo instituto do patrimônio histórico e artístico nacional \u2013 iphan, que serão prestados nas condições e detalhamentos do termo de referência, anexo i."
+    },
+    "contractual_data": {
+        "valor_contratado": 1180000,
+        "valor_parcela": 145000,
+        "numero_parcelas": 12,
+        "valor_global": 1740000
+    },
+    "indicadores": {
+        "tesouro": {
+            "valor_empenhado": 950138.37,
+            "valor_a_liquidar": 0,
+            "valor_pago": 950138.37
+        },
+        "comprasnet": {
+            "valor_cronogramas": 12534240.09,
+            "valor_faturado": 15534240.09,
+            "valor_contratual_disponivel": -13807113.17
+        }
+    },
+    "historico": {
+        "meses": ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
+        "tesouro": [0, 0, 0, 100000, 0, 0, 0, 190000, 380000, 0, 0, 0],
+        "comprasNetPago": [0, 0, 0, 0, 0, 350000, 0, 0, 0, 0, 0, 0],
+        "comprasNetCronograma": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    }
+}
+

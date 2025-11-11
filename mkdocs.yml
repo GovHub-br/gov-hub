@@ -168,7 +168,6 @@ markdown_extensions:
   - pymdownx.tilde
 
 nav:
-  - Home: land/dist/index.html
   - Introdução:
     - Visão geral: sobre-projeto/overview.md
     - Sistemas Estruturantes: sobre-projeto/sistemas-estruturantes.md

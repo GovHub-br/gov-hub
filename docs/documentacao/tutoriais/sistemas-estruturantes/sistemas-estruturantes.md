@@ -102,4 +102,3 @@ dag_instance = api_contratos_dag()
 - Implemente alertas para falhas críticas.
 - Documente endpoints e versões de API.
 
-## 2. Extração de Sados usando e-mail

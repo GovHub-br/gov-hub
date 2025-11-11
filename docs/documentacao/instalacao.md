@@ -4,13 +4,13 @@ O **Data Pipeline Project** é uma solução moderna que utiliza ferramentas com
 
 ---
 
-## 📋 Pré-requisitos
+## Pré-requisitos
 
 Antes de começar, certifique-se de ter os seguintes softwares instalados:
 
 - **Docker e Docker Compose**: Para gerenciamento de contêineres.
 - **Make**: Ferramenta de automação de build.
-- **Python 3.x**: Para execução de scripts e desenvolvimento.
+- **Python 3.11**: Para execução de scripts e desenvolvimento.
 - **Git**: Controle de versão.
 
 Caso precise de ajuda para instalar esses componentes, consulte a documentação oficial de cada ferramenta:
@@ -21,14 +21,14 @@ Caso precise de ajuda para instalar esses componentes, consulte a documentação
 
 ---
 
-## 🚀 Instalação
+## Instalação
 
 ### 1. Clonando o Repositório
 
 Para obter o código-fonte do projeto, clone o repositório Git:
 
 ```bash
-git clone git@gitlab.com:lappis-unb/gest-odadosipea/app-lappis-ipea.git
+git clone https://github.com/GovHub-br/data-application-gov-hub.git
 cd app-lappis-ipea
 ```
 
@@ -49,7 +49,7 @@ Este comando irá:
 
 !!! note "Dica" Caso encontre problemas durante a configuração, verifique se o Docker está rodando corretamente e se você possui permissões administrativas no sistema.
 
-## 🏃‍♂️ Executando o Projeto Localmente
+## Executando o Projeto Localmente
 
 Após a configuração, inicialize todos os serviços com o Docker Compose:
 
@@ -74,7 +74,7 @@ Senha: `admin`
 
 Certifique-se de que todas as portas mencionadas estejam disponíveis no seu ambiente.
 
-## 🛠 Estrutura do Projeto
+## Estrutura do Projeto
 
 A estrutura do projeto é organizada para separar cada componente da stack, facilitando a manutenção e o desenvolvimento:
 
@@ -133,7 +133,7 @@ Essa organização modular permite que cada componente seja desenvolvido e manti
 
 ---
 
-## 🎯 Comandos Úteis no Makefile
+## Comandos Úteis no Makefile
 
 O **Makefile** facilita a execução de tarefas repetitivas e a configuração do ambiente. Aqui estão os principais comandos disponíveis:
 
@@ -176,12 +176,11 @@ O **Makefile** facilita a execução de tarefas repetitivas e a configuração d
 
 ---
 
-# Teste (airflow, dbt)
+# Configuração e Teste dos Componentes
 
-Este passo a passo descreve o passo a passo para configurar e executar o pipeline completo, desde a ingestão de dados no **Airflow** até o tratamento no **dbt**.
+Este passo a passo descreve como configurar e executar o pipeline completo, desde a ingestão de dados no **Airflow** até o tratamento no **dbt** e visualização no **Superset**.
 
 ---
-
 
 ## 1. Configurar Airflow
 
@@ -264,7 +263,49 @@ PORT=5432
 
 - Clique em `Test` para testar a conexão com o banco e depois salve!
 
-## 2. Rodar a DAG de contratos
+
+---
+
+## 2. Configuração do Superset com PostgreSQL
+
+Para conectar o Superset ao banco PostgreSQL e visualizar os dados:
+
+### 2.1 Acesse o Superset
+
+- URL: http://localhost:8088
+- Login: `admin`
+- Senha: `admin`
+
+### 2.2 Configure a Conexão com PostgreSQL
+
+1. **Vá em Settings → Database Connections → + Database**
+2. **Selecione PostgreSQL** na lista de bancos
+3. **Preencha os seguintes campos:**
+
+| Campo | Valor |
+|-------|-------|
+| **Host** | `postgres` |
+| **Port** | `5432` |
+| **Database name** | `postgres` |
+| **Username** | `postgres` |
+| **Password** | `postgres` |
+| **Display Name** | `PostgreSQL Local` |
+
+4. **Clique em "Test Connection"** para verificar
+5. **Clique em "Connect"** para salvar
+
+A conexão deve funcionar perfeitamente!
+
+### 2.3 Explore os Dados
+
+Após conectar, você poderá:
+- **Criar datasets** baseados nas tabelas do PostgreSQL
+- **Construir dashboards** com os dados processados pelo dbt
+- **Visualizar métricas** dos contratos e outros dados governamentais
+
+---
+
+## 3. Rodar a DAG de contratos
 
 No painel do Airflow:
 
@@ -276,7 +317,7 @@ Essa DAG fará a ingestão dos dados de contratos a partir das fontes configurad
 
 ---
 
-## 3. Validar a ingestão no banco de dados
+## 4. Validar a ingestão no banco de dados
 
 Após a execução da DAG, conecte-se ao banco de dados Postgres para validar se as tabelas de contratos foram populadas.
 
@@ -298,7 +339,7 @@ psql -h localhost -U postgres -d postgres
 
 ---
 
-## 4. Ajustar a configuração do dbt
+## 5. Ajustar a configuração do dbt
 
 Antes de rodar os modelos do dbt, é necessário garantir que os arquivos de configuração apontem para o banco **postgres**(local) e não mais para **analytics**(produção).
 
@@ -378,7 +419,7 @@ Nos arquivos de snapshot (`tables_snapshot.yml`), troque todos os `database: ana
 
 ---
 
-## 5. Testar conexão do dbt com o banco
+## 6. Testar conexão do dbt com o banco
 
 No diretório do projeto dbt, navegue até o diretório `airflow_lappis/dags/dbt/ipea` e rode:
 
@@ -400,7 +441,7 @@ Connection:
 
 ---
 
-## 6. Rodar o modelo de contratos no dbt
+## 7. Rodar o modelo de contratos no dbt
 
 Agora rode o modelo `contratos` para iniciar o fluxo de tratamento dos dados da camada **raw → bronze**:
 
@@ -412,19 +453,20 @@ Esse comando executa apenas o modelo `contratos.sql`, responsável por transform
 
 ---
 
-## ✅ Conclusão
+## Conclusão
 
-Seguindo estes passos, você terá:
+Seguindo estes passos, você terá configurado com sucesso o ambiente completo do **Data Pipeline Project**, incluindo:
 
-1. Configurado o Airflow com variáveis de ambiente corretas.
-2. Executado a DAG de ingestão de contratos.
-3. Validado a ingestão no banco Postgres.
-4. Ajustado o dbt para rodar em `postgres` (em vez de `analytics`).
-5. Rodado o modelo `contratos` para iniciar o tratamento dos dados.
+1. **Airflow** configurado com variáveis de ambiente e conexão ao banco de dados
+2. **Superset** conectado ao PostgreSQL para visualização de dados
+3. **DAG de contratos** executada com sucesso para ingestão de dados
+4. **Banco Postgres** validado com dados importados
+5. **dbt** configurado e rodando modelos para tratamento dos dados
+6. **Pipeline completo** funcionando da ingestão até a visualização
 
+O ambiente está pronto para desenvolvimento e análise de dados governamentais usando as melhores práticas de engenharia de dados moderna.
 
-
-## 📚 Documentação Útil
+## Documentação Útil
 Para aproveitar ao máximo os componentes do projeto, consulte as documentações oficiais:
 
 - [Documentação do Airflow](https://airflow.apache.org/docs/)

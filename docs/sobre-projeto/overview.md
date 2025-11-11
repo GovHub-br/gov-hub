@@ -1,3 +1,5 @@
+<iframe width="1120" height="425" src="https://www.youtube.com/embed/Mu8j3pcBHbk?si=j1nGz2zYI-w8pd6E" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 O Gov Hub BR é uma iniciativa para enfrentar os desafios da fragmentação, redundância e inconsistências nos sistemas estruturantes do governo federal. Seu propósito fundamental é transformar dados públicos em ativos estratégicos e valiosos, promovendo a eficiência administrativa, a transparência e a confiança pública.
 
 A iniciativa adota uma abordagem inovadora baseada em evidências, integrando dados de diferentes sistemas para apoiar gestores públicos na tomada de decisões fundamentadas em análises quantitativas e qualitativas. Essa perspectiva reduz a dependência de suposições, promovendo uma gestão mais assertiva e eficaz.

@@ -169,15 +169,12 @@ markdown_extensions:
 
 nav:
   - Home: land/dist/index.html
-  - E-book:
-    - Gov Hub - plataforma livre de integração de dados e informações governamentais: ebook.md
-  - Sobre:
+  - Introdução:
     - Visão geral: sobre-projeto/overview.md
     - Sistemas Estruturantes: sobre-projeto/sistemas-estruturantes.md
     - Gestão Orientada a Dados: sobre-projeto/gestao-dados.md
     - Replicação: sobre-projeto/replicacao.md
-    - Equipe: sobre-projeto/equipe.md
-  - Documentação:
+  - Getting Started:
     - Instalação: documentacao/instalacao.md
     - Arquitetura: documentacao/arquitetura.md
     - Tutoriais: 
@@ -207,10 +204,7 @@ nav:
         - DAG de ingestão: documentacao/tutoriais/sistemas-estruturantes/sistemas-estruturantes.md
         - Integrando novas bases de dados: documentacao/tutoriais/sistemas-estruturantes/integracao_bases.md
   - Comunidade: 
-    - Documentação: comunidade/guia-contribuicao.md
-    - Licença: comunidade/licenca.md
+    - Guia de Contribuição: comunidade/guia-contribuicao.md
     - Dashboards Templates: comunidade/dashboards-templates.md
     - Pré-requisitos: comunidade/pre-requisitos.md
-  - Publicações: 
-      - Blog: blog/index.md
-      - Ver Todas: land/dist/publicacoes.html
+

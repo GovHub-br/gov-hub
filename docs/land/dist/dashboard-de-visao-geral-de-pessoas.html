@@ -29,11 +29,95 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <!-- Custom CSS -->
     <link rel="stylesheet" href="./assets/dashboard-pessoas.css">
+    <link rel="stylesheet" href="./assets/navbar.css">
+
+    <!-- JavaScript -->
+    <script src="./assets/main.js"></script>
 </head>
 <body>
-    <!-- Header Section -->
+    <div id="topo">
+        <header>
+            <nav class="custom-navbar">
+                <div class="container">
+                    <div class="row align-items-center g-0">
+                        <!-- Logo Section -->
+                        <div class="col-auto">
+                            <a href="./index.html" class="logo">
+                                <img src="./images/logo.svg" alt="GovHub Logo" class="logo-img">
+                            </a>
+                        </div>
+    
+                        <!-- Navigation Links -->
+                        <div class="col d-none d-lg-flex justify-content-center">
+                            <div class="navbar-center">
+                                <a href="./index.html" class="nav-link">HOME</a>
+                                <a href="./dashboards.html" class="nav-link">DASHBOARDS</a>
+                                <a href="./acompanhamento-orcamentario.html" class="nav-link">ACOMPANHAMENTO ORÇAMENTÁRIO</a>
+                                <a href="./dashboard-de-visao-geral-de-pessoas.html" class="nav-link active">VISÃO GERAL DE PESSOAS</a>
+                            </div>
+                        </div>
+    
+                        <!-- Right Section -->
+                        <div class="col-auto d-none d-md-flex">
+                            <!-- Social Icons -->
+                            <div class="social-icons">
+                                <a href="https://www.instagram.com/govhub.br" target="_blank" class="social-icon">
+                                    <img src="./images/icons/instagram.svg" alt="Instagram" class="social-icon-img">
+                                </a>
+                                <a href="https://github.com/GovHub-br/gov-hub" target="_blank" class="social-icon">
+                                    <img src="./images/icons/github.svg" alt="GitHub" class="social-icon-img">
+                                </a>
+                            </div>
+                        </div>
+    
+                        <!-- Mobile Menu Button -->
+                        <div class="col-auto d-lg-none">
+                            <button class="mobile-menu-button" id="mobile-menu-toggle" type="button" aria-label="Toggle navigation">
+                                <svg fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+    
+                    <!-- Mobile Menu Overlay -->
+                    <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
+    
+                    <!-- Mobile Menu -->
+                    <div class="mobile-menu" id="mobile-menu">
+                        <!-- Botão de fechar -->
+                        <button class="mobile-menu-close" id="mobile-menu-close" type="button" aria-label="Fechar menu">
+                            <svg fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                        
+                        <ul>
+                            <li><a href="./index.html">HOME</a></li>
+                            <li><a href="./dashboards.html">DASHBOARDS</a></li>
+                            <li><a href="./acompanhamento-orcamentario.html">ACOMPANHAMENTO ORÇAMENTÁRIO</a></li>
+                            <li><a href="./dashboard-de-visao-geral-de-pessoas.html" class="active">VISÃO GERAL DE PESSOAS</a></li>
+                        </ul>
+                        <!-- Social Icons dentro do menu mobile -->
+                        <div class="social-icons">
+                            <a href="https://www.instagram.com/govhub.br" target="_blank" class="social-icon">
+                                <img src="./images/icons/instagram.svg" alt="Instagram" class="social-icon-img">
+                            </a>
+                            <a href="https://github.com/GovHub-br/gov-hub" target="_blank" class="social-icon">
+                                <img src="./images/icons/github.svg" alt="GitHub" class="social-icon-img">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </header>
+    </div>
+    <!-- Hero Section - Dashboard de Visão Geral de Pessoas -->
     <div class="header-section">
         <div class="container">
             <div class="row">
@@ -42,7 +126,7 @@
                         Dashboard de visão<br>
                         geral de pessoal
                     </h1>
-                    <p class="header-date">2025_06_10T12</p>
+                    <p class="header-date"></p>
                 </div>
             </div>
         </div>
@@ -119,7 +203,7 @@
                                             <h3 class="budget-card-title">TOTAL DE SERVIDORES</h3>
                                         </div>
                                         <div class="budget-card-content">
-                                            <span class="budget-value">1.12k</span>
+                                            <span class="budget-value" id="kpi-total-servidores"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -131,7 +215,7 @@
                                             <h3 class="budget-card-title">SERVIDORES ATIVOS PERMANENTES</h3>
                                         </div>
                                         <div class="budget-card-content">
-                                            <span class="budget-value">300</span>
+                                            <span class="budget-value" id="kpi-ativos-permanentes"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -143,7 +227,7 @@
                                             <h3 class="budget-card-title">APOSENTADOS</h3>
                                         </div>
                                         <div class="budget-card-content">
-                                            <span class="budget-value">675</span>
+                                            <span class="budget-value" id="kpi-aposentados"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -155,7 +239,7 @@
                                             <h3 class="budget-card-title">ESTAGIÁRIOS</h3>
                                         </div>
                                         <div class="budget-card-content">
-                                            <span class="budget-value">11</span>
+                                            <span class="budget-value" id="kpi-estagiarios"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -191,15 +275,15 @@
                                             <div class="bar-item">
                                                 <div class="bar-label">FEMININO</div>
                                                 <div class="bar-container">
-                                                    <div class="bar-fill feminino" style="width: 31.375%"></div>
-                                                    <span class="bar-value">25.1%</span>
+                                                    <div class="bar-fill feminino" style="width: 0%"></div>
+                                                    <span class="bar-value">0%</span>
                                                 </div>
                                             </div>
                                             <div class="bar-item">
                                                 <div class="bar-label">MASCULINO</div>
                                                 <div class="bar-container">
-                                                    <div class="bar-fill masculino" style="width: 93.625%"></div>
-                                                    <span class="bar-value">74.9%</span>
+                                                    <div class="bar-fill masculino" style="width: 0%"></div>
+                                                    <span class="bar-value">0%</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -256,66 +340,84 @@
                                     <div class="functional-situation-chart">
                                         <div class="bars-container">
                                             <div class="bar-item">
-                                                <div class="bar-value">675</div>
-                                                <div class="bar-label">Aposentado</div>
+                                                <div class="bar-header">
+                                                    <div class="bar-value">0</div>
+                                                    <div class="bar-label">Aposentado</div>
+                                                </div>
                                                 <div class="bar-container">
-                                                    <div class="bar-fill functional-bar" style="width: 96.4%"></div>
+                                                    <div class="bar-fill functional-bar" style="width: 0%"></div>
                                                 </div>
                                             </div>
                                             <div class="bar-item">
-                                                <div class="bar-value">54</div>
-                                                <div class="bar-label">Ativo em outro órgão</div>
+                                                <div class="bar-header">
+                                                    <div class="bar-value">0</div>
+                                                    <div class="bar-label">Ativo em outro órgão</div>
+                                                </div>
                                                 <div class="bar-container">
-                                                    <div class="bar-fill functional-bar" style="width: 7.7%"></div>
+                                                    <div class="bar-fill functional-bar" style="width: 0%"></div>
                                                 </div>
                                             </div>
                                             <div class="bar-item">
-                                                <div class="bar-value">300</div>
-                                                <div class="bar-label">Ativo permanente</div>
+                                                <div class="bar-header">
+                                                    <div class="bar-value">0</div>
+                                                    <div class="bar-label">Ativo permanente</div>
+                                                </div>
                                                 <div class="bar-container">
-                                                    <div class="bar-fill functional-bar" style="width: 42.9%"></div>
+                                                    <div class="bar-fill functional-bar" style="width: 0%"></div>
                                                 </div>
                                             </div>
                                             <div class="bar-item">
-                                                <div class="bar-value">10</div>
-                                                <div class="bar-label">Cedido/Requisitado</div>
+                                                <div class="bar-header">
+                                                    <div class="bar-value">0</div>
+                                                    <div class="bar-label">Cedido/Requisitado</div>
+                                                </div>
                                                 <div class="bar-container">
-                                                    <div class="bar-fill functional-bar" style="width: 1.4%"></div>
+                                                    <div class="bar-fill functional-bar" style="width: 0%"></div>
                                                 </div>
                                             </div>
                                             <div class="bar-item">
-                                                <div class="bar-value">11</div>
-                                                <div class="bar-label">Estagiário (ativos)</div>
+                                                <div class="bar-header">
+                                                    <div class="bar-value">0</div>
+                                                    <div class="bar-label">Estagiário (ativos)</div>
+                                                </div>
                                                 <div class="bar-container">
-                                                    <div class="bar-fill functional-bar" style="width: 1.6%"></div>
+                                                    <div class="bar-fill functional-bar" style="width: 0%"></div>
                                                 </div>
                                             </div>
                                             <div class="bar-item">
-                                                <div class="bar-value">40</div>
-                                                <div class="bar-label">Exerc. distent. carre</div>
+                                                <div class="bar-header">
+                                                    <div class="bar-value">0</div>
+                                                    <div class="bar-label">Exerc. distent. carre</div>
+                                                </div>
                                                 <div class="bar-container">
-                                                    <div class="bar-fill functional-bar" style="width: 5.7%"></div>
+                                                    <div class="bar-fill functional-bar" style="width: 0%"></div>
                                                 </div>
                                             </div>
                                             <div class="bar-item">
-                                                <div class="bar-value">30</div>
-                                                <div class="bar-label">Exerc. f./art 93, inc. II</div>
+                                                <div class="bar-header">
+                                                    <div class="bar-value">0</div>
+                                                    <div class="bar-label">Exerc. f./art 93, inc. II</div>
+                                                </div>
                                                 <div class="bar-container">
-                                                    <div class="bar-fill functional-bar" style="width: 4.3%"></div>
+                                                    <div class="bar-fill functional-bar" style="width: 0%"></div>
                                                 </div>
                                             </div>
                                             <div class="bar-item">
-                                                <div class="bar-value">1</div>
-                                                <div class="bar-label">Número cargo comiss.</div>
+                                                <div class="bar-header">
+                                                    <div class="bar-value">0</div>
+                                                    <div class="bar-label">Número cargo comiss.</div>
+                                                </div>
                                                 <div class="bar-container">
-                                                    <div class="bar-fill functional-bar" style="width: 0.1%"></div>
+                                                    <div class="bar-fill functional-bar" style="width: 0%"></div>
                                                 </div>
                                             </div>
                                             <div class="bar-item">
-                                                <div class="bar-value">1</div>
-                                                <div class="bar-label">Redistribuído</div>
+                                                <div class="bar-header">
+                                                    <div class="bar-value">0</div>
+                                                    <div class="bar-label">Redistribuído</div>
+                                                </div>
                                                 <div class="bar-container">
-                                                    <div class="bar-fill functional-bar" style="width: 0.1%"></div>
+                                                    <div class="bar-fill functional-bar" style="width: 0%"></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -382,6 +484,63 @@
                                 <p>Conteúdo dos estagiários será exibido aqui.</p>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabela Resumo de Servidores Section -->
+    <div class="content-section servidores-table-section">
+        <div class="container">
+            <!-- Header da Tabela -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="servidores-table-header">
+                        <div class="servidores-table-title-section">
+                            <h2 class="servidores-table-title">Tabela resumo de servidores</h2>
+                            <p class="servidores-table-subtitle">por cargo, gênero, situação funcional e localidade</p>
+                        </div>
+                        <div class="servidores-search-section">
+                            <div class="servidores-search-wrapper" id="servidoresSearchWrapper">
+                                <span class="servidores-search-label">PESQUISAR</span>
+                                <i class="fas fa-search servidores-search-icon"></i>
+                                <input type="text" class="servidores-search-input" id="servidoresSearchInput" placeholder="Pesquisar...">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Tabela -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="teds-table-wrapper table-responsive">
+                        <table class="teds-table table">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        NOME
+                                        <i class="fas fa-chevron-down"></i>
+                                    </th>
+                                    <th>
+                                        VALOR EM REAL
+                                        <i class="fas fa-chevron-down"></i>
+                                    </th>
+                                    <th>%</th>
+                                    <th>CIDADE</th>
+                                    <th>ESTADO</th>
+                                    <th>TOTAL DE SERVIDORES</th>
+                                </tr>
+                            </thead>
+                            <tbody id="servidoresTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Botão Carregar Mais -->
+                    <div class="servidores-load-more-wrapper">
+                        <button class="servidores-load-more-btn" id="servidoresLoadMoreBtn">
+                            CARREGAR MAIS PUBLICAÇÕES
+                        </button>
                     </div>
                 </div>
             </div>

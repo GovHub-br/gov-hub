@@ -1,0 +1,71 @@
+{
+  "meta": {
+    "atualizado_em": "2025-06-10T12:00:00Z"
+  },
+  "kpis": {
+    "total_servidores": 1120,
+    "servidores_ativos_permanentes": 300,
+    "aposentados": 675,
+    "estagiarios": 11
+  },
+  "genero": {
+    "feminino_percent": 24.1,
+    "masculino_percent": 75.9
+  },
+  "raca_cor": [
+    { "nome_cor": "BRANCA", "valor": 250 },
+    { "nome_cor": "PARDA", "valor": 72 },
+    { "nome_cor": "PRETA", "valor": 25 },
+    { "nome_cor": "AMARELA", "valor": 8 },
+    { "nome_cor": "INDÍGENA", "valor": 3 },
+    { "nome_cor": "NÃO DECLARADA", "valor": 2 }
+  ],
+  "mapa_uf": {
+    "RJ": { "nome": "RIO DE JANEIRO", "valor": 0, "percentual": "0%" },
+    "SP": { "nome": "SÃO PAULO", "valor": 45, "percentual": "45%" },
+    "MG": { "nome": "MINAS GERAIS", "valor": 32, "percentual": "32%" },
+    "RS": { "nome": "RIO GRANDE DO SUL", "valor": 28, "percentual": "28%" },
+    "PR": { "nome": "PARANÁ", "valor": 15, "percentual": "15%" },
+    "SC": { "nome": "SANTA CATARINA", "valor": 22, "percentual": "22%" },
+    "BA": { "nome": "BAHIA", "valor": 38, "percentual": "38%" },
+    "GO": { "nome": "GOIÁS", "valor": 12, "percentual": "12%" },
+    "DF": { "nome": "DISTRITO FEDERAL", "valor": 80, "percentual": "80%" },
+    "CE": { "nome": "CEARÁ", "valor": 8, "percentual": "8%" },
+    "PE": { "nome": "PERNAMBUCO", "valor": 18, "percentual": "18%" },
+    "PA": { "nome": "PARÁ", "valor": 5, "percentual": "5%" },
+    "AM": { "nome": "AMAZONAS", "valor": 3, "percentual": "3%" },
+    "AC": { "nome": "ACRE", "valor": 2, "percentual": "2%" },
+    "RO": { "nome": "RONDÔNIA", "valor": 4, "percentual": "4%" },
+    "RR": { "nome": "RORAIMA", "valor": 1, "percentual": "1%" },
+    "AP": { "nome": "AMAPÁ", "valor": 2, "percentual": "2%" },
+    "TO": { "nome": "TOCANTINS", "valor": 6, "percentual": "6%" },
+    "MT": { "nome": "MATO GROSSO", "valor": 9, "percentual": "9%" },
+    "MS": { "nome": "MATO GROSSO DO SUL", "valor": 7, "percentual": "7%" },
+    "ES": { "nome": "ESPÍRITO SANTO", "valor": 25, "percentual": "25%" },
+    "AL": { "nome": "ALAGOAS", "valor": 14, "percentual": "14%" },
+    "SE": { "nome": "SERGIPE", "valor": 11, "percentual": "11%" },
+    "PB": { "nome": "PARAÍBA", "valor": 16, "percentual": "16%" },
+    "RN": { "nome": "RIO GRANDE DO NORTE", "valor": 13, "percentual": "13%" },
+    "MA": { "nome": "MARANHÃO", "valor": 4, "percentual": "4%" },
+    "PI": { "nome": "PIAUÍ", "valor": 6, "percentual": "6%" }
+  },
+  "situacao_funcional": [
+    { "label": "Aposentado", "valor": 675 },
+    { "label": "Ativo em outro órgão", "valor": 54 },
+    { "label": "Ativo permanente", "valor": 300 },
+    { "label": "Cedido/Requisitado", "valor": 10 },
+    { "label": "Estagiário (ativos)", "valor": 11 },
+    { "label": "Exerc. distent. carre", "valor": 40 },
+    { "label": "Exerc. f./art 93, inc. II", "valor": 30 },
+    { "label": "Número cargo comiss.", "valor": 1 },
+    { "label": "Redistribuído", "valor": 1 }
+  ],
+  "tabela_servidores": [
+    { "cargo": "Técnico de planejamento e pesquisa", "genero": "Masculino", "situacao": "Ativo Permanente", "cidade": "Brasilia", "estado": "DF", "total": 185 },
+    { "cargo": "Técnico de planejamento e pesquisa", "genero": "Masculino", "situacao": "Aposentado", "cidade": "Brasilia", "estado": "DF", "total": 172 },
+    { "cargo": "Técnico de planejamento e pesquisa", "genero": "Feminino", "situacao": "Ativo Permanente", "cidade": "Brasilia", "estado": "DF", "total": 74 },
+    { "cargo": "Secretário", "genero": "Feminino", "situacao": "Aposentado", "cidade": "Brasilia", "estado": "DF", "total": 68 },
+    { "cargo": "Auxiliar técnico", "genero": "Masculino", "situacao": "Aposentado", "cidade": "Brasilia", "estado": "DF", "total": 52 },
+    { "cargo": "Auxiliar técnico", "genero": "Feminino", "situacao": "Aposentado", "cidade": "Brasilia", "estado": "DF", "total": 48 }
+  ]
+}

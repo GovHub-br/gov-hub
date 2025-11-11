@@ -54,14 +54,3 @@ Com dashboards interativos e relatórios detalhados, gestores têm acesso a info
 ### Responsabilidade e Confiança
 Dados bem organizados e acessíveis fortalecem a confiança da sociedade na gestão pública, aumentando a transparência e permitindo maior controle social.
 
----
-
-## Caminhos para o Futuro
-
-O futuro da gestão orientada a dados está alinhado à adoção de padrões abertos, inteligência artificial e big data. Isso permitirá:
-
-- Antecipação de tendências com base em análises preditivas.
-- Tomada de decisão mais proativa e eficaz.
-- Construção de um ecossistema integrado, onde os dados são tratados como ativos estratégicos e compartilhados de forma ética e segura.
-
-A gestão orientada a dados não é apenas uma tendência, mas um compromisso com a inovação e a eficiência no setor público.

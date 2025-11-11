@@ -8,21 +8,34 @@ Os sistemas estruturantes são o núcleo operacional do governo federal, projeta
 
 Os sistemas estruturantes são plataformas de software gerenciadas por órgãos centrais do governo federal, projetadas para organizar e otimizar as principais operações administrativas. Eles servem como ponto de conexão entre diversos órgãos governamentais, promovendo interoperabilidade e integridade de dados.
 
-### Exemplos de Sistemas Estruturantes
+
+
+## Quais os sistemas Estruturantes Integrados no GovHub?
+
+Hoje o GovHub integra  sistemas estruturantes relacionados a dois domínios: planejamento/execução orçamentária e gestão de pessoal do governo federal.
+
+Os Sistemas Estruturantes referentes ao domínui do planejamento/execução orçamentária são:
 
 - **SIAFI (Sistema Integrado de Administração Financeira):**  
   Responsável pela gestão financeira e execução orçamentária do governo federal.
   
-- **SIOP (Sistema Integrado de Planejamento e Orçamento):**  
-  Ferramenta para planejamento orçamentário, integrando objetivos e metas governamentais.
-  
+- **ComprasNet**: Responsável pela gestão de contratos, licitações e aquisições públicas.
+
+- **TransfereGov**: Responsável pela gestão de transferências entre órgãos públicos e TED (Termo de Execução Descentralizada).
+
+A integração desses três sistemas estruturantes permite que o GovHub tenha acesso a dados relevantes para a gestão orçamentária e financeira do governo federal. Permite gestores terem acesso a dados consolidados e atualizados, facilitando a tomada de decisões e a execução orçamentária. A imagem abaixo ilustra o fluxo de coleta de dados dos sistemas estruturantes.
+
+[![FluxoColetaDados-SistemasEstruturantes](../assets/images/FluxoColetaDados-SistemasEstruturantes.png){ loading=lazy }](../assets/images/FluxoColetaDados-SistemasEstruturantes.png)
+
+Já os sistemas estruturantes referentes à gestão de pessoal do governo federal são:
+
 - **SIAPE (Sistema Integrado de Administração de Recursos Humanos):**  
   Utilizado para o gerenciamento de pessoal no âmbito federal.
   
 - **SIORG (Sistema de Organização e Inovação Institucional):**  
   Centraliza informações sobre a estrutura organizacional dos órgãos governamentais.
 
-Outros exemplos incluem sistemas voltados à contabilidade, controle interno, gestão de documentos e aquisições públicas.
+A integração desses dois sistemas estruturantes permite que o GovHub tenha acesso a dados relevantes para a gestão de pessoal do governo federal, tanto quanto ao perfil do servidor público, quanto a estrutura organizacional dos órgãos governamentais. Permite gestores terem acesso a dados consolidados e atualizados, facilitando a tomada de decisões e a execução orçamentária.
 
 ---
 
@@ -80,10 +93,14 @@ A automação de processos reduz custos e aumenta a produtividade dos órgãos p
 
 A integração de dados facilita a publicação de relatórios consistentes e compreensíveis, promovendo maior confiança entre governo e sociedade.
 
----
+# Requisitos de Interoperabilidade
 
-## Futuro dos Sistemas Estruturantes
+A integração entre sistemas estruturantes é realizada por meio do mapeamento de identificadores ou chaves que permitam relacionar informações entre bases distintas. Por exemplo, os dados de planejamento de um contrato estão disponíveis no Compras.gov.br (ComprasNet), enquanto o contrato executado e seus registros financeiros são armazenados no SIAFI.
 
-Com a adoção de tecnologias emergentes e práticas inovadoras, o projeto estabelece um modelo replicável e escalável para outros contextos. As melhorias contínuas nos sistemas estruturantes irão fortalecer ainda mais a administração pública, garantindo que os dados se tornem verdadeiros ativos estratégicos.
+Apesar de, em um primeiro momento, ser possível considerar o CNPJ da empresa como chave de integração, esse atributo não é suficiente para garantir unicidade, uma vez que uma mesma empresa pode estar vinculada a múltiplos contratos. Idealmente, o número do contrato seria o identificador adequado, por ser único — no entanto, esse dado não está disponível no SIAFI, o que impede seu uso direto como chave de junção.
 
----
+Para contornar essa limitação, desenvolvemos heurísticas que combinam e correlacionam conjuntos de atributos capazes de identificar vínculos únicos entre os registros dos sistemas. Esse processo, além de viabilizar a integração, também evidencia lacunas e requisitos de interoperabilidade que precisam ser endereçados para permitir a comunicação consistente e confiável entre os sistemas estruturantes.
+
+Para acessar os requitos de interoperabilidade até o momento mapeados, clique no link abaixo:
+
+TODO

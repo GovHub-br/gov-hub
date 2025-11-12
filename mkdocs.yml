@@ -169,10 +169,13 @@ markdown_extensions:
 
 nav:
   - Introdução:
-    - Visão geral: sobre-projeto/overview.md
-    - Sistemas Estruturantes: sobre-projeto/sistemas-estruturantes.md
-    - Gestão Orientada a Dados: sobre-projeto/gestao-dados.md
-    - Replicação: sobre-projeto/replicacao.md
+    - O que é o GovHub: sobre-projeto/overview.md
+    - Por que o GovHub: 
+      - sobre-projeto/por-que-o-govhub.md
+      - Sistemas Estruturantes: sobre-projeto/sistemas-estruturantes.md
+      - Gestão Orientada a Dados: sobre-projeto/gestao-dados.md
+    - Como adotar o GovHub: 
+      - sobre-projeto/como-adotar-o-govhub.md
   - Getting Started:
     - Instalação: documentacao/instalacao.md
     - Arquitetura: documentacao/arquitetura.md

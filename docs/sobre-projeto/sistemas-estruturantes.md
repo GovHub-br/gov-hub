@@ -1,10 +1,7 @@
-# Fundamentos e Relevância
+
+# O Que São os Sistemas Estruturantes?
 
 Os sistemas estruturantes são o núcleo operacional do governo federal, projetados para apoiar atividades essenciais de gestão e garantir a padronização e eficiência na administração pública. Eles desempenham um papel fundamental na consolidação, integração e qualificação de dados, tornando-se indispensáveis para a formulação e execução de políticas públicas.
-
----
-
-## O Que São os Sistemas Estruturantes?
 
 Os sistemas estruturantes são plataformas de software gerenciadas por órgãos centrais do governo federal, projetadas para organizar e otimizar as principais operações administrativas. Eles servem como ponto de conexão entre diversos órgãos governamentais, promovendo interoperabilidade e integridade de dados.
 

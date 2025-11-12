@@ -600,35 +600,6 @@ body {
     color: #6B7280;
 }
 
-.chart-controls {
-    display: flex;
-    gap: 0.25rem;
-}
-
-.control-btn {
-    padding: 0.25rem 0.75rem;
-    border: 1px solid #D1D5DB;
-    background: #ffffff;
-    border-radius: 4px;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: #6B7280;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.control-btn.active {
-    background: #7A34F3;
-    color: #ffffff;
-    border-color: #7A34F3;
-}
-
-.control-btn:hover {
-    border-color: #7A34F3;
-    color: #7A34F3;
-}
-
 /* Responsividade para Chart Cards */
 @media (max-width: 1199px) {
     .chart-card {

@@ -2078,35 +2078,3 @@
     gap: 1rem;
     flex-wrap: wrap;
 }
-
-.chart-controls {
-    display: flex;
-    gap: 0.5rem;
-}
-
-.control-btn {
-    padding: 0.25rem 0.75rem;
-    border: 1px solid #D1D5DB;
-    background: #FFFFFF;
-    border-radius: 4px;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: #374151;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.control-btn.active {
-    background: #7A34F3;
-    color: #FFFFFF;
-    border-color: #7A34F3;
-}
-
-.control-btn:hover {
-    background: #F3F4F6;
-}
-
-.control-btn.active:hover {
-    background: #6B21A8;
-}

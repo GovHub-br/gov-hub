@@ -371,8 +371,83 @@ function initDashboard() {
 
 // Funções auxiliares que podem não estar implementadas
 function setSituacaoFuncionalFromData(data) {
-    // TODO: Implementar se necessário
-    if (!data || !data.situacao_funcional) return;
+    if (!data || !data.situacao_funcional || !Array.isArray(data.situacao_funcional)) {
+        console.warn('Dados de situação funcional não encontrados ou inválidos');
+        return;
+    }
+    
+    const chartContainer = document.querySelector('.functional-situation-chart');
+    if (!chartContainer) {
+        console.warn('Container do gráfico de situação funcional não encontrado');
+        return;
+    }
+    
+    const situacoes = data.situacao_funcional;
+    
+    // Encontrar o valor máximo para calcular porcentagens
+    const maxValor = Math.max(...situacoes.map(s => Number(s.valor) || 0));
+    
+    if (maxValor === 0) {
+        console.warn('Nenhum valor válido encontrado nos dados de situação funcional');
+        return;
+    }
+    
+    // Função auxiliar para normalizar strings para comparação
+    const normalizeLabel = (str) => {
+        return (str || '').trim().toLowerCase().replace(/\s+/g, ' ');
+    };
+    
+    // Atualizar cada barra
+    situacoes.forEach(situacao => {
+        const label = situacao.label || '';
+        const valor = Number(situacao.valor) || 0;
+        const normalizedLabel = normalizeLabel(label);
+        
+        // Encontrar o bar-item correspondente pelo label
+        const barItems = chartContainer.querySelectorAll('.bar-item');
+        let found = false;
+        
+        barItems.forEach(barItem => {
+            const barLabel = barItem.querySelector('.bar-label');
+            if (!barLabel) return;
+            
+            const labelText = normalizeLabel(barLabel.textContent);
+            
+            // Comparar labels normalizados
+            if (labelText === normalizedLabel || 
+                labelText.includes(normalizedLabel) ||
+                normalizedLabel.includes(labelText)) {
+                
+                found = true;
+                
+                // Atualizar o valor
+                const barValue = barItem.querySelector('.bar-value');
+                if (barValue) {
+                    barValue.textContent = valor;
+                }
+                
+                // Atualizar a largura da barra
+                const barFill = barItem.querySelector('.bar-fill.functional-bar');
+                if (barFill) {
+                    const percentage = (valor / maxValor) * 100;
+                    barFill.style.width = percentage + '%';
+                }
+            }
+        });
+        
+        if (!found) {
+            console.warn(`Label não encontrado no HTML: "${label}"`);
+        }
+    });
+    
+    // Atualizar os labels do eixo
+    const axisLabels = chartContainer.querySelectorAll('.axis-labels span');
+    if (axisLabels.length >= 2) {
+        axisLabels[0].textContent = '0';
+        axisLabels[1].textContent = maxValor.toString();
+    }
+    
+    console.log('Gráfico de situação funcional atualizado com sucesso');
 }
 
 function setupGenderControls() {

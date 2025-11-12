@@ -113,7 +113,7 @@ a.logo {
     padding: 0 1rem !important;
 }
 
-.nav-link {
+header .nav-link {
     color: #ffffff !important;
     text-decoration: none !important;
     font-weight: 700 !important;
@@ -128,7 +128,7 @@ a.logo {
     border: none !important;
 }
 
-.nav-link:hover {
+header .nav-link:hover {
     background: #F19F42 !important;
     transform: translateY(-2px) !important;
     color: #ffffff !important;
@@ -175,7 +175,7 @@ a.logo {
 }
 
 /* Estilos para página ativa na navbar */
-.nav-link.active {
+header .nav-link.active {
     background: #F19F42 !important;
     color: #ffffff !important;
     border-radius: 8px !important;
@@ -183,7 +183,7 @@ a.logo {
     font-weight: 600 !important;
 }
 
-.nav-link.active:hover {
+header .nav-link.active:hover {
     transform: translateY(-1px) !important;
 }
 
@@ -392,7 +392,7 @@ a.logo {
 
 /* Large screens (1200px+) - Default styles already defined */
 @media (min-width: 1200px) {    
-    .nav-link {
+    header .nav-link {
         font-size: 0.9rem;
         padding: 0.5rem 0.8rem;
     }
@@ -414,7 +414,7 @@ a.logo {
         padding: 0 0.08rem;
     }
     
-    .nav-link {
+    header .nav-link {
         font-size: 0.75rem;
         padding: 0.3rem 0.4rem;
     }
@@ -450,7 +450,7 @@ a.logo {
 
 /* Small screens (768px - 991px) */
 @media (max-width: 992px) {
-    .nav-link {
+    header .nav-link {
         font-size: 0.8rem;
         padding: 0.35rem 0.5rem;
     }

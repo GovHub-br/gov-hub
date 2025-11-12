@@ -7,6 +7,7 @@
     background: #7A34F3;
     padding: 2rem 0;
     min-height: 15vh;
+    margin-top: 60px;
     display: flex;
     align-items: center;
     position: relative;
@@ -22,6 +23,12 @@
     margin: 0;
     line-height: 1.2;
     text-align: left;
+}
+
+/* Tooltip externo do Chart.js para rosca */
+.chartjs-external-tooltip {
+    z-index: 9999;
+    pointer-events: none;
 }
 
 /* Responsive Design */
@@ -1828,7 +1835,6 @@
 
 .aposentadorias-section {
     background: #ffffff;
-    padding: 4rem 0;
 }
 
 .aposentadorias-section-title {

@@ -74,9 +74,9 @@ O GovHub oferece templates prontos para diferentes casos de uso. Confira nossos 
 
 ## Tutoriais Relacionados
 
-- [Conexões no Superset](../../documentacao/tutoriais/superset/conexoes.md)
-- [Criando Charts](../../documentacao/tutoriais/superset/criando-chart.md)
-- [Import/Export de Dashboards](../../documentacao/tutoriais/superset/import-export.md)
+- [Conexões no Superset](../../guiasUso/superset/conexoes.md)
+- [Criando Charts](../../guiasUso/superset/criando-chart.md)
+- [Import/Export de Dashboards](../../guiasUso/superset/import-export.md)
 
 ---
 

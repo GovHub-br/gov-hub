@@ -206,6 +206,13 @@ nav:
       - Criando um gráfico: guiasUso/superset/criando-chart.md
       - Criando um dashboard: guiasUso/superset/criando-dashboard.md
       - Importando e exportando dashboards: guiasUso/superset/import-export.md
+    - Criar novas tabelas Gold: guiasUso/tabelas-gold/index.md
+    - Jornada dos dados:
+      - Visão geral: guiasUso/jornada-dados/visao-geral.md
+      - Domínio Orçamentário: guiasUso/jornada-dados/dominio-orcamentario.md
+      - Domínio de Pessoal: guiasUso/jornada-dados/dominio-pessoal.md
+  - Dicionário de Dados:
+    - Sistemas Estruturantes: dicionario-dados/sistemas-estruturantes.md
   - Comunidade: 
     - Guia de Contribuição: comunidade/guia-contribuicao.md
     - Dashboards Templates: comunidade/dashboards-templates.md

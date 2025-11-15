@@ -200,7 +200,7 @@ nav:
         - Credenciais de acesso: documentacao/tutoriais/sistemas-estruturantes/acesso-apis-siafi-siape.md
         - DAG de ingestão: documentacao/tutoriais/sistemas-estruturantes/sistemas-estruturantes.md
         - Integrando novas bases de dados: documentacao/tutoriais/sistemas-estruturantes/integracao_bases.md
-  - Guias de Uso:
+  - Tutoriais de Uso:
     - Criar Dashboards: 
       - Configuração inicial: guiasUso/superset/conexoes.md
       - Criando um gráfico: guiasUso/superset/criando-chart.md

@@ -61,6 +61,15 @@ Caso precise de ajuda para instalar esses componentes, consulte a documentação
 
 ## 🚀 Instalação
 
+### Gitpage
+
+Para rodar o gitpage 
+
+```bash
+docker-compose --profile dev up govhub-dev
+```
+
+
 ### 1. Clonando o Repositório
 
 Para obter o código-fonte do projeto, clone o repositório Git:
@@ -68,8 +77,8 @@ Para obter o código-fonte do projeto, clone o repositório Git:
 ```bash
 git clone git@gitlab.com:lappis-unb/gest-odadosipea/app-lappis-ipea.git
 cd app-lappis-ipea
-sudo docker-compose --profile dev up govhub-dev
 ```
+
 
 ### 2. Configurando o Ambiente
 

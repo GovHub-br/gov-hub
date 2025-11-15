@@ -200,6 +200,10 @@ nav:
         - Credenciais de acesso: documentacao/tutoriais/sistemas-estruturantes/acesso-apis-siafi-siape.md
         - DAG de ingestão: documentacao/tutoriais/sistemas-estruturantes/sistemas-estruturantes.md
         - Integrando novas bases de dados: documentacao/tutoriais/sistemas-estruturantes/integracao_bases.md
+    - Jornada dos dados:
+      - Visão geral: guiasUso/jornada-dados/visao-geral.md
+      - Domínio Orçamentário: guiasUso/jornada-dados/dominio-orcamentario.md
+      - Domínio de Pessoal: guiasUso/jornada-dados/dominio-pessoal.md
   - Tutoriais de Uso:
     - Criar Dashboards: 
       - Configuração inicial: guiasUso/superset/conexoes.md
@@ -207,10 +211,6 @@ nav:
       - Criando um dashboard: guiasUso/superset/criando-dashboard.md
       - Importando e exportando dashboards: guiasUso/superset/import-export.md
     - Criar novas tabelas Gold: guiasUso/tabelas-gold/index.md
-    - Jornada dos dados:
-      - Visão geral: guiasUso/jornada-dados/visao-geral.md
-      - Domínio Orçamentário: guiasUso/jornada-dados/dominio-orcamentario.md
-      - Domínio de Pessoal: guiasUso/jornada-dados/dominio-pessoal.md
   - Dicionário de Dados:
     - Sistemas Estruturantes: dicionario-dados/sistemas-estruturantes.md
   - Comunidade: 

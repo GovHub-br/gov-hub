@@ -254,7 +254,7 @@ Senha: `airflow`
 - Altere apenas Host, Database, Login, Password e Porta
 
 ```bash
-HOST=localhost
+HOST=postgres
 DBNAME=postgres
 USER=postgres
 PASSWORD=postgres

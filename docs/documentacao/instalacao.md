@@ -203,7 +203,7 @@ Senha: `airflow`
 ![Fluxo de Dados](../assets/images/add_variable.png)
 
 
-- Adicione as duas Key & Value, uma de cada vez, e salve-as:
+- Adicione as três Key & Value, uma de cada vez, e salve-as:
 
 <details>
   <summary>1- Key & Value</summary>
@@ -238,6 +238,164 @@ Senha: `airflow`
       "codigos_ug": [201082]
     }
   }</code></pre>
+</details>
+
+<details>
+  <summary>3- Key & Value</summary>
+
+  <pre>Key: <code>
+    dynamic_schedules
+  </code></pre>
+  <pre>Value: <code>{
+  "contratos_inativos_ingest_dag": {
+    "type": "preset",
+    "value": "@daily"
+  },
+  "contratos_ingest_dag": {
+    "type": "preset",
+    "value": "@daily"
+  },
+  "cronograma_ingest_dag": {
+    "type": "preset",
+    "value": "@daily"
+  },
+  "empenhos_ingest_dag": {
+    "type": "preset",
+    "value": "@daily"
+  },
+  "faturas_ingest_dag": {
+    "type": "preset",
+    "value": "@daily"
+  },
+  "terceirizados_ingest_dag": {
+    "type": "preset",
+    "value": "@daily"
+  },
+  "nota_credito_siafi_ingest_dag": {
+    "type": "preset",
+    "value": "@daily"
+  },
+  "nota_empenho_siafi_ingest_dag": {
+    "type": "preset",
+    "value": "@daily"
+  },
+  "programacao_financeira_siafi_ingest_dag": {
+    "type": "preset",
+    "value": "@daily"
+  },
+  "dados_afastamento_historico_siape_ingest_dag": {
+    "type": "preset",
+    "value": "@daily"
+  },
+  "dados_afastamento_siape_ingest_dag": {
+    "type": "preset",
+    "value": "@daily"
+  },
+  "dados_curriculo_siape_ingest_dag": {
+    "type": "preset",
+    "value": "@daily"
+  },
+  "dados_dependentes_siape_ingest_dag": {
+    "type": "preset",
+    "value": "@daily"
+  },
+  "dados_escolares_siape_ingest_dag": {
+    "type": "preset",
+    "value": "@daily"
+  },
+  "dados_financeiros_siape_dag": {
+    "type": "preset",
+    "value": "@daily"
+  },
+  "dados_funcionais_siape_ingest_dag": {
+    "type": "preset",
+    "value": "@daily"
+  },
+  "dados_pa_siape_ingest_dag": {
+    "type": "preset",
+    "value": "@daily"
+  },
+  "dados_pessoais_siape_ingest_dag": {
+    "type": "preset",
+    "value": "@daily"
+  },
+  "dados_uorg_siape_ingest_dag": {
+    "type": "preset",
+    "value": "@daily"
+  },
+  "lista_aposentadoria_siape_ingest_dag": {
+    "type": "preset",
+    "value": "@daily"
+  },
+  "lista_servidores_siape_ingest_dag": {
+    "type": "preset",
+    "value": "@daily"
+  },
+  "lista_uorgs_siape_ingest_dag": {
+    "type": "preset",
+    "value": "@daily"
+  },
+  "pensoes_instituidas_siape_ingest_dag": {
+    "type": "preset",
+    "value": "@daily"
+  },
+  "cargos_funcao_ingest_dag": {
+    "type": "preset",
+    "value": "@daily"
+  },
+  "estrutura_organizacional_cargos_ingest_dag": {
+    "type": "preset",
+    "value": "@daily"
+  },
+  "unidade_organizacional_ingest_dag": {
+    "type": "preset",
+    "value": "@daily"
+  },
+  "empenhos_tesouro_ingest_dag": {
+    "type": "cron",
+    "value": "0 13 * * 1-6"
+  },
+  "nc_tesouro_ingest_dag": {
+    "type": "cron",
+    "value": "0 13 * * 1-6"
+  },
+  "pf_tesouro_ingest_dag": {
+    "type": "cron",
+    "value": "0 13 * * 1-6"
+  },
+  "visao_orcamentaria_ingest": {
+    "type": "cron",
+    "value": "0 13 * * 1-6"
+  },
+  "plano_acao_ingest_dag": {
+    "type": "preset",
+    "value": "@daily"
+  },
+  "notas_de_credito_ingest_dag": {
+    "type": "preset",
+    "value": "@daily"
+  },
+  "programa_beneficiario_ingest_dag": {
+    "type": "preset",
+    "value": "@daily"
+  },
+  "programacao_financeira_ingest_dag": {
+    "type": "preset",
+    "value": "@daily"
+  },
+  "programas_ingest_dag": {
+    "type": "preset",
+    "value": "@daily"
+  },
+  "planos_acao_especiais_ingest_dag": {
+    "type": "preset",
+    "value": "@daily"
+  },
+  "programas_especiais_ingest_dag": {
+    "type": "preset",
+    "value": "@daily"
+  }
+}</code></pre>
 </details>
 <br><br>
 

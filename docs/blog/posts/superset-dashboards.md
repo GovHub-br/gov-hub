@@ -80,4 +80,4 @@ O GovHub oferece templates prontos para diferentes casos de uso. Confira nossos 
 
 ---
 
-*Explore mais conteúdos em nossa [página de publicações](../../land/dist/publicacoes.html).*
+*Explore mais conteúdos em nossa [página de publicações](/govhub/publicacoes/).*

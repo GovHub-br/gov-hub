@@ -6,27 +6,27 @@
 function preloadTeamImages() {
     const teamImages = [
         // UnB Team
-        './images/equipe/alex_reis.png',
-        './images/equipe/carla.png',
-        './images/equipe/laila.png',
-        './images/equipe/isaque.png',
-        './images/equipe/joao.png',
-        './images/equipe/arthur.png',
-        './images/equipe/davi.png',
-        './images/equipe/joyce.png',
-        './images/equipe/mateus.png',
-        './images/equipe/guilherme_gusmao.jpg',
-        './images/equipe/vinicius.png',
+        '/govhub/land/dist/images/equipe/alex_reis.png',
+        '/govhub/land/dist/images/equipe/carla.png',
+        '/govhub/land/dist/images/equipe/laila.png',
+        '/govhub/land/dist/images/equipe/isaque.png',
+        '/govhub/land/dist/images/equipe/joao.png',
+        '/govhub/land/dist/images/equipe/arthur.png',
+        '/govhub/land/dist/images/equipe/davi.png',
+        '/govhub/land/dist/images/equipe/joyce.png',
+        '/govhub/land/dist/images/equipe/mateus.png',
+        '/govhub/land/dist/images/equipe/guilherme_gusmao.jpg',
+        '/govhub/land/dist/images/equipe/vinicius.png',
         
         // IPEA Team
-        './images/equipe/fernando_gaiger.png',
-        './images/equipe/gustavo_camilo.png',
+        '/govhub/land/dist/images/equipe/fernando_gaiger.png',
+        '/govhub/land/dist/images/equipe/gustavo_camilo.png',
         
         // Parceiros
-        './images/equipe/joao_freitas.jpeg',
-        './images/equipe/matheus_dias.jpeg',
-        './images/equipe/pedro_rossi.jpeg',
-        './images/equipe/victor_suzuki.png'
+        '/govhub/land/dist/images/equipe/joao_freitas.jpeg',
+        '/govhub/land/dist/images/equipe/matheus_dias.jpeg',
+        '/govhub/land/dist/images/equipe/pedro_rossi.jpeg',
+        '/govhub/land/dist/images/equipe/victor_suzuki.png'
     ];
     
     console.log('🔄 Iniciando preload das imagens da equipe...');

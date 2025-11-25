@@ -28,7 +28,7 @@ function getViewerAvailableSize() {
 function loadPDF() {
     loadingDiv.style.display = 'block';
     
-    const pdfUrl = './ebook/GovHub_Livro-digital_0905.pdf';
+    const pdfUrl = '/govhub/land/dist/ebook/GovHub_Livro-digital_0905.pdf';
     
     pdfjsLib.getDocument(pdfUrl).promise.then(function(pdfDoc_) {
         pdfDoc = pdfDoc_;
@@ -43,7 +43,7 @@ function loadPDF() {
         renderPage(pageNum);
     }).catch(function(error) {
         console.error('Erro ao carregar PDF:', error);
-        loadingDiv.innerHTML = '<p>❌ Erro ao carregar o e-book. <a href="./ebook/GovHub_Livro-digital_0905.pdf" download>Clique aqui para baixar</a></p>';
+        loadingDiv.innerHTML = '<p>❌ Erro ao carregar o e-book. <a href="/govhub/land/dist/ebook/GovHub_Livro-digital_0905.pdf" download>Clique aqui para baixar</a></p>';
     });
 }
 

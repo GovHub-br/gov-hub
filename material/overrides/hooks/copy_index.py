@@ -9,11 +9,11 @@ from mkdocs.config.defaults import MkDocsConfig
 
 def on_post_build(config: MkDocsConfig, **kwargs):
     """
-    Copia o arquivo docs/land/dist/index.html para a raiz do site gerado
-    e ajusta os caminhos relativos para apontar para land/dist/
+    Copia o arquivo docs/home/index.html para a raiz do site gerado
+    e ajusta os caminhos relativos para apontar corretamente
     """
     # Caminho do arquivo HTML da landing page
-    source_file = Path(config.docs_dir) / "land" / "dist" / "index.html"
+    source_file = Path(config.docs_dir) / "home" / "index.html"
     
     # Caminho de destino (raiz do site gerado)
     dest_file = Path(config.site_dir) / "index.html"

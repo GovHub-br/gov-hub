@@ -169,7 +169,7 @@ markdown_extensions:
   - pymdownx.tilde
 
 nav:
-  - Home: land/dist/index.html
+  - Home: home/index.html
   - E-book:
     - Gov Hub - plataforma livre de integração de dados e informações governamentais: ebook.md
   - Sobre:
@@ -214,4 +214,4 @@ nav:
     - Pré-requisitos: comunidade/pre-requisitos.md
   - Publicações: 
       - Blog: blog/index.md
-      - Ver Todas: land/dist/publicacoes.html
+      - Ver Todas: publicacoes/index.html

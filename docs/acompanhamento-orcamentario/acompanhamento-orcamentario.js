@@ -2,7 +2,7 @@
    ACOMPANHAMENTO ORÇAMENTÁRIO - GOVHUB
    =================================== */
 
-const DATA_URL = '../public/data/acompanhamento_orcamentario.json';
+const DATA_URL = '../land/public/data/acompanhamento_orcamentario.json';
 
 const DEFAULT_HISTORICO = {
     meses: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],

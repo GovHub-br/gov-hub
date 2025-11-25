@@ -29,4 +29,4 @@ Para conhecer mais sobre como implementar o GovHub em seu órgão, visite nossa 
 
 ---
 
-*Para ver mais publicações como esta, visite nossa [página de publicações](../../land/dist/publicacoes.html).*
+*Para ver mais publicações como esta, visite nossa [página de publicações](/govhub/publicacoes/).*

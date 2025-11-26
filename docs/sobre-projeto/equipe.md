@@ -1,7 +1,0 @@
-# Equipe
-
-## UnB
-
-## Ipea
-
-## Capibari

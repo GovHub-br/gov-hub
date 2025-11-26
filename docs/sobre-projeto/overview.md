@@ -6,6 +6,8 @@ A iniciativa adota uma abordagem inovadora baseada em evidências, integrando da
 
 Ao eliminar barreiras de comunicação entre os sistemas estruturantes e garantir interoperabilidade por meio dos dados, o projeto oferece uma visão unificada das informações governamentais. A qualificação e integração de dados não só otimizam processos internos, como também fortalecem a transparência e a responsabilidade pública, disponibilizando dados organizados tanto para órgãos públicos quanto para a sociedade civil.
 
+
+
 ## Objetivos
 
 O Gov Hub BR busca automatizar processos e reduzir custos com a implementação de soluções baseadas em software livre que facilitem a coleta, análise e visualização de dados. O uso de tecnologias open source assegura que a infraestrutura seja escalável, flexível e sustentável, adaptando-se a novas necessidades e mudanças futuras.
@@ -13,6 +15,9 @@ O Gov Hub BR busca automatizar processos e reduzir custos com a implementação 
 O projeto também visa desenvolver capacidades técnicas e institucionais, oferecendo ferramentas e diretrizes que permitam aos gestores públicos explorar o potencial dos dados de forma eficiente e autônoma. Para isso, promove uma cultura organizacional voltada para dados, incentivando a alfabetização em dados em todas as esferas governamentais e valorizando práticas éticas, de segurança e de transparência na gestão da informação.
 
 Além disso, ao qualificar os dados integrados, o projeto fortalece a governança pública e cria bases sólidas para o aprimoramento das políticas públicas e dos serviços oferecidos à população.
+
+
+<iframe style="border: 1px solid rgba(0, 0, 0, 0.1);" width="800" height="450" src="https://embed.figma.com/slides/2H0zrChKEM37mACISMisTB/Gov-Hub---Apresenta%C3%A7%C3%A3o-Geral?node-id=1-42&embed-host=share" allowfullscreen></iframe>
 
 ## Impactos esperados
 

@@ -182,34 +182,41 @@ nav:
     - Instalação: documentacao/instalacao.md
     - Arquitetura: documentacao/arquitetura.md
     - Tutoriais: 
-      - Infraestrutura: 
+      - Arquitetura de Implantação: 
         - CI/CD: documentacao/tutoriais/infraestrutura/cicd.md
         - Docker: documentacao/tutoriais/infraestrutura/docker.md
         - Kubernetes: documentacao/tutoriais/infraestrutura/kubernetes.md
         - Jupyter: documentacao/tutoriais/infraestrutura/jupyter.md
         - Airflow: documentacao/tutoriais/infraestrutura/airflow.md
         - PostgreSQL: documentacao/tutoriais/infraestrutura/postgresql.md
-      - DBT: 
+      - Integração de dados com DBT: 
         - Modelos: documentacao/tutoriais/dbt/modelos.md
-        - Arquitetura medallion: documentacao/tutoriais/dbt/arquitetura-medallion.md
+        - Arquitetura Medallion: documentacao/tutoriais/dbt/arquitetura-medallion.md
         - Astronomer Cosmos: documentacao/tutoriais/dbt/cosmos.md
         - Testes: documentacao/tutoriais/dbt/testes.md
         - Macros: documentacao/tutoriais/dbt/macros.md
         - Snaphots: documentacao/tutoriais/dbt/snapshots.md
         - DBT Docs: documentacao/tutoriais/dbt/dbt-docs.md
-      - Superset: 
-        - Conexões: documentacao/tutoriais/superset/conexoes.md
-        - Criando uma visualização: documentacao/tutoriais/superset/criando-chart.md
-        - Criando um dashboard: documentacao/tutoriais/superset/criando-dashboard.md
-        - Importando e exportando dashboards: documentacao/tutoriais/superset/import-export.md
-      - Sistemas estruturantes: 
-        - Guia de sistemas: documentacao/tutoriais/sistemas-estruturantes/importar_bancos.md
+      - Acesso a Sistemas estruturantes: 
+        - Interface dos Sistemas Estruturantes (APIs): documentacao/tutoriais/sistemas-estruturantes/importar_bancos.md
         - Credenciais de acesso: documentacao/tutoriais/sistemas-estruturantes/acesso-apis-siafi-siape.md
         - DAG de ingestão: documentacao/tutoriais/sistemas-estruturantes/sistemas-estruturantes.md
         - Integrando novas bases de dados: documentacao/tutoriais/sistemas-estruturantes/integracao_bases.md
+    - Jornada dos dados:
+      - Visão geral: guiasUso/jornada-dados/visao-geral.md
+      - Domínio Orçamentário: guiasUso/jornada-dados/dominio-orcamentario.md
+      - Domínio de Pessoal: guiasUso/jornada-dados/dominio-pessoal.md
+  - Tutoriais de Uso:
+    - Criar Dashboards: 
+      - Configuração inicial: guiasUso/superset/conexoes.md
+      - Criando um gráfico: guiasUso/superset/criando-chart.md
+      - Criando um dashboard: guiasUso/superset/criando-dashboard.md
+      - Importando e exportando dashboards: guiasUso/superset/import-export.md
+    - Criar novas tabelas Gold: guiasUso/tabelas-gold/index.md
+  - Dicionário de Dados:
+    - Sistemas Estruturantes: dicionario-dados/sistemas-estruturantes.md
   - Comunidade: 
-    - Documentação: comunidade/guia-contribuicao.md
-    - Licença: comunidade/licenca.md
+    - Guia de Contribuição: comunidade/guia-contribuicao.md
     - Dashboards Templates: comunidade/dashboards-templates.md
     - Pré-requisitos: comunidade/pre-requisitos.md
   - Publicações: 

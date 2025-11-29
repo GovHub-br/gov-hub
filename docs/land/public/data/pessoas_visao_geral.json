@@ -1,22 +1,22 @@
 {
   "meta": {
-    "atualizado_em": "2025-11-28T09:04:12.785919Z"
+    "atualizado_em": "2025-11-29T09:04:16.122832Z"
   },
   "kpis": {
-    "total_servidores": 1145,
-    "servidores_ativos_permanentes": 305,
+    "total_servidores": 1146,
+    "servidores_ativos_permanentes": 306,
     "aposentados": 704,
     "estagiarios": 17,
     "terceirizados": 623
   },
   "genero": {
-    "masculino_percent": 73.9,
-    "feminino_percent": 26.1
+    "masculino_percent": 73.8,
+    "feminino_percent": 26.2
   },
   "raca_cor": [
     {
       "nome_cor": "BRANCA",
-      "valor": 253
+      "valor": 254
     },
     {
       "nome_cor": "PARDA",
@@ -28,7 +28,7 @@
     },
     {
       "nome_cor": "AMARELA",
-      "valor": 6
+      "valor": 7
     },
     {
       "nome_cor": "INDIGENA",
@@ -76,7 +76,7 @@
     },
     "DF": {
       "nome": "DISTRITO FEDERAL",
-      "valor": 1130,
+      "valor": 1131,
       "percentual": "99%"
     },
     "ES": {
@@ -187,15 +187,15 @@
     },
     {
       "label": "ATIVO PERMANENTE",
-      "valor": 305
+      "valor": 306
     },
     {
       "label": "ATIVO EM OUTRO ORGAO",
-      "valor": 51
+      "valor": 50
     },
     {
       "label": "EXERC DESCENT CARREI",
-      "valor": 42
+      "valor": 43
     },
     {
       "label": "ESTAGIARIO SIGEPE",
@@ -225,7 +225,7 @@
       "situacao": "Ativo Permanente",
       "cidade": "Brasilia",
       "estado": "DF",
-      "total": 191
+      "total": 192
     },
     {
       "cargo": "TECNICO DE PLANEJAMENTO E PESQUISA",
@@ -321,7 +321,7 @@
       "situacao": "Ativo em outro órgão",
       "cidade": "Brasilia",
       "estado": "DF",
-      "total": 21
+      "total": 20
     },
     {
       "cargo": "ANALISTA DE SISTEMAS",

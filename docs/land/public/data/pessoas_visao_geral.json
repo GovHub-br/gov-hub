@@ -1,34 +1,34 @@
 {
   "meta": {
-    "atualizado_em": "2025-12-02T09:04:29.933374Z"
+    "atualizado_em": "2025-12-02T15:46:09.974268Z"
   },
   "kpis": {
-    "total_servidores": 1149,
-    "servidores_ativos_permanentes": 309,
-    "aposentados": 704,
-    "estagiarios": 17,
+    "total_servidores": 1138,
+    "servidores_ativos_permanentes": 303,
+    "aposentados": 703,
+    "estagiarios": 15,
     "terceirizados": 623
   },
   "genero": {
-    "masculino_percent": 73.7,
-    "feminino_percent": 26.3
+    "masculino_percent": 74.9,
+    "feminino_percent": 25.1
   },
   "raca_cor": [
     {
       "nome_cor": "BRANCA",
-      "valor": 255
+      "valor": 250
     },
     {
       "nome_cor": "PARDA",
-      "valor": 73
+      "valor": 72
     },
     {
       "nome_cor": "PRETA",
-      "valor": 28
+      "valor": 25
     },
     {
       "nome_cor": "AMARELA",
-      "valor": 7
+      "valor": 6
     },
     {
       "nome_cor": "INDIGENA",
@@ -76,7 +76,7 @@
     },
     "DF": {
       "nome": "DISTRITO FEDERAL",
-      "valor": 1134,
+      "valor": 1123,
       "percentual": "99%"
     },
     "ES": {
@@ -183,11 +183,11 @@
   "situacao_funcional": [
     {
       "label": "APOSENTADO",
-      "valor": 704
+      "valor": 703
     },
     {
       "label": "ATIVO PERMANENTE",
-      "valor": 309
+      "valor": 303
     },
     {
       "label": "ATIVO EM OUTRO ORGAO",
@@ -195,11 +195,11 @@
     },
     {
       "label": "EXERC DESCENT CARREI",
-      "valor": 43
+      "valor": 41
     },
     {
       "label": "ESTAGIARIO SIGEPE",
-      "valor": 17
+      "valor": 15
     },
     {
       "label": "CEDIDO/REQUISITADO",
@@ -225,7 +225,7 @@
       "situacao": "Ativo Permanente",
       "cidade": "Brasilia",
       "estado": "DF",
-      "total": 194
+      "total": 192
     },
     {
       "cargo": "TECNICO DE PLANEJAMENTO E PESQUISA",
@@ -233,7 +233,7 @@
       "situacao": "Aposentado",
       "cidade": "Brasilia",
       "estado": "DF",
-      "total": 188
+      "total": 186
     },
     {
       "cargo": "TECNICO DE PLANEJAMENTO E PESQUISA",
@@ -273,7 +273,7 @@
       "situacao": "Ativo Permanente",
       "cidade": "Brasilia",
       "estado": "DF",
-      "total": 49
+      "total": 45
     },
     {
       "cargo": "ASSESSOR ESPECIALIZADO",
@@ -404,6 +404,14 @@
       "total": 8
     },
     {
+      "cargo": "TEC DE PLANEJ E PESQUISA-QUADRO SUPLEMEN",
+      "genero": "Masculino",
+      "situacao": "Aposentado",
+      "cidade": "Brasilia",
+      "estado": "DF",
+      "total": 8
+    },
+    {
       "cargo": "ANALISTA DE SISTEMAS",
       "genero": "Feminino",
       "situacao": "Aposentado",
@@ -415,14 +423,6 @@
       "cargo": "AUXILIAR DE SERVICOS GERAIS",
       "genero": "Masculino",
       "situacao": "Ativo em outro órgão",
-      "cidade": "Brasilia",
-      "estado": "DF",
-      "total": 7
-    },
-    {
-      "cargo": "TEC DE PLANEJ E PESQUISA-QUADRO SUPLEMEN",
-      "genero": "Masculino",
-      "situacao": "Aposentado",
       "cidade": "Brasilia",
       "estado": "DF",
       "total": 7

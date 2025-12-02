@@ -86,4 +86,4 @@ HAVING count(*) > 1
 
 ---
 
-*Para mais tutoriais como este, visite nossa [página de publicações](../../land/dist/publicacoes.html).*
+*Para mais tutoriais como este, visite nossa [página de publicações](/govhub/publicacoes/).*

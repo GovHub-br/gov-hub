@@ -168,13 +168,13 @@ function initScrollAnimations() {
 function preloadGlobalImages() {
     const globalImages = [
         // Logos globais usados em todas as páginas
-        './images/icons/instagram.svg',
-        './images/icons/github.svg',
-        './images/icons/linkedin.svg',
-        './images/logo.png',
-        './images/lablivre_footer.png',
-        './images/unb_footer.png',
-        './images/ipea_footer.png'
+        '/govhub/land/dist/images/icons/instagram.svg',
+        '/govhub/land/dist/images/icons/github.svg',
+        '/govhub/land/dist/images/icons/linkedin.svg',
+        '/govhub/land/dist/images/logo.png',
+        '/govhub/land/dist/images/lablivre_footer.png',
+        '/govhub/land/dist/images/unb_footer.png',
+        '/govhub/land/dist/images/ipea_footer.png'
     ];
     
     console.log('🌐 Iniciando preload de imagens globais...');
@@ -214,7 +214,7 @@ function downloadEbook() {
     try {
         // Usar caminho local dentro da pasta dist
         const link = document.createElement('a');
-        link.href = './ebook/GovHub_Livro-digital_0905.pdf';
+        link.href = '../land/dist/ebook/GovHub_Livro-digital_0905.pdf';
         link.download = 'GovHub_Livro-digital_0905.pdf';
         link.target = '_blank';
         
@@ -230,7 +230,7 @@ function downloadEbook() {
     } catch (error) {
         console.error('Erro no download:', error);
         // Fallback: abrir em nova aba
-        window.open('./ebook/GovHub_Livro-digital_0905.pdf', '_blank');
+        window.open('../land/dist/ebook/GovHub_Livro-digital_0905.pdf', '_blank');
     }
 }
 

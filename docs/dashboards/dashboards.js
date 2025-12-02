@@ -71,7 +71,7 @@ function createBudgetChart() {
         updateBudgetLegend(labels, values);
     }
 
-    const dataUrl = '../public/data/orcamento_por_acao.json';
+    const dataUrl = '../land/public/data/orcamento_por_acao.json';
     const urlWithBust = `${dataUrl}?v=${Date.now()}`;
 
     fetch(urlWithBust, { cache: 'no-store' })
@@ -231,7 +231,7 @@ function getTooltipConfig(title) {
 
 // Carregar KPIs orçamentários a partir do JSON público
 function loadBudgetKpis() {
-    const dataUrl = '../public/data/visao_orcamentaria_total_ipea.json';
+    const dataUrl = '../land/public/data/visao_orcamentaria_total_ipea.json';
     const urlWithBust = `${dataUrl}?v=${Date.now()}`;
 
     function formatMillions(value) {
@@ -269,7 +269,7 @@ function loadBudgetKpis() {
 
 // Carregar KPIs de contratos a partir do JSON público
 function loadContractsKpis() {
-    const dataUrl = '../public/data/orcamento_contratos.json';
+    const dataUrl = '../land/public/data/orcamento_contratos.json';
     const urlWithBust = `${dataUrl}?v=${Date.now()}`;
 
     function formatCurrency(value) {
@@ -303,7 +303,7 @@ function loadContractsKpis() {
 
 // Carregar gráfico de barras dos maiores contratos
 function loadContractsBars() {
-    const dataUrl = '../public/data/10_maiores_contratos_natureza_despesa.json';
+    const dataUrl = '../land/public/data/10_maiores_contratos_natureza_despesa.json';
     const urlWithBust = `${dataUrl}?v=${Date.now()}`;
 
     function formatValue(value) {
@@ -402,7 +402,7 @@ function loadContractsBars() {
 
 // Carregar KPIs de TEDs recebidos
 function loadTedsRecebidosKpis() {
-    const dataUrl = '../public/data/teds_recebidos.json';
+    const dataUrl = '../land/public/data/teds_recebidos.json';
     const urlWithBust = `${dataUrl}?v=${Date.now()}`;
 
     function formatCurrency(value) {
@@ -436,7 +436,7 @@ function loadTedsRecebidosKpis() {
 
 // Carregar KPIs de TEDs enviados
 function loadTedsEnviadosKpis() {
-    const dataUrl = '../public/data/teds_enviados.json';
+    const dataUrl = '../land/public/data/teds_enviados.json';
     const urlWithBust = `${dataUrl}?v=${Date.now()}`;
 
     function formatCurrency(value) {
@@ -1033,7 +1033,7 @@ function createContractsChart() {
     const ctx = document.getElementById('contractsChart');
     if (!ctx) return;
 
-    const dataUrl = '../public/data/contratos.json';
+    const dataUrl = '../land/public/data/contratos.json';
     const urlWithBust = `${dataUrl}?v=${Date.now()}`;
 
     fetch(urlWithBust, { cache: 'no-store' })
@@ -1192,7 +1192,7 @@ function createContractsChart() {
 
 // Carregar e desenhar os gráficos "Como o dinheiro está sendo gasto?" a partir do JSON
 function loadExpenseElementCharts() {
-    const dataUrl = '../public/data/orcamento_por_elemento_despesa.json';
+    const dataUrl = '../land/public/data/orcamento_por_elemento_despesa.json';
     const urlWithBust = `${dataUrl}?v=${Date.now()}`;
 
     function safeNum(v) { return Number(v) || 0; }
@@ -1470,7 +1470,7 @@ function createGenderVChart() {
 async function updateGenderChart() {
     try {
         // Carregar dados do JSON
-        const response = await fetch('../public/data/servidores_sexo.json');
+        const response = await fetch('../land/public/data/servidores_sexo.json');
         if (!response.ok) {
             throw new Error('Erro ao carregar dados de gênero');
         }
@@ -1526,7 +1526,7 @@ function startGenderChartAutoUpdate() {
 // Função para carregar dados de raça/cor do JSON
 async function loadServidoresCorData() {
     try {
-        const response = await fetch('../public/data/servidores_cor.json');
+        const response = await fetch('../land/public/data/servidores_cor.json');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -1860,7 +1860,7 @@ function initDashboards() {
 
 // Função para carregar e popular a tabela de TEDs recebidos
 function loadTedsRecebidosTable() {
-    fetch('../public/data/detalhamento_teds_recebidos.json')
+    fetch('../land/public/data/detalhamento_teds_recebidos.json')
         .then(resp => resp.json())
         .then(json => {
             const tbody = document.getElementById('teds-recebidos-tbody');
@@ -1910,7 +1910,7 @@ function loadTedsRecebidosTable() {
 
 // Função para carregar e popular a tabela de TEDs enviados
 function loadTedsEnviadosTable() {
-    fetch('../public/data/detalhamento_teds_enviados.json')
+    fetch('../land/public/data/detalhamento_teds_enviados.json')
         .then(resp => resp.json())
         .then(json => {
             const tbody = document.getElementById('teds-enviados-tbody');
@@ -1961,7 +1961,7 @@ function loadTedsEnviadosTable() {
 // Função para carregar dados de servidores do JSON
 async function loadServidoresData() {
     try {
-        const response = await fetch('../public/data/servidores.json');
+        const response = await fetch('../land/public/data/servidores.json');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }

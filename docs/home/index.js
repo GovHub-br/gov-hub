@@ -5,16 +5,16 @@
 // Função para preload das imagens específicas da home
 function preloadHomeImages() {
     const homeImages = [
-        './images/contratos_homev2.png',
-        './images/teds_homev2.png',
-        './images/pessoal_homev2.png',
-        './images/orcamento_homev2.png',
-        './images/oqueeogovhub.png',
-        './images/img-infos-gov.jpg',
-        './images/lablivre.png',
-        './images/unb.png',
-        './images/ipea.png',
-        './images/book.png'
+        '/govhub/land/dist/images/contratos_homev2.png',
+        '/govhub/land/dist/images/teds_homev2.png',
+        '/govhub/land/dist/images/pessoal_homev2.png',
+        '/govhub/land/dist/images/orcamento_homev2.png',
+        '/govhub/land/dist/images/oqueeogovhub.png',
+        '/govhub/land/dist/images/img-infos-gov.jpg',
+        '/govhub/land/dist/images/lablivre.png',
+        '/govhub/land/dist/images/unb.png',
+        '/govhub/land/dist/images/ipea.png',
+        '/govhub/land/dist/images/book.png'
     ];
     
     console.log('🏠 Iniciando preload das imagens da home...');

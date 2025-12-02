@@ -3,7 +3,7 @@
 // ========================================
 
 const PESSOAS_DATA_PATHS = [
-    '../public/data/pessoas_visao_geral.json'
+    '../land/public/data/pessoas_visao_geral.json'
 ];
 
 // Cores para raça/cor
@@ -211,7 +211,7 @@ function loadBrazilMap() {
     const mapContainer = document.getElementById('brazilMap');
     if (!mapContainer) return;
 
-    fetch('./images/Map-Brasil.svg')
+    fetch('/govhub/land/dist/images/Map-Brasil.svg')
         .then(response => response.text())
         .then(svgText => {
             mapContainer.innerHTML = svgText;

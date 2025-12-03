@@ -6,6 +6,9 @@
 function createBudgetChart() {
     const ctx = document.getElementById('budgetChart');
     if (!ctx) return;
+    
+    // Destruir gráfico existente se houver
+    destroyChartIfExists('budgetChart');
 
     const palette = ['#AB2D2D', '#E24747', '#FB8585', '#31652B', '#67A95E', '#AFD1AA', '#422278', '#326879', '#8B4513', '#F59E0B', '#22c55e'];
 
@@ -163,24 +166,37 @@ function externalDoughnutTooltipHandler(context) {
     tooltipEl.style.opacity = '1';
 }
 
+// Função auxiliar para destruir gráfico existente antes de criar um novo
+function destroyChartIfExists(canvasId) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+    
+    // Verificar se há gráfico armazenado no canvas
+    if (canvas.chart) {
+        canvas.chart.destroy();
+        canvas.chart = null;
+    }
+    
+    // Verificar se Chart.js tem método getChart para obter instância existente
+    if (typeof Chart !== 'undefined' && typeof Chart.getChart === 'function') {
+        const existingChart = Chart.getChart(canvas);
+        if (existingChart) {
+            existingChart.destroy();
+        }
+    }
+}
+
 // Função para inicializar funcionalidades específicas da página de dashboards
 function initDashboards() {
-    console.log('🚀 Inicializando dashboards...');
-    
-    // Criar o gráfico quando o DOM estiver carregado
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('📄 DOM carregado, criando gráficos...');
             createBudgetChart();
             createAposentadoriasChart();
         });
     } else {
-        console.log('📄 DOM já carregado, criando gráficos...');
         createBudgetChart();
         createAposentadoriasChart();
     }
-    
-    console.log('📊 Página Dashboards inicializada com sucesso!');
 }
 
 // Função para atualizar o total do gráfico
@@ -2005,7 +2021,6 @@ function updateTotalAposentadorias(servidoresData) {
     
     if (totalElement) {
         totalElement.textContent = totalAposentadorias.toLocaleString('pt-BR');
-        console.log('✅ Total de aposentadorias atualizado:', totalAposentadorias);
     }
 }
 
@@ -2022,14 +2037,12 @@ function updateEmployeeCards(servidoresData) {
     const servidoresElement = document.getElementById('servidores-ativos');
     if (servidoresElement) {
         servidoresElement.textContent = data.servidores_ativos.toLocaleString('pt-BR');
-        console.log('✅ Servidores ativos atualizado:', data.servidores_ativos);
     }
     
     // Atualizar estagiários
     const estagiariosElement = document.getElementById('estagiarios');
     if (estagiariosElement) {
         estagiariosElement.textContent = data.estagiarios.toLocaleString('pt-BR');
-        console.log('✅ Estagiários atualizado:', data.estagiarios);
     }
     
     // Atualizar terceirizados
@@ -2040,7 +2053,6 @@ function updateEmployeeCards(servidoresData) {
         } else {
             terceirizadosElement.textContent = data.terceirizados.toLocaleString('pt-BR');
         }
-        console.log('✅ Terceirizados atualizado:', data.terceirizados);
     }
 }
 
@@ -2053,20 +2065,13 @@ function generateAposentadoriasChartData() {
 
 // Função para criar o gráfico de linha de aposentadorias
 async function createAposentadoriasChart() {
-    console.log('🔍 Tentando criar gráfico de aposentadorias...');
     const ctx = document.getElementById('aposentadoriasChart');
-    if (!ctx) {
-        console.error('❌ Canvas aposentadoriasChart não encontrado!');
+    if (!ctx || typeof Chart === 'undefined') {
         return;
     }
-    console.log('✅ Canvas encontrado, criando gráfico...');
 
-    // Verificar se Chart.js está carregado
-    if (typeof Chart === 'undefined') {
-        console.error('❌ Chart.js não está carregado!');
-        return;
-    }
-    console.log('✅ Chart.js carregado, prosseguindo...');
+    // Destruir gráfico existente se houver
+    destroyChartIfExists('aposentadoriasChart');
 
     // Carregar dados de servidores
     const servidoresData = await loadServidoresData();
@@ -2201,8 +2206,9 @@ async function createAposentadoriasChart() {
         }
     };
 
-    new Chart(ctx, config);
-    console.log('✅ Gráfico de aposentadorias criado com sucesso com dados do JSON!');
+    const chartInstance = new Chart(ctx, config);
+    // Armazenar referência do gráfico no canvas para facilitar destruição futura
+    ctx.chart = chartInstance;
 }
 
 // Função de fallback para garantir que o gráfico seja criado

@@ -1,9 +1,14 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Funcionalidade da caixa de pesquisa
+// Função para inicializar funcionalidades da página
+function initComoUsar() {
     const pesquisaBtn = document.getElementById('pesquisa-btn');
     const pesquisaInputContainer = document.getElementById('pesquisa-input-container');
     const pesquisaInput = document.getElementById('pesquisa-input');
     const fecharPesquisaBtn = document.getElementById('fechar-pesquisa-btn');
+
+    // Se os elementos não existem, sai silenciosamente
+    if (!pesquisaBtn || !pesquisaInputContainer || !pesquisaInput || !fecharPesquisaBtn) {
+        return;
+    }
 
     // Abrir caixa de pesquisa
     pesquisaBtn.addEventListener('click', function() {
@@ -32,4 +37,11 @@ document.addEventListener('DOMContentLoaded', function() {
             pesquisaInput.value = '';
         }
     });
-});
+}
+
+// Inicializar quando o DOM estiver pronto
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initComoUsar);
+} else {
+    initComoUsar();
+}

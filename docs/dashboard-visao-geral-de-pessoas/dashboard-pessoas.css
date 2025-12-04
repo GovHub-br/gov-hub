@@ -1319,8 +1319,37 @@ body {
     background: #ffffff;
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.08);
+    max-height: 440px; /* ~55px por linha x 8 linhas */
+    overflow-y: auto;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+}
+
+/* Estilização da barra de scroll */
+.teds-table-wrapper::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.teds-table-wrapper::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.teds-table-wrapper::-webkit-scrollbar-thumb {
+    background: #7A34F3;
+    border-radius: 4px;
+}
+
+.teds-table-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #6B2EE8;
+}
+
+/* Cabeçalho fixo da tabela */
+.teds-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
 .table {

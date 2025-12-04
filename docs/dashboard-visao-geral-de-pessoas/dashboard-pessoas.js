@@ -392,59 +392,47 @@ function setSituacaoFuncionalFromData(data) {
         return;
     }
     
-    // Função auxiliar para normalizar strings para comparação
-    const normalizeLabel = (str) => {
-        return (str || '').trim().toLowerCase().replace(/\s+/g, ' ');
+    // Função para formatar label (primeira letra maiúscula, resto minúsculo)
+    const formatLabel = (str) => {
+        if (!str) return '';
+        return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
     };
     
-    // Atualizar cada barra
+    // Gerar as barras dinamicamente a partir dos dados do JSON
+    const barsContainer = chartContainer.querySelector('.bars-container');
+    if (!barsContainer) {
+        console.warn('Container das barras não encontrado');
+        return;
+    }
+    
+    // Limpar barras existentes
+    barsContainer.innerHTML = '';
+    
+    // Criar barras para cada situação funcional
     situacoes.forEach(situacao => {
         const label = situacao.label || '';
         const valor = Number(situacao.valor) || 0;
-        const normalizedLabel = normalizeLabel(label);
-        
-        // Encontrar o bar-item correspondente pelo label
-        const barItems = chartContainer.querySelectorAll('.bar-item');
-        let found = false;
-        
-        barItems.forEach(barItem => {
-            const barLabel = barItem.querySelector('.bar-label');
-            if (!barLabel) return;
-            
-            const labelText = normalizeLabel(barLabel.textContent);
-            
-            // Comparar labels normalizados
-            if (labelText === normalizedLabel || 
-                labelText.includes(normalizedLabel) ||
-                normalizedLabel.includes(labelText)) {
-                
-                found = true;
-                
-                // Atualizar o valor
-                const barValue = barItem.querySelector('.bar-value');
-                if (barValue) {
-                    barValue.textContent = valor;
-                }
-                
-                // Atualizar a largura da barra
-                const barFill = barItem.querySelector('.bar-fill.functional-bar');
-                if (barFill) {
                     const percentage = (valor / maxValor) * 100;
-                    barFill.style.width = percentage + '%';
-                }
-            }
-        });
         
-        if (!found) {
-            console.warn(`Label não encontrado no HTML: "${label}"`);
-        }
+        const barItem = document.createElement('div');
+        barItem.className = 'bar-item';
+        barItem.innerHTML = `
+            <div class="bar-header">
+                <div class="bar-value">${valor.toLocaleString('pt-BR')}</div>
+                <div class="bar-label">${formatLabel(label)}</div>
+            </div>
+            <div class="bar-container">
+                <div class="bar-fill functional-bar" style="width: ${percentage}%"></div>
+            </div>
+        `;
+        barsContainer.appendChild(barItem);
     });
     
     // Atualizar os labels do eixo
     const axisLabels = chartContainer.querySelectorAll('.axis-labels span');
     if (axisLabels.length >= 2) {
         axisLabels[0].textContent = '0';
-        axisLabels[1].textContent = maxValor.toString();
+        axisLabels[1].textContent = maxValor.toLocaleString('pt-BR');
     }
     
     console.log('Gráfico de situação funcional atualizado com sucesso');

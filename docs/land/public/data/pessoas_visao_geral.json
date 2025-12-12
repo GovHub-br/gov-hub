@@ -1,11 +1,11 @@
 {
   "meta": {
-    "atualizado_em": "2025-12-11T09:05:04.970747Z"
+    "atualizado_em": "2025-12-12T09:05:07.779786Z"
   },
   "kpis": {
     "total_servidores": 1156,
     "servidores_ativos_permanentes": 315,
-    "aposentados": 704,
+    "aposentados": 703,
     "estagiarios": 18,
     "terceirizados": 623
   },
@@ -183,7 +183,7 @@
   "situacao_funcional": [
     {
       "label": "APOSENTADO",
-      "valor": 704
+      "valor": 703
     },
     {
       "label": "ATIVO PERMANENTE",
@@ -207,7 +207,7 @@
     },
     {
       "label": "INSTITUIDOR PENSAO",
-      "valor": 7
+      "valor": 8
     },
     {
       "label": "EXERC. 7  ART93 8112",
@@ -233,7 +233,7 @@
       "situacao": "Aposentado",
       "cidade": "Brasilia",
       "estado": "DF",
-      "total": 188
+      "total": 187
     },
     {
       "cargo": "TECNICO DE PLANEJAMENTO E PESQUISA",
@@ -468,6 +468,14 @@
       "total": 4
     },
     {
+      "cargo": "TECNICO DE PLANEJAMENTO E PESQUISA",
+      "genero": "Masculino",
+      "situacao": "INSTITUIDOR PENSAO",
+      "cidade": "Brasilia",
+      "estado": "DF",
+      "total": 4
+    },
+    {
       "cargo": "TECNICO ESPECIALIZADO",
       "genero": "Feminino",
       "situacao": "Aposentado",
@@ -487,14 +495,6 @@
       "cargo": "TECNICO DE DESENVOL E ADMINISTRACAO",
       "genero": "Feminino",
       "situacao": "Ativo em outro órgão",
-      "cidade": "Brasilia",
-      "estado": "DF",
-      "total": 3
-    },
-    {
-      "cargo": "TECNICO DE PLANEJAMENTO E PESQUISA",
-      "genero": "Masculino",
-      "situacao": "INSTITUIDOR PENSAO",
       "cidade": "Brasilia",
       "estado": "DF",
       "total": 3

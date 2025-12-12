@@ -85,6 +85,18 @@
     filter: brightness(0) invert(1); /* Converte para branco */
 }
 
+.footer-logo-cidade-democratica {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.footer-logo-cidade-democratica img {
+    height: 40px;
+    width: auto;
+    filter: brightness(0) invert(1); /* Converte para branco */
+}
+
 /* Main Content Section */
 .footer-middle {
     margin-bottom: 2.5rem;
@@ -250,6 +262,10 @@
     
     .footer-mobile-logo-capibaribe {
         filter: brightness(0) invert(1); /* Capibaribe em branco */
+    }
+    
+    .footer-mobile-logo-cidade-democratica {
+        filter: brightness(0) invert(1); /* Cidade Democrática em branco */
     }
     
     /* 3. Support Text */

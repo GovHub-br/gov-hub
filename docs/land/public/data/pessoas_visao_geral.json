@@ -1,6 +1,6 @@
 {
   "meta": {
-    "atualizado_em": "2025-12-22T09:05:48.326535Z"
+    "atualizado_em": "2025-12-23T09:05:52.062876Z"
   },
   "kpis": {
     "total_servidores": 1156,
@@ -10,8 +10,8 @@
     "terceirizados": 623
   },
   "genero": {
-    "masculino_percent": 73.9,
-    "feminino_percent": 26.1
+    "masculino_percent": 74.1,
+    "feminino_percent": 25.9
   },
   "raca_cor": [
     {
@@ -20,7 +20,7 @@
     },
     {
       "nome_cor": "PARDA",
-      "valor": 75
+      "valor": 74
     },
     {
       "nome_cor": "PRETA",

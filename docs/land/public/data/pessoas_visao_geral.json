@@ -1,17 +1,17 @@
 {
   "meta": {
-    "atualizado_em": "2025-12-24T09:05:56.011682Z"
+    "atualizado_em": "2025-12-25T09:06:05.331030Z"
   },
   "kpis": {
-    "total_servidores": 1156,
+    "total_servidores": 1157,
     "servidores_ativos_permanentes": 315,
     "aposentados": 703,
-    "estagiarios": 18,
+    "estagiarios": 19,
     "terceirizados": 623
   },
   "genero": {
-    "masculino_percent": 74.1,
-    "feminino_percent": 25.9
+    "masculino_percent": 74.2,
+    "feminino_percent": 25.8
   },
   "raca_cor": [
     {
@@ -20,7 +20,7 @@
     },
     {
       "nome_cor": "PARDA",
-      "valor": 74
+      "valor": 75
     },
     {
       "nome_cor": "PRETA",
@@ -76,7 +76,7 @@
     },
     "DF": {
       "nome": "DISTRITO FEDERAL",
-      "valor": 1141,
+      "valor": 1142,
       "percentual": "99%"
     },
     "ES": {
@@ -199,7 +199,7 @@
     },
     {
       "label": "ESTAGIARIO SIGEPE",
-      "valor": 18
+      "valor": 19
     },
     {
       "label": "CEDIDO/REQUISITADO",

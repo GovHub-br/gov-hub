@@ -1,17 +1,17 @@
 {
   "meta": {
-    "atualizado_em": "2026-02-26T09:10:12.634627Z"
+    "atualizado_em": "2026-02-27T09:10:16.097598Z"
   },
   "kpis": {
     "total_servidores": 1165,
     "servidores_ativos_permanentes": 319,
-    "aposentados": 705,
+    "aposentados": 703,
     "estagiarios": 20,
     "terceirizados": 623
   },
   "genero": {
-    "masculino_percent": 73.8,
-    "feminino_percent": 26.2
+    "masculino_percent": 73.7,
+    "feminino_percent": 26.3
   },
   "raca_cor": [
     {
@@ -20,7 +20,7 @@
     },
     {
       "nome_cor": "PARDA",
-      "valor": 79
+      "valor": 78
     },
     {
       "nome_cor": "PRETA",
@@ -175,7 +175,7 @@
   "situacao_funcional": [
     {
       "label": "APOSENTADO",
-      "valor": 705
+      "valor": 703
     },
     {
       "label": "ATIVO PERMANENTE",
@@ -207,7 +207,7 @@
     },
     {
       "label": "NOMEADO CARGO COMIS.",
-      "valor": 1
+      "valor": 3
     }
   ],
   "tabela_servidores": [
@@ -249,7 +249,7 @@
       "situacao": "Aposentado",
       "cidade": "Brasilia",
       "estado": "DF",
-      "total": 56
+      "total": 55
     },
     {
       "cargo": "AUXILIAR TECNICO",
@@ -257,7 +257,7 @@
       "situacao": "Aposentado",
       "cidade": "Brasilia",
       "estado": "DF",
-      "total": 54
+      "total": 53
     },
     {
       "cargo": "TECNICO DE PLANEJAMENTO E PESQUISA",

@@ -1,11 +1,11 @@
 {
   "meta": {
-    "atualizado_em": "2026-02-27T09:10:16.097598Z"
+    "atualizado_em": "2026-02-28T09:10:19.355918Z"
   },
   "kpis": {
     "total_servidores": 1165,
     "servidores_ativos_permanentes": 319,
-    "aposentados": 703,
+    "aposentados": 705,
     "estagiarios": 20,
     "terceirizados": 623
   },
@@ -175,7 +175,7 @@
   "situacao_funcional": [
     {
       "label": "APOSENTADO",
-      "valor": 703
+      "valor": 705
     },
     {
       "label": "ATIVO PERMANENTE",
@@ -207,7 +207,7 @@
     },
     {
       "label": "NOMEADO CARGO COMIS.",
-      "valor": 3
+      "valor": 1
     }
   ],
   "tabela_servidores": [
@@ -249,7 +249,7 @@
       "situacao": "Aposentado",
       "cidade": "Brasilia",
       "estado": "DF",
-      "total": 55
+      "total": 56
     },
     {
       "cargo": "AUXILIAR TECNICO",
@@ -257,7 +257,7 @@
       "situacao": "Aposentado",
       "cidade": "Brasilia",
       "estado": "DF",
-      "total": 53
+      "total": 54
     },
     {
       "cargo": "TECNICO DE PLANEJAMENTO E PESQUISA",

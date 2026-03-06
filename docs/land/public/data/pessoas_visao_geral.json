@@ -1,38 +1,38 @@
 {
   "meta": {
-    "atualizado_em": "2026-03-05T09:10:39.906977Z"
+    "atualizado_em": "2026-03-06T09:10:43.229047Z"
   },
   "kpis": {
     "total_servidores": 1166,
     "servidores_ativos_permanentes": 320,
-    "aposentados": 705,
+    "aposentados": 701,
     "estagiarios": 20,
     "terceirizados": 623
   },
   "genero": {
-    "masculino_percent": 79.1,
-    "feminino_percent": 20.9
+    "masculino_percent": 73.7,
+    "feminino_percent": 26.3
   },
   "raca_cor": [
     {
       "nome_cor": "BRANCA",
-      "valor": 1252
+      "valor": 428
     },
     {
       "nome_cor": "PARDA",
-      "valor": 382
+      "valor": 129
     },
     {
       "nome_cor": "PRETA",
-      "valor": 115
+      "valor": 47
     },
     {
       "nome_cor": "AMARELA",
-      "valor": 72
+      "valor": 14
     },
     {
       "nome_cor": "INDIGENA",
-      "valor": 5
+      "valor": 1
     }
   ],
   "mapa_uf": {
@@ -68,7 +68,7 @@
     },
     "DF": {
       "nome": "DISTRITO FEDERAL",
-      "valor": 1151,
+      "valor": 1150,
       "percentual": "99%"
     },
     "ES": {
@@ -175,38 +175,38 @@
   "situacao_funcional": [
     {
       "label": "APOSENTADO",
-      "valor": 170986
+      "valor": 45099
     },
     {
       "label": "ATIVO EM OUTRO ORGAO",
-      "valor": 6835
+      "valor": 1924
     },
     {
       "label": "ATIVO PERMANENTE",
-      "valor": 2878
+      "valor": 1145
     },
     {
       "label": "INSTITUIDOR PENSAO",
-      "valor": 2329
-    },
-    {
-      "label": "EXERC DESCENT CARREI",
-      "valor": 851
+      "valor": 673
     },
     {
       "label": "CEDIDO/REQUISITADO",
-      "valor": 499
+      "valor": 398
+    },
+    {
+      "label": "EXERC DESCENT CARREI",
+      "valor": 248
     },
     {
       "label": "ESTAGIARIO SIGEPE",
-      "valor": 127
-    },
-    {
-      "label": "EXERC. 7  ART93 8112",
-      "valor": 9
+      "valor": 71
     },
     {
       "label": "NOMEADO CARGO COMIS.",
+      "valor": 55
+    },
+    {
+      "label": "EXERC. 7  ART93 8112",
       "valor": 3
     }
   ],
@@ -241,7 +241,7 @@
       "situacao": "Aposentado",
       "cidade": "Brasilia",
       "estado": "DF",
-      "total": 73
+      "total": 72
     },
     {
       "cargo": "AUXILIAR TECNICO",
@@ -257,7 +257,7 @@
       "situacao": "Aposentado",
       "cidade": "Brasilia",
       "estado": "DF",
-      "total": 54
+      "total": 52
     },
     {
       "cargo": "TECNICO DE PLANEJAMENTO E PESQUISA",
@@ -361,7 +361,7 @@
       "situacao": "Aposentado",
       "cidade": "Brasilia",
       "estado": "DF",
-      "total": 12
+      "total": 11
     },
     {
       "cargo": "ANALISTA DE SISTEMAS",

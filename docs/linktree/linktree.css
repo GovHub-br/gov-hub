@@ -1,0 +1,262 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    /* Purple gradient theme using GovHub's IDV */
+    background: 
+        radial-gradient(circle at 10% 20%, rgba(255, 193, 7, 0.25) 0%, transparent 50%),
+        linear-gradient(135deg, #4c1d95 0%, #7A34F3 50%, #8b5cf6 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #202020;
+    padding: 2rem 1rem;
+}
+
+.linktree-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(124, 58, 237, 0.15); /* Purple tint border */
+    border-radius: 20px;
+    width: 100%;
+    max-width: 420px;
+    padding: 2rem;
+    box-shadow: 0 8px 32px rgba(124, 58, 237, 0.08);
+    animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.header {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #7A34F3 0%, #8b5cf6 100%);
+    padding: 4px;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 10px;
+    background: #ffffff;
+}
+
+.title-container h1 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #7A34F3;
+    letter-spacing: -0.025em;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+}
+
+.title-container p {
+    font-size: 0.75rem;
+    color: #4b5563;
+    line-height: 1.4;
+    font-weight: 500;
+}
+
+.description {
+    font-size: 0.93rem;
+    line-height: 1.5;
+    color: #374151;
+    margin-bottom: 24px;
+}
+
+/* Identidade visual da secao: Destaque a letra com yellow glow */
+.section-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #7A34F3;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    display: block;
+}
+
+.blur-letter {
+    position: relative; 
+    display: inline-block; 
+    z-index: 1;
+}
+
+.blur-letter::before {
+    content: "";
+    position: absolute; 
+    top: 50%; left: 50%; 
+    transform: translate(-50%, -50%); 
+    width: 20px; 
+    height: 20px; 
+    background: #FFD700; 
+    border-radius: 50%; 
+    filter: blur(6px); 
+    opacity: 0.5; 
+    z-index: -1;
+}
+
+.link-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 28px;
+}
+
+.link-item {
+    display: flex;
+    align-items: center;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    /* Linha lateral inspirada no menu mobile da IDV (.md-nav--primary ... border-left: 4px solid #7A34F3) */
+    border-left: 4px solid #7A34F3;
+    padding: 12px 16px;
+    border-radius: 14px;
+    text-decoration: none;
+    color: #202020;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.link-item:hover {
+    background: rgba(124, 58, 237, 0.05);
+    border-color: rgba(124, 58, 237, 0.3);
+    border-left-color: #8b5cf6;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(124, 58, 237, 0.12);
+}
+
+/* Card em Destaque */
+.link-item.featured {
+    background: linear-gradient(135deg, #7A34F3 0%, #8b5cf6 100%);
+    color: #ffffff;
+    border: none;
+    padding-left: 20px; /* Compensa a falta da borda esquerda pra manter alinhamento */
+}
+
+.link-item.featured .link-title, 
+.link-item.featured .link-subtitle {
+    color: #ffffff;
+}
+
+.link-item.featured:hover {
+    box-shadow: 0 8px 20px rgba(124, 58, 237, 0.3);
+    border: none;
+}
+
+.link-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 14px;
+    flex-shrink: 0;
+}
+
+/* Cores padroes de icones */
+.bg-github { background: #24292e; color: #fff;}
+.bg-web { background: #10b981; color: #fff; } /* Green like the standard feature icon */
+.bg-project { background: #f3f4f6; color: #4b5563; }
+
+.link-item.featured .bg-docs {
+    background: rgba(255,255,255,0.2);
+    color: #ffffff;
+}
+
+.link-icon svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+}
+
+.link-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.link-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.link-subtitle {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-top: 2px;
+}
+
+.link-item.featured .link-subtitle {
+    color: rgba(255,255,255,0.9);
+}
+
+.link-arrow {
+    width: 16px;
+    height: 16px;
+    stroke: #9ca3af;
+    transition: transform 0.3s ease, stroke 0.3s ease;
+}
+
+.link-item.featured .link-arrow {
+    stroke: #ffffff;
+}
+
+.link-item:hover .link-arrow {
+    transform: translateX(4px) translateY(-4px);
+    stroke: #7A34F3;
+}
+
+.link-item.featured:hover .link-arrow {
+    stroke: #ffffff;
+}
+
+.divider {
+    height: 1px;
+    background: rgba(124, 58, 237, 0.1);
+    margin: 16px 0 24px 0;
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-start;
+}
+
+/* Tags the follow the highlight logic of the GovHub features */
+.tag {
+    background: rgba(124, 58, 237, 0.08);
+    border: 1px solid rgba(124, 58, 237, 0.15);
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: #7A34F3;
+    transition: all 0.3s ease;
+    cursor: default;
+}
+
+

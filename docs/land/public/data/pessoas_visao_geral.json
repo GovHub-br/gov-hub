@@ -1,38 +1,38 @@
 {
   "meta": {
-    "atualizado_em": "2026-04-10T09:13:02.501869Z"
+    "atualizado_em": "2026-04-11T09:13:06.715301Z"
   },
   "kpis": {
     "total_servidores": 1174,
-    "servidores_ativos_permanentes": 324,
+    "servidores_ativos_permanentes": 323,
     "aposentados": 705,
     "estagiarios": 23,
     "terceirizados": 623
   },
   "genero": {
-    "masculino_percent": 73.1,
-    "feminino_percent": 26.9
+    "masculino_percent": 84.1,
+    "feminino_percent": 15.9
   },
   "raca_cor": [
     {
       "nome_cor": "BRANCA",
-      "valor": 266
+      "valor": 1760
     },
     {
       "nome_cor": "PARDA",
-      "valor": 78
+      "valor": 609
     },
     {
       "nome_cor": "PRETA",
-      "valor": 31
+      "valor": 143
     },
     {
       "nome_cor": "AMARELA",
-      "valor": 7
+      "valor": 71
     },
     {
       "nome_cor": "INDIGENA",
-      "valor": 1
+      "valor": 5
     }
   ],
   "mapa_uf": {
@@ -175,35 +175,35 @@
   "situacao_funcional": [
     {
       "label": "APOSENTADO",
-      "valor": 98481
+      "valor": 140855
     },
     {
       "label": "ATIVO EM OUTRO ORGAO",
-      "valor": 4075
+      "valor": 5751
     },
     {
       "label": "ATIVO PERMANENTE",
-      "valor": 2313
+      "valor": 3326
     },
     {
       "label": "INSTITUIDOR PENSAO",
-      "valor": 1049
+      "valor": 1904
     },
     {
       "label": "EXERC DESCENT CARREI",
-      "valor": 690
+      "valor": 1049
     },
     {
       "label": "CEDIDO/REQUISITADO",
-      "valor": 226
+      "valor": 390
     },
     {
       "label": "ESTAGIARIO SIGEPE",
-      "valor": 90
+      "valor": 136
     },
     {
       "label": "EXERC. 7  ART93 8112",
-      "valor": 6
+      "valor": 8
     },
     {
       "label": "NOMEADO CARGO COMIS.",
@@ -444,16 +444,16 @@
       "total": 5
     },
     {
-      "cargo": "TECNICO DE DESENVOL E ADMINISTRACAO",
-      "genero": "Feminino",
+      "cargo": "ASSESSOR ESPECIALIZADO",
+      "genero": "Masculino",
       "situacao": "Ativo Permanente",
       "cidade": "Brasilia",
       "estado": "DF",
-      "total": 5
+      "total": 4
     },
     {
-      "cargo": "ASSESSOR ESPECIALIZADO",
-      "genero": "Masculino",
+      "cargo": "TECNICO DE DESENVOL E ADMINISTRACAO",
+      "genero": "Feminino",
       "situacao": "Ativo Permanente",
       "cidade": "Brasilia",
       "estado": "DF",
@@ -479,6 +479,14 @@
       "cargo": "TEC DE PLANEJ E PESQUISA-QUADRO SUPLEMEN",
       "genero": "Masculino",
       "situacao": "Ativo Permanente",
+      "cidade": "Brasilia",
+      "estado": "DF",
+      "total": 3
+    },
+    {
+      "cargo": "TECNICO DE DESENVOL E ADMINISTRACAO",
+      "genero": "Feminino",
+      "situacao": "Ativo em outro órgão",
       "cidade": "Brasilia",
       "estado": "DF",
       "total": 3
@@ -526,14 +534,6 @@
     {
       "cargo": "TECNICO DE DESENVOL E ADMINISTRACAO",
       "genero": "Feminino",
-      "situacao": "Ativo em outro órgão",
-      "cidade": "Brasilia",
-      "estado": "DF",
-      "total": 2
-    },
-    {
-      "cargo": "TECNICO DE DESENVOL E ADMINISTRACAO",
-      "genero": "Feminino",
       "situacao": "Ativo Permanente",
       "cidade": "Rio De Janeiro",
       "estado": "RJ",
@@ -598,17 +598,17 @@
     {
       "cargo": "AUXILIAR ADMINISTRATIVO",
       "genero": "Masculino",
-      "situacao": "Ativo em outro órgão",
-      "cidade": "Brasilia",
-      "estado": "DF",
+      "situacao": "Ativo Permanente",
+      "cidade": "Rio De Janeiro",
+      "estado": "RJ",
       "total": 1
     },
     {
       "cargo": "AUXILIAR ADMINISTRATIVO",
       "genero": "Masculino",
-      "situacao": "Ativo Permanente",
-      "cidade": "Rio De Janeiro",
-      "estado": "RJ",
+      "situacao": "Ativo em outro órgão",
+      "cidade": "Brasilia",
+      "estado": "DF",
       "total": 1
     },
     {
@@ -678,6 +678,14 @@
     {
       "cargo": "SECRETARIO",
       "genero": "Feminino",
+      "situacao": "Aposentado",
+      "cidade": "Rio De Janeiro",
+      "estado": "RJ",
+      "total": 1
+    },
+    {
+      "cargo": "SECRETARIO",
+      "genero": "Feminino",
       "situacao": "Ativo Permanente",
       "cidade": "Brasilia",
       "estado": "DF",
@@ -686,14 +694,14 @@
     {
       "cargo": "SECRETARIO",
       "genero": "Feminino",
-      "situacao": "Aposentado",
-      "cidade": "Rio De Janeiro",
-      "estado": "RJ",
+      "situacao": "Ativo em outro órgão",
+      "cidade": "Brasilia",
+      "estado": "DF",
       "total": 1
     },
     {
-      "cargo": "SECRETARIO",
-      "genero": "Feminino",
+      "cargo": "TECNICO DE DESENVOL E ADMINISTRACAO",
+      "genero": "Masculino",
       "situacao": "Ativo em outro órgão",
       "cidade": "Brasilia",
       "estado": "DF",
@@ -705,14 +713,6 @@
       "situacao": "Aposentado",
       "cidade": "Rio De Janeiro",
       "estado": "RJ",
-      "total": 1
-    },
-    {
-      "cargo": "TECNICO DE DESENVOL E ADMINISTRACAO",
-      "genero": "Masculino",
-      "situacao": "Ativo em outro órgão",
-      "cidade": "Brasilia",
-      "estado": "DF",
       "total": 1
     },
     {

@@ -1,38 +1,38 @@
 {
   "meta": {
-    "atualizado_em": "2026-04-14T09:13:21.639213Z"
+    "atualizado_em": "2026-04-15T09:13:22.208463Z"
   },
   "kpis": {
-    "total_servidores": 1174,
-    "servidores_ativos_permanentes": 323,
+    "total_servidores": 1177,
+    "servidores_ativos_permanentes": 325,
     "aposentados": 705,
-    "estagiarios": 23,
+    "estagiarios": 24,
     "terceirizados": 623
   },
   "genero": {
-    "masculino_percent": 81.5,
-    "feminino_percent": 18.5
+    "masculino_percent": 73.1,
+    "feminino_percent": 26.9
   },
   "raca_cor": [
     {
       "nome_cor": "BRANCA",
-      "valor": 595
+      "valor": 266
     },
     {
       "nome_cor": "PARDA",
-      "valor": 147
+      "valor": 79
     },
     {
       "nome_cor": "PRETA",
-      "valor": 50
+      "valor": 34
     },
     {
       "nome_cor": "AMARELA",
-      "valor": 41
+      "valor": 7
     },
     {
       "nome_cor": "INDIGENA",
-      "valor": 4
+      "valor": 1
     }
   ],
   "mapa_uf": {
@@ -68,7 +68,7 @@
     },
     "DF": {
       "nome": "DISTRITO FEDERAL",
-      "valor": 1159,
+      "valor": 1161,
       "percentual": "99%"
     },
     "ES": {
@@ -128,7 +128,7 @@
     },
     "RJ": {
       "nome": "RIO DE JANEIRO",
-      "valor": 13,
+      "valor": 14,
       "percentual": "1%"
     },
     "RN": {
@@ -175,27 +175,27 @@
   "situacao_funcional": [
     {
       "label": "APOSENTADO",
-      "valor": 34307
+      "valor": 43929
     },
     {
       "label": "ATIVO EM OUTRO ORGAO",
-      "valor": 1532
+      "valor": 1996
     },
     {
       "label": "ATIVO PERMANENTE",
-      "valor": 922
+      "valor": 858
     },
     {
       "label": "EXERC DESCENT CARREI",
-      "valor": 500
+      "valor": 481
     },
     {
       "label": "INSTITUIDOR PENSAO",
-      "valor": 435
+      "valor": 423
     },
     {
       "label": "ESTAGIARIO SIGEPE",
-      "valor": 58
+      "valor": 63
     },
     {
       "label": "CEDIDO/REQUISITADO",
@@ -265,7 +265,7 @@
       "situacao": "Ativo Permanente",
       "cidade": "Brasilia",
       "estado": "DF",
-      "total": 51
+      "total": 53
     },
     {
       "cargo": "ASSESSOR ESPECIALIZADO",

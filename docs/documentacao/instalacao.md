@@ -12,12 +12,14 @@ Antes de começar, certifique-se de ter os seguintes softwares instalados:
 - **Make**: Ferramenta de automação de build.
 - **Python 3.11**: Para execução de scripts e desenvolvimento.
 - **Git**: Controle de versão.
+- **Pipx**: Para instalar pacotes em ambientes isolados.
 
 Caso precise de ajuda para instalar esses componentes, consulte a documentação oficial de cada ferramenta:
 
 - [Instalação do Docker](https://docs.docker.com/get-docker/)
 - [Guia do Python](https://www.python.org/downloads/)
 - [Guia do Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+- [Instalação do Pipx](https://pipx.pypa.io/stable/how-to/install-pipx/)
 
 ---
 
@@ -49,12 +51,18 @@ Este comando irá:
 
 !!! note "Dica" Caso encontre problemas durante a configuração, verifique se o Docker está rodando corretamente e se você possui permissões administrativas no sistema.
 
+Execute o comando abaixo para copiar as variáveis de `local.env` para o `.env`
+
+```bash
+cp local.env .env
+```
+
 ## Executando o Projeto Localmente
 
 Após a configuração, inicialize todos os serviços com o Docker Compose:
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 ### Acessando os Componentes

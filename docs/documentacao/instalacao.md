@@ -29,7 +29,7 @@ Para obter o código-fonte do projeto, clone o repositório Git:
 
 ```bash
 git clone https://github.com/GovHub-br/data-application-gov-hub.git
-cd app-lappis-ipea
+cd data-application-gov-hub
 ```
 
 ### 2. Configurando o Ambiente

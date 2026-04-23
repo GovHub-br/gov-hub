@@ -1,38 +1,38 @@
 {
   "meta": {
-    "atualizado_em": "2026-04-22T09:13:50.463104Z"
+    "atualizado_em": "2026-04-23T09:13:54.692269Z"
   },
   "kpis": {
     "total_servidores": 1177,
-    "servidores_ativos_permanentes": 325,
-    "aposentados": 705,
+    "servidores_ativos_permanentes": 324,
+    "aposentados": 699,
     "estagiarios": 24,
     "terceirizados": 623
   },
   "genero": {
-    "masculino_percent": 79.8,
-    "feminino_percent": 20.2
+    "masculino_percent": 83.4,
+    "feminino_percent": 16.6
   },
   "raca_cor": [
     {
       "nome_cor": "BRANCA",
-      "valor": 1468
+      "valor": 801
     },
     {
       "nome_cor": "PARDA",
-      "valor": 498
+      "valor": 171
     },
     {
       "nome_cor": "PRETA",
-      "valor": 114
+      "valor": 57
     },
     {
       "nome_cor": "AMARELA",
-      "valor": 55
+      "valor": 47
     },
     {
       "nome_cor": "INDIGENA",
-      "valor": 4
+      "valor": 2
     }
   ],
   "mapa_uf": {
@@ -68,7 +68,7 @@
     },
     "DF": {
       "nome": "DISTRITO FEDERAL",
-      "valor": 1161,
+      "valor": 1158,
       "percentual": "99%"
     },
     "ES": {
@@ -175,39 +175,39 @@
   "situacao_funcional": [
     {
       "label": "APOSENTADO",
-      "valor": 154897
+      "valor": 134228
     },
     {
       "label": "ATIVO EM OUTRO ORGAO",
-      "valor": 6605
+      "valor": 6160
     },
     {
       "label": "ATIVO PERMANENTE",
-      "valor": 4052
+      "valor": 3234
     },
     {
       "label": "INSTITUIDOR PENSAO",
-      "valor": 2158
+      "valor": 1720
     },
     {
       "label": "EXERC DESCENT CARREI",
-      "valor": 1116
+      "valor": 1039
     },
     {
       "label": "CEDIDO/REQUISITADO",
-      "valor": 695
+      "valor": 459
     },
     {
       "label": "ESTAGIARIO SIGEPE",
-      "valor": 152
-    },
-    {
-      "label": "EXERC. 7  ART93 8112",
-      "valor": 8
+      "valor": 115
     },
     {
       "label": "NOMEADO CARGO COMIS.",
-      "valor": 3
+      "valor": 7
+    },
+    {
+      "label": "EXERC. 7  ART93 8112",
+      "valor": 6
     }
   ],
   "tabela_servidores": [
@@ -217,7 +217,7 @@
       "situacao": "Ativo Permanente",
       "cidade": "Brasilia",
       "estado": "DF",
-      "total": 208
+      "total": 207
     },
     {
       "cargo": "TECNICO DE PLANEJAMENTO E PESQUISA",
@@ -225,7 +225,7 @@
       "situacao": "Aposentado",
       "cidade": "Brasilia",
       "estado": "DF",
-      "total": 187
+      "total": 186
     },
     {
       "cargo": "TECNICO DE PLANEJAMENTO E PESQUISA",
@@ -233,7 +233,7 @@
       "situacao": "Aposentado",
       "cidade": "Brasilia",
       "estado": "DF",
-      "total": 86
+      "total": 85
     },
     {
       "cargo": "SECRETARIO",
@@ -241,7 +241,7 @@
       "situacao": "Aposentado",
       "cidade": "Brasilia",
       "estado": "DF",
-      "total": 73
+      "total": 72
     },
     {
       "cargo": "AUXILIAR TECNICO",
@@ -252,20 +252,20 @@
       "total": 56
     },
     {
-      "cargo": "AUXILIAR TECNICO",
-      "genero": "Feminino",
-      "situacao": "Aposentado",
-      "cidade": "Brasilia",
-      "estado": "DF",
-      "total": 54
-    },
-    {
       "cargo": "TECNICO DE PLANEJAMENTO E PESQUISA",
       "genero": "Feminino",
       "situacao": "Ativo Permanente",
       "cidade": "Brasilia",
       "estado": "DF",
       "total": 53
+    },
+    {
+      "cargo": "AUXILIAR TECNICO",
+      "genero": "Feminino",
+      "situacao": "Aposentado",
+      "cidade": "Brasilia",
+      "estado": "DF",
+      "total": 52
     },
     {
       "cargo": "ASSESSOR ESPECIALIZADO",
@@ -396,14 +396,6 @@
       "total": 8
     },
     {
-      "cargo": "ANALISTA DE SISTEMAS",
-      "genero": "Feminino",
-      "situacao": "Aposentado",
-      "cidade": "Brasilia",
-      "estado": "DF",
-      "total": 7
-    },
-    {
       "cargo": "AUXILIAR DE SERVICOS GERAIS",
       "genero": "Masculino",
       "situacao": "Ativo em outro órgão",
@@ -434,6 +426,14 @@
       "cidade": "Brasilia",
       "estado": "DF",
       "total": 7
+    },
+    {
+      "cargo": "ANALISTA DE SISTEMAS",
+      "genero": "Feminino",
+      "situacao": "Aposentado",
+      "cidade": "Brasilia",
+      "estado": "DF",
+      "total": 6
     },
     {
       "cargo": "AUXILIAR TECNICO",

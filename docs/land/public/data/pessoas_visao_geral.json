@@ -1,38 +1,38 @@
 {
   "meta": {
-    "atualizado_em": "2026-04-26T09:14:07.048846Z"
+    "atualizado_em": "2026-04-27T09:14:11.048096Z"
   },
   "kpis": {
     "total_servidores": 1177,
-    "servidores_ativos_permanentes": 324,
-    "aposentados": 701,
+    "servidores_ativos_permanentes": 325,
+    "aposentados": 705,
     "estagiarios": 24,
     "terceirizados": 623
   },
   "genero": {
-    "masculino_percent": 71.0,
-    "feminino_percent": 29.0
+    "masculino_percent": 81.3,
+    "feminino_percent": 18.7
   },
   "raca_cor": [
     {
       "nome_cor": "BRANCA",
-      "valor": 770
+      "valor": 1292
     },
     {
       "nome_cor": "PARDA",
-      "valor": 248
+      "valor": 290
     },
     {
       "nome_cor": "PRETA",
-      "valor": 71
+      "valor": 76
     },
     {
       "nome_cor": "AMARELA",
-      "valor": 24
+      "valor": 57
     },
     {
       "nome_cor": "INDIGENA",
-      "valor": 3
+      "valor": 5
     }
   ],
   "mapa_uf": {
@@ -68,7 +68,7 @@
     },
     "DF": {
       "nome": "DISTRITO FEDERAL",
-      "valor": 1155,
+      "valor": 1161,
       "percentual": "99%"
     },
     "ES": {
@@ -175,39 +175,39 @@
   "situacao_funcional": [
     {
       "label": "APOSENTADO",
-      "valor": 110567
+      "valor": 82876
     },
     {
       "label": "ATIVO EM OUTRO ORGAO",
-      "valor": 3882
+      "valor": 3584
     },
     {
       "label": "ATIVO PERMANENTE",
-      "valor": 2910
+      "valor": 2085
     },
     {
       "label": "INSTITUIDOR PENSAO",
-      "valor": 2201
+      "valor": 820
     },
     {
       "label": "EXERC DESCENT CARREI",
-      "valor": 1070
+      "valor": 609
     },
     {
       "label": "CEDIDO/REQUISITADO",
-      "valor": 275
+      "valor": 175
     },
     {
       "label": "ESTAGIARIO SIGEPE",
-      "valor": 131
+      "valor": 85
     },
     {
       "label": "EXERC. 7  ART93 8112",
-      "valor": 8
+      "valor": 5
     },
     {
       "label": "NOMEADO CARGO COMIS.",
-      "valor": 3
+      "valor": 2
     }
   ],
   "tabela_servidores": [
@@ -225,7 +225,7 @@
       "situacao": "Aposentado",
       "cidade": "Brasilia",
       "estado": "DF",
-      "total": 186
+      "total": 187
     },
     {
       "cargo": "TECNICO DE PLANEJAMENTO E PESQUISA",
@@ -233,7 +233,7 @@
       "situacao": "Aposentado",
       "cidade": "Brasilia",
       "estado": "DF",
-      "total": 85
+      "total": 86
     },
     {
       "cargo": "SECRETARIO",
@@ -257,7 +257,7 @@
       "situacao": "Aposentado",
       "cidade": "Brasilia",
       "estado": "DF",
-      "total": 53
+      "total": 54
     },
     {
       "cargo": "TECNICO DE PLANEJAMENTO E PESQUISA",
@@ -308,6 +308,14 @@
       "total": 22
     },
     {
+      "cargo": "TECNICO DE PLANEJAMENTO E PESQUISA",
+      "genero": "Masculino",
+      "situacao": "Ativo em outro órgão",
+      "cidade": "Brasilia",
+      "estado": "DF",
+      "total": 20
+    },
+    {
       "cargo": "ANALISTA DE SISTEMAS",
       "genero": "Masculino",
       "situacao": "Aposentado",
@@ -319,14 +327,6 @@
       "cargo": "TECNICO DE DESENVOL E ADMINISTRACAO",
       "genero": "Feminino",
       "situacao": "Aposentado",
-      "cidade": "Brasilia",
-      "estado": "DF",
-      "total": 19
-    },
-    {
-      "cargo": "TECNICO DE PLANEJAMENTO E PESQUISA",
-      "genero": "Masculino",
-      "situacao": "Ativo em outro órgão",
       "cidade": "Brasilia",
       "estado": "DF",
       "total": 19
@@ -348,20 +348,20 @@
       "total": 14
     },
     {
+      "cargo": "AUXILIAR DE SERVICOS GERAIS",
+      "genero": "Masculino",
+      "situacao": "Ativo Permanente",
+      "cidade": "Brasilia",
+      "estado": "DF",
+      "total": 12
+    },
+    {
       "cargo": "TEC DE PLANEJ E PESQUISA-QUADRO SUPLEMEN",
       "genero": "Feminino",
       "situacao": "Aposentado",
       "cidade": "Brasilia",
       "estado": "DF",
       "total": 12
-    },
-    {
-      "cargo": "AUXILIAR DE SERVICOS GERAIS",
-      "genero": "Masculino",
-      "situacao": "Ativo Permanente",
-      "cidade": "Brasilia",
-      "estado": "DF",
-      "total": 11
     },
     {
       "cargo": "ANALISTA DE SISTEMAS",
@@ -388,6 +388,14 @@
       "total": 8
     },
     {
+      "cargo": "CUX DE MANUTENCAO E SERV  OPERACIONAIS",
+      "genero": "Masculino",
+      "situacao": "Aposentado",
+      "cidade": "Brasilia",
+      "estado": "DF",
+      "total": 8
+    },
+    {
       "cargo": "ANALISTA DE SISTEMAS",
       "genero": "Feminino",
       "situacao": "Aposentado",
@@ -399,14 +407,6 @@
       "cargo": "AUXILIAR DE SERVICOS GERAIS",
       "genero": "Masculino",
       "situacao": "Ativo em outro órgão",
-      "cidade": "Brasilia",
-      "estado": "DF",
-      "total": 7
-    },
-    {
-      "cargo": "CUX DE MANUTENCAO E SERV  OPERACIONAIS",
-      "genero": "Masculino",
-      "situacao": "Aposentado",
       "cidade": "Brasilia",
       "estado": "DF",
       "total": 7

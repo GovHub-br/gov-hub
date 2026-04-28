@@ -1,38 +1,38 @@
 {
   "meta": {
-    "atualizado_em": "2026-04-27T09:14:11.048096Z"
+    "atualizado_em": "2026-04-28T09:14:14.470992Z"
   },
   "kpis": {
     "total_servidores": 1177,
-    "servidores_ativos_permanentes": 325,
-    "aposentados": 705,
+    "servidores_ativos_permanentes": 323,
+    "aposentados": 701,
     "estagiarios": 24,
     "terceirizados": 623
   },
   "genero": {
-    "masculino_percent": 81.3,
-    "feminino_percent": 18.7
+    "masculino_percent": 71.8,
+    "feminino_percent": 28.2
   },
   "raca_cor": [
     {
       "nome_cor": "BRANCA",
-      "valor": 1292
+      "valor": 774
     },
     {
       "nome_cor": "PARDA",
-      "valor": 290
+      "valor": 182
     },
     {
       "nome_cor": "PRETA",
-      "valor": 76
+      "valor": 65
     },
     {
       "nome_cor": "AMARELA",
-      "valor": 57
+      "valor": 42
     },
     {
       "nome_cor": "INDIGENA",
-      "valor": 5
+      "valor": 1
     }
   ],
   "mapa_uf": {
@@ -68,7 +68,7 @@
     },
     "DF": {
       "nome": "DISTRITO FEDERAL",
-      "valor": 1161,
+      "valor": 1155,
       "percentual": "99%"
     },
     "ES": {
@@ -175,39 +175,39 @@
   "situacao_funcional": [
     {
       "label": "APOSENTADO",
-      "valor": 82876
+      "valor": 157540
     },
     {
       "label": "ATIVO EM OUTRO ORGAO",
-      "valor": 3584
+      "valor": 6480
     },
     {
       "label": "ATIVO PERMANENTE",
-      "valor": 2085
+      "valor": 3831
     },
     {
       "label": "INSTITUIDOR PENSAO",
-      "valor": 820
+      "valor": 2135
     },
     {
       "label": "EXERC DESCENT CARREI",
-      "valor": 609
+      "valor": 1037
     },
     {
       "label": "CEDIDO/REQUISITADO",
-      "valor": 175
+      "valor": 461
     },
     {
       "label": "ESTAGIARIO SIGEPE",
-      "valor": 85
+      "valor": 132
     },
     {
       "label": "EXERC. 7  ART93 8112",
-      "valor": 5
+      "valor": 9
     },
     {
       "label": "NOMEADO CARGO COMIS.",
-      "valor": 2
+      "valor": 3
     }
   ],
   "tabela_servidores": [
@@ -217,7 +217,7 @@
       "situacao": "Ativo Permanente",
       "cidade": "Brasilia",
       "estado": "DF",
-      "total": 208
+      "total": 206
     },
     {
       "cargo": "TECNICO DE PLANEJAMENTO E PESQUISA",
@@ -225,7 +225,7 @@
       "situacao": "Aposentado",
       "cidade": "Brasilia",
       "estado": "DF",
-      "total": 187
+      "total": 186
     },
     {
       "cargo": "TECNICO DE PLANEJAMENTO E PESQUISA",
@@ -284,16 +284,16 @@
       "total": 27
     },
     {
-      "cargo": "TECNICO DE DESENVOL E ADMINISTRACAO",
-      "genero": "Masculino",
+      "cargo": "AUXILIAR ADMINISTRATIVO",
+      "genero": "Feminino",
       "situacao": "Aposentado",
       "cidade": "Brasilia",
       "estado": "DF",
-      "total": 25
+      "total": 24
     },
     {
-      "cargo": "AUXILIAR ADMINISTRATIVO",
-      "genero": "Feminino",
+      "cargo": "TECNICO DE DESENVOL E ADMINISTRACAO",
+      "genero": "Masculino",
       "situacao": "Aposentado",
       "cidade": "Brasilia",
       "estado": "DF",
@@ -305,7 +305,7 @@
       "situacao": "Aposentado",
       "cidade": "Brasilia",
       "estado": "DF",
-      "total": 22
+      "total": 21
     },
     {
       "cargo": "TECNICO DE PLANEJAMENTO E PESQUISA",
@@ -332,16 +332,16 @@
       "total": 19
     },
     {
-      "cargo": "MOTORISTA",
-      "genero": "Masculino",
+      "cargo": "AUXILIAR DE SERVICOS GERAIS",
+      "genero": "Feminino",
       "situacao": "Aposentado",
       "cidade": "Brasilia",
       "estado": "DF",
-      "total": 15
+      "total": 14
     },
     {
-      "cargo": "AUXILIAR DE SERVICOS GERAIS",
-      "genero": "Feminino",
+      "cargo": "MOTORISTA",
+      "genero": "Masculino",
       "situacao": "Aposentado",
       "cidade": "Brasilia",
       "estado": "DF",

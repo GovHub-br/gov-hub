@@ -1,6 +1,6 @@
 {
   "meta": {
-    "atualizado_em": "2026-05-01T09:00:05.124596Z"
+    "atualizado_em": "2026-05-02T09:00:08.772725Z"
   },
   "kpis": {
     "total_servidores": 1177,
@@ -10,25 +10,25 @@
     "terceirizados": 638
   },
   "genero": {
-    "masculino_percent": 75.2,
-    "feminino_percent": 24.8
+    "masculino_percent": 77.1,
+    "feminino_percent": 22.9
   },
   "raca_cor": [
     {
       "nome_cor": "BRANCA",
-      "valor": 350
+      "valor": 329
     },
     {
       "nome_cor": "PARDA",
-      "valor": 119
+      "valor": 102
+    },
+    {
+      "nome_cor": "AMARELA",
+      "valor": 43
     },
     {
       "nome_cor": "PRETA",
       "valor": 35
-    },
-    {
-      "nome_cor": "AMARELA",
-      "valor": 7
     },
     {
       "nome_cor": "INDIGENA",
@@ -175,39 +175,39 @@
   "situacao_funcional": [
     {
       "label": "APOSENTADO",
-      "valor": 88743
+      "valor": 45939
     },
     {
       "label": "ATIVO EM OUTRO ORGAO",
-      "valor": 3796
+      "valor": 2260
     },
     {
       "label": "ATIVO PERMANENTE",
-      "valor": 2208
+      "valor": 1749
     },
     {
       "label": "INSTITUIDOR PENSAO",
-      "valor": 923
-    },
-    {
-      "label": "EXERC DESCENT CARREI",
-      "valor": 648
+      "valor": 1284
     },
     {
       "label": "CEDIDO/REQUISITADO",
-      "valor": 198
+      "valor": 446
+    },
+    {
+      "label": "EXERC DESCENT CARREI",
+      "valor": 119
     },
     {
       "label": "ESTAGIARIO SIGEPE",
-      "valor": 88
+      "valor": 79
     },
     {
       "label": "EXERC. 7  ART93 8112",
-      "valor": 5
+      "valor": 4
     },
     {
       "label": "NOMEADO CARGO COMIS.",
-      "valor": 2
+      "valor": 1
     }
   ],
   "tabela_servidores": [

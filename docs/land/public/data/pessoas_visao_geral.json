@@ -1,34 +1,34 @@
 {
   "meta": {
-    "atualizado_em": "2026-05-11T09:00:24.435669Z"
+    "atualizado_em": "2026-05-12T09:00:28.657671Z"
   },
   "kpis": {
     "total_servidores": 1177,
-    "servidores_ativos_permanentes": 324,
-    "aposentados": 705,
+    "servidores_ativos_permanentes": 323,
+    "aposentados": 704,
     "estagiarios": 24,
     "terceirizados": 638
   },
   "genero": {
-    "masculino_percent": 72.9,
-    "feminino_percent": 27.1
+    "masculino_percent": 73.2,
+    "feminino_percent": 26.8
   },
   "raca_cor": [
     {
       "nome_cor": "BRANCA",
-      "valor": 760
+      "valor": 263
     },
     {
       "nome_cor": "PARDA",
-      "valor": 233
+      "valor": 78
     },
     {
       "nome_cor": "PRETA",
-      "valor": 67
+      "valor": 31
     },
     {
       "nome_cor": "AMARELA",
-      "valor": 24
+      "valor": 7
     },
     {
       "nome_cor": "INDIGENA",
@@ -175,31 +175,31 @@
   "situacao_funcional": [
     {
       "label": "APOSENTADO",
-      "valor": 42439
-    },
-    {
-      "label": "ATIVO EM OUTRO ORGAO",
-      "valor": 1829
+      "valor": 1377
     },
     {
       "label": "ATIVO PERMANENTE",
-      "valor": 1255
+      "valor": 341
     },
     {
-      "label": "INSTITUIDOR PENSAO",
-      "valor": 669
+      "label": "ATIVO EM OUTRO ORGAO",
+      "valor": 52
     },
     {
       "label": "EXERC DESCENT CARREI",
-      "valor": 352
-    },
-    {
-      "label": "CEDIDO/REQUISITADO",
-      "valor": 182
+      "valor": 51
     },
     {
       "label": "ESTAGIARIO SIGEPE",
-      "valor": 59
+      "valor": 24
+    },
+    {
+      "label": "CEDIDO/REQUISITADO",
+      "valor": 13
+    },
+    {
+      "label": "INSTITUIDOR PENSAO",
+      "valor": 9
     },
     {
       "label": "EXERC. 7  ART93 8112",
@@ -225,7 +225,7 @@
       "situacao": "Aposentado",
       "cidade": "Brasilia",
       "estado": "DF",
-      "total": 187
+      "total": 186
     },
     {
       "cargo": "TECNICO DE PLANEJAMENTO E PESQUISA",
@@ -444,6 +444,14 @@
       "total": 5
     },
     {
+      "cargo": "TECNICO DE PLANEJAMENTO E PESQUISA",
+      "genero": "Masculino",
+      "situacao": "INSTITUIDOR PENSAO",
+      "cidade": "Brasilia",
+      "estado": "DF",
+      "total": 5
+    },
+    {
       "cargo": "ASSESSOR ESPECIALIZADO",
       "genero": "Masculino",
       "situacao": "Ativo Permanente",
@@ -454,15 +462,7 @@
     {
       "cargo": "TECNICO DE DESENVOL E ADMINISTRACAO",
       "genero": "Feminino",
-      "situacao": "Ativo Permanente",
-      "cidade": "Brasilia",
-      "estado": "DF",
-      "total": 4
-    },
-    {
-      "cargo": "TECNICO DE PLANEJAMENTO E PESQUISA",
-      "genero": "Masculino",
-      "situacao": "INSTITUIDOR PENSAO",
+      "situacao": "Ativo em outro órgão",
       "cidade": "Brasilia",
       "estado": "DF",
       "total": 4
@@ -486,7 +486,7 @@
     {
       "cargo": "TECNICO DE DESENVOL E ADMINISTRACAO",
       "genero": "Feminino",
-      "situacao": "Ativo em outro órgão",
+      "situacao": "Ativo Permanente",
       "cidade": "Brasilia",
       "estado": "DF",
       "total": 3

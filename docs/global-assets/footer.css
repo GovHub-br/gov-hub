@@ -284,6 +284,8 @@
     .footer-mobile-logo {
         height: 40px;
         width: auto;
+        max-width: 100%;
+        object-fit: contain;
         margin: 0 auto; /* Centralizar logo IPEA */
     }
     
@@ -301,6 +303,14 @@
         font-weight: 700;
         margin: 0;
         color: #fff;
+    }
+    
+    /* 4. Support Logos */
+    .footer-mobile-logo.footer-logo-cidades,
+    .footer-mobile-logo.footer-logo-igualdaderacial,
+    .footer-mobile-logo.footer-logo-mgi,
+    .footer-mobile-logo.footer-logo-minc {
+        filter: brightness(0) invert(1);
     }
     
     /* 5. Contact */

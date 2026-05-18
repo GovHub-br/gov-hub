@@ -214,7 +214,7 @@ function downloadEbook() {
     try {
         // Usar caminho local dentro da pasta dist
         const link = document.createElement('a');
-        link.href = '../land/dist/ebook/GovHub_Livro-digital_0905.pdf';
+        link.href = '/govhub/land/dist/ebook/GovHub_Livro-digital_0905.pdf';
         link.download = 'GovHub_Livro-digital_0905.pdf';
         link.target = '_blank';
         
@@ -230,7 +230,7 @@ function downloadEbook() {
     } catch (error) {
         console.error('Erro no download:', error);
         // Fallback: abrir em nova aba
-        window.open('../land/dist/ebook/GovHub_Livro-digital_0905.pdf', '_blank');
+        window.open('/govhub/land/dist/ebook/GovHub_Livro-digital_0905.pdf', '_blank');
     }
 }
 

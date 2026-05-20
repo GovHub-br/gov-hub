@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-J72NDYMYFR"></script>
     <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
 
-    gtag('config', 'G-J72NDYMYFR');
+        gtag('config', 'G-J72NDYMYFR');
     </script>
 
     <meta charset="UTF-8">
@@ -26,16 +27,17 @@
     <link rel="stylesheet" crossorigin href="/govhub/global-assets/footer.css">
     <script src="/govhub/global-assets/main.js"></script>
     <script src="./quem-somos.js"></script>
-    
+
     <link rel="preload" href="/govhub/land/dist/images/icons/github.svg" as="image" type="image/svg+xml">
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </head>
+
 <body>
     <div id="topo"></div>
-    
+
     <!-- Header -->
     <header>
         <nav class="custom-navbar">
@@ -67,19 +69,24 @@
                         <!-- Social Icons -->
                         <div class="social-icons">
                             <a href="https://www.instagram.com/govhub.br" target="_blank" class="social-icon">
-                                <img src="/govhub/land/dist/images/icons/instagram.svg" alt="Instagram" class="social-icon-img">
+                                <img src="/govhub/land/dist/images/icons/instagram.svg" alt="Instagram"
+                                    class="social-icon-img">
                             </a>
                             <a href="https://github.com/GovHub-br/gov-hub" target="_blank" class="social-icon">
-                                <img src="/govhub/land/dist/images/icons/github.svg" alt="GitHub" class="social-icon-img">
+                                <img src="/govhub/land/dist/images/icons/github.svg" alt="GitHub"
+                                    class="social-icon-img">
                             </a>
                         </div>
                     </div>
 
                     <!-- Mobile Menu Button -->
                     <div class="col-auto d-lg-none">
-                        <button class="mobile-menu-button" id="mobile-menu-toggle" type="button" aria-label="Toggle navigation">
+                        <button class="mobile-menu-button" id="mobile-menu-toggle" type="button"
+                            aria-label="Toggle navigation">
                             <svg fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+                                <path fill-rule="evenodd"
+                                    d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                                    clip-rule="evenodd"></path>
                             </svg>
                         </button>
                     </div>
@@ -87,17 +94,19 @@
 
                 <!-- Mobile Menu Overlay -->
                 <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
-                
+
                 <!-- Mobile Menu -->
                 <div class="mobile-menu" id="mobile-menu">
                     <!-- Botão de fechar -->
                     <button class="mobile-menu-close" id="mobile-menu-close" type="button" aria-label="Fechar menu">
                         <svg fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            <path fill-rule="evenodd"
+                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                clip-rule="evenodd"></path>
                         </svg>
                     </button>
-                    
-                     <ul>
+
+                    <ul>
                         <li><a href="/govhub/home/">HOME</a></li>
                         <li><a href="/govhub/sobre/">SOBRE</a></li>
                         <li><a href="/govhub/quem-somos/" class="active">QUEM SOMOS</a></li>
@@ -107,16 +116,17 @@
                         <li><a href="/govhub/comunidade/guia-contribuicao/">DOCUMENTAÇÃO</a></li>
                         <li><a href="/govhub/dashboards/">DEMO</a></li>
                     </ul>
-                     <!-- Social Icons dentro do menu mobile -->
-                     <div class="social-icons">
-                         <a href="https://www.instagram.com/govhub.br" target="_blank" class="social-icon">
-                             <img src="/govhub/land/dist/images/icons/instagram.svg" alt="Instagram" class="social-icon-img">
-                         </a>
-                         <a href="https://github.com/GovHub-br/gov-hub" target="_blank" class="social-icon">
-                             <img src="/govhub/land/dist/images/icons/github.svg" alt="GitHub" class="social-icon-img">
-                         </a>
-                     </div>
-                 </div>
+                    <!-- Social Icons dentro do menu mobile -->
+                    <div class="social-icons">
+                        <a href="https://www.instagram.com/govhub.br" target="_blank" class="social-icon">
+                            <img src="/govhub/land/dist/images/icons/instagram.svg" alt="Instagram"
+                                class="social-icon-img">
+                        </a>
+                        <a href="https://github.com/GovHub-br/gov-hub" target="_blank" class="social-icon">
+                            <img src="/govhub/land/dist/images/icons/github.svg" alt="GitHub" class="social-icon-img">
+                        </a>
+                    </div>
+                </div>
             </div>
         </nav>
     </header>
@@ -126,7 +136,7 @@
         <div class="container">
             <h1>Quem Somos</h1>
         </div>
-        
+
         <!-- Animated Circles -->
         <div class="animated-circles">
             <div class="circle circle-1"></div>
@@ -134,7 +144,7 @@
             <div class="circle circle-3"></div>
         </div>
     </section>
-    
+
     <!-- Overview Section -->
     <section class="overview-section">
         <div class="container">
@@ -142,18 +152,23 @@
                 <div class="col-12 col-lg-8">
                     <div class="overview-content">
                         <h2>Qual o objetivo do Gov Hub?</h2>
-                        <h3>Nosso objetivo é qualificar e integrar dados governamentais para fortalecer a gestão pública e a transparência.</h3>
-                        
-                        <p>Construímos uma plataforma de software livre que transforma dados brutos dos sistemas estruturantes em informações estratégicas. O projeto nasceu em 2024, fruto da parceria entre o Instituto de Pesquisa Econômica Aplicada (IPEA) e o Laboratório de Competência em Software Livre da UnB (Lab Livre - UnB), unindo ciência, inovação e serviço público.</p>
-                        
-                        <p>Como solução open source, todo o código do Gov Hub é livre, auditável e colaborativo, permitindo que qualquer órgão utilize, adapte e contribua para o seu aprimoramento.</p>
+                        <h3>Nosso objetivo é qualificar e integrar dados governamentais para fortalecer a gestão pública
+                            e a transparência.</h3>
+
+                        <p>Construímos uma plataforma de software livre que transforma dados brutos dos sistemas
+                            estruturantes em informações estratégicas. O projeto nasceu em 2024, fruto da parceria entre
+                            o Instituto de Pesquisa Econômica Aplicada (IPEA) e o Laboratório de Competência em Software
+                            Livre da UnB (Lab Livre - UnB), unindo ciência, inovação e serviço público.</p>
+
+                        <p>Como solução open source, todo o código do Gov Hub é livre, auditável e colaborativo,
+                            permitindo que qualquer órgão utilize, adapte e contribua para o seu aprimoramento.</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-    
-    
+
+
     <!-- Equipe Section -->
     <section class="team-section">
         <div class="container">
@@ -161,7 +176,9 @@
                 <div class="row">
                     <div class="col-12 col-lg-8">
                         <h2>Equipe</h2>
-                        <p>O Gov Hub é desenvolvido por um time multidisciplinar de professores, pesquisadores, cientistas políticos, alunos e ex-alunos da UnB. Contamos também com a parceria estratégica do Ipea e de empresas privadas.</p>
+                        <p>O Gov Hub é desenvolvido por um time multidisciplinar de professores, pesquisadores,
+                            cientistas políticos, alunos e ex-alunos da UnB. Contamos também com a parceria estratégica
+                            do Ipea e de empresas privadas.</p>
                     </div>
                 </div>
                 <div class="team-groups">
@@ -170,7 +187,7 @@
                         <div class="row">
                             <div class="col-12 col-sm-6 col-md-3 mb-4">
                                 <div class="team-card">
-                                    <img src="/govhub/land/dist/images/equipe/alex_reis.png" alt="Membro da equipe">
+                                    <img src="../assets/images/equipe-govhub/Alex%20Reis.jpg" alt="Membro da equipe">
                                     <div class="team-card-info">
                                         <span class="name">Alex Reis</span>
                                         <span class="role">Coordenador</span>
@@ -179,7 +196,7 @@
                             </div>
                             <div class="col-12 col-sm-6 col-md-3 mb-4">
                                 <div class="team-card">
-                                    <img src="/govhub/land/dist/images/equipe/carla.png" alt="Membro da equipe">
+                                    <img src="../assets/images/equipe-govhub/carla.png" alt="Membro da equipe">
                                     <div class="team-card-info">
                                         <span class="name">Carla Rocha</span>
                                         <span class="role">Coordenadora</span>
@@ -188,7 +205,17 @@
                             </div>
                             <div class="col-12 col-sm-6 col-md-3 mb-4">
                                 <div class="team-card">
-                                    <img src="/govhub/land/dist/images/equipe/laila.png" alt="Membro da equipe">
+                                    <img src="../assets/images/equipe-govhub/Juliana%20Petrocchi.jpg"
+                                        alt="Membro da equipe">
+                                    <div class="team-card-info purple">
+                                        <span class="name">Juliana Petrocchi</span>
+                                        <span class="role">Coordenadora</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-3 mb-4">
+                                <div class="team-card">
+                                    <img src="../assets/images/equipe-govhub/laila.png" alt="Membro da equipe">
                                     <div class="team-card-info">
                                         <span class="name">Laila Bellix</span>
                                         <span class="role">Cientista política</span>
@@ -197,7 +224,7 @@
                             </div>
                             <div class="col-12 col-sm-6 col-md-3 mb-4">
                                 <div class="team-card">
-                                    <img src="/govhub/land/dist/images/equipe/isaque.png" alt="Membro da equipe">
+                                    <img src="../assets/images/equipe-govhub/isaque.png" alt="Membro da equipe">
                                     <div class="team-card-info">
                                         <span class="name">Isaque Alves</span>
                                         <span class="role">Pesquisador</span>
@@ -206,7 +233,7 @@
                             </div>
                             <div class="col-12 col-sm-6 col-md-3 mb-4">
                                 <div class="team-card">
-                                    <img src="/govhub/land/dist/images/equipe/joao.png" alt="Membro da equipe">
+                                    <img src="../assets/images/equipe-govhub/joao.png" alt="Membro da equipe">
                                     <div class="team-card-info purple">
                                         <span class="name">João Egewarth</span>
                                         <span class="role">Líder técnico de dados</span>
@@ -215,7 +242,16 @@
                             </div>
                             <div class="col-12 col-sm-6 col-md-3 mb-4">
                                 <div class="team-card">
-                                    <img src="/govhub/land/dist/images/equipe/arthur.png" alt="Membro da equipe">
+                                    <img src="../assets/images/equipe-govhub/Ana%20Luisa.jpeg" alt="Membro da equipe">
+                                    <div class="team-card-info purple">
+                                        <span class="name">Ana Luisa</span>
+                                        <span class="role">Engenheira de Dados</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-3 mb-4">
+                                <div class="team-card">
+                                    <img src="../assets/images/equipe-govhub/arthur.png" alt="Membro da equipe">
                                     <div class="team-card-info purple">
                                         <span class="name">Arthur Alves</span>
                                         <span class="role">Infraestrutura de dados</span>
@@ -224,7 +260,16 @@
                             </div>
                             <div class="col-12 col-sm-6 col-md-3 mb-4">
                                 <div class="team-card">
-                                    <img src="/govhub/land/dist/images/equipe/davi.png" alt="Membro da equipe">
+                                    <img src="../assets/images/equipe-govhub/Caio%20Melo.jpg" alt="Membro da equipe">
+                                    <div class="team-card-info purple">
+                                        <span class="name">Caio Melo</span>
+                                        <span class="role">Engenheiro de Dados</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-3 mb-4">
+                                <div class="team-card">
+                                    <img src="../assets/images/equipe-govhub/Davi%20Aguiar.jpg" alt="Membro da equipe">
                                     <div class="team-card-info purple">
                                         <span class="name">Davi Aguiar</span>
                                         <span class="role">Engenheiro de dados</span>
@@ -233,16 +278,37 @@
                             </div>
                             <div class="col-12 col-sm-6 col-md-3 mb-4">
                                 <div class="team-card">
-                                    <img src="/govhub/land/dist/images/equipe/joyce.png" alt="Membro da equipe">
+                                    <img src="../assets/images/equipe-govhub/Gustavo%20Soares.jpg"
+                                        alt="Membro da equipe">
                                     <div class="team-card-info purple">
-                                        <span class="name">Joyce Dionizio</span>
-                                        <span class="role">Engenheira de dados</span>
+                                        <span class="name">Gustavo Soares</span>
+                                        <span class="role">Cientista de Dados</span>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-12 col-sm-6 col-md-3 mb-4">
                                 <div class="team-card">
-                                    <img src="/govhub/land/dist/images/equipe/mateus.png" alt="Membro da equipe">
+                                    <img src="../assets/images/equipe-govhub/Jo%C3%A3o%20Amo%C3%AAdo.jpg"
+                                        alt="Membro da equipe">
+                                    <div class="team-card-info purple">
+                                        <span class="name">João Amoêdo</span>
+                                        <span class="role">Cientista de Dados</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-3 mb-4">
+                                <div class="team-card">
+                                    <img src="../assets/images/equipe-govhub/Maria%20Clara.jpg" alt="Membro da equipe">
+                                    <div class="team-card-info purple">
+                                        <span class="name">Maria Clara</span>
+                                        <span class="role">Engenheira de Dados</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-3 mb-4">
+                                <div class="team-card">
+                                    <img src="../assets/images/equipe-govhub/Mateus%20Castro.jpg"
+                                        alt="Membro da equipe">
                                     <div class="team-card-info purple">
                                         <span class="name">Mateus de Castro</span>
                                         <span class="role">Engenheiro de dados</span>
@@ -251,19 +317,137 @@
                             </div>
                             <div class="col-12 col-sm-6 col-md-3 mb-4">
                                 <div class="team-card">
-                                    <img src="/govhub/land/dist/images/equipe/guilherme_gusmao.jpg" alt="Membro da equipe">
+                                    <img src="../assets/images/equipe-govhub/Milena%20Rocha.jpg" alt="Membro da equipe">
                                     <div class="team-card-info purple">
-                                        <span class="name">Guilherme Gusmão</span>
+                                        <span class="name">Milena Rocha</span>
+                                        <span class="role">Engenheira de Dados</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-3 mb-4">
+                                <div class="team-card">
+                                    <img src="../assets/images/equipe-govhub/Tiago%20Bittencourt.jpg"
+                                        alt="Membro da equipe">
+                                    <div class="team-card-info purple">
+                                        <span class="name">Tiago Bittencourt</span>
+                                        <span class="role">Engenheiro de Dados</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-3 mb-4">
+                                <div class="team-card">
+                                    <img src="../assets/images/equipe-govhub/Vitor%20Pereira.jpg"
+                                        alt="Membro da equipe">
+                                    <div class="team-card-info purple">
+                                        <span class="name">Vitor Pereira</span>
+                                        <span class="role">Cientista de Dados</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-3 mb-4">
+                                <div class="team-card">
+                                    <img src="../assets/images/equipe-govhub/Wallyson%20Souza.jpg"
+                                        alt="Membro da equipe">
+                                    <div class="team-card-info purple">
+                                        <span class="name">Wallyson Souza</span>
+                                        <span class="role">Engenheiro de Dados</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-3 mb-4">
+                                <div class="team-card">
+                                    <img src="../assets/images/equipe-govhub/Vin%C3%ADcius%20Ribeiro.jpg"
+                                        alt="Membro da equipe">
+                                    <div class="team-card-info purple">
+                                        <span class="name">Vinícius Ribeiro</span>
                                         <span class="role">Desenvolvedor Frontend</span>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-12 col-sm-6 col-md-3 mb-4">
                                 <div class="team-card">
-                                    <img src="/govhub/land/dist/images/equipe/vinicius.png" alt="Membro da equipe">
+                                    <img src="../assets/images/equipe-govhub/Arthur%20Palhares.jpg"
+                                        alt="Membro da equipe">
                                     <div class="team-card-info purple">
-                                        <span class="name">Vinícius Ribeiro</span>
-                                        <span class="role">Desenvolvedor Frontend</span>
+                                        <span class="name">Arthur Palhares</span>
+                                        <span class="role">Gestor de Conhecimento</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-3 mb-4">
+                                <div class="team-card">
+                                    <img src="../assets/images/equipe-govhub/Camille%20Moura.jpg"
+                                        alt="Membro da equipe">
+                                    <div class="team-card-info purple">
+                                        <span class="name">Camille Moura</span>
+                                        <span class="role">Governança</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-3 mb-4">
+                                <div class="team-card">
+                                    <img src="../assets/images/equipe-govhub/Kizia%20Fonseca.jpg"
+                                        alt="Membro da equipe">
+                                    <div class="team-card-info purple">
+                                        <span class="name">Kizia Fonseca</span>
+                                        <span class="role">Líder de Comunicação</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-3 mb-4">
+                                <div class="team-card">
+                                    <img src="../assets/images/equipe-govhub/Thalita%20Quelita.webp"
+                                        alt="Membro da equipe">
+                                    <div class="team-card-info purple">
+                                        <span class="name">Thalita Quelita</span>
+                                        <span class="role">Comunicação</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-3 mb-4">
+                                <div class="team-card">
+                                    <img src="../assets/images/equipe-govhub/Luiza%20Davison.jpg"
+                                        alt="Membro da equipe">
+                                    <div class="team-card-info purple">
+                                        <span class="name">Luiza Davison</span>
+                                        <span class="role">Líder de Gestão</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-3 mb-4">
+                                <div class="team-card">
+                                    <img src="../assets/images/equipe-govhub/M%C3%A1rio.jpg" alt="Membro da equipe">
+                                    <div class="team-card-info purple">
+                                        <span class="name">Mário</span>
+                                        <span class="role">Líder de Comunidade</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-3 mb-4">
+                                <div class="team-card">
+                                    <img src="../assets/images/equipe-govhub/Milena.jpg" alt="Membro da equipe">
+                                    <div class="team-card-info purple">
+                                        <span class="name">Milena</span>
+                                        <span class="role">Políticas Públicas</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-3 mb-4">
+                                <div class="team-card">
+                                    <img src="../assets/images/equipe-govhub/Paula.jpg" alt="Membro da equipe">
+                                    <div class="team-card-info purple">
+                                        <span class="name">Paula</span>
+                                        <span class="role">Políticas Públicas</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-3 mb-4">
+                                <div class="team-card">
+                                    <img src="../assets/images/equipe-govhub/Yara%20Xavier%20de%20Sousa.jpg"
+                                        alt="Membro da equipe">
+                                    <div class="team-card-info purple">
+                                        <span class="name">Yara Xavier de Sousa</span>
+                                        <span class="role">Infraestrutura</span>
                                     </div>
                                 </div>
                             </div>
@@ -275,7 +459,8 @@
                         <div class="row">
                             <div class="col-12 col-sm-6 col-md-3 mb-4">
                                 <div class="team-card">
-                                    <img src="/govhub/land/dist/images/equipe/fernando_gaiger.png" alt="Membro da equipe">
+                                    <img src="../assets/images/equipe-govhub/fernando_gaiger.png"
+                                        alt="Membro da equipe">
                                     <div class="team-card-info purple">
                                         <span class="name">Fernando Gaiger</span>
                                         <span class="role">Coordenador</span>
@@ -284,7 +469,7 @@
                             </div>
                             <div class="col-12 col-sm-6 col-md-3 mb-4">
                                 <div class="team-card">
-                                    <img src="/govhub/land/dist/images/equipe/gustavo_camilo.png" alt="Membro da equipe">
+                                    <img src="../assets/images/equipe-govhub/gustavo_camilo.png" alt="Membro da equipe">
                                     <div class="team-card-info purple">
                                         <span class="name">Gustavo Baptista</span>
                                         <span class="role">Diretor</span>
@@ -299,7 +484,7 @@
                         <div class="row">
                             <div class="col-12 col-sm-6 col-md-3 mb-4">
                                 <div class="team-card">
-                                    <img src="/govhub/land/dist/images/equipe/joao_freitas.jpeg" alt="Membro da equipe">
+                                    <img src="../assets/images/equipe-govhub/joao_freitas.jpeg" alt="Membro da equipe">
                                     <div class="team-card-info orange">
                                         <span class="name">João Freitas</span>
                                         <span class="role">Cientista de dados</span>
@@ -308,7 +493,7 @@
                             </div>
                             <div class="col-12 col-sm-6 col-md-3 mb-4">
                                 <div class="team-card">
-                                    <img src="/govhub/land/dist/images/equipe/matheus_dias.jpeg" alt="Membro da equipe">
+                                    <img src="../assets/images/equipe-govhub/matheus_dias.jpeg" alt="Membro da equipe">
                                     <div class="team-card-info orange">
                                         <span class="name">Matheus Dias</span>
                                         <span class="role">Desenvolvedor backend</span>
@@ -317,7 +502,7 @@
                             </div>
                             <div class="col-12 col-sm-6 col-md-3 mb-4">
                                 <div class="team-card">
-                                    <img src="/govhub/land/dist/images/equipe/pedro_rossi.jpeg" alt="Membro da equipe">
+                                    <img src="../assets/images/equipe-govhub/pedro_rossi.jpeg" alt="Membro da equipe">
                                     <div class="team-card-info orange">
                                         <span class="name">Pedro Rossi</span>
                                         <span class="role">Engenheiro de dados e DevOps</span>
@@ -326,7 +511,7 @@
                             </div>
                             <div class="col-12 col-sm-6 col-md-3 mb-4">
                                 <div class="team-card">
-                                    <img src="/govhub/land/dist/images/equipe/victor_suzuki.png" alt="Membro da equipe">
+                                    <img src="../assets/images/equipe-govhub/victor_suzuki.png" alt="Membro da equipe">
                                     <div class="team-card-info orange">
                                         <span class="name">Victor Suzuki</span>
                                         <span class="role">Análise de dados e BI</span>
@@ -340,11 +525,11 @@
         </div>
     </section>
 
-    
+
     <!-- Footer -->
-        <footer class="footer">
+    <footer class="footer">
         <div class="container">
-            
+
             <!-- Row 1 - Initiative Text -->
             <div class="row footer-middle g-4">
                 <div class="col-12 col-md-3 footer-column">
@@ -389,7 +574,8 @@
                 <div class="col-12 col-md-3 footer-column">
                     <div class="footer-logo-section">
                         <div class="footer-logo-cidade-democratica">
-                            <img src="/govhub/land/dist/images/Cidade_Democratica.png" alt="Instituto Cidade Democrática Logo">
+                            <img src="/govhub/land/dist/images/Cidade_Democratica.png"
+                                alt="Instituto Cidade Democrática Logo">
                         </div>
                     </div>
                 </div>
@@ -423,7 +609,8 @@
                 <div class="col-12 col-md-3 footer-column">
                     <div class="footer-logo-section">
                         <div class="footer-logo-igualdaderacial">
-                            <img src="/govhub/land/dist/images/igualdaderacial.png" alt="Ministério da Igualdade Racial Logo">
+                            <img src="/govhub/land/dist/images/igualdaderacial.png"
+                                alt="Ministério da Igualdade Racial Logo">
                         </div>
                     </div>
                 </div>
@@ -484,7 +671,7 @@
                 </div>
                 <div class="col-12 col-md-3 footer-column">
                     <!-- Coluna invisível para alinhamento -->
-                    </div>
+                </div>
                 <div class="col-12 col-md-3 footer-column">
                     <div class="footer-contact">
                         <h4>Contato</h4>
@@ -493,19 +680,23 @@
                         </ul>
                         <div class="footer-social">
                             <a href="https://github.com/GovHub-br" target="_blank" aria-label="GitHub">
-                                <img src="/govhub/land/dist/images/icons/github.svg" alt="GitHub" class="social-icon-img">
+                                <img src="/govhub/land/dist/images/icons/github.svg" alt="GitHub"
+                                    class="social-icon-img">
                             </a>
-                            <a href="https://www.linkedin.com/company/lappis-rocks/" target="_blank" aria-label="LinkedIn">
-                                <img src="/govhub/land/dist/images/icons/linkedin.svg" alt="LinkedIn" class="social-icon-img">
+                            <a href="https://www.linkedin.com/company/lappis-rocks/" target="_blank"
+                                aria-label="LinkedIn">
+                                <img src="/govhub/land/dist/images/icons/linkedin.svg" alt="LinkedIn"
+                                    class="social-icon-img">
                             </a>
                             <a href="https://www.instagram.com/lab.livre/" target="_blank" aria-label="Instagram">
-                                <img src="/govhub/land/dist/images/icons/instagram.svg" alt="Instagram" class="social-icon-img">
+                                <img src="/govhub/land/dist/images/icons/instagram.svg" alt="Instagram"
+                                    class="social-icon-img">
                             </a>
                         </div>
                     </div>
                 </div>
             </div>
-            
+
             <!-- Mobile Footer Structure using Bootstrap Grid (hidden on desktop) -->
             <div class="footer-mobile">
                 <!-- 1. Initiative Text -->
@@ -514,65 +705,76 @@
                         <p class="footer-mobile-initiative">Gov hub é uma iniciativa</p>
                     </div>
                 </div>
-                
+
                 <!-- 2. Logos: Lab Livre, UnB, Capibaribe e Cidade Democrática -->
                 <div class="row">
                     <div class="col-3 text-center">
-                        <img src="/govhub/land/dist/images/lablivre_footer.png" alt="Lab Livre Logo" class="footer-mobile-logo">
+                        <img src="/govhub/land/dist/images/lablivre_footer.png" alt="Lab Livre Logo"
+                            class="footer-mobile-logo">
                     </div>
                     <div class="col-3 text-center">
                         <img src="/govhub/land/dist/images/unb_footer.png" alt="UnB Logo" class="footer-mobile-logo">
                     </div>
                     <div class="col-3 text-center">
-                        <img src="/govhub/land/dist/images/capibaribe.png" alt="Capibaribe Logo" class="footer-mobile-logo footer-mobile-logo-capibaribe">
+                        <img src="/govhub/land/dist/images/capibaribe.png" alt="Capibaribe Logo"
+                            class="footer-mobile-logo footer-mobile-logo-capibaribe">
                     </div>
                     <div class="col-3 text-center">
-                        <img src="/govhub/land/dist/images/Cidade_Democratica.png" alt="Instituto Cidade Democrática Logo" class="footer-mobile-logo footer-mobile-logo-cidade-democratica">
+                        <img src="/govhub/land/dist/images/Cidade_Democratica.png"
+                            alt="Instituto Cidade Democrática Logo"
+                            class="footer-mobile-logo footer-mobile-logo-cidade-democratica">
                     </div>
                 </div>
-                
+
                 <!-- 3. Support Text -->
                 <div class="row">
                     <div class="col-12 text-center">
                         <p class="footer-mobile-support">Apoio</p>
                     </div>
                 </div>
-                
+
                 <!-- 4. Support Logos (IPEA, Cidades, Igualdade Racial, MGI, MINC) -->
                 <div class="row mb-3">
                     <div class="col-6 text-center mb-3">
                         <img src="/govhub/land/dist/images/ipea_footer.png" alt="IPEA Logo" class="footer-mobile-logo">
                     </div>
                     <div class="col-6 text-center mb-3">
-                        <img src="/govhub/land/dist/images/cidades.png" alt="Ministério das Cidades Logo" class="footer-mobile-logo footer-logo-cidades">
+                        <img src="/govhub/land/dist/images/cidades.png" alt="Ministério das Cidades Logo"
+                            class="footer-mobile-logo footer-logo-cidades">
                     </div>
                     <div class="col-6 text-center mb-3">
-                        <img src="/govhub/land/dist/images/igualdaderacial.png" alt="Ministério da Igualdade Racial Logo" class="footer-mobile-logo footer-logo-igualdaderacial">
+                        <img src="/govhub/land/dist/images/igualdaderacial.png"
+                            alt="Ministério da Igualdade Racial Logo"
+                            class="footer-mobile-logo footer-logo-igualdaderacial">
                     </div>
                     <div class="col-6 text-center mb-3">
-                        <img src="/govhub/land/dist/images/MGI_logo.png" alt="MGI Logo" class="footer-mobile-logo footer-logo-mgi">
+                        <img src="/govhub/land/dist/images/MGI_logo.png" alt="MGI Logo"
+                            class="footer-mobile-logo footer-logo-mgi">
                     </div>
                     <div class="col-12 text-center mb-3">
-                        <img src="/govhub/land/dist/images/MINC_logo.png" alt="MINC Logo" class="footer-mobile-logo footer-logo-minc">
+                        <img src="/govhub/land/dist/images/MINC_logo.png" alt="MINC Logo"
+                            class="footer-mobile-logo footer-logo-minc">
                     </div>
                 </div>
-                
+
                 <!-- 5. Contact -->
                 <div class="row">
                     <div class="col-12 text-center">
                         <h4 class="footer-mobile-contact-title">Contato</h4>
                         <p><a href="mailto:caguiar@unb.br" class="footer-mobile-contact-link">caguiar@unb.br</a></p>
                     </div>
-            </div>
+                </div>
 
                 <!-- 6. Copyright -->
-            <div class="row">
+                <div class="row">
                     <div class="col-12 text-center">
-                        <p class="footer-mobile-copyright">© 2025 Gov Hub - Uma iniciativa do Lab Livre - UnB. Licenciado sob Creative Commons.</p>
+                        <p class="footer-mobile-copyright">© 2025 Gov Hub - Uma iniciativa do Lab Livre - UnB.
+                            Licenciado sob Creative Commons.</p>
                     </div>
                 </div>
             </div>
         </div>
     </footer>
 </body>
+
 </html>

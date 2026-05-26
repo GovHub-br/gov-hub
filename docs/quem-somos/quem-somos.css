@@ -219,11 +219,10 @@ body {
     border: 1px solid #D4C8FA;
 }
 .photo-slot-lg {
-    width: 88px;
-    height: 88px;
+    width: 110px;
+    height: 110px;
     border-radius: 50%;
     background: linear-gradient(135deg, #EDE8FD, #F6F3FF);
-    border: 2px dashed #B09AF2;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -236,6 +235,7 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    image-rendering: -webkit-optimize-contrast;
 }
 .photo-slot-lg svg { width: 28px; height: 28px; stroke: #B09AF2; fill: none; }
 .photo-hint {
@@ -248,13 +248,13 @@ body {
 }
 .coord-card .member-name {
     font-family: 'Syne', sans-serif;
-    font-size: 0.88rem;
+    font-size: 1rem;
     font-weight: 700;
-    color: #1F1043;
+    color: #202020;
     margin-bottom: 3px;
 }
 .coord-card .member-role {
-    font-size: 0.73rem;
+    font-size: 0.8rem;
     color: #7B6AAA;
     font-weight: 500;
 }
@@ -288,7 +288,7 @@ body {
 /* ── SQUADS DESC ── */
 .squads-desc {
     font-size: 0.88rem;
-    color: #4B3B70;
+    color: #202020;
     line-height: 1.7;
     max-width: 700px;
     margin-bottom: 2rem;
@@ -347,7 +347,7 @@ body {
 .squad-members {
     padding: 14px 16px 16px;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     gap: 12px;
 }
 .member-mini {
@@ -358,10 +358,9 @@ body {
     text-align: center;
 }
 .photo-slot-sm {
-    width: 72px; height: 72px;
+    width: 90px; height: 90px;
     border-radius: 50%;
     background: linear-gradient(135deg, #EDE8FD, #F6F3FF);
-    border: 1.5px dashed #B09AF2;
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
     flex-shrink: 0;
@@ -371,9 +370,10 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    image-rendering: -webkit-optimize-contrast;
 }
-.member-mini .member-name { font-size: 0.64rem; color: #4A3A7A; }
-.member-mini .member-role { font-size: 0.55rem; color: #7B6AAA; }
+.member-mini .member-name { font-size: 0.75rem; color: #202020; }
+.member-mini .member-role { font-size: 0.65rem; color: #7B6AAA; }
 
 /* Squad accent strips */
 .strip-lideranca { border-top: 3px solid #1E0A4A; }

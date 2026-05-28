@@ -1,38 +1,38 @@
 {
   "meta": {
-    "atualizado_em": "2026-05-27T09:01:28.779331Z"
+    "atualizado_em": "2026-05-28T09:01:32.785326Z"
   },
   "kpis": {
-    "total_servidores": 1178,
+    "total_servidores": 1179,
     "servidores_ativos_permanentes": 322,
     "aposentados": 705,
     "estagiarios": 25,
     "terceirizados": 638
   },
   "genero": {
-    "masculino_percent": 77.8,
-    "feminino_percent": 22.2
+    "masculino_percent": 75.5,
+    "feminino_percent": 24.5
   },
   "raca_cor": [
     {
       "nome_cor": "BRANCA",
-      "valor": 395
+      "valor": 358
     },
     {
       "nome_cor": "PARDA",
-      "valor": 142
+      "valor": 125
     },
     {
       "nome_cor": "PRETA",
-      "valor": 44
+      "valor": 48
     },
     {
       "nome_cor": "AMARELA",
-      "valor": 30
+      "valor": 7
     },
     {
       "nome_cor": "INDIGENA",
-      "valor": 5
+      "valor": 1
     }
   ],
   "mapa_uf": {
@@ -68,7 +68,7 @@
     },
     "DF": {
       "nome": "DISTRITO FEDERAL",
-      "valor": 1162,
+      "valor": 1163,
       "percentual": "99%"
     },
     "ES": {
@@ -175,39 +175,39 @@
   "situacao_funcional": [
     {
       "label": "APOSENTADO",
-      "valor": 19292
+      "valor": 231129
     },
     {
       "label": "ATIVO EM OUTRO ORGAO",
-      "valor": 1354
+      "valor": 9289
     },
     {
       "label": "ATIVO PERMANENTE",
-      "valor": 606
-    },
-    {
-      "label": "EXERC DESCENT CARREI",
-      "valor": 499
+      "valor": 5504
     },
     {
       "label": "INSTITUIDOR PENSAO",
-      "valor": 438
+      "valor": 3645
     },
     {
-      "label": "ESTAGIARIO SIGEPE",
-      "valor": 50
+      "label": "EXERC DESCENT CARREI",
+      "valor": 1606
     },
     {
       "label": "CEDIDO/REQUISITADO",
-      "valor": 13
+      "valor": 897
+    },
+    {
+      "label": "ESTAGIARIO SIGEPE",
+      "valor": 217
     },
     {
       "label": "EXERC. 7  ART93 8112",
-      "valor": 4
+      "valor": 9
     },
     {
       "label": "NOMEADO CARGO COMIS.",
-      "valor": 1
+      "valor": 3
     }
   ],
   "tabela_servidores": [

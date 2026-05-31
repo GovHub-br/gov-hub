@@ -1,6 +1,6 @@
 {
   "meta": {
-    "atualizado_em": "2026-05-30T09:01:40.874006Z"
+    "atualizado_em": "2026-05-31T09:00:06.731468Z"
   },
   "kpis": {
     "total_servidores": 1179,
@@ -175,39 +175,39 @@
   "situacao_funcional": [
     {
       "label": "APOSENTADO",
-      "valor": 3639
-    },
-    {
-      "label": "ATIVO PERMANENTE",
-      "valor": 381
+      "valor": 211560
     },
     {
       "label": "ATIVO EM OUTRO ORGAO",
-      "valor": 52
+      "valor": 7645
     },
     {
-      "label": "EXERC DESCENT CARREI",
-      "valor": 51
-    },
-    {
-      "label": "ESTAGIARIO SIGEPE",
-      "valor": 25
-    },
-    {
-      "label": "CEDIDO/REQUISITADO",
-      "valor": 13
+      "label": "ATIVO PERMANENTE",
+      "valor": 4871
     },
     {
       "label": "INSTITUIDOR PENSAO",
-      "valor": 9
+      "valor": 3498
+    },
+    {
+      "label": "EXERC DESCENT CARREI",
+      "valor": 1246
+    },
+    {
+      "label": "CEDIDO/REQUISITADO",
+      "valor": 686
+    },
+    {
+      "label": "ESTAGIARIO SIGEPE",
+      "valor": 209
     },
     {
       "label": "EXERC. 7  ART93 8112",
-      "valor": 4
+      "valor": 7
     },
     {
       "label": "NOMEADO CARGO COMIS.",
-      "valor": 1
+      "valor": 3
     }
   ],
   "tabela_servidores": [

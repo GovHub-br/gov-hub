@@ -1,12 +1,12 @@
 {
   "meta": {
-    "atualizado_em": "2026-06-09T09:00:38.857372Z"
+    "atualizado_em": "2026-06-10T09:00:43.390517Z"
   },
   "kpis": {
-    "total_servidores": 1181,
-    "servidores_ativos_permanentes": 322,
-    "aposentados": 706,
-    "estagiarios": 25,
+    "total_servidores": 1182,
+    "servidores_ativos_permanentes": 321,
+    "aposentados": 707,
+    "estagiarios": 26,
     "terceirizados": 638
   },
   "genero": {
@@ -20,7 +20,7 @@
     },
     {
       "nome_cor": "PARDA",
-      "valor": 75
+      "valor": 74
     },
     {
       "nome_cor": "PRETA",
@@ -175,11 +175,11 @@
   "situacao_funcional": [
     {
       "label": "APOSENTADO",
-      "valor": 642
+      "valor": 643
     },
     {
       "label": "ATIVO PERMANENTE",
-      "valor": 319
+      "valor": 318
     },
     {
       "label": "ATIVO EM OUTRO ORGAO",
@@ -297,7 +297,7 @@
       "situacao": "Aposentado",
       "cidade": "Brasilia",
       "estado": "DF",
-      "total": 21
+      "total": 22
     },
     {
       "cargo": "TECNICO DE PLANEJAMENTO E PESQUISA",
@@ -353,7 +353,7 @@
       "situacao": "Ativo Permanente",
       "cidade": "Brasilia",
       "estado": "DF",
-      "total": 12
+      "total": 11
     },
     {
       "cargo": "ANALISTA DE SISTEMAS",

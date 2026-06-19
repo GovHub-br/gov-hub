@@ -13,31 +13,33 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sobre - Gov Hub</title>
+    <title>Projetos - Gov Hub</title>
     <!-- Favicon -->
     <link rel="apple-touch-icon" sizes="180x180" href="/govhub/land/dist/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="96x96" href="/govhub/land/dist/favicon-96x96.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/govhub/land/dist/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/govhub/land/dist/favicon-16x16.png">
-    
+
     <link rel="stylesheet" crossorigin href="/govhub/global-assets/navbar.css">
     <link rel="stylesheet" crossorigin href="/govhub/global-assets/banner.css">
-    <link rel="stylesheet" crossorigin href="./sobre.css">
+    <link rel="stylesheet" crossorigin href="/govhub/global-assets/publicacoes-section.css">
+    <link rel="stylesheet" crossorigin href="./projetos.css">
     <link rel="stylesheet" crossorigin href="/govhub/global-assets/footer.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="/govhub/global-assets/main.js"></script>
-    
+    <script src="./projetos.js"></script>
     <link rel="preload" href="/govhub/land/dist/images/icons/github.svg" as="image" type="image/svg+xml">
-    <!-- Bootstrap CSS - Carregado por último para não sobrescrever estilos customizados -->
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-    <!-- Navbar -->
     <div id="topo"></div>
+    
+    <!-- Header -->
     <header>
         <nav class="custom-navbar">
             <div class="container">
@@ -53,9 +55,9 @@
                     <div class="col d-none d-lg-flex justify-content-center">
                         <div class="navbar-center">
                             <a href="/govhub/home/" class="nav-link">HOME</a>
-                            <a href="/govhub/sobre/" class="nav-link active">SOBRE</a>
+                            <a href="/govhub/sobre/" class="nav-link">SOBRE</a>
                             <a href="/govhub/quem-somos/" class="nav-link">QUEM SOMOS</a>
-                            <a href="/govhub/projetos/" class="nav-link">PROJETOS</a>
+                            <a href="/govhub/projetos/" class="nav-link active">PROJETOS</a>
                             <a href="/govhub/publicacoes/" class="nav-link">PUBLICAÇÕES</a>
                             <a href="/govhub/como-usar/" class="nav-link">COMO USAR</a>
                             <a href="/govhub/ebook-viewer/" class="nav-link">E-BOOK</a>
@@ -99,27 +101,27 @@
                         </svg>
                     </button>
                     
-                    <ul>
+                     <ul>
                         <li><a href="/govhub/home/">HOME</a></li>
-                        <li><a href="/govhub/sobre/" class="active">SOBRE</a></li>
+                        <li><a href="/govhub/sobre/">SOBRE</a></li>
                         <li><a href="/govhub/quem-somos/">QUEM SOMOS</a></li>
-                        <li><a href="/govhub/projetos/">PROJETOS</a></li>
+                        <li><a href="/govhub/projetos/" class="active">PROJETOS</a></li>
                         <li><a href="/govhub/publicacoes/">PUBLICAÇÕES</a></li>
                         <li><a href="/govhub/como-usar/">COMO USAR</a></li>
                         <li><a href="/govhub/ebook-viewer/">E-BOOK</a></li>
                         <li><a href="/govhub/comunidade/guia-contribuicao/">DOCUMENTAÇÃO</a></li>
                         <li><a href="/govhub/dashboards/">DEMO</a></li>
                     </ul>
-                    <!-- Social Icons dentro do menu mobile -->
-                    <div class="social-icons">
-                        <a href="https://www.instagram.com/govhub.br" target="_blank" class="social-icon">
-                            <img src="/govhub/land/dist/images/icons/instagram.svg" alt="Instagram" class="social-icon-img">
-                        </a>
-                        <a href="https://github.com/GovHub-br/gov-hub" target="_blank" class="social-icon">
-                            <img src="/govhub/land/dist/images/icons/github.svg" alt="GitHub" class="social-icon-img">
-                        </a>
-                    </div>
-                </div>
+                     <!-- Social Icons dentro do menu mobile -->
+                     <div class="social-icons">
+                         <a href="https://www.instagram.com/govhub.br" target="_blank" class="social-icon">
+                             <img src="/govhub/land/dist/images/icons/instagram.svg" alt="Instagram" class="social-icon-img">
+                         </a>
+                         <a href="https://github.com/GovHub-br/gov-hub" target="_blank" class="social-icon">
+                             <img src="/govhub/land/dist/images/icons/github.svg" alt="GitHub" class="social-icon-img">
+                         </a>
+                     </div>
+                 </div>
             </div>
         </nav>
     </header>
@@ -127,7 +129,7 @@
     <!-- Hero Section -->
     <section class="hero-section">
         <div class="container">
-            <h1>Sobre o Gov Hub</h1>
+            <h1>Projetos</h1>
         </div>
         
         <!-- Animated Circles -->
@@ -138,263 +140,166 @@
         </div>
     </section>
 
-    <!-- Main Content -->
-    <section class="content-section">
+    <!-- Publications Section -->
+    <section class="publications-page-section">
         <div class="container">
-            <div class="row g-4">
-                <!-- Left Column - Charts -->
-                <div class="col-12 col-lg-6">
-                    <div class="charts-column">
-                        <div class="charts-container">
-                            <div class="chart-group">
-                                <div class="chart-placeholder">
-                                    <img src="/govhub/land/dist/images/cards.png" alt="Cards de dados" class="chart-image">
-                                </div>
-                            </div>
-                        </div>
+            <!-- Filter Bar -->
+            <div class="filter-bar">
+                <div class="filtros-pesquisa">
+                    <div class="filtros-container" style="visibility: hidden;">
+                        <button class="filtro-btn">
+                            <span>FILTROS</span>
+                            <svg class="chevron-down" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                        <button class="filtro-btn">
+                            <span>FILTROS</span>
+                            <svg class="chevron-down" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                        <button class="filtro-btn">
+                            <span>FILTROS</span>
+                            <svg class="chevron-down" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                        <button class="filtro-btn">
+                            <span>FILTROS</span>
+                            <svg class="chevron-down" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                        <button class="filtro-btn">
+                            <span>FILTROS</span>
+                            <svg class="chevron-down" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                        <button class="filtro-btn">
+                            <span>FILTROS</span>
+                            <svg class="chevron-down" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                        <button class="filtro-btn">
+                            <span>FILTROS</span>
+                            <svg class="chevron-down" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
                     </div>
-                </div>
-                
-                <!-- Right Column - Text Content -->
-                <div class="col-12 col-lg-6">
-                    <div class="text-column">
-                        <div class="content-block">
-                            <h2>O que é o Gov Hub?</h2>
-                            <p>O Gov Hub é uma plataforma livre que qualifica e integra dados dos sistemas estruturantes, transformando-os em informações estratégicas para gestão pública baseada em evidências.</p>
-                        </div>
+                    
+                    <div class="pesquisa-container" style="visibility: hidden;">
+                        <button class="pesquisa-btn" id="pesquisa-btn">
+                            <span>PESQUISAR</span>
+                            <svg class="search-icon" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
                         
-                        <div class="content-block">
-                            <h2>Por que existe?</h2>
-                            <p>Para implementar a interoperabilidade no setor público, unindo dados fragmentados e garantindo informações confiáveis para decisões e transparência.</p>
+                        <div class="pesquisa-input-container" id="pesquisa-input-container">
+                            <input type="text" class="pesquisa-input" id="pesquisa-input" placeholder="Digite sua pesquisa..." />
+                            <button class="fechar-pesquisa-btn" id="fechar-pesquisa-btn">
+                                <svg fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                </svg>
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-    
 
-    
-    <!-- Features Section -->
-    <section class="features-section">
-        <div class="container">
-            <div class="row g-4">
-                <!-- Left Column - Title -->
-                <div class="col-12 col-lg-6">
-                    <div class="features-title-column">
-                        <h2 class="features-title"><span class="blur-letter" style="position: relative; display: inline-block;"><span style="position: absolute; top: 50%; left: 30%; transform: translate(-50%, -50%); width: 100px; height: 50px; background: #7A34F3; border-radius: 25px; filter: blur(8px); opacity: 0.1;"></span>Quais</span> são nossos diferenciais?</h2>
-                    </div>
-                </div>
-                
-                <!-- Right Column - Features List -->
-                <div class="col-12 col-lg-6">
-                    <div class="features-list-column">
-                        <div class="feature-item">
-                            <h3>Tudo em um</h3>
-                            <p>Em vez de acessar e cruzar manualmente dados de diferentes sistemas estruturantes, o Gov Hub reúne tudo em uma única plataforma, oferecendo informações integradas, qualificadas e prontas para uso na gestão pública.</p>
+            <!-- Publications Grid -->
+            <div class="row">
+                <!-- Card 1 -->
+                <div class="col-12 col-sm-6 col-lg-4 mb-4">
+                    <div class="publication-card" onclick="window.open('./ipea.html', '_blank')" style="cursor: pointer;">
+                        <div class="publication-image">
+                            <img src="/govhub/land/dist/images/projetos/ipea.svg" alt="IPEA Logo" class="card-image">
+                            <div class="publication-category">INSTITUTO FEDERAL</div>
                         </div>
-                        
-                        <div class="feature-item">
-                            <h3>Software livre e confiável</h3>
-                            <p>O Gov Hub é 100% open source, garantindo autonomia, transparência e colaboração entre órgãos públicos. Sua stack tecnológica é padrão e já utilizada amplamente pelo governo.</p>
-                        </div>
-                        
-                        <div class="feature-item">
-                            <h3>Arquitetura modular</h3>
-                            <p>A solução é desenhada para ser flexível: integrações feitas com sistemas estruturantes podem ser reutilizadas em outros órgãos, além de permitir a conexão com sistemas próprios do órgão.</p>
-                        </div>
-                        
-                        <div class="feature-item">
-                            <h3>Medallion e governança de dados</h3>
-                            <p>A arquitetura em camadas (bronze, prata e ouro) garante qualidade progressiva dos dados, enquanto a governança assegura rastreabilidade, confiabilidade e uso estratégico das informações.</p>
-                        </div>
-                        
-                        <div class="feature-item">
-                            <h3>Respostas inteligentes com IA</h3>
-                            <p>Com o uso de RAG (Retrieval Augmented Generation), o Gov Hub permite responder a perguntas negociais diretamente, sem depender apenas de dashboards, agilizando análises e decisões.</p>
+                        <div class="publication-content">
+                            <h3 class="publication-title">Instituto de Pesquisa Econômica Aplicada (IPEA)</h3>
+                            <p class="publication-caption">O Ipea foi o primeiro órgão a implementar o Gov Hub e foi dessa parceria que a plataforma nasceu. O Instituto concentrava dados de orçamento, contratos, pessoal e convênios em sistemas separados que não se conversavam e montar qualquer relatório gerencial exigia horas de trabalho manual.</p>
+                            <div class="publication-arrow">→</div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- Technologies Section -->
-    <section class="technologies-section">
-        <div class="container">
-            <div class="row g-4">
-                <!-- Left Column - Technologies -->
-                <div class="col-12 col-lg-6">
-                    <div class="technologies-column">
-                        <h2><span class="blur-letter" style="position: relative; display: inline-block;"><span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90px; height: 60px; background: #CE93D8; border-radius: 30px; filter: blur(8px); opacity: 0.2;"></span>Com</span> que foi desenvolvido?</h2>
-                        <p>O projeto adota um stack tecnológico baseado em soluções open-source, incluindo Apache Airflow para orquestração de pipelines de dados, DBT para transformação e modelagem de informações, Apache Superset para visualização e exploração, PostgreSQL como banco de dados relacional e Docker para containerização e implantação. A escolha dessas tecnologias permite maior flexibilidade, escalabilidade e integração com diferentes sistemas governamentais.</p>
-                    </div>
-                </div>
-                
-                <!-- Right Column - Requirements -->
-                <div class="col-12 col-lg-6">
-                    <div class="requirements-column">
-                        <div class="requirements-list">
-                            <div class="requirement-item">
-                                <span class="requirement-category">ORQUESTRAÇÃO DE PIPELINES DE DADOS</span>
-                                <div class="requirement-tech">
-                                    <a href="../documentacao/tutoriais/infraestrutura/airflow" class="tech-name">APACHE AIRFLOW</a>
-                                    <span class="arrow">→</span>
-                                </div>
-                            </div>
-                            
-                            <div class="requirement-item">
-                                <span class="requirement-category">TRANSFORMAÇÃO E MODELAGEM DE DADOS</span>
-                                <div class="requirement-tech">
-                                    <a href="../documentacao/tutoriais/dbt/modelos" class="tech-name">DATA BUILD TOOL</a>
-                                    <span class="arrow">→</span>
-                                </div>
-                            </div>
-                            
-                            <div class="requirement-item">
-                                <span class="requirement-category">VISUALIZAÇÃO E EXPLORAÇÃO DE DADOS</span>
-                                <div class="requirement-tech">
-                                    <a href="../documentacao/tutoriais/superset/conexoes" class="tech-name">APACHE SUPERSET</a>
-                                    <span class="arrow">→</span>
-                                </div>
-                            </div>
-                            
-                            <div class="requirement-item">
-                                <span class="requirement-category">BANCO DE DADOS RELACIONAL</span>
-                                <div class="requirement-tech">
-                                    <a href="../documentacao/tutoriais/infraestrutura/postgresql" class="tech-name">POSTGRESQL</a>
-                                    <span class="arrow">→</span>
-                                </div>
-                            </div>
-                            
-                            <div class="requirement-item">
-                                <span class="requirement-category">CONTAINERIZAÇÃO E IMPLANTAÇÃO DE APLICAÇÕES</span>
-                                <div class="requirement-tech">
-                                    <a href="../documentacao/tutoriais/infraestrutura/docker" class="tech-name">DOCKER</a>
-                                    <span class="arrow">→</span>
-                                </div>
-                            </div>
-                            
-                            <div class="requirement-item">
-                                <span class="requirement-category">RETRIEVAL AUGMENTED GENERATION (EM BREVE)</span>
-                                <div class="requirement-tech">
-                                    <a href="#" class="tech-name">HAYSTACK</a>
-                                    <span class="arrow">→</span>
-                                </div>
-                            </div>
-                            
-                            <div class="requirement-item">
-                                <span class="requirement-category">BANCO DE DADOS VETORIAL (EM BREVE)</span>
-                                <div class="requirement-tech">
-                                    <a href="#" class="tech-name">QDRANT</a>
-                                    <span class="arrow">→</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- How to Use Section -->
-    <section class="how-to-use-section">
-        <div class="container">
-            <div class="how-to-use-content">
-                <h2><span class="blur-letter" style="position: relative; display: inline-block;"><span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80px; height: 50px; background: #CE93D8; border-radius: 25px; filter: blur(8px); opacity: 0.2;"></span>Como</span> utilizar?</h2>
-                <p>O Gov Hub pode ser hospedado na infraestrutura do próprio órgão, garantindo autonomia e segurança. Os painéis são oferecidos por padrão no Superset, acessível via navegador, mas é possível conectar a base qualificada em outras ferramentas de visualização. Parte dos dados utilizados depende de acesso autorizado pelos órgãos responsáveis. A configuração é responsabilidade do órgão, com apoio disponível por meio de parceiros.</p>
-                
-                <h3>Para saber mais detalhes como:</h3>
-                <ul class="how-to-use-list">
-                    <li>Solicitar acesso as bases dos sistemas estruturantes;</li>
-                    <li>Configurar Gov Hub na minha infraestrutura;</li>
-                    <li>Como conectar a base do Gov Hub em outro sistema de visualização de dados;</li>
-                    <li>Como conectar novas bases ao Gov Hub;</li>
-                </ul>
-                
-                <div class="how-to-use-links">
-                    <a href="../documentacao/instalacao" class="how-to-use-link">ACESSE AQUI A DOCUMENTAÇÃO COMPLETA PARA IMPLANTAÇÃO E USO →</a>
-                    <a href="mailto:caguiar@unb.br" class="how-to-use-link">SOLICITE APOIO DE UM PARCEIRO →</a>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- Mission & Vision Section -->
-    <section class="mission-vision-section">
-        <div class="container">
-            <div class="row g-5">
-                <div class="col-12 col-md-6">
-                    <div class="content-block">
-                        <h2>Missão</h2>
-                        <p>Promover a interoperabilidade de dados do Estado brasileiro, traduzindo a complexidade tecnológica em decisões baseadas em evidências, baseada em dados. Nosso propósito é fortalecer a capacidade governamental de gerir políticas públicas e converter a informação (dados) em transparência acionável para a sociedade.</p>
-                    </div>
-                </div>
-                <div class="col-12 col-md-6">
-                    <div class="content-block">
-                        <h2 class="vision-title"><span class="blur-letter" style="position: relative; display: inline-block;"><span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80px; height: 40px; background: #CE93D8; border-radius: 20px; filter: blur(8px); opacity: 0.2;"></span>Visão</span></h2>
-                        <p>Ser a principal infraestrutura pública de dados em software livre da América Latina, referência em governança, usabilidade e impacto democrático.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- Values Section -->
-    <section class="values-section">
-        <div class="container">
-            <div class="row g-4">
+                <!-- Card 2 -->
+                <div class="col-12 col-sm-6 col-lg-4 mb-4">
+                    <div class="publication-card" onclick="window.open('./mir.html', '_blank')" style="cursor: pointer;">
+                        <div class="publication-image">
+                            <img src="/govhub/land/dist/images/projetos/mir.svg" alt="Ministério da Igualdade Racial Logo" class="card-image">
+                            <div class="publication-category">MINISTÉRIO</div>
+                        </div>
+                        <div class="publication-content">
+                            <h3 class="publication-title">Ministério da Igualdade Racial (MIR)</h3>
+                            <p class="publication-caption">O Ministério da Igualdade Racial coordena políticas voltadas à população negra, comunidades quilombolas e tradicionais, mas não tinha uma visão integrada e automatizada dos dados para acompanhar a execução dessas políticas.</p>
+                            <div class="publication-arrow">→</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="col-12 col-sm-6 col-lg-4 mb-4">
+                    <div class="publication-card" onclick="window.open('./mcid.html', '_blank')" style="cursor: pointer;">
+                        <div class="publication-image">
+                            <img src="/govhub/land/dist/images/projetos/mcid.svg" alt="Ministério das Cidades Logo" class="card-image">
+                            <div class="publication-category">MINISTÉRIO</div>
+                        </div>
+                        <div class="publication-content">
+                            <h3 class="publication-title">Ministério das Cidades (MCID)</h3>
+                            <p class="publication-caption">O Ministério das Cidades precisava acompanhar a execução do Minha Casa, Minha Vida e entender se a adoção da construção industrializada estava trazendo os resultados esperados.</p>
+                            <div class="publication-arrow">→</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="col-12 col-sm-6 col-lg-4 mb-4">
+                    <div class="publication-card" onclick="window.open('./minc.html', '_blank')">
+                        <div class="publication-image">
+                            <img src="/govhub/land/dist/images/projetos/minc.svg" alt="MINC Logo" class="card-image">
+                            <div class="publication-category">MINISTÉRIO</div>
+                        </div>
+                        <div class="publication-content">
+                            <h3 class="publication-title">Ministério da Cultura (MinC)</h3>
+                            <p class="publication-caption">O Ministério da Cultura precisava acompanhar as metas do novo Plano Nacional de Cultura, mas os dados estavam espalhados em diferentes sistemas e órgãos, sem uma visão integrada entre União, Estados e Municípios.</p>
+                            <div class="publication-arrow">→</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 6 -->
+                <div class="col-12 col-sm-6 col-lg-4 mb-4">
+                    <div class="publication-card" onclick="window.open('./mgi.html', '_blank')">
+                        <div class="publication-image">
+                            <img src="/govhub/land/dist/images/projetos/mgi.svg" alt="MGI Logo" class="card-image">
+                            <div class="publication-category">MINISTÉRIO</div>
+                        </div>
+                        <div class="publication-content">
+                            <h3 class="publication-title">Ministério da Gestão e da Inovação em Serviços Públicos (MGI)</h3>
+                            <p class="publication-caption">As compras do governo federal são públicas, mas os dados estão espalhados por diferentes sistemas e nem sempre seguem o mesmo padrão. Isso dificulta responder perguntas simples, como quanto o país gasta com medicamentos, equipamentos de TI ou merenda escolar.</p>
+                            <div class="publication-arrow">→</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Load More Button -->
+            <div class="row">
                 <div class="col-12">
-                    <div class="values-content">
-                        <h2 class="values-title">Valores do Gov Hub</h2>
-                        
-                        <div class="values-grid">
-                            <div class="value-item">
-                                <h3>Soberania Tecnológica e Código Aberto</h3>
-                                <p>Adotamos o software livre não apenas como ferramenta, mas como base inegociável para garantir a confiança, a auditabilidade e a independência técnica do Estado.</p>
-                            </div>
-                            
-                            <div class="value-item">
-                                <h3>Transparência Ativa</h3>
-                                <p>Entendemos a abertura de dados como o princípio estruturante do projeto, essencial para o fortalecimento da democracia e a legitimação das políticas públicas.</p>
-                            </div>
-                            
-                            <div class="value-item">
-                                <h3>Rigor Metodológico</h3>
-                                <p>Atuamos para substituir o empirismo pela inteligência de dados, garantindo que o planejamento e o monitoramento governamental sejam estritamente baseados em evidências.</p>
-                            </div>
-                            
-                            <div class="value-item">
-                                <h3>Autonomia e Transferência de Tecnologia</h3>
-                                <p>Fomentamos o conhecimento aberto com o objetivo prático de fortalecer as capacidades estatais, assegurando que os órgãos parceiros não criem dependência, mas ganhem autonomia técnica.</p>
-                            </div>
-                            
-                            <div class="value-item">
-                                <h3>Acessibilidade e Escuta Ativa</h3>
-                                <p>Compreendemos que dados só geram valor se forem entendidos. Mantemos uma postura empática e utilizamos linguagem simples para traduzir a complexidade para gestores, servidores e cidadãos.</p>
-                            </div>
-                        </div>
+                    <div class="load-more-container">
+                        <button class="load-more-button">CARREGAR MAIS PROJETOS</button>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Construction Section -->
-    <section class="construction-section">
-        <div class="container">
-            <div class="row g-4">
-                <div class="col-12 col-lg-8">
-                    <div class="construction-content">
-                        <h2><span class="blur-letter" style="position: relative; display: inline-block;"><span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 95px; height: 60px; background: #CE93D8; border-radius: 30px; filter: blur(12px); opacity: 0.25;"></span>Sob</span> que licença está o código?</h2>
-                        <p>O Gov Hub é totalmente open source: código livre, transparente e auditável. Isso garante autonomia aos órgãos públicos, fomenta colaboração e evita dependência de fornecedores proprietários.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    
     <!-- Footer -->
         <footer class="footer">
         <div class="container">
@@ -630,4 +535,5 @@
         </div>
     </footer>
 </body>
+
 </html>

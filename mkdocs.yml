@@ -1,5 +1,5 @@
 site_name: Gov Hub
-site_url: "https://govhub.github.io/govhub/"
+site_url: "https://gov-hub.io/govhub/"
 site_author: Lab Livre
 site_description: >-
   Gov Hub - plataforma livre de integração de dados e informações governamentais.
@@ -71,6 +71,7 @@ hooks:
 
 # Additional configuration
 extra:
+  homepage: /govhub/home/
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/GovHub-br

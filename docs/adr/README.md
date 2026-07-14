@@ -13,6 +13,10 @@ contexto, as alternativas avaliadas e o racional de cada decisão, permitindo
 que qualquer time — presente ou futuro — entenda *por que* o framework é como
 é, não apenas *o que* ele faz.
 
+Veja o racional completo e os benefícios deste processo em
+[ADR-0000](./0000-por-que-adrs.md), baseado no
+[guia de ADRs da AWS](https://docs.aws.amazon.com/pt_br/prescriptive-guidance/latest/architectural-decision-records/adr-process.html).
+
 ## Convenções
 
 - **Numeração**: sequencial, com 4 dígitos.
@@ -48,4 +52,5 @@ que qualquer time — presente ou futuro — entenda *por que* o framework é co
 
 | ADR | Título | Status |
 |---|---|---|
+| [0000](./0000-por-que-adrs.md) | Por que ADRs | Aceito |
 | [0003](./0003-govhub-como-framework-compartilhado-de-dados.md) | GovHub como um framework compartilhado de dados | Proposto |

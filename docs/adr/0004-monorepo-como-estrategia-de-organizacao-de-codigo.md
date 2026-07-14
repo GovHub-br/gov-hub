@@ -74,6 +74,62 @@ Isso implica que:
   uma única vez e passam a valer para todos os projetos simultaneamente, via
   CI do próprio monorepo.
 
+### Estrutura do repositório
+
+O monorepo segue a estrutura de pastas já usada pelo projeto
+[data-application-gov-hub](https://github.com/GovHub-br/data-application-gov-hub):
+DAGs organizadas primeiro por **sistema/fonte de dados** (ex.: `compras_gov`,
+`ibge`, `pncp`, `siorg`), e modelos de transformação (dbt) organizados por
+projeto.
+
+Além dessa separação por sistema, o monorepo adiciona uma segunda camada de
+separação por **órgão**: dentro da pasta de um sistema, código compartilhado
+entre todos os órgãos/projetos fica diretamente na pasta do sistema; código
+específico de um único órgão — que não faz sentido para os demais
+consumidores — fica em uma subpasta nomeada com o órgão/projeto.
+
+Estrutura de referência:
+
+```
+airflow/
+  dags/
+    data_ingest/
+      <sistema>/                # ex.: compras_gov, ibge, pncp, siorg
+        *_ingest_dag.py         # DAGs que podem ser compartilhadas por todos os órgãos
+      <orgao>/                  # ex.: mir, ipea — apenas quando for específico e não for possível ser compartilhado
+        *_ingest_dag.py
+    dbt/
+      <orgao>/                  # projeto dbt de cada órgão
+        dbt_project.yml
+        models/
+        ...
+```
+
+- Regra: uma DAG ou modelo dbt só entra em uma subpasta de `<orgao>` quando
+  não for compartilhado por todos os órgãos consumidores. Se mais de um
+  órgão passar a depender dela, ela deve subir para a pasta do sistema
+  (deixando de ser específica de um órgão).
+
+### CODEOWNERS por pasta
+
+O monorepo usa um arquivo `CODEOWNERS` (`.github/CODEOWNERS`) para atribuir
+revisão obrigatória por pasta, reduzindo o risco de isolamento insuficiente
+entre projetos apontado nos Tradeoffs:
+
+- Pastas de sistema compartilhado (`data_ingest/<sistema>/*.py`, fora de
+  subpastas de órgão) são de propriedade dos mantenedores do
+  `data-framework` — qualquer mudança em código compartilhado exige revisão
+  do time do framework, já que ela afeta todos os órgãos consumidores.
+- Subpastas de órgão (`data_ingest/<sistema>/<orgao>/`, `dbt/<orgao>/`) são
+  de propriedade do time responsável por aquele órgão/projeto — mudanças
+  específicas de um órgão não exigem aprovação dos demais times, apenas do
+  time dono da pasta.
+- `CODEOWNERS` define quem **aprova** cada mudança, não quem **enxerga** o
+  código — no monorepo, todo contribuidor continua tendo visibilidade de
+  leitura sobre as pastas de todos os órgãos, o que é uma limitação já
+  registrada nos Tradeoffs (dimensão "Visibilidade de código entre
+  projetos") e não é resolvida por esta convenção.
+
 ## Alternativas consideradas
 
 ### Alternativa A: Um repositório por projeto (polyrepo / status quo)
@@ -147,20 +203,20 @@ Isso implica que:
   multi-team em dev/homolog passa a ser viável a partir de uma única base de
   DAGs.
 - **Negativas**: o monorepo passa a exigir investimento em CI seletivo
-  (evitar rodar tudo a cada PR), convenções de estrutura de pastas e,
-  potencialmente, `CODEOWNERS` por diretório para preservar alguma
-  granularidade de revisão por projeto. A ausência de isolamento físico
-  entre projetos exige mais disciplina de testes e revisão para que uma
-  mudança em um projeto não quebre outro por acidente.
+  (evitar rodar tudo a cada PR) e disciplina para manter a estrutura de
+  pastas por sistema/órgão e o `CODEOWNERS` atualizados à medida que novos
+  órgãos e sistemas são adicionados. A ausência de isolamento físico entre
+  projetos exige mais disciplina de testes e revisão para que uma mudança em
+  um projeto não quebre outro por acidente.
 - **Ações decorrentes**:
-  - Definir, em documento técnico subsequente, a estrutura de pastas do
-    monorepo (separação entre framework compartilhado e código específico
-    de cada um dos 5 projetos).
+  - Migrar/organizar o código do monorepo segundo a estrutura por
+    sistema/órgão descrita nesta decisão (`data_ingest/<sistema>/[<orgao>/]`,
+    `dbt/<orgao>/`).
+  - Criar o arquivo `.github/CODEOWNERS` mapeando pastas de sistema
+    compartilhado aos mantenedores do `data-framework` e subpastas de órgão
+    aos respectivos times.
   - Configurar CI com seletividade por path, rodando apenas testes e builds
     relevantes às mudanças de cada PR.
-  - Avaliar o uso de `CODEOWNERS` por diretório, para que cada projeto
-    mantenha um nível de revisão dedicado sobre seu próprio código dentro do
-    monorepo.
   - Documentar o processo de deploy/release por projeto a partir de um
     único repositório, evitando que uma mudança em um projeto force
     deploy desnecessário de outro.
@@ -169,4 +225,5 @@ Isso implica que:
 
 - [ADR-0001 — Apache Airflow como orquestrador de fluxos de dados](./0001-airflow-como-orquestrador-de-fluxos-de-dados.md)
 - [ADR-0003 — GovHub como framework compartilhado de dados](./0003-govhub-como-framework-compartilhado-de-dados.md)
+- [data-application-gov-hub — estrutura de referência do repositório](https://github.com/GovHub-br/data-application-gov-hub)
 - [Estrutura de ADRs do repositório](./README.md)

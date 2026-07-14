@@ -57,4 +57,4 @@ Veja o racional completo e os benefícios deste processo em
 | [0002](./0002-dbt-como-ferramenta-de-transformacao-de-dados.md) | dbt como ferramenta de transformação de dados | Proposto |
 | [0003](./0003-govhub-como-framework-compartilhado-de-dados.md) | GovHub como um framework compartilhado de dados | Proposto |
 | [0004](./0004-monorepo-como-estrategia-de-organizacao-de-codigo.md) | Monorepo como estratégia de organização de código | Proposto |
-| [0005](./0005-selecao-de-dags-por-tags-antes-do-parsing.md) | Seleção de DAGs por tags antes do parsing | Proposto |
+| [0005](./0005-selecao-de-dags-por-dag-selector-antes-do-parsing.md) | Seleção de DAGs por arquivo `dag_selector` antes do parsing | Proposto |

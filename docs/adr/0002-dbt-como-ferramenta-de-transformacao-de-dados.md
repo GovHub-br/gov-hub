@@ -125,13 +125,25 @@ Isso implica que:
 
 ## Tradeoffs
 
-| Dimensão | Ganho | Custo/Risco |
+### Vantagens (ordenadas por impacto, do maior para o menor)
+
+| Dimensão | Ganho | Impacto |
 |---|---|---|
-| Adoção e mão de obra | Ferramenta já conhecida por servidores/contratados de outros projetos públicos e amplamente documentada, reduzindo custo de treinamento | Times sem experiência prévia em dbt precisam aprender convenções próprias (ex.: `ref()`, `source()`, camadas de modelos) |
-| Custo e licenciamento | dbt Core é open source, sem custo de licença nem vendor lock-in — relevante para justificativa de contratação pública | dbt Cloud (versão gerenciada com UI, scheduler próprio) é paga; o framework assume o uso de dbt Core, deixando orquestração e CI por conta do próprio time |
-| Aderência ao PostgreSQL | Transformações executam diretamente no banco já usado pelos projetos, sem infraestrutura adicional de processamento | Para volumes muito grandes de dados, transformação dentro do PostgreSQL pode não escalar tão bem quanto motores de processamento distribuído |
-| Testabilidade e qualidade de dados | Testes genéricos e customizados (unicidade, not-null, relacionamentos) tornam-se parte do próprio pipeline de transformação | Exige disciplina do time para de fato escrever e manter testes — a ferramenta viabiliza, mas não garante qualidade sozinha |
-| Documentação e linhagem | Documentação e grafo de linhagem gerados a partir do próprio projeto dbt, sem ferramenta externa | Documentação gerada (`dbt docs`) precisa de hospedagem/publicação própria para ser útil a times não técnicos |
+| Custo e licenciamento | dbt Core é open source, sem custo de licença nem vendor lock-in — relevante para justificativa de contratação pública | ★★★★★ |
+| Aderência ao PostgreSQL | Transformações executam diretamente no banco já usado pelos projetos, sem infraestrutura adicional de processamento | ★★★★☆ |
+| Adoção e mão de obra | Ferramenta já conhecida por servidores/contratados de outros projetos públicos e amplamente documentada, reduzindo custo de treinamento | ★★★☆☆ |
+| Testabilidade e qualidade de dados | Testes genéricos e customizados (unicidade, not-null, relacionamentos) tornam-se parte do próprio pipeline de transformação | ★★★☆☆ |
+| Documentação e linhagem | Documentação e grafo de linhagem gerados a partir do próprio projeto dbt, sem ferramenta externa | ★★☆☆☆ |
+
+### Desvantagens (ordenadas por impacto, do maior para o menor)
+
+| Dimensão | Custo/Risco | Impacto |
+|---|---|---|
+| Aderência ao PostgreSQL | Para volumes muito grandes de dados, transformação dentro do PostgreSQL pode não escalar tão bem quanto motores de processamento distribuído, podendo exigir revisão futura desta decisão | ★★★★☆ |
+| Adoção e mão de obra | Times sem experiência prévia em dbt precisam aprender convenções próprias (ex.: `ref()`, `source()`, camadas de modelos) | ★★★☆☆ |
+| Custo e licenciamento | dbt Cloud (versão gerenciada com UI, scheduler próprio) é paga; o framework assume o uso de dbt Core, deixando orquestração e CI por conta do próprio time | ★★★☆☆ |
+| Testabilidade e qualidade de dados | Exige disciplina do time para de fato escrever e manter testes — a ferramenta viabiliza, mas não garante qualidade sozinha | ★★☆☆☆ |
+| Documentação e linhagem | Documentação gerada (`dbt docs`) precisa de hospedagem/publicação própria para ser útil a times não técnicos | ★☆☆☆☆ |
 
 ## Consequências
 

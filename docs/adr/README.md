@@ -56,3 +56,4 @@ Veja o racional completo e os benefícios deste processo em
 | [0001](./0001-airflow-como-orquestrador-de-fluxos-de-dados.md) | Apache Airflow como orquestrador de fluxos de dados | Proposto |
 | [0002](./0002-dbt-como-ferramenta-de-transformacao-de-dados.md) | dbt como ferramenta de transformação de dados | Proposto |
 | [0003](./0003-govhub-como-framework-compartilhado-de-dados.md) | GovHub como um framework compartilhado de dados | Proposto |
+| [0005](./0005-selecao-de-dags-por-tags-antes-do-parsing.md) | Seleção de DAGs por tags antes do parsing | Proposto |

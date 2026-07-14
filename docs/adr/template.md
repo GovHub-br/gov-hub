@@ -5,6 +5,13 @@
 - **Autores**: Nome (time/projeto)
 - **Revisores**: Nome (time/projeto)
 
+> **Regra de citação**: um ADR só pode citar ADRs já existentes, com número
+> menor que o seu. Não cite ADRs futuros (número maior, ainda não criados no
+> momento da escrita) — ex.: o ADR-0004 não pode citar o ADR-0005. Se a
+> decisão depende de algo que só um ADR futuro vai definir, descreva o
+> conceito sem linkar/citar o número, e deixe o ADR futuro linkar de volta
+> para este quando for criado.
+
 ## Introdução ao problema
 
 Descreva o problema ou a força motriz que exige uma decisão. Responda:

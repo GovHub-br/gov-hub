@@ -38,9 +38,7 @@ particularmente sensível:
 
 Essa decisão precisa ser tomada agora porque a camada de orquestração é uma
 das primeiras a ser consumida por qualquer projeto que herdar o
-`data-framework`: pipelines de ingestão e transformação (ver contexto do
-[ADR-0003](./0003-govhub-como-framework-compartilhado-de-dados.md)) dependem
-diretamente de como tarefas são agendadas, encadeadas e monitoradas.
+`data-framework`: pipelines de ingestão e transformação.
 
 ## Decisão
 
@@ -70,9 +68,7 @@ Isso implica que:
   triviais.
 - Contras: não escala para fluxos com dependências reais entre tarefas; não
   há retry automático, alertas, backfill nem visibilidade centralizada de
-  execuções. Cada projeto reimplementaria (mal) o que um orquestrador já
-  resolve — reproduzindo exatamente o problema de duplicação descrito no
-  [ADR-0003](./0003-govhub-como-framework-compartilhado-de-dados.md).
+  execuções.
 
 ### Alternativa B: Prefect
 
@@ -158,5 +154,4 @@ Isso implica que:
 ## Referências
 
 - [Apache Airflow — documentação oficial](https://airflow.apache.org/docs/)
-- [ADR-0003 — GovHub como framework compartilhado de dados](./0003-govhub-como-framework-compartilhado-de-dados.md)
 - [Estrutura de ADRs do repositório](./README.md)

@@ -14,8 +14,7 @@ limpeza, modelagem, agregação e disponibilização de camadas analíticas
 (bronze/silver/gold) — antes de publicá-los. Hoje essa etapa, quando existe,
 é resolvida por scripts SQL soltos ou lógica de transformação embutida em
 tarefas de orquestração, sem versionamento, teste ou documentação
-padronizados. Isso gera problemas semelhantes aos já identificados no
-[ADR-0003](./0003-govhub-como-framework-compartilhado-de-dados.md):
+padronizados.
 
 - **Falta de testabilidade**: transformações em SQL solto não têm testes de
   qualidade de dados associados (ex.: unicidade, not-null, integridade
@@ -81,10 +80,7 @@ Isso implica que:
 - Prós: zero custo de adoção, zero dependência nova, funciona para casos
   triviais de transformação.
 - Contras: não há testes de qualidade de dados, versionamento estruturado,
-  documentação nem visualização de linhagem. Cada projeto reimplementaria (de
-  forma inconsistente) convenções básicas de modelagem — reproduzindo o
-  problema de duplicação e falta de padronização descrito no
-  [ADR-0003](./0003-govhub-como-framework-compartilhado-de-dados.md).
+  documentação nem visualização de linhagem.
 
 ### Alternativa B: Spark SQL / PySpark para transformação
 
@@ -172,5 +168,4 @@ Isso implica que:
 
 - [dbt — documentação oficial](https://docs.getdbt.com/)
 - [ADR-0001 — Apache Airflow como orquestrador de fluxos de dados](./0001-airflow-como-orquestrador-de-fluxos-de-dados.md)
-- [ADR-0003 — GovHub como framework compartilhado de dados](./0003-govhub-como-framework-compartilhado-de-dados.md)
 - [Estrutura de ADRs do repositório](./README.md)

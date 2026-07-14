@@ -52,12 +52,30 @@ Explicite o que se ganha e o que se perde com a decisão escolhida. Nenhuma
 decisão arquitetural é gratuita — esta seção existe para tornar esse custo
 visível e evitar que ele seja redescoberto (com dor) mais tarde.
 
-| Dimensão | Ganho | Custo/Risco |
-|---|---|---|
-| Ex.: Complexidade operacional | ... | ... |
-| Ex.: Curva de aprendizado para times consumidores | ... | ... |
-| Ex.: Acoplamento entre projetos | ... | ... |
-| Ex.: Custo de manutenção de longo prazo | ... | ... |
+Liste vantagens e desvantagens em listas separadas, não pareadas por
+dimensão — nem toda vantagem tem uma desvantagem correspondente de peso
+equivalente, e forçar esse pareamento (ex.: em uma tabela 1-para-1) esconde
+quando os custos pesam mais que os ganhos, ou vice-versa. Marque cada item
+com `[Alto impacto]`, `[Médio impacto]` ou `[Baixo impacto]` para este
+contexto específico, e feche com uma **Avaliação** que declare explicitamente
+o julgamento — por que os ganhos superam os custos (ou não) — em vez de
+deixar o leitor inferir isso sozinho.
+
+### Vantagens
+
+- **[Alto/Médio/Baixo impacto]** ...
+- **[Alto/Médio/Baixo impacto]** ...
+
+### Desvantagens
+
+- **[Alto/Médio/Baixo impacto]** ...
+- **[Alto/Médio/Baixo impacto]** ...
+
+### Avaliação
+
+Declare o julgamento: os ganhos superam os custos neste contexto? Por quê?
+Quais desvantagens permanecem como risco ativo a mitigar, mesmo com a
+decisão tomada?
 
 ## Consequências
 

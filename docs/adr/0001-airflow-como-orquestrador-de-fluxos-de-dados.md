@@ -112,13 +112,47 @@ Isso implica que:
 
 ## Tradeoffs
 
-| Dimensão | Ganho | Custo/Risco |
-|---|---|---|
-| Adoção e mão de obra | Ferramenta já conhecida por servidores/contratados de outros projetos públicos, reduzindo custo de treinamento e contratação | Airflow tem reputação de curva de aprendizado íngreme para times sem experiência prévia em orquestração |
-| Custo e licenciamento | Open source, sem custo de licença nem vendor lock-in — relevante para justificativa de contratação pública | Operação e manutenção da infraestrutura (scheduler, workers, banco de metadados) ficam sob responsabilidade do próprio time, sem suporte comercial garantido |
-| Comunidade e estabilidade | Projeto maduro, com grande volume de documentação, plugins e resposta a bugs críticos | Ritmo de evolução mais conservador que ferramentas mais novas; alguns padrões (ex.: XComs, certos operadores) carregam débito histórico de design |
-| Customização via código | Lógica arbitrária em Python permite atender particularidades de qualquer projeto público consumidor | Alta flexibilidade também permite DAGs mal escritas (ex.: lógica pesada no momento de parsing) que degradam a performance do scheduler se não houver padronização |
-| Complexidade operacional | Suporta fluxos complexos com dependências, retries, backfill e alertas nativamente | Exige infraestrutura própria (banco de metadados, executor, filas) mais pesada que uma solução simples de cron, aumentando o custo operacional mínimo de qualquer projeto consumidor |
+### Vantagens
+
+- **[Alto impacto]** Ferramenta já conhecida por servidores/contratados de
+  outros projetos públicos, reduzindo custo de treinamento e contratação.
+- **[Alto impacto]** Open source, sem custo de licença nem vendor lock-in —
+  relevante para justificativa de contratação pública.
+- **[Médio impacto]** Projeto maduro, com grande volume de documentação,
+  plugins e resposta a bugs críticos.
+- **[Médio impacto]** Lógica arbitrária em Python permite atender
+  particularidades de qualquer projeto público consumidor.
+- **[Alto impacto]** Suporta fluxos complexos com dependências, retries,
+  backfill e alertas nativamente, sem que cada projeto precise reimplementar.
+
+### Desvantagens
+
+- **[Alto impacto]** Curva de aprendizado íngreme para times sem experiência
+  prévia em orquestração — especialmente crítico dado o perfil de times
+  pequenos e rotativos do setor público citado na introdução.
+- **[Alto impacto]** Operação e manutenção da infraestrutura (scheduler,
+  workers, banco de metadados) ficam sob responsabilidade do próprio time,
+  sem suporte comercial garantido.
+- **[Médio impacto]** Ritmo de evolução mais conservador; alguns padrões
+  (ex.: XComs, certos operadores) carregam débito histórico de design.
+- **[Médio impacto]** Alta flexibilidade de código também permite DAGs mal
+  escritas (ex.: lógica pesada no parsing) que degradam a performance do
+  scheduler se não houver padronização.
+- **[Alto impacto]** Exige infraestrutura própria mais pesada que uma solução
+  simples de cron — múltiplos componentes (scheduler, webserver, workers,
+  banco de metadados), aumentando o custo operacional mínimo de qualquer
+  projeto consumidor.
+
+### Avaliação
+
+Os custos de adoção do Airflow são concentrados em complexidade operacional e
+curva de aprendizado — ambos de alto impacto e mitigáveis com investimento
+inicial (documentação, padronização de DAGs, escolha de deploy simplificado
+para projetos pequenos). Os ganhos, por outro lado, endereçam diretamente os
+critérios não negociáveis do contexto (custo, licenciamento, continuidade
+entre equipes) descritos na introdução. Por isso a decisão é considerada
+favorável apesar do custo operacional elevado — mas esse custo deve ser
+tratado como um risco ativo a mitigar, não uma nota de rodapé.
 
 ## Consequências
 

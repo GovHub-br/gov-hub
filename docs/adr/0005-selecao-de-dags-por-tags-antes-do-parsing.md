@@ -2,8 +2,8 @@
 
 - **Status**: Proposto
 - **Data**: 2026-07-14
-- **Autores**: Matheus Lacerda
-- **Revisores**: -
+- **Autores**: [Arthrok](https://github.com/Arthrok)
+- **Revisores**: [João Henrique Egewarth](https://github.com/egewarth)
 
 ## Introdução ao problema
 

@@ -1,6 +1,6 @@
 # ADR-0000: Por que ADRs
 
-- **Status**: Aceito
+- **Status**: Proposto
 - **Data**: 2026-07-14
 - **Autores**: Matheus Lacerda
 - **Revisores**: -

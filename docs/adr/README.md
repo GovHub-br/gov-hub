@@ -34,7 +34,7 @@ Veja o racional completo e os benefícios deste processo em
 | Status | Significado |
 |---|---|
 | `Proposto` | Em discussão, ainda não decidido. |
-| `Aceito` | Decisão tomada e vigente. |
+| `Aceito` | Decisão tomada e revisada por pelo menos 1 par. |
 | `Rejeitado` | Proposta avaliada e descartada. |
 | `Substituído por ADR-XXXX` | Decisão superada por um ADR mais recente. |
 | `Depreciado` | Decisão não é mais relevante (contexto desapareceu). |
@@ -52,5 +52,5 @@ Veja o racional completo e os benefícios deste processo em
 
 | ADR | Título | Status |
 |---|---|---|
-| [0000](./0000-por-que-adrs.md) | Por que ADRs | Aceito |
+| [0000](./0000-por-que-adrs.md) | Por que ADRs | Proposto |
 | [0003](./0003-govhub-como-framework-compartilhado-de-dados.md) | GovHub como um framework compartilhado de dados | Proposto |

@@ -82,11 +82,34 @@ DAGs organizadas primeiro por **sistema/fonte de dados** (ex.: `compras_gov`,
 `ibge`, `pncp`, `siorg`), e modelos de transformação (dbt) organizados por
 projeto.
 
-Além dessa separação por sistema, o monorepo adiciona uma segunda camada de
-separação por **órgão**: dentro da pasta de um sistema, código compartilhado
-entre todos os órgãos/projetos fica diretamente na pasta do sistema; código
-específico de um único órgão — que não faz sentido para os demais
-consumidores — fica em uma subpasta nomeada com o órgão/projeto.
+Além dessa separação por sistema, o monorepo distingue três situações,
+conforme o quanto um sistema/fonte de dados é compartilhado entre órgãos —
+e essa mesma lógica se aplica tanto às DAGs de ingestão quanto aos modelos
+dbt de transformação:
+
+1. **Sistema compartilhado, código compartilhado**: DAGs ou modelos dbt
+   usados por mais de um órgão ficam diretamente na pasta do sistema
+   (`data_ingest/<sistema>/`, `dbt/<sistema>/`).
+2. **Sistema compartilhado, código específico de um órgão**: quando o mesmo
+   sistema é compartilhado, mas parte das DAGs ou modelos só faz sentido
+   para um órgão específico, esse código fica em uma subpasta de órgão
+   **dentro** da pasta do sistema (`data_ingest/<sistema>/<orgao>/`,
+   `dbt/<sistema>/<orgao>/`).
+3. **Sistema interno de um único órgão**: quando o sistema/fonte de dados
+   inteiro é específico de um único órgão, sem uso previsto por outros
+   consumidores, o código fica direto em uma pasta de órgão no nível raiz
+   (`data_ingest/<orgao>/`, `dbt/<orgao>/`) — sem uma pasta de sistema
+   intermediária, já que não há nada a compartilhar.
+
+Como cada órgão tem seu próprio banco de dados e, portanto, seu próprio
+projeto dbt (com `dbt_project.yml` e `profiles.yml` próprios), o
+compartilhamento de modelos dbt entre órgãos não significa um único projeto
+executado por todos — cada `dbt/<sistema>/` é um **pacote dbt local**
+(`dbt_project.yml` do tipo pacote, sem `profiles.yml` próprio), importado
+via `packages.yml` pelo projeto de cada órgão que consome aquele sistema.
+`dbt/<sistema>/<orgao>/`, dentro do pacote, contém modelos daquele pacote
+que só fazem sentido para um órgão específico, mas que ainda são
+distribuídos e versionados junto com o pacote compartilhado.
 
 Estrutura de referência:
 
@@ -94,21 +117,35 @@ Estrutura de referência:
 airflow/
   dags/
     data_ingest/
-      <sistema>/                # ex.: compras_gov, ibge, pncp, siorg
-        *_ingest_dag.py         # DAGs que podem ser compartilhadas por todos os órgãos
-      <orgao>/                  # ex.: mir, ipea — apenas quando for específico e não for possível ser compartilhado
+      <sistema>/                # sistema compartilhado — ex.: compras_gov, ibge, pncp, siorg
+        *_ingest_dag.py         # DAGs compartilhadas por todos os órgãos que usam o sistema
+        <orgao>/                # ex.: mir, ipea — apenas quando parte das DAGs do sistema for específica de um órgão
+          *_ingest_dag.py
+      <orgao>/                  # sistema interno, específico de um único órgão — sem pasta de sistema intermediária
         *_ingest_dag.py
     dbt/
-      <orgao>/                  # projeto dbt de cada órgão
-        dbt_project.yml
+      <sistema>/                # pacote dbt compartilhado por todos os órgãos que usam o sistema
+        dbt_project.yml         # projeto do tipo pacote (sem profiles.yml próprio)
         models/
+        <orgao>/                # modelos do pacote específicos de um órgão, mas distribuídos junto com ele
+          ...
+      <orgao>/                  # projeto dbt do órgão (dbt_project.yml + profiles.yml próprios)
+        dbt_project.yml
+        packages.yml            # importa os pacotes de <sistema>/ que esse órgão consome
+        models/                 # modelos específicos deste órgão (incl. sistemas internos)
         ...
 ```
 
-- Regra: uma DAG ou modelo dbt só entra em uma subpasta de `<orgao>` quando
-  não for compartilhado por todos os órgãos consumidores. Se mais de um
-  órgão passar a depender dela, ela deve subir para a pasta do sistema
-  (deixando de ser específica de um órgão).
+- Regra: uma DAG ou modelo dbt só entra em uma pasta/subpasta de `<orgao>`
+  quando não for compartilhado por todos os órgãos que usam aquele sistema.
+  Se mais de um órgão passar a depender de uma DAG ou modelo hoje
+  específico, ele deve subir para a pasta do sistema (deixando de ser
+  específico de um órgão). Da mesma forma, se um sistema hoje interno a um
+  único órgão (`data_ingest/<orgao>/`, `dbt/<orgao>/`) passar a ser usado
+  por outro órgão, ele deve ser promovido a sistema compartilhado
+  (`data_ingest/<sistema>/`, `dbt/<sistema>/` como pacote), com o código
+  hoje em `<orgao>/` migrando para uma subpasta `<sistema>/<orgao>/` apenas
+  se ainda restar algo específico desse órgão.
 
 ### CODEOWNERS por pasta
 
@@ -116,14 +153,17 @@ O monorepo usa um arquivo `CODEOWNERS` (`.github/CODEOWNERS`) para atribuir
 revisão obrigatória por pasta, reduzindo o risco de isolamento insuficiente
 entre projetos apontado nos Tradeoffs:
 
-- Pastas de sistema compartilhado (`data_ingest/<sistema>/*.py`, fora de
-  subpastas de órgão) são de propriedade dos mantenedores do
-  `data-framework` — qualquer mudança em código compartilhado exige revisão
-  do time do framework, já que ela afeta todos os órgãos consumidores.
-- Subpastas de órgão (`data_ingest/<sistema>/<orgao>/`, `dbt/<orgao>/`) são
-  de propriedade do time responsável por aquele órgão/projeto — mudanças
-  específicas de um órgão não exigem aprovação dos demais times, apenas do
-  time dono da pasta.
+- Pastas de sistema compartilhado (`data_ingest/<sistema>/*.py`,
+  `dbt/<sistema>/`, fora de subpastas de órgão) são de propriedade dos
+  mantenedores do `data-framework` — qualquer mudança em código ou pacote
+  dbt compartilhado exige revisão do time do framework, já que ela afeta
+  todos os órgãos consumidores.
+- Subpastas de órgão dentro de um sistema compartilhado
+  (`data_ingest/<sistema>/<orgao>/`, `dbt/<sistema>/<orgao>/`), pastas de
+  sistema interno de um único órgão (`data_ingest/<orgao>/`) e projetos dbt
+  de órgão (`dbt/<orgao>/`) são de propriedade do time responsável por
+  aquele órgão/projeto — mudanças específicas de um órgão não exigem
+  aprovação dos demais times, apenas do time dono da pasta.
 - `CODEOWNERS` define quem **aprova** cada mudança, não quem **enxerga** o
   código — no monorepo, todo contribuidor continua tendo visibilidade de
   leitura sobre as pastas de todos os órgãos, o que é uma limitação já
@@ -211,10 +251,13 @@ entre projetos apontado nos Tradeoffs:
 - **Ações decorrentes**:
   - Migrar/organizar o código do monorepo segundo a estrutura por
     sistema/órgão descrita nesta decisão (`data_ingest/<sistema>/[<orgao>/]`,
-    `dbt/<orgao>/`).
-  - Criar o arquivo `.github/CODEOWNERS` mapeando pastas de sistema
-    compartilhado aos mantenedores do `data-framework` e subpastas de órgão
-    aos respectivos times.
+    `data_ingest/<orgao>/`, `dbt/<sistema>/[<orgao>/]`, `dbt/<orgao>/`).
+  - Criar o arquivo `.github/CODEOWNERS` mapeando pastas de sistema/pacote
+    compartilhado aos mantenedores do `data-framework` e pastas/subpastas de
+    órgão aos respectivos times.
+  - Documentar, em complemento à nomenclatura de pastas dbt, como um
+    projeto de órgão declara e importa os pacotes de `dbt/<sistema>/` de que
+    depende (`packages.yml`).
   - Configurar CI com seletividade por path, rodando apenas testes e builds
     relevantes às mudanças de cada PR.
   - Documentar o processo de deploy/release por projeto a partir de um

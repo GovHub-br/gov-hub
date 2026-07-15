@@ -157,15 +157,17 @@ por pausa e drenagem quando houver runs ativos relevantes.
 
 ## Alternativas consideradas
 
-### Alternativa A: Carregar todas as DAGs e usar pause/unpause
+### `dag_selector` — decisão proposta
 
-- Descrição: todas as DAGs são importadas; cada órgão pausa manualmente as
-  que não deseja executar.
-- Prós: usa apenas funcionalidades nativas da interface/API do Airflow; não
-  exige convenção estática nem callable customizado.
-- Contras: não reduz custo de parsing nem isola erros de importação; mantém
-  DAGs irrelevantes na interface; a composição do deployment depende de
-  estado mutável no banco de metadados.
+- Descrição: um arquivo de allowlist por caminho, com semântica invertida
+  ao `.airflowignore`, resolvido antes de o Airflow importar cada arquivo
+  candidato.
+- Por que foi escolhida: aproveita a convenção de pastas por sistema/órgão já
+  estabelecida no [ADR-0004](./0004-monorepo-como-estrategia-de-organizacao-de-codigo.md)
+  como única fonte de verdade para seleção — sem exigir metadado redundante
+  por arquivo (Alternativa E) — e evita o crescimento inseguro de uma
+  blocklist (Alternativa B), sendo segura por padrão: nada é carregado a
+  menos que explicitamente declarado.
 
 ### Alternativa B: `.airflowignore` nativo (blocklist direta)
 
@@ -179,7 +181,29 @@ por pausa e drenagem quando houver runs ativos relevantes.
   cresce a cada novo sistema adicionado ao framework e que, se esquecida,
   falha de modo inseguro (carrega DAGs de mais, não de menos).
 
-### Alternativa C: Filtrar com `dag_policy` pelas tags nativas
+### Alternativa C: Seleção por tags estáticas (`DAG_TAGS`) via callable customizado
+
+- Descrição: cada arquivo de DAG declara uma constante `DAG_TAGS` no nível
+  superior do módulo; um callable customizado lê essa constante via AST e
+  compara com uma allowlist de tags do deployment
+  (`AIRFLOW_ENABLED_DAG_TAGS`), antes de o Airflow importar o arquivo.
+- Prós: seleção independente da estrutura física de pastas; permite
+  reorganizar arquivos sem alterar seu escopo de seleção.
+- Contras: acopla a inclusão de uma DAG em um deployment à alteração do
+  próprio código da DAG — incluir uma nova DAG em um deployment às vezes
+  exige editar o arquivo da DAG para adicionar a tag correspondente, em vez
+  de apenas mudar configuração do deployment. Além disso, a seleção por
+  tags nem sempre representa bem o contexto desejado: separar por conjuntos
+  que não são "todas as tags de um órgão" exige criar tags cada vez mais
+  específicas só para viabilizar a seleção — por exemplo, para incluir
+  todas as DAGs do `transferegov` exceto duas específicas, seria necessário
+  criar uma nova tag dedicada a esse subconjunto, já que a semântica OR de
+  tags não expressa exclusão. Exige também leitura e análise AST de cada
+  arquivo candidato, um custo que a seleção por caminho evita por completo.
+  Foi a decisão original deste ADR e é substituída pela alternativa
+  proposta acima.
+
+### Alternativa D: Filtrar com `dag_policy` pelas tags nativas
 
 - Descrição: carregar cada DAG e lançar `AirflowClusterPolicySkipDag` quando
   `dag.tags` não coincidir com a configuração do órgão.
@@ -189,58 +213,76 @@ por pausa e drenagem quando houver runs ativos relevantes.
   evita imports, código top-level, dependências ausentes nem o custo de
   parsing que motivam esta decisão.
 
-### Alternativa D: Branches, imagens ou pacotes de DAGs por órgão
+### Alternativa E: Carregar todas as DAGs e usar pause/unpause
 
-- Descrição: produzir um conjunto físico distinto de DAGs para cada órgão.
-- Prós: apenas o código necessário chega ao ambiente; oferece isolamento
-  mais forte dos artefatos implantados.
-- Contras: multiplica variantes de build e release, cria risco de
-  divergência entre órgãos e aumenta o custo de propagar correções do
-  framework. Contraria o objetivo do
-  [ADR-0004](./0004-monorepo-como-estrategia-de-organizacao-de-codigo.md) de
-  manter um monorepo compartilhado.
-
-### Alternativa E: Seleção por tags estáticas (`DAG_TAGS`) via callable customizado
-
-- Descrição: cada arquivo de DAG declara uma constante `DAG_TAGS` no nível
-  superior do módulo; um callable customizado lê essa constante via AST e
-  compara com uma allowlist de tags do deployment
-  (`AIRFLOW_ENABLED_DAG_TAGS`), antes de o Airflow importar o arquivo.
-- Prós: seleção independente da estrutura física de pastas; permite
-  reorganizar arquivos sem alterar seu escopo de seleção.
-- Contras: exige que todo arquivo de DAG declare e mantenha `DAG_TAGS`
-  manualmente, como uma segunda fonte de verdade paralela à localização do
-  arquivo — redundante agora que o
-  [ADR-0004](./0004-monorepo-como-estrategia-de-organizacao-de-codigo.md)
-  já define uma convenção de pastas por sistema/órgão. Exige leitura e
-  análise AST de cada arquivo candidato, um custo que a seleção por caminho
-  evita por completo. Foi a decisão original deste ADR e é substituída pela
-  Alternativa proposta abaixo.
-
-### `dag_selector` — decisão proposta
-
-- Descrição: um arquivo de allowlist por caminho, com semântica invertida
-  ao `.airflowignore`, resolvido antes de o Airflow importar cada arquivo
-  candidato.
-- Por que foi escolhida: aproveita a convenção de pastas por sistema/órgão já
-  estabelecida no [ADR-0004](./0004-monorepo-como-estrategia-de-organizacao-de-codigo.md)
-  como única fonte de verdade para seleção — sem exigir metadado redundante
-  por arquivo (Alternativa E) — e evita o crescimento inseguro de uma
-  blocklist (Alternativa B), sendo segura por padrão: nada é carregado a
-  menos que explicitamente declarado.
+- Descrição: todas as DAGs são importadas; cada órgão pausa manualmente as
+  que não deseja executar.
+- Prós: usa apenas funcionalidades nativas da interface/API do Airflow; não
+  exige convenção estática nem callable customizado.
+- Contras: não reduz custo de parsing nem isola erros de importação; mantém
+  DAGs irrelevantes na interface; a composição do deployment depende de
+  estado mutável no banco de metadados.
 
 ## Tradeoffs
 
-| Dimensão | Ganho | Custo/Risco |
-|---|---|---|
-| Performance do DAG Processor | Arquivos fora do `dag_selector` nem chegam a ter o conteúdo lido — a decisão é só de caminho, sem AST | O ganho depende de haver volume ou custo relevante de arquivos fora da allowlist |
-| Base compartilhada | Um mesmo pacote de DAGs atende vários órgãos apenas trocando o arquivo `dag_selector` do deployment | Erro na allowlist pode fazer DAGs esperadas desaparecerem ou incluir DAGs em excesso |
-| Fonte única de seleção | Reaproveita a estrutura de pastas por sistema/órgão do ADR-0004; não há metadado redundante para manter sincronizado com a localização do arquivo | Acopla a seleção à estrutura física do repositório — mover um arquivo de pasta muda seu escopo de seleção implicitamente |
-| Simplicidade de autoria | Um arquivo novo dentro de uma pasta já incluída é selecionado automaticamente, sem exigir declaração por arquivo | Incluir um único arquivo dentro de uma pasta maior, sem incluir o restante dela, ainda é possível mas menos natural que incluir a pasta inteira |
-| Granularidade | Suporta arquivo e pasta inteira na mesma sintaxe de linha | Seleção ocorre por arquivo/pasta; múltiplas DAGs no mesmo módulo não podem ter escopos diferentes |
-| Diagnóstico | Arquivos fora da allowlist nunca são importados, então nunca geram erro de import naquele deployment | CI precisa validar o conjunto completo, já que erros em arquivos não selecionados não aparecem no deployment do órgão |
-| Segurança | Reduz exposição operacional e poluição da interface | Não remove código do artefato nem substitui isolamento de credenciais, rede ou dados |
-| Operação | Composição do órgão fica declarada em um único arquivo versionável em Helm/GitOps | Mudanças no `dag_selector` exigem rollout do DAG Processor/scheduler e procedimento para runs em andamento |
+### Vantagens
+
+- **[Alto impacto]** Nenhum arquivo fora do `dag_selector` chega a ter o
+  conteúdo lido — a decisão é resolvida só por caminho, sem `ast.parse`, um
+  custo por candidato menor que o da alternativa por tags.
+- **[Alto impacto]** Reaproveita a estrutura de pastas por sistema/órgão do
+  ADR-0004 como única fonte de verdade para seleção, sem exigir metadado
+  redundante (tags) que precise ser mantido sincronizado com a localização
+  do arquivo.
+- **[Médio impacto]** Um arquivo novo dentro de uma pasta já incluída é
+  selecionado automaticamente, sem exigir nenhuma declaração adicional —
+  diferente da abordagem por tags.
+- **[Médio impacto]** Um mesmo pacote de DAGs atende vários órgãos apenas
+  trocando o arquivo `dag_selector` do deployment, sem alterar código.
+- **[Médio impacto]** Arquivos fora da allowlist nunca são importados, então
+  nunca geram erro de import naquele deployment.
+- **[Baixo impacto]** Suporta tanto arquivo quanto pasta inteira na mesma
+  sintaxe de linha, cobrindo o caso comum (incluir uma pasta inteira) com
+  uma única entrada.
+- **[Baixo impacto]** Composição do órgão fica declarada em um único arquivo
+  versionável em Helm/GitOps, mais simples de auditar que tags espalhadas
+  pelo código.
+
+### Desvantagens
+
+- **[Alto impacto]** Acopla a seleção à estrutura física do repositório —
+  mover um arquivo entre pastas muda seu escopo de seleção implicitamente,
+  sem nenhum aviso explícito no código movido.
+- **[Alto impacto]** Erro na allowlist (entrada errada, esquecida ou mal
+  escrita) pode fazer DAGs esperadas desaparecerem de um deployment ou
+  incluir DAGs em excesso, sem sinalização automática do erro.
+- **[Médio impacto]** CI precisa validar o conjunto completo do monorepo, já
+  que erros em arquivos fora da allowlist de um deployment não aparecem
+  naquele ambiente.
+- **[Médio impacto]** Seleção ocorre por arquivo/pasta, não por objeto DAG —
+  múltiplas DAGs no mesmo módulo não podem ter escopos de seleção
+  diferentes.
+- **[Baixo impacto]** Incluir um único arquivo dentro de uma pasta maior,
+  sem incluir o restante dela, ainda é possível, mas é menos natural que
+  incluir a pasta inteira.
+- **[Baixo impacto]** Não é uma fronteira de segurança: não remove código do
+  artefato nem substitui isolamento de credenciais, rede ou dados.
+- **[Baixo impacto]** Mudanças no `dag_selector` exigem rollout do DAG
+  Processor/scheduler e procedimento de pausa/drenagem para runs em
+  andamento.
+
+### Avaliação
+
+Os ganhos superam os custos neste contexto: o `dag_selector` resolve o
+problema central — custo de parsing e organização de deployments por órgão
+— sem exigir metadado redundante, reaproveitando uma convenção de pastas que
+o framework já precisa manter de qualquer forma (ADR-0004). O principal
+risco ativo é o acoplamento entre seleção e estrutura física, mitigado por
+testes de CI que validam o conjunto completo do monorepo e pelas convenções
+obrigatórias de granularidade (arquivo/pasta, não DAG individual). O risco
+de erro silencioso na allowlist — DAGs desaparecendo ou sendo incluídas em
+excesso — permanece como risco ativo a mitigar via validação de
+manifesto/Helm, não eliminado pela decisão em si.
 
 ## Consequências
 

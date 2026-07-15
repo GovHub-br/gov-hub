@@ -30,8 +30,9 @@ Sem uma convenção única, dois problemas se repetem:
   órgão.
 
 Este ADR adapta, para arquivos de DAG do Airflow, as regras gerais de
-nomenclatura e o padrão de nomenclatura de pipelines descritos no *Padrão
-de Arquitetura de Dados — MGI/SEGES/CDATA* (v3.0) — documento que já
+nomenclatura e o padrão de nomenclatura de pipelines descritos no *[Padrão
+de Arquitetura de Dados — MGI/SEGES/CDATA](./arquitetura_dados_mgi.pdf)*
+(v3.0) — documento que já
 formaliza convenções equivalentes para jobs/pipelines de sua própria
 plataforma (`{produto}_{dominio}_{acao}_job`, minúsculas, dígitos e
 underscore apenas, sem espaços/hífens/acentos).
@@ -160,8 +161,8 @@ repete para DAGs novas escritas já com o padrão.
 
 ## Referências
 
-- *Padrão de Arquitetura de Dados — MGI/SEGES/CDATA*, v3.0 (documento
-  interno de referência, ambiente DEV).
+- [Padrão de Arquitetura de Dados — MGI/SEGES/CDATA, v3.0](./arquitetura_dados_mgi.pdf)
+  (documento interno de referência, ambiente DEV).
 - [ADR-0004 — Monorepo como estratégia de organização de código](./0004-monorepo-como-estrategia-de-organizacao-de-codigo.md)
 - [ADR-0005 — Seleção de DAGs por arquivo `dag_selector` antes do parsing](./0005-selecao-de-dags-por-dag-selector-antes-do-parsing.md)
 - [Estrutura de ADRs do repositório](./README.md)

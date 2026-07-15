@@ -24,8 +24,8 @@ e agregações, o que gera dois problemas recorrentes:
   reproduzível) em vez de reprocessar a partir de um estágio interno já
   persistido.
 
-Esta decisão parte do **Padrão de Arquitetura de Dados — MGI/SEGES/CDATA
-(v3.0)**, documento interno de referência que já formaliza um modelo de
+Esta decisão parte do **[Padrão de Arquitetura de Dados — MGI/SEGES/CDATA
+(v3.0)](./arquitetura_dados_mgi.pdf)**, documento interno de referência que já formaliza um modelo de
 camadas Bronze/Silver/Gold para a plataforma de dados multiproduto do MGI.
 Embora esse documento seja específico a uma stack em Azure ADLS Gen2 +
 Databricks Unity Catalog — diferente da stack do `data-framework`
@@ -179,8 +179,8 @@ ou lint específicos sejam criados para verificá-lo.
 
 ## Referências
 
-- *Padrão de Arquitetura de Dados — MGI/SEGES/CDATA*, v3.0 (documento
-  interno de referência, ambiente DEV).
+- [Padrão de Arquitetura de Dados — MGI/SEGES/CDATA, v3.0](./arquitetura_dados_mgi.pdf)
+  (documento interno de referência, ambiente DEV).
 - [ADR-0001 — Apache Airflow como orquestrador de fluxos de dados](./0001-airflow-como-orquestrador-de-fluxos-de-dados.md)
 - [ADR-0002 — dbt como ferramenta de transformação de dados](./0002-dbt-como-ferramenta-de-transformacao-de-dados.md)
 - [ADR-0004 — Monorepo como estratégia de organização de código](./0004-monorepo-como-estrategia-de-organizacao-de-codigo.md)

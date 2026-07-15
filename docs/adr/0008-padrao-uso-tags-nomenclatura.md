@@ -22,8 +22,9 @@ problemas que motivaram a remoção das tags como mecanismo de seleção:
   para busca e organização visual na interface — sem uma convenção mínima,
   esse valor se perde à medida que mais DAGs são adicionadas ao monorepo.
 
-Este ADR adapta ao Airflow as regras gerais de nomenclatura do *Padrão de
-Arquitetura de Dados — MGI/SEGES/CDATA* (v3.0) — minúsculas, dígitos e
+Este ADR adapta ao Airflow as regras gerais de nomenclatura do *[Padrão de
+Arquitetura de Dados — MGI/SEGES/CDATA](./arquitetura_dados_mgi.pdf)*
+(v3.0) — minúsculas, dígitos e
 underscore apenas — e o princípio de identificar objetos por dimensões
 fixas (produto, camada, domínio) usado naquele documento para nomear
 catálogos, schemas e pipelines.
@@ -133,8 +134,8 @@ com lint assim que o framework tiver mais contribuidores externos.
 
 ## Referências
 
-- *Padrão de Arquitetura de Dados — MGI/SEGES/CDATA*, v3.0 (documento
-  interno de referência, ambiente DEV).
+- [Padrão de Arquitetura de Dados — MGI/SEGES/CDATA, v3.0](./arquitetura_dados_mgi.pdf)
+  (documento interno de referência, ambiente DEV).
 - [ADR-0004 — Monorepo como estratégia de organização de código](./0004-monorepo-como-estrategia-de-organizacao-de-codigo.md)
 - [ADR-0005 — Seleção de DAGs por arquivo `dag_selector` antes do parsing](./0005-selecao-de-dags-por-dag-selector-antes-do-parsing.md)
 - [ADR-0006 — Arquitetura medallion (bronze/silver/gold)](./0006-arquitetura-medallion.md)

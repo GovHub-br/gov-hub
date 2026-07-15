@@ -29,7 +29,8 @@ Sem uma convenção única:
   à ordem real do fluxo (bronze → silver → gold).
 
 Este ADR adota diretamente o padrão de nomenclatura de schemas e tabelas do
-*Padrão de Arquitetura de Dados — MGI/SEGES/CDATA* (v3.0), adaptando-o de
+*[Padrão de Arquitetura de Dados — MGI/SEGES/CDATA](./arquitetura_dados_mgi.pdf)*
+(v3.0), adaptando-o de
 Databricks Unity Catalog (catálogo por produto + schema por camada) para
 PostgreSQL (schema por camada e domínio, dentro do banco de cada órgão).
 
@@ -169,8 +170,8 @@ repete para schemas criados já com o padrão.
 
 ## Referências
 
-- *Padrão de Arquitetura de Dados — MGI/SEGES/CDATA*, v3.0 (documento
-  interno de referência, ambiente DEV).
+- [Padrão de Arquitetura de Dados — MGI/SEGES/CDATA, v3.0](./arquitetura_dados_mgi.pdf)
+  (documento interno de referência, ambiente DEV).
 - [ADR-0002 — dbt como ferramenta de transformação de dados](./0002-dbt-como-ferramenta-de-transformacao-de-dados.md)
 - [ADR-0004 — Monorepo como estratégia de organização de código](./0004-monorepo-como-estrategia-de-organizacao-de-codigo.md)
 - [ADR-0006 — Arquitetura medallion (bronze/silver/gold)](./0006-arquitetura-medallion.md)

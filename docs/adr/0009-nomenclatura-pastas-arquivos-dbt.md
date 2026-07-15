@@ -34,7 +34,8 @@ Sem uma convenção única:
   vocabulários simultâneos para o mesmo conceito.
 
 Este ADR adapta ao projeto dbt as convenções de nomenclatura de objetos do
-*Padrão de Arquitetura de Dados — MGI/SEGES/CDATA* (v3.0) — em particular,
+*[Padrão de Arquitetura de Dados — MGI/SEGES/CDATA](./arquitetura_dados_mgi.pdf)*
+(v3.0) — em particular,
 a regra de nomear tabelas pela entidade em `snake_case` sem prefixo — à
 estrutura de camadas já definida no ADR-0006.
 
@@ -206,8 +207,8 @@ pago uma única vez no onboarding de quem já conhece dbt por fora.
 
 ## Referências
 
-- *Padrão de Arquitetura de Dados — MGI/SEGES/CDATA*, v3.0 (documento
-  interno de referência, ambiente DEV).
+- [Padrão de Arquitetura de Dados — MGI/SEGES/CDATA, v3.0](./arquitetura_dados_mgi.pdf)
+  (documento interno de referência, ambiente DEV).
 - [ADR-0002 — dbt como ferramenta de transformação de dados](./0002-dbt-como-ferramenta-de-transformacao-de-dados.md)
 - [ADR-0004 — Monorepo como estratégia de organização de código](./0004-monorepo-como-estrategia-de-organizacao-de-codigo.md)
 - [ADR-0006 — Arquitetura medallion (bronze/silver/gold)](./0006-arquitetura-medallion.md)

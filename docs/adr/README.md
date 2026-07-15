@@ -33,6 +33,7 @@ Veja o racional completo e os benefícios deste processo em
 
 | Status | Significado |
 |---|---|
+| `Backlog` | Necessidade de decisão identificada e número reservado, mas ADR ainda não escrito. |
 | `Proposto` | Em discussão, ainda não decidido. |
 | `Aceito` | Decisão tomada e revisada por pelo menos 1 par. |
 | `Rejeitado` | Proposta avaliada e descartada. |
@@ -42,11 +43,20 @@ Veja o racional completo e os benefícios deste processo em
 ## Como propor um novo ADR
 
 1. Copie `template.md` para `NNNN-titulo-em-kebab-case.md` (próximo número
-   disponível).
+   disponível) — ou, se já existir um arquivo stub com status `Backlog` para
+   o tema, parta dele em vez de criar um novo número.
 2. Preencha todas as seções — especialmente **Alternativas** e **Tradeoffs**,
    que são obrigatórias mesmo quando a decisão parece óbvia.
 3. Abra um PR. O ADR deve ser revisado como qualquer mudança de arquitetura.
 4. Ao ser aceito, atualize o status e adicione o ADR ao índice abaixo.
+
+### Arquivos `Backlog`
+
+Um ADR com status `Backlog` reserva um número para um tema já identificado
+como carente de decisão, mas ainda não escrito — útil para mapear a dívida
+de documentação sem bloquear a numeração de ADRs que já estão prontos. Ele
+contém só título, status e um resumo de escopo; quem for escrevê-lo de fato
+substitui o corpo pelo conteúdo de `template.md`, preenchido normalmente.
 
 ## Índice
 
@@ -58,3 +68,12 @@ Veja o racional completo e os benefícios deste processo em
 | [0003](./0003-govhub-como-framework-compartilhado-de-dados.md) | GovHub como um framework compartilhado de dados | Proposto |
 | [0004](./0004-monorepo-como-estrategia-de-organizacao-de-codigo.md) | Monorepo como estratégia de organização de código | Proposto |
 | [0005](./0005-selecao-de-dags-por-dag-selector-antes-do-parsing.md) | Seleção de DAGs por arquivo `dag_selector` antes do parsing | Proposto |
+| [0006](./0006-arquitetura-medallion.md) | Arquitetura medallion (bronze/silver/gold) | Proposto |
+| [0007](./0007-nomenclatura-pastas-dags-ingestao.md) | Padrão de nomenclatura das pastas/arquivos de DAGs de ingestão | Proposto |
+| [0008](./0008-padrao-uso-tags-nomenclatura.md) | Padrão de uso de tags/nomenclatura no Airflow | Proposto |
+| [0009](./0009-nomenclatura-pastas-arquivos-dbt.md) | Padrão de nomenclatura das pastas/arquivos de projetos dbt | Proposto |
+| [0010](./0010-nomenclatura-schemas-tabelas-bronze-silver-gold.md) | Padrão de nomenclatura de schemas e tabelas bronze/silver/gold | Proposto |
+| [0011](./0011-arquitetura-agnostica-motor-processamento.md) | Arquitetura agnóstica a motor de processamento de dados | Backlog |
+| [0012](./0012-ingestao-object-storage-vs-database.md) | Ingestão em object storage em vez de banco diretamente | Backlog |
+| [0013](./0013-padrao-documentacao-metadados-tabelas.md) | Padrão de documentação de metadados de tabelas | Backlog |
+| [0014](./0014-padrao-documentacao-dags-dbt-openmetadata.md) | Padrão de documentação de DAGs/dbt para envio ao OpenMetadata | Backlog |

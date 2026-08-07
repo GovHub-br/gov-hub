@@ -1,0 +1,82 @@
+name: Python CI/CD
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  PYTHON_VERSION: "3.11"
+  UV_VERSION: "0.5.11"
+
+  IMAGE_REGISTRY_OWNER: govhub-br
+  IMAGE_NAME: ghcr.io/govhub-br/gov-bricks
+  IMAGE_TAG_SHA: ${{ github.sha }}
+
+jobs:
+
+  code_checks:
+    name: Code checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - uses: ./.github/actions/setup-uv
+        with:
+          python_version: ${{ env.PYTHON_VERSION }}
+          uv_version: ${{ env.UV_VERSION }}
+
+      - name: Run lint
+        run: make lint
+
+      - name: Run tests
+        run: make test
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: reports
+          path: |
+            report.xml
+            coverage.xml
+
+  docker_build:
+    name: Docker build
+    runs-on: ubuntu-latest
+    needs: code_checks
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - uses: ./.github/actions/docker-build
+        with:
+          push: "false"
+          tags: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG_SHA }}
+
+  docker_push:
+    name: Docker push
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: docker_build
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - uses: ./.github/actions/docker-build
+        with:
+          push: "true"
+          tags: |
+            ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG_SHA }}
+            ${{ env.IMAGE_NAME }}:latest
+          registry: ghcr.io
+          registry_username: ${{ github.actor }}
+          registry_password: ${{ secrets.GITHUB_TOKEN }}

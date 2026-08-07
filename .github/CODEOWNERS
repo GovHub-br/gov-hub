@@ -1,0 +1,48 @@
+# CODEOWNERS — revisão obrigatória por pasta (ver ADR-0004)
+#
+# Regra geral (ADR-0004):
+#   - Código compartilhado (framework, plugins, helpers, CI, pastas de
+#     <sistema>/ fora de subpastas de órgão) pertence aos mantenedores do
+#     data-framework.
+#   - Código específico de um órgão (data_ingest/<sistema>/<orgao>/,
+#     data_ingest/<orgao>/, dbt/<orgao>/) pertence ao time daquele órgão.
+#
+# CODEOWNERS define quem APROVA, não quem enxerga o código.
+
+# Default: mantenedores do framework
+*                               @GovHub-br/oss
+
+# Infraestrutura, build e CI/CD
+/.github/                       @GovHub-br/oss
+/Makefile                       @GovHub-br/oss
+/pyproject.toml                 @GovHub-br/oss
+/uv.lock                        @GovHub-br/oss
+/docker/                        @GovHub-br/oss
+
+# Utilitários Python compartilhados
+/airflow/plugins/               @GovHub-br/oss
+/airflow/helpers/               @GovHub-br/oss
+
+# Decisões de arquitetura
+/docs/adr/                      @GovHub-br/oss
+
+# ---------------------------------------------------------------------------
+# Pastas de órgão — descomente/adicione conforme os projetos forem migrados.
+# Uma linha por pasta de órgão, sempre DEPOIS das regras compartilhadas
+# (no CODEOWNERS, a última regra que casa é a que vale).
+#
+# /airflow/dags/data_ingest/*/ipea/   @GovHub-br/ipea
+# /airflow/dags/data_ingest/ipea/     @GovHub-br/ipea
+# /airflow/dags/dbt/ipea/             @GovHub-br/ipea
+#
+# /airflow/dags/data_ingest/*/mir/    @GovHub-br/mir
+# /airflow/dags/data_ingest/mir/      @GovHub-br/mir
+# /airflow/dags/dbt/mir/              @GovHub-br/mir
+#
+# /airflow/dags/data_ingest/*/mcid/   @GovHub-br/mcid
+# /airflow/dags/data_ingest/mcid/     @GovHub-br/mcid
+# /airflow/dags/dbt/mcid/             @GovHub-br/mcid
+#
+# /airflow/dags/data_ingest/*/minc/   @GovHub-br/minc
+# /airflow/dags/data_ingest/minc/     @GovHub-br/minc
+# /airflow/dags/dbt/minc/             @GovHub-br/minc

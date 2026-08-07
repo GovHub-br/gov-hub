@@ -1,0 +1,125 @@
+[project]
+name = "gov-bricks"
+version = "0.1.0"
+description = "GovHub data-framework — base compartilhada de ingestão, transformação e qualidade de dados públicos"
+authors = [{ name = "GovHub BR" }]
+readme = "README.md"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+    "apache-airflow==2.8.1",
+    "apache-airflow-providers-postgres==5.14.0",
+    "apache-airflow-providers-microsoft-mssql==3.7.2",
+    "flask-session==0.5.0",
+    "numpy==1.26.4",
+    "flask",
+    "dbt-core==1.12.0",
+    "dbt-postgres",
+    "pandas",
+    "requests",
+    "httpx",
+    "sqlalchemy",
+    "imap-tools",
+    "chardet",
+    "pytz",
+    "astronomer-cosmos",
+    # airflow.io.path (Airflow 2.8) usa `upath...._CloudAccessor`, removido no
+    # universal-pathlib 0.2. Sem este pin, `import cosmos` quebra na imagem.
+    "universal-pathlib<0.2",
+    "polars",
+    "pyarrow",
+    "s3fs",
+    "boto3",
+    "adlfs",
+]
+
+[dependency-groups]
+dev = [
+    "black==26.5.1",
+    "ruff",
+    "pytest",
+    "pytest-cov",
+    "ty",
+    "jupyter",
+    "moto[s3]",
+    "shandy-sqlfmt",
+]
+
+[tool.uv]
+package = false
+
+[tool.black]
+line-length = 90
+target-version = ["py311"]
+skip-string-normalization = false
+include = "\\.pyi?$"
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | \.conda
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+exclude = [
+    ".git",
+    ".venv",
+    "migrations",
+    "build",
+    "dist",
+    "*.pyi",
+    ".ipynb_checkpoints",
+    "*.ipynb"
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "C90"]
+ignore = ["C901"]
+
+# A pasta `airflow/` na raiz tem o mesmo nome do pacote `airflow` do Apache
+# Airflow. Em runtime não há conflito (o pacote real, com __init__.py, vence a
+# pasta local, que é apenas um namespace package), mas checadores estáticos
+# resolvem `import airflow` para a pasta local se a raiz do repositório for uma
+# src root. Declarar as src roots explicitamente — as mesmas do PYTHONPATH
+# usado pelo Airflow — evita esse conflito.
+[tool.ty.environment]
+root = ["airflow/plugins", "airflow/helpers", "airflow/dags", "tests"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+pythonpath = ["airflow/helpers", "airflow/plugins", "airflow/dags"]
+markers = [
+    "integration: requires a live MinIO instance (docker-compose up)",
+    "unit: pure unit tests with no external dependencies",
+]
+
+[tool.coverage.run]
+source = ["airflow/plugins", "airflow/helpers"]
+
+[tool.coverage.report]
+show_missing = true
+skip_empty = true
+
+[tool.sqlfmt]
+line_length = 120
+dialect = "polyglot"
+exclude = [
+    "**/.git/**",
+    "**/.venv/**",
+    "**/build/**",
+    "**/dist/**",
+    "**/target/**",
+    "**/compiled/**",
+    "**/dbt_packages/**"
+]
+

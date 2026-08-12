@@ -73,7 +73,9 @@ substitui o corpo pelo conteúdo de `template.md`, preenchido normalmente.
 | [0008](./0008-padrao-uso-tags-nomenclatura.md) | Padrão de uso de tags/nomenclatura no Airflow | Proposto |
 | [0009](./0009-nomenclatura-pastas-arquivos-dbt.md) | Padrão de nomenclatura das pastas/arquivos de projetos dbt | Proposto |
 | [0010](./0010-nomenclatura-schemas-tabelas-bronze-silver-gold.md) | Padrão de nomenclatura de schemas e tabelas bronze/silver/gold | Proposto |
-| [0011](./0011-arquitetura-agnostica-motor-processamento.md) | Arquitetura agnóstica a motor de processamento de dados | Backlog |
-| [0012](./0012-ingestao-object-storage-vs-database.md) | Ingestão em object storage em vez de banco diretamente | Backlog |
-| [0013](./0013-padrao-documentacao-metadados-tabelas.md) | Padrão de documentação de metadados de tabelas | Backlog |
-| [0014](./0014-padrao-documentacao-dags-dbt-openmetadata.md) | Padrão de documentação de DAGs/dbt para envio ao OpenMetadata | Backlog |
+| [0011](./0011-arquitetura-agnostica-motor-processamento.md) | Arquitetura agnóstica a motor de processamento de dados | Proposto |
+| [0012](./0012-ingestao-object-storage-vs-database.md) | Ingestão em object storage em vez de banco diretamente | Proposto |
+| [0013](./0013-padrao-documentacao-metadados-tabelas.md) | Padrão de documentação de metadados de tabelas | Proposto |
+| [0014](./0014-padrao-documentacao-dags-dbt-openmetadata.md) | Padrão de documentação de DAGs/dbt para envio ao OpenMetadata | Proposto |
+| [0015](./0015-estrategia-extractors-via-strategy.md) | Estratégia de `Extractor` via Strategy para DAGs | Proposto |
+| [0016](./0016-tipagem-parquet-staging-bronze.md) | Tipagem de Parquet — promover Staging (MinIO) → Bronze | Proposto |

@@ -1,0 +1,58 @@
+# Python virtual environments
+.venv/
+venv/
+ENV/
+
+# Poetry
+dist/
+**/*.pyc
+__pycache__/
+.poetry/
+requirements.generated.txt
+
+# Cache directories
+.cache/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Coverage reports
+.coverage
+coverage.xml
+report.xml
+htmlcov/
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment variables
+.env
+.env.local
+
+# Build directories
+build/
+*.egg-info/
+
+# DBT
+target/
+dbt_packages/
+logs/
+
+# Jupyter
+**/*.ipynb_checkpoints/
+**/*.ipynb
+
+# System files
+.DS_Store
+Thumbs.db
+
+# VPN
+/connect.sh
+*.ovpn
+*.p12
+
+poetry.toml
+mise.toml

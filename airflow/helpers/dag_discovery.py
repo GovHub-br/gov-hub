@@ -52,7 +52,7 @@ class DagSelector:
         try:
             mtime = path.stat().st_mtime
         except FileNotFoundError:
-            log.debug(
+            log.warning(
                 "dag_selector file not found at %s; including every DAG file "
                 "(backward-compatible default).",
                 path,
@@ -120,7 +120,7 @@ class DagSelector:
                 Path(file_path).resolve().relative_to(self.dags_folder.resolve())
             )
         except ValueError:
-            log.debug(
+            log.warning(
                 "%s is outside of dags_folder (%s); skipping dag_selector "
                 "filtering for it.",
                 file_path,

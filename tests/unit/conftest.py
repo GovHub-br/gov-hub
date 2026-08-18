@@ -17,7 +17,6 @@ for _p in (_PLUGINS, _HELPERS):
 
 # Stub Airflow and cloud SDKs so modules can be imported without side-effects.
 _STUBS = [
-    "airflow",
     "airflow.decorators",
     "airflow.sensors",
     "airflow.sensors.external_task",

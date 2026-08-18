@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import os
 import re
 import threading
@@ -10,6 +11,8 @@ from airflow.configuration import conf
 from airflow.utils.file import (
     might_contain_dag as might_contain_dag_via_default_heuristic,
 )
+
+log = logging.getLogger(__name__)
 
 SELECTOR_FILENAME = "dag_selector"
 
@@ -49,6 +52,11 @@ class DagSelector:
         try:
             mtime = path.stat().st_mtime
         except FileNotFoundError:
+            log.debug(
+                "dag_selector file not found at %s; including every DAG file "
+                "(backward-compatible default).",
+                path,
+            )
             with self._lock:
                 self._include_all = True
                 self._patterns = []
@@ -63,6 +71,13 @@ class DagSelector:
             self._include_all = include_all
             self._patterns = patterns
             self._mtime = mtime
+
+        log.info(
+            "dag_selector reloaded from %s: include_all=%s, %d pattern(s).",
+            path,
+            include_all,
+            len(patterns),
+        )
 
     @staticmethod
     def _parse(path: Path) -> tuple[bool, list[re.Pattern[str]]]:
@@ -105,6 +120,12 @@ class DagSelector:
                 Path(file_path).resolve().relative_to(self.dags_folder.resolve())
             )
         except ValueError:
+            log.debug(
+                "%s is outside of dags_folder (%s); skipping dag_selector "
+                "filtering for it.",
+                file_path,
+                self.dags_folder,
+            )
             return True
 
         relative_str = str(relative)
@@ -114,7 +135,19 @@ class DagSelector:
         )
 
 
-dag_selector = DagSelector()
+_dag_selector: DagSelector | None = None
+_dag_selector_lock = threading.Lock()
+
+
+def _get_dag_selector() -> DagSelector:
+    global _dag_selector
+
+    if _dag_selector is None:
+        with _dag_selector_lock:
+            if _dag_selector is None:
+                _dag_selector = DagSelector()
+
+    return _dag_selector
 
 
 def might_contain_selected_dag(
@@ -125,4 +158,4 @@ def might_contain_selected_dag(
     if not might_contain_dag_via_default_heuristic(file_path, safe_mode, zip_file):
         return False
 
-    return dag_selector.is_included(file_path)
+    return _get_dag_selector().is_included(file_path)

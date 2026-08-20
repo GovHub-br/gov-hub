@@ -6,12 +6,11 @@ authors = [{ name = "GovHub BR" }]
 readme = "README.md"
 requires-python = ">=3.11,<3.12"
 dependencies = [
-    "apache-airflow==2.8.1",
-    "apache-airflow-providers-postgres==5.14.0",
+    "apache-airflow>=3.2,<3.3",
+    "apache-airflow-providers-standard",
+    "apache-airflow-providers-postgres>=7.0",
     "apache-airflow-providers-microsoft-mssql==3.7.2",
-    "flask-session==0.5.0",
     "numpy==1.26.4",
-    "flask",
     "dbt-core==1.12.0",
     "dbt-postgres",
     "pandas",
@@ -21,10 +20,7 @@ dependencies = [
     "imap-tools",
     "chardet",
     "pytz",
-    "astronomer-cosmos",
-    # airflow.io.path (Airflow 2.8) usa `upath...._CloudAccessor`, removido no
-    # universal-pathlib 0.2. Sem este pin, `import cosmos` quebra na imagem.
-    "universal-pathlib<0.2",
+    "astronomer-cosmos>=1.14",
     "polars",
     "pyarrow",
     "s3fs",
@@ -85,12 +81,6 @@ exclude = [
 select = ["E", "F", "W", "C90"]
 ignore = ["C901"]
 
-# A pasta `airflow/` na raiz tem o mesmo nome do pacote `airflow` do Apache
-# Airflow. Em runtime não há conflito (o pacote real, com __init__.py, vence a
-# pasta local, que é apenas um namespace package), mas checadores estáticos
-# resolvem `import airflow` para a pasta local se a raiz do repositório for uma
-# src root. Declarar as src roots explicitamente — as mesmas do PYTHONPATH
-# usado pelo Airflow — evita esse conflito.
 [tool.ty.environment]
 root = ["airflow/plugins", "airflow/helpers", "airflow/dags", "tests"]
 

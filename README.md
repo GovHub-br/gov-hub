@@ -30,6 +30,7 @@ airflow/
   dags/
     data_ingest/<sistema>/[<orgao>/]   # DAGs de ingestão
     data_ingest/<orgao>/               # sistema interno de um único órgão
+    data_transform/<orgao>/            # DAGs de transformação (dbt via Cosmos)
     dbt/gov_bricks/                    # pacote base: macros compartilhados
     dbt/<sistema>/                     # pacote dbt compartilhado
     dbt/<orgao>/                       # projeto dbt do órgão
@@ -117,6 +118,24 @@ O schema de destino é derivado da pasta do modelo pelo macro
 
 A Bronze não é modelada em dbt: ela é materializada pelas DAGs de ingestão e
 declarada como `source` gerado a partir do catálogo — ver ADR-0017.
+
+## Execução da transformação
+
+Quem roda os modelos é uma DAG de transformação por órgão, em
+`data_transform/<orgao>/{orgao}_transform_dag.py`
+([ADR-0018](docs/adr/0018-nomenclatura-execucao-dags-transformacao.md)). Ela usa
+[Astronomer Cosmos](https://astronomer.github.io/astronomer-cosmos/) para
+converter o grafo do projeto dbt em tasks do Airflow — **uma task por modelo e
+por teste**, com as dependências herdadas dos próprios `ref()`.
+
+Na prática isso significa que um modelo Gold que falha não obriga a reprocessar
+a Silver inteira no retry, e que acrescentar um modelo ao projeto dbt não exige
+mudança nenhuma no arquivo da DAG.
+
+> Os pacotes locais em `packages.yml` são referenciados via
+> `{{ env_var('GOV_BRICKS_DBT_DIR', '..') }}` porque o Cosmos renderiza o projeto
+> em um diretório temporário para montar o grafo — de lá, um caminho relativo
+> apontaria para fora do monorepo.
 
 ## Começando
 

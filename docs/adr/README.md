@@ -80,3 +80,4 @@ substitui o corpo pelo conteúdo de `template.md`, preenchido normalmente.
 | [0015](./0015-estrategia-extractors-via-strategy.md) | Estratégia de `Extractor` via Strategy para DAGs | Proposto |
 | [0016](./0016-tipagem-parquet-staging-bronze.md) | Tipagem de Parquet — promover Staging (MinIO) → Bronze | Proposto |
 | [0017](./0017-chaves-conformadas-cruzamento-sistemas-estruturantes.md) | Chaves conformadas e catálogo de cruzamento entre sistemas estruturantes | Proposto |
+| [0018](./0018-nomenclatura-execucao-dags-transformacao.md) | Padrão de nomenclatura e execução das DAGs de transformação | Proposto |

@@ -14,7 +14,13 @@ PAGE_SIZE = 500
 BLOCK_SIZE = 15
 
 ENDPOINT = "/modulo-material/5_consultarMaterialNaturezaDespesa"
-PARAMS = {"statusNaturezaDespesa": "true"}
+# Sem filtro de status: a API declara statusNaturezaDespesa como Boolean, mas o
+# backend falha ao vinculá-lo e devolve HTTP 400 para qualquer valor
+# ("Could not convert 'java.lang.Boolean' to 'java.lang.String'"). Como
+# ClienteBase.request levanta exceção após os retries, enviar o parâmetro
+# derrubava a DAG em toda execução. Sem ele o endpoint responde normalmente — e
+# a coluna statusNaturezaDespesa vem nula em todos os registros de qualquer jeito.
+PARAMS: dict[str, str] = {}
 TABLE = "raw_natureza_despesa_material"
 
 default_args = {

@@ -24,7 +24,6 @@ _STUBS = [
     "schedule_loader",
     "s3fs",
     "adlfs",
-    "fsspec",
 ]
 
 for _mod in _STUBS:

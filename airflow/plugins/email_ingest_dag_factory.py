@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from typing import Any, Dict, Optional
 
 import pandas as pd
-from airflow import DAG
+from airflow.sdk import DAG
 from airflow.models import Variable
 from airflow.providers.standard.operators.python import PythonOperator
 

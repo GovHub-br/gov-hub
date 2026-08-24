@@ -59,14 +59,15 @@ test-integration:
 
 compose:
 	@echo "Iniciando ambiente local do Airflow com Docker Compose..."
-	$(COMPOSE) up -d --build
+	@if [ ! -f .env ]; then cp local.env .env; echo ".env criado a partir de local.env"; fi
+	$(COMPOSE) --env-file .env up -d --build
 	$(MAKE) dev
 	$(MAKE) dev-check
 
 dev:
 	@$(COMPOSE) ps --status running $(AIRFLOW_SERVICE) >/dev/null 2>&1 || (echo "Serviço '$(AIRFLOW_SERVICE)' não está em execução. Rode: make compose" && exit 1)
 	@echo "Aguardando Airflow/DB ficarem prontos..."
-	@$(COMPOSE) exec -T $(AIRFLOW_SERVICE) sh -c 'for i in $$(seq 1 30); do airflow db init >/dev/null 2>&1 && exit 0; sleep 2; done; echo "Airflow DB não ficou pronto a tempo para inicializar."; exit 1'
+	@$(COMPOSE) exec -T $(AIRFLOW_SERVICE) sh -c 'for i in $$(seq 1 30); do airflow db migrate >/dev/null 2>&1 && exit 0; sleep 2; done; echo "Airflow DB não ficou pronto a tempo para inicializar."; exit 1'
 	@$(COMPOSE) exec -T $(AIRFLOW_SERVICE) airflow variables set dynamic_schedules '{}'
 	@$(COMPOSE) exec -T $(AIRFLOW_SERVICE) sh -c "printf '%s\n' '{\"postgres_default\":{\"conn_type\":\"postgres\",\"host\":\"$(AIRFLOW_LOCAL_DB_HOST)\",\"schema\":\"$(AIRFLOW_LOCAL_DB_NAME)\",\"login\":\"$(AIRFLOW_LOCAL_DB_USER)\",\"password\":\"$(AIRFLOW_LOCAL_DB_PASSWORD)\",\"port\":$(AIRFLOW_LOCAL_DB_PORT)}}' > /tmp/airflow-connections.json && airflow connections import --overwrite /tmp/airflow-connections.json && rm -f /tmp/airflow-connections.json"
 	@echo "Ambiente local do Airflow configurado com sucesso."

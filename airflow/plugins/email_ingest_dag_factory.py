@@ -7,7 +7,7 @@ from typing import Any, Dict, Optional
 import pandas as pd
 from airflow import DAG
 from airflow.models import Variable
-from airflow.operators.python import PythonOperator
+from airflow.providers.standard.operators.python import PythonOperator
 
 from cliente_email import fetch_and_process_email
 from cliente_postgres import ClientPostgresDB
@@ -44,7 +44,7 @@ def build_email_ingest_dag(
         dag_id=dag_id,
         default_args=default_args,
         description=description,
-        schedule_interval=get_dynamic_schedule(schedule_key),
+        schedule=get_dynamic_schedule(schedule_key),
         start_date=start_date,
         catchup=False,
         tags=tags or [],

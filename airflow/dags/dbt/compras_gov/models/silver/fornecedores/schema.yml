@@ -1,0 +1,55 @@
+version: 2
+
+models:
+  - name: fornecedor
+    description: >
+      Fornecedores ativos no Compras.gov.br. O cadastro já identifica cada
+      fornecedor pelo documento, em duas colunas distintas — CNPJ para pessoa
+      jurídica, CPF para pessoa física. Não existe aqui uma coluna única de número
+      de inscrição (nu_ni): esta entidade expõe as chaves finais diretamente, sem
+      precisar das pontes de nu_ni. Granularidade: um registro por fornecedor
+      ativo, identificado por CNPJ ou CPF.
+    meta:
+      owner: "@GovHub-br/oss"
+      sistema_origem: compras_gov
+      camada: silver
+      classificacao: pessoal
+    columns:
+      - name: nu_cnpj
+        description: >
+            CNPJ. Cadastro Nacional da Pessoa Jurídica, sem máscara. Chave de cruzamento
+            entre fornecedores, contratados e cadastros externos de pessoa jurídica.
+            Normalizada a partir da coluna de origem 'cnpj'. Nulo quando o fornecedor é
+            pessoa física; nesse caso o documento está em cpf.
+        meta:
+          classificacao: publico
+        # sem teste not_null: chave opcional nesta entidade — nula em parte das linhas
+        # (ver catalogo/sistemas/).
+      - name: nu_cpf
+        description: >
+            CPF. Cadastro de Pessoa Física, sem máscara. Identifica uma pessoa natural
+            e, por isso, é dado pessoal sob a LGPD mesmo quando aparece em base de
+            origem pública. Normalizada a partir da coluna de origem 'cpf'. Preenchido
+            apenas para fornecedor pessoa física — dado pessoal sob a LGPD, ainda que a
+            origem seja pública (ADR-0013). Nulo para pessoa jurídica.
+        meta:
+          classificacao: pessoal
+        # sem teste not_null: chave opcional nesta entidade — nula em parte das linhas
+        # (ver catalogo/sistemas/).
+      - name: cnpj
+        description: >
+            PREENCHER: o que a coluna 'cnpj' significa, na origem
+            compras_gov.raw_fornecedor.
+        meta:
+          classificacao: pessoal
+      - name: cpf
+        description: >
+            PREENCHER: o que a coluna 'cpf' significa, na origem
+            compras_gov.raw_fornecedor.
+        meta:
+          classificacao: pessoal
+      - name: dt_ingest
+        description: >
+            Data e hora em que o registro foi gravado na Bronze pela DAG de ingestão.
+        meta:
+          classificacao: publico

@@ -1,0 +1,124 @@
+version: 2
+
+models:
+  - name: contratos
+    description: >
+      Contratos administrativos por órgão. Uma linha por contrato de uma unidade
+      gestora com um fornecedor. Granularidade: uma linha por unidade gestora,
+      número de contrato e fornecedor.
+    meta:
+      owner: "@GovHub-br/oss"
+      sistema_origem: compras_gov
+      camada: silver
+      classificacao: publico
+    columns:
+      - name: co_uasg
+        description: >
+            Código da UASG. Unidade Administrativa de Serviços Gerais — unidade que
+            executa compras e contratos no SIASG/Compras.gov.br. Subordinada a um órgão
+            (co_orgao). Normalizada a partir da coluna de origem 'codigounidadegestora'.
+        meta:
+          classificacao: publico
+        data_tests:
+          - not_null
+      - name: nu_ni
+        description: >
+            Número de inscrição do fornecedor. Identificador do fornecedor no
+            Compras.gov.br. Não é um tipo único: pode ser CNPJ (14 dígitos), CPF (11
+            dígitos) ou UASG (6 dígitos, quando o fornecedor é um órgão público). Cruzar
+            por nu_ni sem antes decidir o tipo é a origem mais comum de junção incorreta
+            entre compras e cadastros externos — use as pontes declaradas abaixo.
+            Normalizada a partir da coluna de origem 'nifornecedor'.
+        meta:
+          classificacao: publico
+        data_tests:
+          - not_null
+      - name: codigounidadegestora
+        description: >
+            PREENCHER: o que a coluna 'codigounidadegestora' significa, na origem
+            compras_gov.raw_contratos.
+        meta:
+          classificacao: publico
+      - name: numerocontrato
+        description: >
+            PREENCHER: o que a coluna 'numerocontrato' significa, na origem
+            compras_gov.raw_contratos.
+        meta:
+          classificacao: publico
+      - name: nifornecedor
+        description: >
+            PREENCHER: o que a coluna 'nifornecedor' significa, na origem
+            compras_gov.raw_contratos.
+        meta:
+          classificacao: publico
+      - name: dt_ingest
+        description: >
+            Data e hora em que o registro foi gravado na Bronze pela DAG de ingestão.
+        meta:
+          classificacao: publico
+  - name: contratos_item
+    description: >
+      Itens dos contratos administrativos. Granularidade: uma linha por item de um
+      contrato.
+    meta:
+      owner: "@GovHub-br/oss"
+      sistema_origem: compras_gov
+      camada: silver
+      classificacao: publico
+    columns:
+      - name: co_uasg
+        description: >
+            Código da UASG. Unidade Administrativa de Serviços Gerais — unidade que
+            executa compras e contratos no SIASG/Compras.gov.br. Subordinada a um órgão
+            (co_orgao). Normalizada a partir da coluna de origem 'codigounidadegestora'.
+        meta:
+          classificacao: publico
+        data_tests:
+          - not_null
+      - name: nu_ni
+        description: >
+            Número de inscrição do fornecedor. Identificador do fornecedor no
+            Compras.gov.br. Não é um tipo único: pode ser CNPJ (14 dígitos), CPF (11
+            dígitos) ou UASG (6 dígitos, quando o fornecedor é um órgão público). Cruzar
+            por nu_ni sem antes decidir o tipo é a origem mais comum de junção incorreta
+            entre compras e cadastros externos — use as pontes declaradas abaixo.
+            Normalizada a partir da coluna de origem 'nifornecedor'.
+        meta:
+          classificacao: publico
+        data_tests:
+          - not_null
+      - name: codigounidadegestora
+        description: >
+            PREENCHER: o que a coluna 'codigounidadegestora' significa, na origem
+            compras_gov.raw_contratos_item.
+        meta:
+          classificacao: publico
+      - name: numerocontrato
+        description: >
+            PREENCHER: o que a coluna 'numerocontrato' significa, na origem
+            compras_gov.raw_contratos_item.
+        meta:
+          classificacao: publico
+      - name: nifornecedor
+        description: >
+            PREENCHER: o que a coluna 'nifornecedor' significa, na origem
+            compras_gov.raw_contratos_item.
+        meta:
+          classificacao: publico
+      - name: numeroitem
+        description: >
+            PREENCHER: o que a coluna 'numeroitem' significa, na origem
+            compras_gov.raw_contratos_item.
+        meta:
+          classificacao: publico
+      - name: contratoitemexcluido
+        description: >
+            PREENCHER: o que a coluna 'contratoitemexcluido' significa, na origem
+            compras_gov.raw_contratos_item.
+        meta:
+          classificacao: publico
+      - name: dt_ingest
+        description: >
+            Data e hora em que o registro foi gravado na Bronze pela DAG de ingestão.
+        meta:
+          classificacao: publico

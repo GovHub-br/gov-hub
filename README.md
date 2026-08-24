@@ -19,6 +19,7 @@ convivem aqui, organizados por sistema e órgão
 | Transformação | dbt + Astronomer Cosmos ([ADR-0002](docs/adr/0002-dbt-como-ferramenta-de-transformacao-de-dados.md)) |
 | Landing zone | Object storage — MinIO on-prem, S3/ADLS na nuvem ([ADR-0012](docs/adr/0012-ingestao-object-storage-vs-database.md)) |
 | Modelagem | Arquitetura medallion: bronze → silver → gold ([ADR-0006](docs/adr/0006-arquitetura-medallion.md)) |
+| Cruzamento | Chaves conformadas declaradas em [`catalogo/`](catalogo/README.md) ([ADR-0017](docs/adr/0017-chaves-conformadas-cruzamento-sistemas-estruturantes.md)) |
 | Dependências | `uv` + `pyproject.toml` |
 | Qualidade | `black`, `ruff`, `ty`, `sqlfmt`, `pytest` |
 
@@ -29,11 +30,14 @@ airflow/
   dags/
     data_ingest/<sistema>/[<orgao>/]   # DAGs de ingestão
     data_ingest/<orgao>/               # sistema interno de um único órgão
+    dbt/gov_bricks/                    # pacote base: macros compartilhados
     dbt/<sistema>/                     # pacote dbt compartilhado
     dbt/<orgao>/                       # projeto dbt do órgão
     homologation/                      # DAGs de qualidade/homologação
   helpers/                             # utilitários Python compartilhados
   plugins/                             # clientes de fonte e integrações
+catalogo/                              # sistemas estruturantes e chaves de cruzamento
+scripts/modelagem/                     # gerador de modelos e mapa de cruzamento
 docker/                                # Dockerfile, docker-compose.yml, init do Postgres
 docs/adr/                              # decisões de arquitetura
 tests/                                 # unit (CI) e integration (docker compose)
@@ -73,6 +77,47 @@ As convenções de nomenclatura de pastas e arquivos estão nos ADRs
 Convenção da landing zone:
 `{bucket}/{source}/{entity}/{ano}/{mes}/{dia}/{run_id}.parquet`
 
+## Modelagem e cruzamento entre sistemas
+
+O valor da plataforma está em cruzar sistemas estruturantes, e esse cruzamento é
+**declarado**, não improvisado a cada modelo. O catálogo em [`catalogo/`](catalogo/README.md)
+registra quais entidades cada sistema expõe e por quais **chaves conformadas**
+elas se ligam — `co_orgao`, `co_uasg`, `nu_cnpj`, `nu_matricula_siape` — com a
+normalização de cada uma e a confiabilidade de cada equivalência conhecida
+([ADR-0017](docs/adr/0017-chaves-conformadas-cruzamento-sistemas-estruturantes.md)).
+
+```bash
+make mapa
+```
+
+> O que se liga a quê, por qual chave, e o que ainda é hipótese não verificada.
+
+```bash
+make modelo ARGS="--camada silver --sistema compras_gov --entidade contratos"
+```
+
+> Gera o modelo dbt na pasta do [ADR-0009](docs/adr/0009-nomenclatura-pastas-arquivos-dbt.md),
+> com as chaves já normalizadas e o `schema.yml` com os metadados obrigatórios do
+> [ADR-0013](docs/adr/0013-padrao-documentacao-metadados-tabelas.md).
+
+```bash
+make modelo ARGS="--camada gold --orgao mgi --produto contratacoes \
+                  --entidade contratos_por_orgao \
+                  --cruzar compras_gov.contratos --cruzar compras_gov.uasg"
+```
+
+> Resolve o plano de join pelo catálogo — inclusive por caminho transitivo ou por
+> ponte entre chaves distintas. Entidade que não se liga a nenhuma outra falha na
+> geração, em vez de virar um produto cartesiano silencioso.
+
+O schema de destino é derivado da pasta do modelo pelo macro
+`generate_schema_name`, no padrão do
+[ADR-0010](docs/adr/0010-nomenclatura-schemas-tabelas-bronze-silver-gold.md):
+`silver/contratacoes/contratos.sql` → `002_slv_contratacoes.contratos`.
+
+A Bronze não é modelada em dbt: ela é materializada pelas DAGs de ingestão e
+declarada como `source` gerado a partir do catálogo — ver ADR-0017.
+
 ## Começando
 
 Pré-requisitos: Python 3.11, [uv](https://docs.astral.sh/uv/getting-started/installation/),
@@ -93,10 +138,14 @@ http://localhost:9001 (`minioadmin`/`minioadmin`).
 | `make install` | Instala as dependências com `uv sync` |
 | `make requirements` | Regenera o `requirements.txt` (runtime) usado pela imagem Docker |
 | `make format` | Aplica `black`, `ruff --fix` e `sqlfmt` |
-| `make lint` | Verifica `black`, `ruff`, `ty` e `sqlfmt` |
+| `make lint` | Verifica `black`, `ruff`, `ty`, `sqlfmt` e o catálogo de modelagem |
 | `make test` | Testes unitários com cobertura (o que roda no CI) |
 | `make test-integration` | Testes de integração (sobe MinIO e Postgres) |
 | `make dev` / `make dev-check` | Configura e valida variables/connections do Airflow local |
+| `make mapa` | Mapa de cruzamento entre sistemas estruturantes (`ARGS="--mermaid"` para grafo) |
+| `make modelo` | Gera modelos dbt a partir do catálogo (ver `ARGS` acima) |
+| `make catalogo-validar` | Valida o catálogo — roda dentro de `make lint` e no CI |
+| `make catalogo-sync` | Regera os macros dbt derivados de `catalogo/chaves.yml` |
 
 > `requirements.txt` é um artefato gerado por `make requirements` — não edite à
 > mão. Dependências entram no `pyproject.toml`.

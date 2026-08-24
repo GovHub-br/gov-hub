@@ -1,0 +1,158 @@
+# Chaves conformadas — vocabulário canônico de cruzamento entre sistemas
+# estruturantes (ver ADR-0017).
+#
+# Uma "chave conformada" é um identificador que significa a mesma coisa em mais
+# de um sistema estruturante e, por isso, pode ser usado para cruzar dados entre
+# eles. Cada sistema declara, em catalogo/sistemas/<sistema>.yml, quais colunas
+# suas expõem cada uma destas chaves.
+#
+# Regra: nenhum modelo Silver/Gold cruza sistemas por coluna crua — o cruzamento
+# é sempre feito sobre a chave conformada, já normalizada pelo macro
+# gov_bricks.chave_conformada().
+
+versao: 1
+
+# Estratégias de normalização aceitas em `normalizacao`:
+#   digitos — remove tudo que não é dígito; string vazia vira NULL; quando há
+#             `tamanho`, completa com zeros à esquerda (lpad).
+#   texto   — remove espaços nas pontas e converte para maiúsculas; string
+#             vazia vira NULL.
+
+chaves:
+
+  co_orgao:
+    nome: Código do órgão
+    descricao: >-
+      Código do órgão na estrutura organizacional do Poder Executivo federal.
+      É a chave de agregação institucional mais alta usada pelos sistemas
+      estruturantes — quase todo cruzamento "por órgão" passa por ela.
+    normalizacao: digitos
+    tamanho: 5
+    sistema_de_referencia: siorg
+    classificacao: publico
+
+  co_uasg:
+    nome: Código da UASG
+    descricao: >-
+      Unidade Administrativa de Serviços Gerais — unidade que executa compras e
+      contratos no SIASG/Compras.gov.br. Subordinada a um órgão (co_orgao).
+    normalizacao: digitos
+    tamanho: 6
+    sistema_de_referencia: compras_gov
+    classificacao: publico
+
+  co_ug_siafi:
+    nome: Código da unidade gestora (SIAFI)
+    descricao: >-
+      Unidade gestora que executa orçamento e pagamento no SIAFI. Numericamente
+      coincide com a UASG na maior parte dos casos, mas não em todos — ver a
+      ponte co_uasg → co_ug_siafi.
+    normalizacao: digitos
+    tamanho: 6
+    sistema_de_referencia: siafi
+    classificacao: publico
+
+  nu_ni:
+    nome: Número de inscrição do fornecedor
+    descricao: >-
+      Identificador do fornecedor no Compras.gov.br. Não é um tipo único: pode
+      ser CNPJ (14 dígitos), CPF (11 dígitos) ou UASG (6 dígitos, quando o
+      fornecedor é um órgão público). Cruzar por nu_ni sem antes decidir o tipo
+      é a origem mais comum de junção incorreta entre compras e cadastros
+      externos — use as pontes declaradas abaixo.
+    normalizacao: digitos
+    sistema_de_referencia: compras_gov
+    classificacao: publico
+
+  nu_cnpj:
+    nome: CNPJ
+    descricao: >-
+      Cadastro Nacional da Pessoa Jurídica, sem máscara. Chave de cruzamento
+      entre fornecedores, contratados e cadastros externos de pessoa jurídica.
+    normalizacao: digitos
+    tamanho: 14
+    sistema_de_referencia: receita_federal
+    classificacao: publico
+
+  nu_cpf:
+    nome: CPF
+    descricao: >-
+      Cadastro de Pessoa Física, sem máscara. Identifica uma pessoa natural e,
+      por isso, é dado pessoal sob a LGPD mesmo quando aparece em base de
+      origem pública.
+    normalizacao: digitos
+    tamanho: 11
+    sistema_de_referencia: receita_federal
+    classificacao: pessoal
+
+  nu_matricula_siape:
+    nome: Matrícula SIAPE
+    descricao: >-
+      Identificador do servidor no SIAPE. Chave de cruzamento entre folha de
+      pagamento, lotação e sistemas que registram atuação de servidores.
+    normalizacao: digitos
+    tamanho: 7
+    sistema_de_referencia: siape
+    classificacao: pessoal
+
+  co_natureza_despesa:
+    nome: Código da natureza da despesa detalhada
+    descricao: >-
+      Classificação orçamentária da despesa, na forma detalhada de 8 dígitos
+      (categoria econômica, grupo, modalidade de aplicação, elemento e
+      subelemento). Permite cruzar o que foi comprado (catálogo de
+      material/serviço do Compras.gov.br) com o que foi executado
+      orçamentariamente no SIAFI. A natureza de despesa "curta" de 6 dígitos,
+      usada em parte dos relatórios do SIAFI, é o prefixo desta — quando o
+      SIAFI for catalogado, declare a redução como ponte, não remapeie a chave.
+    normalizacao: digitos
+    tamanho: 8
+    sistema_de_referencia: siafi
+    classificacao: publico
+
+# Pontes — equivalências e derivações conhecidas entre chaves conformadas.
+# `confiabilidade` diz o quanto a ponte pode ser aplicada sem verificação:
+#   total    — vale sempre; pode ser aplicada direto em Silver.
+#   parcial  — vale na maioria dos casos; exige tratamento de exceção e deve
+#              ser documentada no modelo que a usa.
+#   indicio  — hipótese ainda não verificada contra os dados; não use em Gold.
+
+pontes:
+
+  - de: co_uasg
+    para: co_ug_siafi
+    tipo: equivalencia
+    confiabilidade: parcial
+    descricao: >-
+      A UASG do SIASG e a unidade gestora do SIAFI usam a mesma faixa de
+      códigos e coincidem para as unidades que executam orçamento. Não vale
+      para UASGs que apenas compram sem executar orçamento próprio.
+    observacao: >-
+      Ao usar esta ponte, materialize a taxa de não-correspondência como teste
+      dbt em vez de assumir cobertura total.
+
+  - de: nu_ni
+    para: nu_cnpj
+    tipo: derivacao_condicional
+    condicao: length(nu_ni) = 14
+    confiabilidade: total
+    descricao: Um NI de 14 dígitos é sempre um CNPJ.
+
+  - de: nu_ni
+    para: nu_cpf
+    tipo: derivacao_condicional
+    condicao: length(nu_ni) = 11
+    confiabilidade: total
+    descricao: >-
+      Um NI de 11 dígitos é sempre um CPF — e, portanto, passa a ser dado
+      pessoal, herdando a classificação de nu_cpf.
+
+  - de: nu_ni
+    para: co_uasg
+    tipo: derivacao_condicional
+    condicao: length(nu_ni) = 6
+    confiabilidade: parcial
+    descricao: >-
+      Um NI de 6 dígitos indica fornecedor que é órgão público, identificado
+      pela própria UASG. Confirme contra o cadastro de UASG antes de tratar
+      como equivalência.

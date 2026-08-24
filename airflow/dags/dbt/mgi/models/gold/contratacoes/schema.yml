@@ -1,0 +1,68 @@
+version: 2
+
+models:
+  - name: contratos_por_orgao
+    description: >
+      PREENCHER: a pergunta de negócio respondida por este produto de dados.
+      Construído cruzando compras_gov.contratos, compras_gov.uasg,
+      compras_gov.orgao, compras_gov.fornecedor. Granularidade: herdada de
+      compras_gov.contratos — uma linha por unidade gestora, número de contrato e
+      fornecedor.
+    meta:
+      owner: "@GovHub-br/oss"
+      sistema_origem: compras_gov
+      camada: gold
+      classificacao: pessoal
+    columns:
+      - name: co_uasg
+        description: >
+            Código da UASG. Unidade Administrativa de Serviços Gerais — unidade que
+            executa compras e contratos no SIASG/Compras.gov.br. Subordinada a um órgão
+            (co_orgao). Normalizada a partir da coluna de origem 'codigounidadegestora'.
+        meta:
+          classificacao: publico
+        data_tests:
+          - not_null
+      - name: nu_ni
+        description: >
+            Número de inscrição do fornecedor. Identificador do fornecedor no
+            Compras.gov.br. Não é um tipo único: pode ser CNPJ (14 dígitos), CPF (11
+            dígitos) ou UASG (6 dígitos, quando o fornecedor é um órgão público). Cruzar
+            por nu_ni sem antes decidir o tipo é a origem mais comum de junção incorreta
+            entre compras e cadastros externos — use as pontes declaradas abaixo.
+            Normalizada a partir da coluna de origem 'nifornecedor'.
+        meta:
+          classificacao: publico
+        data_tests:
+          - not_null
+      - name: co_orgao
+        description: >
+            Código do órgão. Código do órgão na estrutura organizacional do Poder
+            Executivo federal. É a chave de agregação institucional mais alta usada
+            pelos sistemas estruturantes — quase todo cruzamento "por órgão" passa por
+            ela. Normalizada a partir da coluna de origem 'codigoorgao'.
+        meta:
+          classificacao: publico
+        data_tests:
+          - not_null
+      - name: nu_cnpj
+        description: >
+            CNPJ. Cadastro Nacional da Pessoa Jurídica, sem máscara. Chave de cruzamento
+            entre fornecedores, contratados e cadastros externos de pessoa jurídica.
+            Normalizada a partir da coluna de origem 'cnpj'. Nulo quando o fornecedor é
+            pessoa física; nesse caso o documento está em cpf.
+        meta:
+          classificacao: publico
+        # sem teste not_null: chave opcional nesta entidade — nula em parte das linhas
+        # (ver catalogo/sistemas/).
+      - name: nu_cpf
+        description: >
+            CPF. Cadastro de Pessoa Física, sem máscara. Identifica uma pessoa natural
+            e, por isso, é dado pessoal sob a LGPD mesmo quando aparece em base de
+            origem pública. Normalizada a partir da coluna de origem 'cpf'. Preenchido
+            apenas para fornecedor pessoa física — dado pessoal sob a LGPD, ainda que a
+            origem seja pública (ADR-0013). Nulo para pessoa jurídica.
+        meta:
+          classificacao: pessoal
+        # sem teste not_null: chave opcional nesta entidade — nula em parte das linhas
+        # (ver catalogo/sistemas/).

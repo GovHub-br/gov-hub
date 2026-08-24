@@ -56,3 +56,10 @@ Thumbs.db
 
 poetry.toml
 mise.toml
+
+# Artefatos locais do dbt
+airflow/dags/dbt/**/target/
+airflow/dags/dbt/**/dbt_packages/
+airflow/dags/dbt/**/package-lock.yml
+airflow/dags/dbt/**/logs/
+airflow/dags/dbt/.user.yml

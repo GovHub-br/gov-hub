@@ -2,6 +2,7 @@ from pathlib import Path
 
 import pytest
 
+import dag_discovery
 from dag_discovery import DagSelector
 
 pytestmark = pytest.mark.unit
@@ -80,3 +81,53 @@ class TestDagSelectorIsIncluded:
 
         assert selector.is_included(tmp_path / "data_ingest" / "cnpq" / "dag.py")
         assert not selector.is_included(tmp_path / "data_ingest" / "ibge" / "dag.py")
+
+
+# ---------------------------------------------------------------------------
+# might_contain_selected_dag — o callable que o Airflow realmente chama
+# ---------------------------------------------------------------------------
+
+
+class TestCallableDoAirflow:
+    """Exercita a função configurada em `core.might_contain_dag_callable`.
+
+    Testar apenas `DagSelector.is_included` deixou passar uma recursão infinita
+    entre este callable e a heurística padrão do Airflow: o seletor estava
+    correto, e mesmo assim nenhuma DAG era carregada.
+    """
+
+    def _arquivo_de_dag(self, tmp_path: Path, pasta: str) -> Path:
+        destino = tmp_path / pasta
+        destino.mkdir(parents=True, exist_ok=True)
+        arquivo = destino / "exemplo_ingest_dag.py"
+        arquivo.write_text("from airflow.sdk import DAG\n", encoding="utf-8")
+        return arquivo
+
+    def _com_seletor(self, monkeypatch, tmp_path: Path, conteudo: str) -> None:
+        (tmp_path / "dag_selector").write_text(conteudo, encoding="utf-8")
+        monkeypatch.setattr(
+            dag_discovery, "_dag_selector", DagSelector(dags_folder=tmp_path)
+        )
+
+    def test_arquivo_na_allowlist_e_aceito(self, tmp_path: Path, monkeypatch) -> None:
+        arquivo = self._arquivo_de_dag(tmp_path, "data_ingest/compras_gov")
+        self._com_seletor(monkeypatch, tmp_path, "data_ingest/compras_gov/\n")
+        assert dag_discovery.might_contain_selected_dag(str(arquivo)) is True
+
+    def test_arquivo_fora_da_allowlist_e_recusado(
+        self, tmp_path: Path, monkeypatch
+    ) -> None:
+        arquivo = self._arquivo_de_dag(tmp_path, "data_ingest/outro_sistema")
+        self._com_seletor(monkeypatch, tmp_path, "data_ingest/compras_gov/\n")
+        assert dag_discovery.might_contain_selected_dag(str(arquivo)) is False
+
+    def test_arquivo_sem_marca_de_dag_e_recusado(
+        self, tmp_path: Path, monkeypatch
+    ) -> None:
+        """A heurística padrão do Airflow continua valendo antes do seletor."""
+        pasta = tmp_path / "data_ingest/compras_gov"
+        pasta.mkdir(parents=True)
+        arquivo = pasta / "helper.py"
+        arquivo.write_text("VALOR = 1\n", encoding="utf-8")
+        self._com_seletor(monkeypatch, tmp_path, "data_ingest/compras_gov/\n")
+        assert dag_discovery.might_contain_selected_dag(str(arquivo)) is False

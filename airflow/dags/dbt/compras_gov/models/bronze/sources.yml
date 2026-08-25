@@ -1,7 +1,10 @@
 # GERADO por `make modelo` a partir de catalogo/sistemas/compras_gov.yml — não edite à mão.
 #
-# A Bronze é materializada pelas DAGs de ingestão, não por dbt: aqui ela é
-# apenas declarada como source (ADR-0006, ADR-0017).
+# A Bronze não é materializada por dbt: ela é um source sobre a zona raw,
+# onde a ingestão entrega o dado (ADR-0006, ADR-0017, ADR-0021).
+#
+# Esta é a forma de tabela, do backend `warehouse`. Em um deployment com a
+# raw em object storage, o source aponta para os arquivos da entidade.
 
 version: 2
 

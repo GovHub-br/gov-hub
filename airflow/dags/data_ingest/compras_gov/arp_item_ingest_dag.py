@@ -6,15 +6,14 @@ from typing import Any
 from airflow.sdk import dag, task
 
 from cliente_compras_gov import ClienteComprasGov
-from cliente_postgres import ClientPostgresDB
-from postgres_helpers import get_postgres_conn
+from landing_zone import write_raw
 
-SCHEMA = "compras_gov"
+SISTEMA = "compras_gov"
 PAGE_SIZE = 500
 BLOCK_SIZE = 15
 
 ENDPOINT = "/modulo-arp/2_consultarARPItem"
-TABLE = "raw_arp_item"
+ENTIDADE = "arp_item"
 PK = [
     "numeroataregistropreco",
     "codigounidadegerenciadora",
@@ -29,13 +28,6 @@ default_args = {
     "retries": 3,
     "retry_delay": timedelta(minutes=5),
 }
-
-
-def _stamp(records: list[dict]) -> list[dict]:
-    ts = datetime.now().isoformat()
-    for r in records:
-        r["dt_ingest"] = ts
-    return records
 
 
 def _get_intervalo(context: dict) -> tuple[str, str]:
@@ -81,7 +73,6 @@ def arp_item_dag() -> None:
     def fetch_block(pagina_inicio: int, **context: dict) -> dict:
         data_inicial, data_final = _get_intervalo(context)
         api = ClienteComprasGov()
-        db = ClientPostgresDB(get_postgres_conn())
         ingeridos = 0
         api_total = 0
         for pagina in range(pagina_inicio, pagina_inicio + BLOCK_SIZE):
@@ -113,13 +104,7 @@ def arp_item_dag() -> None:
                     descartados,
                 )
             if validos:
-                db.insert_data(
-                    _stamp(validos),
-                    TABLE,
-                    primary_key=PK,
-                    conflict_fields=PK,
-                    schema=SCHEMA,
-                )
+                write_raw(SISTEMA, ENTIDADE, validos, primary_key=PK)
             ingeridos += len(validos)
             if resp.get("paginasRestantes", 0) == 0:
                 break

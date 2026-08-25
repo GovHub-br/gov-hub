@@ -5,10 +5,13 @@ from typing import Any
 from airflow.sdk import dag, task
 
 from cliente_compras_gov import ClienteComprasGov
-from cliente_postgres import ClientPostgresDB
-from postgres_helpers import get_postgres_conn
+from landing_zone import distinct_raw_rows, write_raw
 
-SCHEMA = "compras_gov"
+SISTEMA = "compras_gov"
+
+# Combinações da raw de itens de ARP sobre as quais esta DAG pagina.
+COLUNAS_ATA = ["numeroataregistropreco", "codigounidadegerenciadora"]
+COLUNAS_ITEM = COLUNAS_ATA + ["numeroitem"]
 BLOCK_SIZE = 150
 
 default_args = {
@@ -17,13 +20,6 @@ default_args = {
     "retries": 3,
     "retry_delay": timedelta(minutes=5),
 }
-
-
-def _stamp(records: list[dict]) -> list[dict]:
-    ts = datetime.now().isoformat()
-    for r in records:
-        r["dt_ingest"] = ts
-    return records
 
 
 @dag(
@@ -41,40 +37,23 @@ def _stamp(records: list[dict]) -> list[dict]:
 def arp_detalhes_dag() -> None:
     @task
     def get_item_offsets() -> list[int]:
-        db = ClientPostgresDB(get_postgres_conn())
-        rows = db.execute_query(f"""
-            SELECT COUNT(DISTINCT (numeroataregistropreco, codigounidadegerenciadora, numeroitem))
-            FROM {SCHEMA}.raw_arp_item
-        """)
-        total = rows[0][0]
+        total = len(distinct_raw_rows(SISTEMA, "arp_item", COLUNAS_ITEM))
         offsets = list(range(0, total, BLOCK_SIZE))
         logging.info("ARP detalhes itens: %s itens em %s blocos", total, len(offsets))
         return offsets
 
     @task
     def get_par_offsets() -> list[int]:
-        db = ClientPostgresDB(get_postgres_conn())
-        rows = db.execute_query(f"""
-            SELECT COUNT(DISTINCT (numeroataregistropreco, codigounidadegerenciadora))
-            FROM {SCHEMA}.raw_arp_item
-        """)
-        total = rows[0][0]
+        total = len(distinct_raw_rows(SISTEMA, "arp_item", COLUNAS_ATA))
         offsets = list(range(0, total, BLOCK_SIZE))
         logging.info("ARP detalhes empenhos: %s atas em %s blocos", total, len(offsets))
         return offsets
 
     @task(max_active_tis_per_dag=4)
     def fetch_unidades_adesoes(offset: int) -> dict:
-        db = ClientPostgresDB(get_postgres_conn())
-        rows = db.execute_query(f"""
-            SELECT DISTINCT
-                numeroataregistropreco,
-                codigounidadegerenciadora,
-                numeroitem
-            FROM {SCHEMA}.raw_arp_item
-            ORDER BY numeroataregistropreco, codigounidadegerenciadora, numeroitem
-            LIMIT {BLOCK_SIZE} OFFSET {offset}
-        """)
+        rows = distinct_raw_rows(SISTEMA, "arp_item", COLUNAS_ITEM)[
+            offset : offset + BLOCK_SIZE
+        ]
         api = ClienteComprasGov()
         total_unidades = 0
         total_adesoes = 0
@@ -86,33 +65,19 @@ def arp_detalhes_dag() -> None:
             }
             unidades, _ = api.consultar_arp_unidades_item(str(ata), str(ug), str(item))
             if unidades:
-                db.insert_data(
-                    _stamp([{**ctx, **r} for r in unidades]),
-                    "raw_arp_unidades_item",
-                    schema=SCHEMA,
-                )
+                write_raw(SISTEMA, "arp_unidades_item", [{**ctx, **r} for r in unidades])
             adesoes, _ = api.consultar_arp_adesoes_item(str(ata), str(ug), str(item))
             if adesoes:
-                db.insert_data(
-                    _stamp([{**ctx, **r} for r in adesoes]),
-                    "raw_arp_adesoes_item",
-                    schema=SCHEMA,
-                )
+                write_raw(SISTEMA, "arp_adesoes_item", [{**ctx, **r} for r in adesoes])
             total_unidades += len(unidades)
             total_adesoes += len(adesoes)
         return {"unidades": total_unidades, "adesoes": total_adesoes}
 
     @task(max_active_tis_per_dag=4)
     def fetch_empenhos(offset: int) -> dict:
-        db = ClientPostgresDB(get_postgres_conn())
-        rows = db.execute_query(f"""
-            SELECT DISTINCT
-                numeroataregistropreco,
-                codigounidadegerenciadora
-            FROM {SCHEMA}.raw_arp_item
-            ORDER BY numeroataregistropreco, codigounidadegerenciadora
-            LIMIT {BLOCK_SIZE} OFFSET {offset}
-        """)
+        rows = distinct_raw_rows(SISTEMA, "arp_item", COLUNAS_ATA)[
+            offset : offset + BLOCK_SIZE
+        ]
         api = ClienteComprasGov()
         total_empenhos = 0
         for ata, ug in rows:
@@ -122,11 +87,7 @@ def arp_detalhes_dag() -> None:
             }
             empenhos, _ = api.consultar_arp_empenhos_saldo(str(ata), str(ug))
             if empenhos:
-                db.insert_data(
-                    _stamp([{**ctx, **r} for r in empenhos]),
-                    "raw_arp_empenhos_saldo",
-                    schema=SCHEMA,
-                )
+                write_raw(SISTEMA, "arp_empenhos_saldo", [{**ctx, **r} for r in empenhos])
             total_empenhos += len(empenhos)
         return {"empenhos": total_empenhos}
 

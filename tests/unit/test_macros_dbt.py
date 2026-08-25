@@ -45,6 +45,19 @@ class _ErroCompilacao(Exception):
     pass
 
 
+class _PacoteGovBricks:
+    """O namespace de pacote que o dbt injeta no contexto de um modelo.
+
+    A chamada dentro do macro é qualificada (`gov_bricks.chaves_conformadas()`)
+    porque quem o executa é um modelo de outro pacote — emular isso aqui é o que
+    mantém o teste fiel ao que o dbt faz de verdade.
+    """
+
+    @staticmethod
+    def chaves_conformadas() -> dict:
+        return CHAVES
+
+
 class _Excecoes:
     @staticmethod
     def raise_compiler_error(mensagem: str) -> None:
@@ -62,7 +75,7 @@ def _render(chave: str, coluna: str) -> str:
         ambiente,
         ambiente.compile(MACRO.read_text(encoding="utf-8")),
         {
-            "chaves_conformadas": lambda: CHAVES,
+            "gov_bricks": _PacoteGovBricks,
             "exceptions": _Excecoes,
             "return": _return,
         },

@@ -12,8 +12,8 @@ with
 
     conformado as (
         select
-            {{ chave_conformada("co_uasg", "codigouasg") }} as co_uasg,
-            {{ chave_conformada("co_orgao", "codigoorgao") }} as co_orgao,
+            {{ gov_bricks.chave_conformada("co_uasg", "codigouasg") }} as co_uasg,
+            {{ gov_bricks.chave_conformada("co_orgao", "codigoorgao") }} as co_orgao,
             codigouasg,
             codigoorgao,
             dt_ingest

@@ -7,10 +7,16 @@
     a normalização declarada em catalogo/chaves.yml, para que o join seja
     sempre entre valores comparáveis.
 
-        {{ chave_conformada("co_uasg", "codigounidadegestora") }} as co_uasg
+        {{ gov_bricks.chave_conformada("co_uasg", "codigounidadegestora") }} as co_uasg
 #}
 {% macro chave_conformada(chave, coluna) %}
-    {%- set definicoes = chaves_conformadas() -%}
+    {#-
+        A chamada é qualificada com o pacote de propósito: quem executa este
+        macro é um modelo de OUTRO pacote (compras_gov, mgi), e o namespace de
+        macros que vale durante a execução é o do pacote chamador. Sem o
+        prefixo, `chaves_conformadas` fica indefinido no compile do modelo.
+    -#}
+    {%- set definicoes = gov_bricks.chaves_conformadas() -%}
     {%- if chave not in definicoes -%}
         {{
             exceptions.raise_compiler_error(

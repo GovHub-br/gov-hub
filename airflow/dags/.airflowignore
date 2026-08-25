@@ -1,0 +1,16 @@
+# Pastas dentro de dags/ que não contêm DAG e não devem ser percorridas pelo
+# processador (sintaxe glob, o padrão do Airflow 3).
+#
+# `dbt/` precisa estar aqui por um motivo concreto, não só por desempenho: o
+# `dbt deps` instala os pacotes locais do monorepo como SYMLINK apontando de
+# volta para dentro de dags/ (dbt/<orgao>/dbt_packages/<pacote> ->
+# dbt/<pacote>). Ao percorrer a pasta, o processador reencontra o mesmo
+# diretório e aborta com "Detected recursive loop when walking DAG directory" —
+# e, quando isso acontece, NENHUMA DAG é carregada.
+#
+# Os projetos continuam acessíveis às DAGs por caminho; o que se evita aqui é
+# apenas a varredura em busca de arquivos de DAG.
+dbt/*
+dbt/**
+superset/*
+superset/**

@@ -5,10 +5,9 @@ from typing import Any
 from airflow.sdk import dag, task
 
 from cliente_compras_gov import ClienteComprasGov
-from cliente_postgres import ClientPostgresDB
-from postgres_helpers import get_postgres_conn
+from landing_zone import distinct_raw_values, write_raw
 
-SCHEMA = "compras_gov"
+SISTEMA = "compras_gov"
 
 default_args = {
     "owner": "mgi",
@@ -16,13 +15,6 @@ default_args = {
     "retries": 3,
     "retry_delay": timedelta(minutes=10),
 }
-
-
-def _stamp(records: list[dict]) -> list[dict]:
-    ts = datetime.now().isoformat()
-    for r in records:
-        r["dt_ingest"] = ts
-    return records
 
 
 def _get_intervalo(context: dict) -> tuple[str, str]:
@@ -43,17 +35,13 @@ def _get_intervalo(context: dict) -> tuple[str, str]:
 def contratos_item_dag() -> None:
     @task
     def get_orgaos() -> list[str]:
-        db = ClientPostgresDB(get_postgres_conn())
         try:
-            rows = db.execute_query(
-                f"SELECT DISTINCT codigoorgao FROM {SCHEMA}.raw_orgao ORDER BY codigoorgao"
-            )
+            orgaos = distinct_raw_values(SISTEMA, "orgao", "codigoorgao")
         except Exception as exc:
             raise RuntimeError(
-                "Tabela compras_gov.raw_orgao não encontrada. "
+                "Entidade 'orgao' ainda não está na zona raw. "
                 "Execute orgao_ingest_dag antes de contratos_item_ingest_dag."
             ) from exc
-        orgaos = [str(row[0]) for row in rows]
         logging.info("Total de órgãos a processar: %s", len(orgaos))
         return orgaos
 
@@ -61,7 +49,6 @@ def contratos_item_dag() -> None:
     def ingest_orgao(codigo_orgao: str, **context: dict) -> dict:
         data_inicial, data_final = _get_intervalo(context)
         api = ClienteComprasGov()
-        db = ClientPostgresDB(get_postgres_conn())
         itens = 0
 
         for batch, _ in api.iter_pages(
@@ -72,9 +59,10 @@ def contratos_item_dag() -> None:
                 "dataVigenciaInicialMax": data_final,
             },
         ):
-            db.insert_data(
-                _stamp(batch),
-                "raw_contratos_item",
+            write_raw(
+                SISTEMA,
+                "contratos_item",
+                batch,
                 primary_key=[
                     "codigounidadegestora",
                     "numerocontrato",
@@ -82,14 +70,6 @@ def contratos_item_dag() -> None:
                     "numeroitem",
                     "contratoitemexcluido",
                 ],
-                conflict_fields=[
-                    "codigounidadegestora",
-                    "numerocontrato",
-                    "nifornecedor",
-                    "numeroitem",
-                    "contratoitemexcluido",
-                ],
-                schema=SCHEMA,
             )
             itens += len(batch)
 

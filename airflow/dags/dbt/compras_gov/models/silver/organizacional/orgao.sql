@@ -9,7 +9,8 @@ with
     bronze as (select * from {{ source("compras_gov", "orgao") }}),
 
     conformado as (
-        select {{ chave_conformada("co_orgao", "codigoorgao") }} as co_orgao, codigoorgao, dt_ingest from bronze
+        select {{ gov_bricks.chave_conformada("co_orgao", "codigoorgao") }} as co_orgao, codigoorgao, dt_ingest
+        from bronze
     ),
 
     versionado as (

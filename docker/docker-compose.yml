@@ -124,6 +124,47 @@ services:
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-minioadmin}
       MINIO_BUCKET: ${MINIO_BUCKET:-data-lake}
 
+  # Ferramenta de consumo — onde as dashboards publicadas pelas DAGs de
+  # data_publish/ são construídas, exportadas e servidas (ADR-0019).
+  #
+  # Fica no perfil `bi`: sobe com `make superset`, não com `make compose`. A
+  # maior parte do trabalho no framework (ingestão, dbt, testes) não precisa
+  # dele, e ele é o serviço mais pesado do compose.
+  superset:
+    # Imagem própria: a oficial não traz driver de Postgres (ver o Dockerfile).
+    build:
+      context: ./superset
+      dockerfile: Dockerfile
+    profiles: ["bi"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SUPERSET_SECRET_KEY: ${SUPERSET_SECRET_KEY:-govhub-superset-local-dev}
+      SUPERSET_LOAD_EXAMPLES: "no"
+      SUPERSET_ADMIN_USER: ${SUPERSET_ADMIN_USER:-admin}
+      SUPERSET_ADMIN_PASSWORD: ${SUPERSET_ADMIN_PASSWORD:-admin}
+    ports:
+      - "8088:8088"
+    volumes:
+      # Metadados do Superset (papéis, filtros de recorte, dashboards
+      # importadas) em volume nomeado, para sobreviverem a um restart. Em
+      # homologação e produção o metastore é um banco de verdade, definido no
+      # deployment, não aqui.
+      - superset-home:/app/superset_home
+    # `|| true` no create-admin: em subida repetida o usuário já existe, e o
+    # comando falharia sem que houvesse nada errado.
+    command: >
+      bash -c "superset db upgrade && superset fab create-admin --username $${SUPERSET_ADMIN_USER} --firstname Admin --lastname GovHub --email admin@localhost --password $${SUPERSET_ADMIN_PASSWORD} || true; superset init && superset run -h 0.0.0.0 -p 8088 --with-threads"
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8088/health"]
+      interval: 15s
+      timeout: 10s
+      start_period: 120s
+      retries: 10
+    restart: always
+
 volumes:
   postgres-db:
   minio-data:
+  superset-home:

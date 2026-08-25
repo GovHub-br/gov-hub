@@ -6,10 +6,9 @@ from typing import Any
 from airflow.sdk import dag, task
 
 from cliente_compras_gov import ClienteComprasGov
-from cliente_postgres import ClientPostgresDB
-from postgres_helpers import get_postgres_conn
+from landing_zone import write_raw
 
-SCHEMA = "compras_gov"
+SISTEMA = "compras_gov"
 PAGE_SIZE = 500
 BLOCK_SIZE = 15
 
@@ -17,31 +16,31 @@ ENDPOINTS = [
     (
         "/modulo-servico/1_consultarSecaoServico",
         {"statusSecao": "true"},
-        "raw_secao_servico",
+        "secao_servico",
         ["codigosecao"],
     ),
     (
         "/modulo-servico/2_consultarDivisaoServico",
         {"statusDivisao": "true"},
-        "raw_divisao_servico",
+        "divisao_servico",
         ["codigodivisao"],
     ),
     (
         "/modulo-servico/3_consultarGrupoServico",
         {"statusGrupo": "true"},
-        "raw_grupo_servico",
+        "grupo_servico",
         ["codigogrupo"],
     ),
     (
         "/modulo-servico/4_consultarClasseServico",
         {},
-        "raw_classe_servico",
+        "classe_servico",
         ["codigoclasse"],
     ),
     (
         "/modulo-servico/5_consultarSubClasseServico",
         {"statusSubclasse": "true"},
-        "raw_subclasse_servico",
+        "subclasse_servico",
         ["codigosubclasse"],
     ),
 ]
@@ -52,13 +51,6 @@ default_args = {
     "retries": 3,
     "retry_delay": timedelta(minutes=5),
 }
-
-
-def _stamp(records: list[dict]) -> list[dict]:
-    ts = datetime.now().isoformat()
-    for r in records:
-        r["dt_ingest"] = ts
-    return records
 
 
 @dag(
@@ -88,10 +80,13 @@ def catalogo_servico_hierarquia_dag() -> None:
 
     @task
     def fetch_block(
-        pagina_inicio: int, endpoint: str, query_params: dict, table: str, pk: list[str]
+        pagina_inicio: int,
+        endpoint: str,
+        query_params: dict,
+        entidade: str,
+        pk: list[str],
     ) -> dict:
         api = ClienteComprasGov()
-        db = ClientPostgresDB(get_postgres_conn())
         ingeridos = 0
         api_total = 0
         for pagina in range(pagina_inicio, pagina_inicio + BLOCK_SIZE):
@@ -107,9 +102,7 @@ def catalogo_servico_hierarquia_dag() -> None:
             api_total = resp.get("totalRegistros", 0)
             if not data:
                 break
-            db.insert_data(
-                _stamp(data), table, primary_key=pk, conflict_fields=pk, schema=SCHEMA
-            )
+            write_raw(SISTEMA, entidade, data, primary_key=pk)
             ingeridos += len(data)
             if resp.get("paginasRestantes", 0) == 0:
                 break
@@ -129,14 +122,16 @@ def catalogo_servico_hierarquia_dag() -> None:
         else:
             logging.info("[%s] Validação OK: ingeridos=%s", endpoint, total_ingerido)
 
-    for endpoint, query_params, table, pk in ENDPOINTS:
-        slug = table.removeprefix("raw_").replace("_", "-")
+    for endpoint, query_params, entidade, pk in ENDPOINTS:
+        slug = entidade.replace("_", "-")
         starts = get_page_starts.override(task_id=f"get_page_starts_{slug}")(
             endpoint=endpoint, query_params=query_params
         )
         results = (
             fetch_block.override(task_id=f"fetch_block_{slug}")
-            .partial(endpoint=endpoint, query_params=query_params, table=table, pk=pk)
+            .partial(
+                endpoint=endpoint, query_params=query_params, entidade=entidade, pk=pk
+            )
             .expand(pagina_inicio=starts)
         )
         validate.override(task_id=f"validate_{slug}")(results=results, endpoint=endpoint)

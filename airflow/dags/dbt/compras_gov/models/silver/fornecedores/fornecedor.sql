@@ -10,8 +10,8 @@ with
 
     conformado as (
         select
-            {{ chave_conformada("nu_cnpj", "cnpj") }} as nu_cnpj,
-            {{ chave_conformada("nu_cpf", "cpf") }} as nu_cpf,
+            {{ gov_bricks.chave_conformada("nu_cnpj", "cnpj") }} as nu_cnpj,
+            {{ gov_bricks.chave_conformada("nu_cpf", "cpf") }} as nu_cpf,
             cnpj,
             cpf,
             dt_ingest

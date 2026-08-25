@@ -6,16 +6,15 @@ from typing import Any
 from airflow.sdk import dag, task
 
 from cliente_compras_gov import ClienteComprasGov
-from cliente_postgres import ClientPostgresDB
-from postgres_helpers import get_postgres_conn
+from landing_zone import write_raw
 
-SCHEMA = "compras_gov"
+SISTEMA = "compras_gov"
 PAGE_SIZE = 500
 BLOCK_SIZE = 15
 
 ENDPOINT = "/modulo-material/3_consultarPdmMaterial"
 PARAMS = {"statusPdm": "true"}
-TABLE = "raw_pdm_material"
+ENTIDADE = "pdm_material"
 PK = ["codigopdm"]
 
 default_args = {
@@ -24,13 +23,6 @@ default_args = {
     "retries": 3,
     "retry_delay": timedelta(minutes=5),
 }
-
-
-def _stamp(records: list[dict]) -> list[dict]:
-    ts = datetime.now().isoformat()
-    for r in records:
-        r["dt_ingest"] = ts
-    return records
 
 
 @dag(
@@ -59,7 +51,6 @@ def catalogo_material_pdm_dag() -> None:
     @task
     def fetch_block(pagina_inicio: int) -> dict:
         api = ClienteComprasGov()
-        db = ClientPostgresDB(get_postgres_conn())
         ingeridos = 0
         api_total = 0
         for pagina in range(pagina_inicio, pagina_inicio + BLOCK_SIZE):
@@ -75,9 +66,7 @@ def catalogo_material_pdm_dag() -> None:
             api_total = resp.get("totalRegistros", 0)
             if not data:
                 break
-            db.insert_data(
-                _stamp(data), TABLE, primary_key=PK, conflict_fields=PK, schema=SCHEMA
-            )
+            write_raw(SISTEMA, ENTIDADE, data, primary_key=PK)
             ingeridos += len(data)
             if resp.get("paginasRestantes", 0) == 0:
                 break

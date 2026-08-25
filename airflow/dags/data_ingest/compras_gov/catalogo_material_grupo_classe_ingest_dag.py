@@ -6,10 +6,9 @@ from typing import Any
 from airflow.sdk import dag, task
 
 from cliente_compras_gov import ClienteComprasGov
-from cliente_postgres import ClientPostgresDB
-from postgres_helpers import get_postgres_conn
+from landing_zone import write_raw
 
-SCHEMA = "compras_gov"
+SISTEMA = "compras_gov"
 PAGE_SIZE = 500
 BLOCK_SIZE = 15
 
@@ -24,13 +23,6 @@ default_args = {
     "retries": 3,
     "retry_delay": timedelta(minutes=5),
 }
-
-
-def _stamp(records: list[dict]) -> list[dict]:
-    ts = datetime.now().isoformat()
-    for r in records:
-        r["dt_ingest"] = ts
-    return records
 
 
 @dag(
@@ -60,10 +52,13 @@ def catalogo_material_grupo_classe_dag() -> None:
 
     @task
     def fetch_block(
-        pagina_inicio: int, endpoint: str, query_params: dict, table: str, pk: list[str]
+        pagina_inicio: int,
+        endpoint: str,
+        query_params: dict,
+        entidade: str,
+        pk: list[str],
     ) -> dict:
         api = ClienteComprasGov()
-        db = ClientPostgresDB(get_postgres_conn())
         ingeridos = 0
         api_total = 0
         for pagina in range(pagina_inicio, pagina_inicio + BLOCK_SIZE):
@@ -79,9 +74,7 @@ def catalogo_material_grupo_classe_dag() -> None:
             api_total = resp.get("totalRegistros", 0)
             if not data:
                 break
-            db.insert_data(
-                _stamp(data), table, primary_key=pk, conflict_fields=pk, schema=SCHEMA
-            )
+            write_raw(SISTEMA, entidade, data, primary_key=pk)
             ingeridos += len(data)
             if resp.get("paginasRestantes", 0) == 0:
                 break
@@ -109,7 +102,7 @@ def catalogo_material_grupo_classe_dag() -> None:
         .partial(
             endpoint=GRUPO_ENDPOINT,
             query_params=GRUPO_PARAMS,
-            table="raw_grupo_material",
+            entidade="grupo_material",
             pk=["codigogrupo"],
         )
         .expand(pagina_inicio=starts_grupo)
@@ -126,7 +119,7 @@ def catalogo_material_grupo_classe_dag() -> None:
         .partial(
             endpoint=CLASSE_ENDPOINT,
             query_params=CLASSE_PARAMS,
-            table="raw_classe_material",
+            entidade="classe_material",
             pk=["codigoclasse"],
         )
         .expand(pagina_inicio=starts_classe)

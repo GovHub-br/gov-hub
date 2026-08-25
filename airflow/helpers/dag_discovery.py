@@ -8,9 +8,15 @@ import zipfile
 from pathlib import Path, PurePosixPath
 
 from airflow.configuration import conf
-from airflow.utils.file import (
-    might_contain_dag as might_contain_dag_via_default_heuristic,
-)
+
+# A heurística padrão do Airflow, importada pelo nome dela.
+#
+# NÃO troque por `might_contain_dag`: no Airflow 3 essa função é o *despachante*
+# que lê `core.might_contain_dag_callable` — que aponta para esta aqui. Chamá-la
+# daqui faz o processador de DAGs recursar até estourar a pilha, e o efeito é o
+# pior possível: nenhum arquivo é considerado, nenhuma DAG aparece, e o erro só
+# se manifesta com Airflow rodando.
+from airflow.utils.file import might_contain_dag_via_default_heuristic
 
 log = logging.getLogger(__name__)
 
@@ -153,9 +159,13 @@ def _get_dag_selector() -> DagSelector:
 def might_contain_selected_dag(
     file_path: str, zip_file: zipfile.ZipFile | None = None
 ) -> bool:
-    safe_mode = conf.getboolean("core", "dag_discovery_safe_mode", fallback=True)
+    """Callable de `core.might_contain_dag_callable` (ADR-0005).
 
-    if not might_contain_dag_via_default_heuristic(file_path, safe_mode, zip_file):
+    O Airflow só chama este callable com `dag_discovery_safe_mode` ligado —
+    desligado, ele devolve True antes de chegar aqui. Por isso a heurística
+    padrão é aplicada direto, sem repassar `safe_mode`.
+    """
+    if not might_contain_dag_via_default_heuristic(file_path, zip_file):
         return False
 
     return _get_dag_selector().is_included(file_path)

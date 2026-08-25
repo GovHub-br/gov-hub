@@ -1,0 +1,22 @@
+slice_name: Concentração por fornecedor
+description: >-
+  Os 20 fornecedores com mais contratos no recorte, para ver concentração de
+  contratação.
+certified_by: null
+certification_details: null
+viz_type: table
+params:
+  viz_type: table
+  query_mode: aggregate
+  groupby:
+    - nu_ni
+  metrics:
+    - count
+  row_limit: 20
+  order_desc: true
+  include_search: true
+query_context: null
+cache_timeout: null
+uuid: a765ca7e-7dee-47bd-9c39-5a8b215b8373
+version: 1.0.0
+dataset_uuid: 12c55991-01e3-4c44-9274-8b890784cd85

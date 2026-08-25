@@ -5,8 +5,9 @@
 #     <sistema>/ fora de subpastas de órgão) pertence aos mantenedores do
 #     data-framework.
 #   - Código específico de um órgão (data_ingest/<sistema>/<orgao>/,
-#     data_ingest/<orgao>/, data_transform/<orgao>/, dbt/<orgao>/) pertence ao
-#     time daquele órgão.
+#     data_ingest/<orgao>/, data_transform/<orgao>/, data_publish/<orgao>/,
+#     data_report/<orgao>/, dbt/<orgao>/, superset/<orgao>/) pertence ao time
+#     daquele órgão.
 #
 # CODEOWNERS define quem APROVA, não quem enxerga o código.
 
@@ -24,7 +25,9 @@
 /airflow/plugins/               @GovHub-br/oss
 /airflow/helpers/               @GovHub-br/oss
 
-# Catálogo de sistemas estruturantes e ferramentas de modelagem (ADR-0017)
+# Catálogo de sistemas estruturantes e ferramentas de modelagem (ADR-0017);
+# catálogo de publicação e níveis de acesso (ADR-0019, ADR-0020). O catálogo de
+# publicação decide quem enxerga o quê: revisão pelos mantenedores é deliberada.
 /catalogo/                      @GovHub-br/oss
 /scripts/                       @GovHub-br/oss
 /airflow/dags/dbt/gov_bricks/   @GovHub-br/oss
@@ -40,7 +43,10 @@
 # /airflow/dags/data_ingest/*/ipea/   @GovHub-br/ipea
 # /airflow/dags/data_ingest/ipea/     @GovHub-br/ipea
 # /airflow/dags/data_transform/ipea/  @GovHub-br/ipea
+# /airflow/dags/data_publish/ipea/    @GovHub-br/ipea
+# /airflow/dags/data_report/ipea/     @GovHub-br/ipea
 # /airflow/dags/dbt/ipea/             @GovHub-br/ipea
+# /airflow/dags/superset/ipea/        @GovHub-br/ipea
 #
 # /airflow/dags/data_ingest/*/mir/    @GovHub-br/mir
 # /airflow/dags/data_ingest/mir/      @GovHub-br/mir

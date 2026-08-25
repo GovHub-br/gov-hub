@@ -20,6 +20,7 @@ convivem aqui, organizados por sistema e órgão
 | Landing zone | Object storage — MinIO on-prem, S3/ADLS na nuvem ([ADR-0012](docs/adr/0012-ingestao-object-storage-vs-database.md)) |
 | Modelagem | Arquitetura medallion: bronze → silver → gold ([ADR-0006](docs/adr/0006-arquitetura-medallion.md)) |
 | Cruzamento | Chaves conformadas declaradas em [`catalogo/`](catalogo/README.md) ([ADR-0017](docs/adr/0017-chaves-conformadas-cruzamento-sistemas-estruturantes.md)) |
+| Consumo | Apache Superset, com dashboards versionadas e acesso derivado do catálogo ([ADR-0019](docs/adr/0019-publicacao-dashboards-relatorios.md), [ADR-0020](docs/adr/0020-niveis-acesso-consumo-dados.md)) |
 | Dependências | `uv` + `pyproject.toml` |
 | Qualidade | `black`, `ruff`, `ty`, `sqlfmt`, `pytest` |
 
@@ -31,14 +32,19 @@ airflow/
     data_ingest/<sistema>/[<orgao>/]   # DAGs de ingestão
     data_ingest/<orgao>/               # sistema interno de um único órgão
     data_transform/<orgao>/            # DAGs de transformação (dbt via Cosmos)
+    data_publish/<orgao>/              # DAGs de publicação (dashboards e acesso)
+    data_report/<orgao>/               # DAGs de relatório periódico
     dbt/gov_bricks/                    # pacote base: macros compartilhados
     dbt/<sistema>/                     # pacote dbt compartilhado
     dbt/<orgao>/                       # projeto dbt do órgão
+    superset/<orgao>/                  # bundles de dashboard + plano de acesso gerado
     homologation/                      # DAGs de qualidade/homologação
   helpers/                             # utilitários Python compartilhados
   plugins/                             # clientes de fonte e integrações
 catalogo/                              # sistemas estruturantes e chaves de cruzamento
+catalogo/publicacao/                   # o que cada órgão publica e quem consome
 scripts/modelagem/                     # gerador de modelos e mapa de cruzamento
+scripts/publicacao/                    # validação de publicação e plano de acesso
 docker/                                # Dockerfile, docker-compose.yml, init do Postgres
 docs/adr/                              # decisões de arquitetura
 tests/                                 # unit (CI) e integration (docker compose)
@@ -48,7 +54,11 @@ As convenções de nomenclatura de pastas e arquivos estão nos ADRs
 [0007](docs/adr/0007-nomenclatura-pastas-dags-ingestao.md) (DAGs de ingestão),
 [0009](docs/adr/0009-nomenclatura-pastas-arquivos-dbt.md) (dbt) e
 [0010](docs/adr/0010-nomenclatura-schemas-tabelas-bronze-silver-gold.md)
-(schemas e tabelas).
+(schemas e tabelas),
+[0018](docs/adr/0018-nomenclatura-execucao-dags-transformacao.md) (DAGs de
+transformação) e
+[0019](docs/adr/0019-publicacao-dashboards-relatorios.md) (DAGs de publicação e
+de relatório).
 
 ## Utilitários compartilhados
 
@@ -60,8 +70,10 @@ As convenções de nomenclatura de pastas e arquivos estão nos ADRs
 | `cliente_postgres.py` | Cliente PostgreSQL: criação de tabela por inferência de tipos, upsert, deduplicação |
 | `cliente_sqlserver.py` | Leitura de tabelas SQL Server via `MsSqlHook` |
 | `cliente_storage.py` | Abstração `fsspec` da landing zone (`STORAGE_BACKEND`: `minio`/`s3`/`adls`) |
-| `cliente_email.py` | Extração de anexos CSV/ZIP de caixas IMAP |
+| `cliente_email.py` | Extração de anexos CSV/ZIP de caixas IMAP e envio de relatório por SMTP |
+| `cliente_superset.py` | API do Superset: import de bundle, papéis, permissões e recorte de linhas |
 | `email_ingest_dag_factory.py` | Factory de DAG para ingestão de relatórios recebidos por email |
+| `relatorio_dag_factory.py` | Factory da DAG base de relatório: uma entrega por órgão consumidor |
 | `schedule_loader.py` | Schedules dinâmicos via Airflow Variable `dynamic_schedules` |
 
 ### `airflow/helpers/`
@@ -74,6 +86,7 @@ As convenções de nomenclatura de pastas e arquivos estão nos ADRs
 | `postgres_helpers.py` | Resolução de connection string a partir de uma connection do Airflow |
 | `retry_helpers.py` | Decorator `retry_on_exception` com backoff |
 | `safe_request.py` | Variante de request tolerante a 204, corpo vazio e JSON inválido |
+| `superset_helpers.py` | Cliente do Superset a partir da connection `superset_default` |
 
 Convenção da landing zone:
 `{bucket}/{source}/{entity}/{ano}/{mes}/{dia}/{run_id}.parquet`
@@ -137,6 +150,50 @@ mudança nenhuma no arquivo da DAG.
 > em um diretório temporário para montar o grafo — de lá, um caminho relativo
 > apontaria para fora do monorepo.
 
+## Publicação: dashboards, relatórios e acesso
+
+Publicar é uma etapa versionada do pipeline, não um trabalho manual na
+ferramenta de BI
+([ADR-0019](docs/adr/0019-publicacao-dashboards-relatorios.md)). O catálogo em
+`catalogo/publicacao/<orgao>.yml` declara o que o órgão publica — datasets,
+dashboards, relatórios — e **quem consome cada coisa**; os bundles em
+`airflow/dags/superset/<orgao>/` são o que efetivamente vai ao ar.
+
+```bash
+make acesso                # quem enxerga o quê, e com que recorte de linhas
+make publicacao-sync       # regera os planos de acesso lidos pelas DAGs
+make publicacao-validar    # roda dentro de make lint e no CI
+make superset              # sobe o Superset local (perfil `bi` do compose)
+```
+
+**Dashboards.** São construídas na interface do Superset, exportadas como
+bundle de YAML e versionadas. A DAG `data_publish/<orgao>/{orgao}_publish_dag.py`
+importa o bundle pela API, de forma idempotente. A conexão do warehouse no
+bundle é um placeholder: a DAG a substitui pela URI do ambiente
+(`SUPERSET_DW_URI`) e envia a senha por fora — nenhuma credencial é versionada.
+
+**Relatórios.** A DAG `data_report/<orgao>/{relatorio}_{orgao}_report_dag.py`
+usa a factory `relatorio_dag_factory`: a consulta é escrita uma vez, com a marca
+`{recorte}`, e executada uma vez por órgão consumidor — cada um recebendo apenas
+as suas linhas, na landing zone
+(`{bucket}/relatorios/{orgao}/{relatorio}/{ano}/{mes}/{dia}/`), por e-mail, ou
+ambos. A lista de destinatários fica em uma Variable do Airflow, nunca no
+repositório: endereço de pessoa é dado pessoal.
+
+O ambiente local precisa, uma vez: as connections `superset_default` e
+`postgres_dw` (ambas criadas por `make dev`) e, para relatório com destino
+`email`, as Variables `smtp_credentials` e a de destinatários declarada no
+catálogo.
+
+**Níveis de acesso.** Cada consumidor declarado vira um papel
+`gh_{orgao}_{nivel}` no Superset, e quem tem `abrangencia: proprio` ganha um
+filtro de linhas por `co_orgao`
+([ADR-0020](docs/adr/0020-niveis-acesso-consumo-dados.md)). O nível diz *quais
+classificações* a pessoa vê, no vocabulário do
+[ADR-0013](docs/adr/0013-padrao-documentacao-metadados-tabelas.md) — e o CI
+reprova o build quando um dataset publicado expõe coluna classificada acima do
+seu nível, ou coluna que ninguém documentou.
+
 ## Começando
 
 Pré-requisitos: Python 3.11, [uv](https://docs.astral.sh/uv/getting-started/installation/),
@@ -150,6 +207,13 @@ make compose    # sobe Airflow + Postgres + MinIO e configura variables/connecti
 Airflow em http://localhost:8080 (`airflow`/`airflow`), console do MinIO em
 http://localhost:9001 (`minioadmin`/`minioadmin`).
 
+O Superset fica em um perfil separado do compose, porque é o serviço mais
+pesado e a maior parte do trabalho no framework não precisa dele:
+
+```bash
+make superset   # http://localhost:8088 (admin/admin) + connection no Airflow
+```
+
 ## Comandos
 
 | Comando | Descrição |
@@ -157,7 +221,7 @@ http://localhost:9001 (`minioadmin`/`minioadmin`).
 | `make install` | Instala as dependências com `uv sync` |
 | `make requirements` | Regenera o `requirements.txt` (runtime) usado pela imagem Docker |
 | `make format` | Aplica `black`, `ruff --fix` e `sqlfmt` |
-| `make lint` | Verifica `black`, `ruff`, `ty`, `sqlfmt` e o catálogo de modelagem |
+| `make lint` | Verifica `black`, `ruff`, `ty`, `sqlfmt` e os catálogos de modelagem e publicação |
 | `make test` | Testes unitários com cobertura (o que roda no CI) |
 | `make test-integration` | Testes de integração (sobe MinIO e Postgres) |
 | `make dev` / `make dev-check` | Configura e valida variables/connections do Airflow local |
@@ -165,6 +229,10 @@ http://localhost:9001 (`minioadmin`/`minioadmin`).
 | `make modelo` | Gera modelos dbt a partir do catálogo (ver `ARGS` acima) |
 | `make catalogo-validar` | Valida o catálogo — roda dentro de `make lint` e no CI |
 | `make catalogo-sync` | Regera os macros dbt derivados de `catalogo/chaves.yml` |
+| `make acesso` | Matriz de acesso: quem enxerga qual dashboard, com que recorte |
+| `make publicacao-validar` | Valida o catálogo de publicação — roda dentro de `make lint` e no CI |
+| `make publicacao-sync` | Regera os planos de acesso lidos pelas DAGs de publicação |
+| `make superset` | Sobe o Superset local (perfil `bi` do compose) |
 
 > `requirements.txt` é um artefato gerado por `make requirements` — não edite à
 > mão. Dependências entram no `pyproject.toml`.

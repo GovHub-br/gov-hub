@@ -3,3 +3,5 @@
 
 data_ingest/compras_gov/
 data_transform/mgi/
+data_publish/mgi/
+data_report/mgi/

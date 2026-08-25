@@ -34,6 +34,11 @@ DIR_DBT = RAIZ / "airflow" / "dags" / "dbt"
 
 COLUNA_INGESTAO = "dt_ingest"
 
+# Pacote onde vivem os macros compartilhados. A chamada precisa ser qualificada:
+# um modelo de pacote (compras_gov) não enxerga, sem qualificar, o macro de outro
+# pacote (gov_bricks) — dbt só procura no pacote do próprio modelo e na raiz.
+PACOTE_BASE = "gov_bricks"
+
 
 @dataclass(frozen=True)
 class Escrita:
@@ -151,8 +156,11 @@ def gerar_sources(
         "# GERADO por `make modelo` a partir de catalogo/sistemas/"
         f"{sistema.id}.yml — não edite à mão.",
         "#",
-        "# A Bronze é materializada pelas DAGs de ingestão, não por dbt: aqui ela é",
-        "# apenas declarada como source (ADR-0006, ADR-0017).",
+        "# A Bronze não é materializada por dbt: ela é um source sobre a zona raw,",
+        "# onde a ingestão entrega o dado (ADR-0006, ADR-0017, ADR-0021).",
+        "#",
+        "# Esta é a forma de tabela, do backend `warehouse`. Em um deployment com a",
+        "# raw em object storage, o source aponta para os arquivos da entidade.",
         "",
         "version: 2",
         "",
@@ -204,7 +212,7 @@ def _colunas_silver(entidade: Entidade) -> list[tuple[str, str]]:
     for mapeamento in entidade.chaves:
         colunas.append(
             (
-                f'{{{{ chave_conformada("{mapeamento.chave}", "{mapeamento.coluna}") }}}}',
+                f'{{{{ {PACOTE_BASE}.chave_conformada("{mapeamento.chave}", "{mapeamento.coluna}") }}}}',
                 mapeamento.chave,
             )
         )

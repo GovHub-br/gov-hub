@@ -10,8 +10,8 @@ with
 
     conformado as (
         select
-            {{ chave_conformada("co_uasg", "codigounidadegestora") }} as co_uasg,
-            {{ chave_conformada("nu_ni", "nifornecedor") }} as nu_ni,
+            {{ gov_bricks.chave_conformada("co_uasg", "codigounidadegestora") }} as co_uasg,
+            {{ gov_bricks.chave_conformada("nu_ni", "nifornecedor") }} as nu_ni,
             codigounidadegestora,
             numerocontrato,
             nifornecedor,

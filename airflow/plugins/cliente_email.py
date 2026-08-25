@@ -1,7 +1,10 @@
 import logging
 import io
+import smtplib
 import zipfile
-from typing import Optional, List, Dict
+from email.message import EmailMessage
+from mimetypes import guess_type
+from typing import Mapping, Optional, List, Dict
 import pandas as pd
 from pandas.errors import EmptyDataError
 from imap_tools import MailBox, AND
@@ -241,3 +244,63 @@ def fetch_and_process_email_csv_attachment(
     except Exception as e:
         logging.error(f"Erro ao processar e-mails com CSV direto: {e}")
         raise
+
+
+def enviar_email(
+    credenciais: Mapping[str, object],
+    destinatarios: List[str],
+    assunto: str,
+    corpo: str,
+    anexos: Optional[List[tuple]] = None,
+) -> None:
+    """Envia um e-mail com anexos via SMTP (ADR-0019).
+
+    `credenciais` é o JSON da Variable de SMTP do Airflow, com as chaves
+    `host`, `port`, `usuario`, `senha`, `remetente` e, opcionalmente, `tls`
+    (padrão: True). Os destinatários vão em cópia oculta: um relatório enviado
+    a vários órgãos não expõe a lista de endereços de todos eles, que é dado
+    pessoal (ADR-0013).
+    """
+    if not destinatarios:
+        logging.warning("[cliente_email] Nenhum destinatário; envio ignorado.")
+        return
+
+    remetente = str(credenciais.get("remetente") or credenciais.get("usuario") or "")
+    if not remetente:
+        raise ValueError("Credenciais de SMTP sem 'remetente' nem 'usuario'.")
+
+    mensagem = EmailMessage()
+    mensagem["From"] = remetente
+    mensagem["To"] = remetente
+    mensagem["Bcc"] = ", ".join(destinatarios)
+    mensagem["Subject"] = assunto
+    mensagem.set_content(corpo)
+
+    for nome, conteudo in anexos or []:
+        tipo, _ = guess_type(nome)
+        principal, _, secundario = (tipo or "application/octet-stream").partition("/")
+        mensagem.add_attachment(
+            conteudo,
+            maintype=principal,
+            subtype=secundario or "octet-stream",
+            filename=nome,
+        )
+
+    host = str(credenciais.get("host") or "")
+    porta = int(str(credenciais.get("port") or 587))
+    usuario = str(credenciais.get("usuario") or "")
+    senha = str(credenciais.get("senha") or "")
+    usar_tls = bool(credenciais.get("tls", True))
+
+    with smtplib.SMTP(host, porta, timeout=60) as servidor:
+        if usar_tls:
+            servidor.starttls()
+        if usuario and senha:
+            servidor.login(usuario, senha)
+        servidor.send_message(mensagem)
+
+    logging.info(
+        "[cliente_email] Relatório enviado para %s destinatário(s): %s",
+        len(destinatarios),
+        assunto,
+    )

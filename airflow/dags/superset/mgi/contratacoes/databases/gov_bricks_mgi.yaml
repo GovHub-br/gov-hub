@@ -1,0 +1,18 @@
+# Conexão do Superset com o warehouse do MGI.
+#
+# A URI aqui é um PLACEHOLDER: a DAG de publicação a substitui pela do ambiente
+# (SUPERSET_DW_URI) e envia a senha fora do bundle, no campo `passwords` do
+# import. Nenhuma credencial é versionada.
+database_name: gov_bricks_mgi
+sqlalchemy_uri: postgresql+psycopg2://usuario:XXXXXXXXXX@postgres:5432/data_warehouse
+cache_timeout: null
+expose_in_sqllab: false
+allow_run_async: false
+allow_ctas: false
+allow_cvas: false
+allow_dml: false
+allow_file_upload: false
+extra:
+  allows_virtual_table_explore: true
+uuid: e8d7643c-688d-4c74-b5b8-f60fa26648c5
+version: 1.0.0

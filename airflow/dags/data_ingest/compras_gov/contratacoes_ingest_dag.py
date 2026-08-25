@@ -6,10 +6,9 @@ from typing import Any
 from airflow.sdk import dag, task
 
 from cliente_compras_gov import ClienteComprasGov
-from cliente_postgres import ClientPostgresDB
-from postgres_helpers import get_postgres_conn
+from landing_zone import write_raw
 
-SCHEMA = "compras_gov"
+SISTEMA = "compras_gov"
 PAGE_SIZE = 500
 BLOCK_SIZE = 15
 MODALIDADES = [3, 5, 6, 7]  # Concorrência Eletrônica, Pregão, Dispensa, Inexigibilidade
@@ -20,13 +19,6 @@ default_args = {
     "retries": 3,
     "retry_delay": timedelta(minutes=5),
 }
-
-
-def _stamp(records: list[dict]) -> list[dict]:
-    ts = datetime.now().isoformat()
-    for r in records:
-        r["dt_ingest"] = ts
-    return records
 
 
 def _get_intervalo(context: dict) -> tuple[str, str]:
@@ -79,7 +71,6 @@ def contratacoes_dag() -> None:
     ) -> dict:
         data_inicial, data_final = _get_intervalo(context)
         api = ClienteComprasGov()
-        db = ClientPostgresDB(get_postgres_conn())
         ingeridos = 0
         api_total = 0
         for pagina in range(pagina_inicio, pagina_inicio + BLOCK_SIZE):
@@ -101,13 +92,7 @@ def contratacoes_dag() -> None:
             api_total = resp.get("totalRegistros", 0)
             if not data:
                 break
-            db.insert_data(
-                _stamp(data),
-                "raw_contratacoes",
-                primary_key=["idcompra"],
-                conflict_fields=["idcompra"],
-                schema=SCHEMA,
-            )
+            write_raw(SISTEMA, "contratacoes", data, primary_key=["idcompra"])
             ingeridos += len(data)
             if resp.get("paginasRestantes", 0) == 0:
                 break

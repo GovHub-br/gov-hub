@@ -162,7 +162,10 @@ def test_silver_normaliza_a_chave_conformada_e_deduplica(catalogo) -> None:
     conteudo = sql.caminho.read_text(encoding="utf-8")
 
     assert sql.caminho.parts[-2] == "contratacoes"
-    assert '{{ chave_conformada("co_uasg", "cd_unidade") }} as co_uasg' in conteudo
+    assert (
+        '{{ gov_bricks.chave_conformada("co_uasg", "cd_unidade") }} as co_uasg'
+        in conteudo
+    )
     assert '{{ source("compras", "contratos") }}' in conteudo
     assert "partition by nu_contrato" in conteudo
     assert "where nu_versao = 1" in conteudo

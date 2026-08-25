@@ -3,23 +3,15 @@ from datetime import datetime, timedelta
 from typing import Any
 from airflow.sdk import dag, task
 from cliente_compras_gov import ClienteComprasGov
-from cliente_postgres import ClientPostgresDB
-from postgres_helpers import get_postgres_conn
+from landing_zone import distinct_raw_values, write_raw
 
-SCHEMA = "compras_gov"
+SISTEMA = "compras_gov"
 default_args = {
     "owner": "mgi",
     "queue": "mgi",
     "retries": 3,
     "retry_delay": timedelta(minutes=5),
 }
-
-
-def _stamp(records: list[dict]) -> list[dict]:
-    ts = datetime.now().isoformat()
-    for r in records:
-        r["dt_ingest"] = ts
-    return records
 
 
 @dag(
@@ -37,11 +29,7 @@ def _stamp(records: list[dict]) -> list[dict]:
 def pesquisa_preco_material_dag() -> None:
     @task
     def get_itens_material() -> list[str]:
-        db = ClientPostgresDB(get_postgres_conn())
-        rows = db.execute_query(
-            f"SELECT DISTINCT codigoitem FROM {SCHEMA}.raw_item_material ORDER BY codigoitem"
-        )
-        itens = [str(r[0]) for r in rows]
+        itens = distinct_raw_values(SISTEMA, "item_material", "codigoitem")
         logging.info("Pesquisa de preços material: %s itens a processar", len(itens))
         return itens
 
@@ -52,24 +40,19 @@ def pesquisa_preco_material_dag() -> None:
     @task(max_active_tis_per_dag=4)
     def fetch_preco_material(lote: list[str]) -> dict:
         api = ClienteComprasGov()
-        db = ClientPostgresDB(get_postgres_conn())
         for codigo_item in lote:
             preco, _ = api.fetch_all_pages(
                 "/modulo-pesquisa-preco/1_consultarMaterial",
                 {"tipo": "codigoItemCatalogo", "codigo": codigo_item},
             )
             if preco:
-                db.insert_data(
-                    _stamp(preco), "raw_pesquisa_preco_material", schema=SCHEMA
-                )
+                write_raw(SISTEMA, "pesquisa_preco_material", preco)
             detalhe, _ = api.fetch_all_pages(
                 "/modulo-pesquisa-preco/2_consultarMaterialDetalhe",
                 {"codigoItemCatalogo": codigo_item},
             )
             if detalhe:
-                db.insert_data(
-                    _stamp(detalhe), "raw_pesquisa_preco_material_detalhe", schema=SCHEMA
-                )
+                write_raw(SISTEMA, "pesquisa_preco_material_detalhe", detalhe)
         return {"preco": len(preco), "detalhe": len(detalhe)}
 
     @task

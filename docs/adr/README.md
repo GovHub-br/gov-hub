@@ -81,3 +81,6 @@ substitui o corpo pelo conteúdo de `template.md`, preenchido normalmente.
 | [0016](./0016-tipagem-parquet-staging-bronze.md) | Tipagem de Parquet — promover Staging (MinIO) → Bronze | Proposto |
 | [0017](./0017-chaves-conformadas-cruzamento-sistemas-estruturantes.md) | Chaves conformadas e catálogo de cruzamento entre sistemas estruturantes | Proposto |
 | [0018](./0018-nomenclatura-execucao-dags-transformacao.md) | Padrão de nomenclatura e execução das DAGs de transformação | Proposto |
+| [0019](./0019-publicacao-dashboards-relatorios.md) | Publicação de produtos de dados — dashboards versionadas e relatórios periódicos | Proposto |
+| [0020](./0020-niveis-acesso-consumo-dados.md) | Níveis de acesso derivados da classificação de sensibilidade | Proposto |
+| [0021](./0021-zona-raw-com-backend-intercambiavel.md) | Zona raw com backend intercambiável e Bronze lendo da raw | Proposto |

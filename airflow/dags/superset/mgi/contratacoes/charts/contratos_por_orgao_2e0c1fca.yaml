@@ -1,0 +1,21 @@
+slice_name: Contratos por órgão
+description: Quantidade de contratos por órgão, no recorte visível a quem consulta.
+certified_by: null
+certification_details: null
+viz_type: echarts_timeseries_bar
+params:
+  viz_type: echarts_timeseries_bar
+  x_axis: co_orgao
+  groupby: []
+  metrics:
+    - count
+  row_limit: 50
+  orientation: horizontal
+  sort_series_type: sum
+  y_axis_title: Contratos
+  x_axis_title: Órgão
+query_context: null
+cache_timeout: null
+uuid: 2e0c1fca-6ff0-41a2-9f3d-aa3ee298a9bd
+version: 1.0.0
+dataset_uuid: 12c55991-01e3-4c44-9274-8b890784cd85

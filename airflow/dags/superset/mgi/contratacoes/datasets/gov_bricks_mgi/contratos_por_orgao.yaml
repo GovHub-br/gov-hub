@@ -1,0 +1,93 @@
+# Dataset publicado da Gold `contratos_por_orgao`.
+#
+# É um dataset VIRTUAL de propósito: a consulta lista as colunas expostas uma a
+# uma, em vez de `select *`. Assim, uma coluna nova que apareça no modelo — de
+# classificação ainda desconhecida — não chega à dashboard sozinha, e o
+# `make publicacao-validar` compara exatamente estas colunas com a
+# classificação declarada no schema.yml do modelo (ADR-0013, ADR-0020).
+table_name: contratos_por_orgao
+schema: 003_gld_contratacoes
+description: >-
+  Contratos administrativos cruzados com a UASG executora e o órgão a que ela
+  pertence. Sem colunas de identificação de pessoa física.
+main_dttm_col: dt_ingest
+sql: |
+  select co_orgao, co_uasg, nu_ni, numerocontrato, dt_ingest
+  from "003_gld_contratacoes".contratos_por_orgao
+params: null
+template_params: null
+filter_select_enabled: true
+fetch_values_predicate: null
+extra: null
+normalize_columns: false
+always_filter_main_dttm: false
+offset: 0
+cache_timeout: null
+uuid: 12c55991-01e3-4c44-9274-8b890784cd85
+database_uuid: e8d7643c-688d-4c74-b5b8-f60fa26648c5
+version: 1.0.0
+metrics:
+  - metric_name: count
+    verbose_name: Contratos
+    metric_type: count
+    expression: count(*)
+    description: Quantidade de contratos no recorte selecionado.
+    d3format: ',d'
+    extra: null
+    warning_text: null
+columns:
+  - column_name: co_orgao
+    verbose_name: Órgão
+    type: TEXT
+    is_dttm: false
+    is_active: true
+    groupby: true
+    filterable: true
+    expression: null
+    description: Código do órgão a que a unidade gestora pertence.
+    python_date_format: null
+    extra: null
+  - column_name: co_uasg
+    verbose_name: UASG
+    type: TEXT
+    is_dttm: false
+    is_active: true
+    groupby: true
+    filterable: true
+    expression: null
+    description: Código da unidade gestora que executa o contrato.
+    python_date_format: null
+    extra: null
+  - column_name: nu_ni
+    verbose_name: Fornecedor (NI)
+    type: TEXT
+    is_dttm: false
+    is_active: true
+    groupby: true
+    filterable: true
+    expression: null
+    description: Número de inscrição do fornecedor contratado.
+    python_date_format: null
+    extra: null
+  - column_name: numerocontrato
+    verbose_name: Número do contrato
+    type: TEXT
+    is_dttm: false
+    is_active: true
+    groupby: true
+    filterable: true
+    expression: null
+    description: Número do contrato na unidade gestora.
+    python_date_format: null
+    extra: null
+  - column_name: dt_ingest
+    verbose_name: Ingestão
+    type: TIMESTAMP
+    is_dttm: true
+    is_active: true
+    groupby: false
+    filterable: true
+    expression: null
+    description: Momento em que a linha foi ingerida da fonte.
+    python_date_format: null
+    extra: null

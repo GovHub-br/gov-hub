@@ -1,0 +1,64 @@
+# GERADO por `make publicacao-sync` a partir de catalogo/publicacao/mgi.yml
+# e catalogo/acesso.yml. Não edite à mão — a edição é desfeita na próxima
+# geração, e o CI reprova o build quando este arquivo diverge do catálogo.
+#
+# A DAG mgi_publish_dag lê este plano e o aplica no Superset: cria os
+# papéis, concede a cada um os datasets que ele alcança e instala o recorte de
+# linhas de quem não tem abrangência total (ADR-0019, ADR-0020).
+
+orgao: mgi
+database: gov_bricks_mgi
+papel_herda: Gamma
+bundles:
+- contratacoes
+datasets:
+- id: contratos_por_orgao
+  schema: 003_gld_contratacoes
+  tabela: contratos_por_orgao
+  nivel: publico
+  recorte: true
+  classificacao_efetiva: publico
+  colunas:
+  - co_orgao
+  - co_uasg
+  - nu_ni
+  - numerocontrato
+  - dt_ingest
+papeis:
+- nome: gh_ipea_publico
+  consumidor: ipea
+  nivel: publico
+  herda: Gamma
+  datasets:
+  - 003_gld_contratacoes.contratos_por_orgao
+  dashboards:
+  - contratacoes
+- nome: gh_mgi_interno
+  consumidor: mgi
+  nivel: interno
+  herda: Gamma
+  datasets:
+  - 003_gld_contratacoes.contratos_por_orgao
+  dashboards:
+  - contratacoes
+recortes:
+- nome: gh_ipea_recorte_orgao
+  papel: gh_ipea_publico
+  clausula: co_orgao = '25206'
+  datasets:
+  - 003_gld_contratacoes.contratos_por_orgao
+relatorios:
+- id: contratacoes_mensal
+  dag: contratacoes_mgi_report_dag
+  dataset: contratos_por_orgao
+  formato: csv
+  destinos:
+  - storage
+  - email
+  nivel: publico
+  destinatarios_variavel: relatorio_contratacoes_mgi_destinatarios
+  entregas:
+  - consumidor: ipea
+    clausula: co_orgao = '25206'
+  - consumidor: mgi
+    clausula: null

@@ -1,0 +1,83 @@
+# O que o MGI publica e quem consome (ADR-0019, ADR-0020).
+#
+# Este arquivo é a fonte de verdade do que PODE ser publicado. O que É
+# publicado são os bundles em airflow/dags/superset/mgi/ — e o
+# `make publicacao-validar` confere um contra o outro antes do merge.
+
+orgao: mgi
+nome: Ministério da Gestão e da Inovação em Serviços Públicos
+owner: "@GovHub-br/mgi"
+
+# Conexão do Superset por onde as dashboards leem o warehouse. O bundle traz a
+# definição dela (sem senha — a senha vem do ambiente no momento do import).
+database: gov_bricks_mgi
+
+datasets:
+
+  contratos_por_orgao:
+    modelo: gold/contratacoes/contratos_por_orgao
+    descricao: >-
+      Contratos administrativos já cruzados com a UASG executora e o órgão a
+      que ela pertence. É o dataset federado: traz todos os órgãos, e é o
+      recorte por co_orgao que decide o que cada instituto enxerga dele.
+    nivel: publico
+    recorte: true
+
+dashboards:
+
+  contratacoes:
+    titulo: Contratações por órgão
+    descricao: >-
+      Volume de contratos por órgão e unidade gestora, e concentração por
+      fornecedor. Responde "quanto e com quem cada órgão contrata", com o
+      recorte de linhas do próprio instituto.
+    bundle: contratacoes
+    nivel: publico
+    datasets: [contratos_por_orgao]
+
+relatorios:
+
+  contratacoes_mensal:
+    titulo: Contratações do mês
+    descricao: >-
+      Extrato mensal dos contratos do órgão destinatário, para quem acompanha a
+      execução fora do Superset. Mesmo recorte da dashboard.
+    dag: contratacoes_mgi_report_dag
+    dataset: contratos_por_orgao
+    formato: csv
+    destinos: [storage, email]
+    nivel: publico
+    # Endereço de pessoa é dado pessoal (ADR-0013) e não entra no repositório:
+    # a lista vive nesta Variable do Airflow, como JSON.
+    destinatarios_variavel: relatorio_contratacoes_mgi_destinatarios
+
+# Quem consome. Cada consumidor vira um papel no Superset — {prefixo}_{orgao}_
+# {nivel}, conforme catalogo/acesso.yml — e, quando `abrangencia: proprio`, um
+# filtro de recorte que limita as linhas ao seu co_orgao.
+consumidores:
+
+  mgi:
+    nome: Ministério da Gestão e da Inovação em Serviços Públicos
+    nivel: interno
+    codigo_orgao: "48000"
+    # A tabela de órgãos do Compras.gov.br traz DOIS códigos ativos com o nome
+    # do MGI — 46000 ("MIN.DA GEST.E DA INOVACAO EM SERVICOS PUBLICO") e 48000
+    # ("MINISTERIO DA GESTÃO E INOV EM SERV PUBLICO"). Enquanto não se
+    # confirmar qual deles carrega os contratos, o código fica não verificado:
+    # com `abrangencia: total` isso não afeta o recorte, mas afetaria no dia em
+    # que o MGI passar a `proprio`.
+    codigo_orgao_verificado: false
+    # Órgão gestor do Compras.gov.br: acompanha a base inteira, sem recorte.
+    abrangencia: total
+    dashboards: [contratacoes]
+    relatorios: [contratacoes_mensal]
+
+  ipea:
+    nome: Instituto de Pesquisa Econômica Aplicada
+    nivel: publico
+    codigo_orgao: "25206"
+    # Único órgão ativo com esse nome na tabela de órgãos do Compras.gov.br.
+    codigo_orgao_verificado: true
+    abrangencia: proprio
+    dashboards: [contratacoes]
+    relatorios: [contratacoes_mensal]

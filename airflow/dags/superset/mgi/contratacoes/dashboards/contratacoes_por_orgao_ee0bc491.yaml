@@ -1,0 +1,68 @@
+dashboard_title: Contratações por órgão
+description: >-
+  Volume de contratos por órgão e unidade gestora e concentração por
+  fornecedor. As linhas visíveis dependem do recorte por órgão aplicado ao
+  papel de quem consulta (ADR-0020).
+css: ''
+slug: contratacoes-mgi
+uuid: ee0bc491-4801-4488-8336-70b37be4a04a
+version: 1.0.0
+certified_by: null
+certification_details: null
+published: true
+is_managed_externally: false
+external_url: null
+metadata:
+  color_scheme: supersetColors
+  refresh_frequency: 0
+  expanded_slices: {}
+  label_colors: {}
+  timed_refresh_immune_slices: []
+  cross_filters_enabled: true
+  default_filters: '{}'
+  chart_configuration: {}
+position:
+  DASHBOARD_VERSION_KEY: v2
+  ROOT_ID:
+    type: ROOT
+    id: ROOT_ID
+    children: [GRID_ID]
+  GRID_ID:
+    type: GRID
+    id: GRID_ID
+    children: [ROW-contratacoes]
+    parents: [ROOT_ID]
+  HEADER_ID:
+    type: HEADER
+    id: HEADER_ID
+    meta:
+      text: Contratações por órgão
+  ROW-contratacoes:
+    type: ROW
+    id: ROW-contratacoes
+    children: [CHART-por-orgao, CHART-por-fornecedor]
+    parents: [ROOT_ID, GRID_ID]
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  CHART-por-orgao:
+    type: CHART
+    id: CHART-por-orgao
+    children: []
+    parents: [ROOT_ID, GRID_ID, ROW-contratacoes]
+    meta:
+      width: 6
+      height: 60
+      chartId: null
+      uuid: 2e0c1fca-6ff0-41a2-9f3d-aa3ee298a9bd
+      sliceName: Contratos por órgão
+  CHART-por-fornecedor:
+    type: CHART
+    id: CHART-por-fornecedor
+    children: []
+    parents: [ROOT_ID, GRID_ID, ROW-contratacoes]
+    meta:
+      width: 6
+      height: 60
+      chartId: null
+      uuid: a765ca7e-7dee-47bd-9c39-5a8b215b8373
+      sliceName: Concentração por fornecedor

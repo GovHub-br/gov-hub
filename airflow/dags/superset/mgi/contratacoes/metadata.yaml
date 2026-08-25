@@ -1,0 +1,5 @@
+# Bundle de ativos exportado do Superset e versionado no repositório (ADR-0019).
+# Regerar com:  superset export-assets  (ou GET /api/v1/assets/export/)
+version: 1.0.0
+type: assets
+timestamp: '2026-08-24T00:00:00+00:00'

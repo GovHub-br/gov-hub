@@ -1,0 +1,66 @@
+# Níveis de acesso — vocabulário que liga a classificação de sensibilidade dos
+# dados (ADR-0013) aos papéis da ferramenta de consumo (ADR-0020).
+#
+# A regra que este arquivo materializa: quem pode ver um dado é decidido pela
+# classificação declarada na coluna, não pela dashboard em que ela aparece.
+# Nenhum papel é escrito à mão no Superset — todos são derivados daqui pelo
+# `make publicacao-sync` e aplicados pela DAG de publicação do órgão.
+
+versao: 1
+
+# Cada nível enxerga as classificações listadas — e apenas elas. A ordem é
+# cumulativa de propósito: um nível mais alto vê tudo o que o anterior vê.
+niveis:
+
+  publico:
+    nome: Público
+    descricao: >-
+      Vê apenas o que pode ser aberto como dado público. É o nível de qualquer
+      pessoa sem vínculo declarado com o órgão, e o padrão de toda dashboard
+      nova enquanto ninguém decidir o contrário.
+    ve_classificacoes: [publico]
+
+  interno:
+    nome: Interno
+    descricao: >-
+      Servidor ou colaborador do órgão. Vê o dado de uso interno — indicadores
+      de execução, séries ainda não publicadas — mas não vê dado pessoal.
+    ve_classificacoes: [publico, interno]
+
+  pessoal:
+    nome: Dado pessoal
+    descricao: >-
+      Vê dado pessoal sob a LGPD (CPF, matrícula, lotação identificável).
+      Concedido por necessidade de trabalho demonstrada, nunca por padrão, e a
+      concessão é decisão do órgão dono do dado.
+    ve_classificacoes: [publico, interno, pessoal]
+
+  pessoal_sensivel:
+    nome: Dado pessoal sensível
+    descricao: >-
+      Vê dado pessoal sensível (art. 5º, II da LGPD). Existe no vocabulário
+      para que a hierarquia seja completa; a concessão exige base legal
+      específica registrada fora deste repositório.
+    ve_classificacoes: [publico, interno, pessoal, pessoal_sensivel]
+
+# Nomenclatura e herança dos papéis gerados no Superset.
+papel:
+  # Nome final: {prefixo}_{orgao}_{nivel} — ex.: gh_mgi_interno.
+  prefixo: gh
+  # Papel nativo do Superset do qual todo papel gerado herda. Gamma dá acesso
+  # de consulta às ferramentas, sem acesso a dado nenhum: o alcance ao dado vem
+  # das permissões de dataset que a DAG concede papel a papel.
+  herda: Gamma
+
+# Recorte de linhas (Row Level Security).
+#
+# Um papel diz quais COLUNAS a pessoa pode ver; o recorte diz quais LINHAS.
+# Sem ele, um instituto que ganha acesso a um produto de dados federado passa a
+# ver a execução de todos os demais — que é exatamente o que a publicação
+# compartilhada torna fácil fazer por acidente.
+recorte:
+  # Chave conformada usada como filtro. Precisa existir em chaves.yml e estar
+  # presente no dataset publicado, senão o filtro não tem onde se aplicar.
+  chave: co_orgao
+  # Sufixo do nome do filtro criado no Superset: gh_mgi_recorte_orgao.
+  sufixo: recorte_orgao

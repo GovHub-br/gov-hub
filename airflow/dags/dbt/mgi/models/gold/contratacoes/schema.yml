@@ -3,11 +3,14 @@ version: 2
 models:
   - name: contratos_por_orgao
     description: >
-      PREENCHER: a pergunta de negócio respondida por este produto de dados.
-      Construído cruzando compras_gov.contratos, compras_gov.uasg,
-      compras_gov.orgao, compras_gov.fornecedor. Granularidade: herdada de
-      compras_gov.contratos — uma linha por unidade gestora, número de contrato e
-      fornecedor.
+      Quanto cada órgão contrata, por unidade gestora e por fornecedor: responde
+      "qual o volume de contratos de um órgão e com quem ele contrata". Construído
+      cruzando compras_gov.contratos, compras_gov.uasg, compras_gov.orgao,
+      compras_gov.fornecedor. Granularidade: herdada de compras_gov.contratos — uma
+      linha por unidade gestora, número de contrato e fornecedor. É a base do
+      dataset publicado no Superset e do relatório mensal de contratações
+      (ADR-0019); o recorte por órgão de cada consumidor é aplicado na publicação,
+      não aqui.
     meta:
       owner: "@GovHub-br/oss"
       sistema_origem: compras_gov
@@ -66,3 +69,16 @@ models:
           classificacao: pessoal
         # sem teste not_null: chave opcional nesta entidade — nula em parte das linhas
         # (ver catalogo/sistemas/).
+      - name: numerocontrato
+        description: >
+            Número do contrato na unidade gestora. Identifica o contrato dentro da
+            UASG; não é único isoladamente — a chave é (co_uasg, numerocontrato,
+            nu_ni).
+        meta:
+          classificacao: publico
+      - name: dt_ingest
+        description: >
+            Momento em que a linha foi ingerida da fonte pela DAG de ingestão. Serve
+            para saber a que data de extração o número se refere.
+        meta:
+          classificacao: publico

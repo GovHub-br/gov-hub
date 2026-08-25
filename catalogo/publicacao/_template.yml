@@ -1,0 +1,78 @@
+# Esqueleto para declarar o que um órgão publica (ADR-0019, ADR-0020).
+#
+#   cp catalogo/publicacao/_template.yml catalogo/publicacao/<orgao>.yml
+#
+# O nome do arquivo é o do órgão e precisa bater com o campo `orgao`, com a
+# pasta do projeto dbt (airflow/dags/dbt/<orgao>/) e com a pasta dos bundles
+# de dashboard (airflow/dags/superset/<orgao>/).
+
+orgao: exemplo
+nome: Nome por extenso do órgão
+# Time responsável, no mesmo vocabulário do CODEOWNERS (ADR-0013).
+owner: "@GovHub-br/exemplo"
+
+# Conexão do Superset (database) por onde as dashboards deste órgão leem o
+# warehouse. Ela é criada pelo import do bundle; o nome aparece aqui para que a
+# validação confira que bundle e catálogo falam do mesmo banco.
+database: gov_bricks_exemplo
+
+# Datasets publicados. A chave é o nome da tabela como ela aparece no bundle
+# exportado do Superset.
+datasets:
+  exemplo_dataset:
+    # Caminho do modelo dentro do projeto dbt do órgão, sem extensão.
+    modelo: gold/exemplo_produto/exemplo_dataset
+    descricao: >-
+      O que este dataset entrega a quem consome.
+    # Nível mínimo para ver o dataset. A validação reprova se alguma coluna
+    # exposta no bundle for classificada acima deste nível (ADR-0013).
+    nivel: publico
+    # `true` aplica a este dataset o filtro de recorte por co_orgao.
+    recorte: true
+
+# Dashboards. Cada uma aponta para uma pasta de bundle exportado do Superset,
+# versionada em airflow/dags/superset/<orgao>/<bundle>/.
+dashboards:
+  exemplo_dashboard:
+    titulo: Título como aparece no Superset
+    descricao: >-
+      A pergunta que a dashboard responde e para quem.
+    bundle: exemplo_dashboard
+    nivel: publico
+    datasets: [exemplo_dataset]
+
+# Relatórios periódicos. A consulta vive na DAG; aqui fica a identidade do
+# relatório e o limite do que ele pode conter.
+relatorios:
+  exemplo_relatorio:
+    titulo: Título do relatório entregue
+    descricao: >-
+      O que o relatório traz e com que periodicidade.
+    # Arquivo esperado em airflow/dags/data_report/<orgao>/<dag>.py (ADR-0019).
+    dag: exemplo_exemplo_report_dag
+    dataset: exemplo_dataset
+    formato: csv          # csv | parquet
+    destinos: [storage]   # storage | email
+    nivel: publico
+    # Destinatários NÃO são versionados: endereço de pessoa é dado pessoal
+    # (ADR-0013). A lista vive nesta Variable do Airflow, como JSON.
+    destinatarios_variavel: exemplo_relatorio_destinatarios
+
+# Quem consome o que este órgão publica. Cada consumidor vira um papel no
+# Superset, com o nível declarado e — quando `abrangencia: proprio` — um filtro
+# de recorte que limita as linhas ao seu próprio co_orgao.
+consumidores:
+  exemplo:
+    nome: Nome por extenso do órgão consumidor
+    nivel: publico
+    codigo_orgao: "00000"
+    # Marque `true` só depois de conferir o código contra a tabela de órgãos
+    # realmente ingerida — mesmo critério de honestidade do `verificado` do
+    # catálogo de chaves conformadas.
+    codigo_orgao_verificado: false
+    # `proprio` restringe as linhas ao próprio órgão; `total` dispensa o
+    # recorte, e só se justifica para órgão com competência declarada sobre a
+    # base inteira.
+    abrangencia: proprio
+    dashboards: [exemplo_dashboard]
+    relatorios: [exemplo_relatorio]

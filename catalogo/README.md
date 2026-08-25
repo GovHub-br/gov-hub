@@ -25,7 +25,14 @@ catalogo/
   sistemas/
     _template.yml       # esqueleto para catalogar um sistema novo
     compras_gov.yml     # um arquivo por sistema estruturante
+  acesso.yml            # níveis de acesso e regra de recorte (ADR-0020)
+  publicacao/
+    _template.yml       # esqueleto para catalogar a publicação de um órgão
+    mgi.yml             # um arquivo por órgão publicador
 ```
+
+Os dois primeiros governam a **modelagem** (o que existe e como se cruza); os
+dois últimos governam a **publicação** (o que vai ao ar e quem enxerga).
 
 ## Os dois conceitos
 
@@ -85,3 +92,36 @@ teste errado:
 Um fornecedor pessoa jurídica não tem CPF: o mapeamento `nu_cpf → cpf` está
 verificado *e* é opcional. Sem essa distinção, o gerador criaria um `not_null`
 que reprova o build por um fato do domínio, não por um defeito no dado.
+
+## Publicação e níveis de acesso
+
+`publicacao/<orgao>.yml` declara o que um órgão publica — datasets, dashboards e
+relatórios — e quem consome cada coisa. `acesso.yml` declara os níveis de
+acesso: cada nível é, literalmente, *a lista de classificações do
+[ADR-0013](../docs/adr/0013-padrao-documentacao-metadados-tabelas.md) que ele
+enxerga*.
+
+```bash
+make acesso                # quem enxerga o quê, e com que recorte de linhas
+make publicacao-sync       # regera airflow/dags/superset/<orgao>/acesso.yml
+make publicacao-validar    # roda dentro de make lint e no CI
+```
+
+Esse par responde duas perguntas que a ferramenta de BI, sozinha, deixaria a
+critério de quem monta cada dashboard:
+
+| Pergunta | Onde é decidida |
+|---|---|
+| Quais **colunas** cada um vê? | `nivel` do consumidor × `meta.classificacao` da coluna no `schema.yml` do modelo |
+| Quais **linhas** cada um vê? | `abrangencia` do consumidor: `proprio` gera recorte por `co_orgao`, `total` dispensa |
+
+A validação compara o catálogo com os **bundles** de dashboard versionados em
+`airflow/dags/superset/<orgao>/`: coluna exposta acima do nível do dataset,
+coluna sem classificação declarada, dataset no bundle que ninguém catalogou e
+DAG de relatório não declarada reprovam o build. O racional está no
+[ADR-0019](../docs/adr/0019-publicacao-dashboards-relatorios.md) e no
+[ADR-0020](../docs/adr/0020-niveis-acesso-consumo-dados.md).
+
+`codigo_orgao_verificado: false` tem aqui o mesmo papel que `verificado` tem no
+catálogo de chaves: marca o que ainda não foi conferido contra o dado ingerido,
+gera aviso no CI e não reprova o build.

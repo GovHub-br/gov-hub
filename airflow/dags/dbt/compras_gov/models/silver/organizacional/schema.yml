@@ -1,0 +1,82 @@
+version: 2
+
+models:
+  - name: orgao
+    description: >
+      Órgãos cadastrados no Compras.gov.br. Uma linha por órgão. Granularidade: um
+      registro por código de órgão.
+    meta:
+      owner: "@GovHub-br/oss"
+      sistema_origem: compras_gov
+      camada: silver
+      classificacao: publico
+    columns:
+      - name: co_orgao
+        description: >
+            Código do órgão. Código do órgão na estrutura organizacional do Poder
+            Executivo federal. É a chave de agregação institucional mais alta usada
+            pelos sistemas estruturantes — quase todo cruzamento "por órgão" passa por
+            ela. Normalizada a partir da coluna de origem 'codigoorgao'.
+        meta:
+          classificacao: publico
+        data_tests:
+          - not_null
+      - name: codigoorgao
+        description: >
+            PREENCHER: o que a coluna 'codigoorgao' significa, na origem
+            compras_gov.raw_orgao.
+        meta:
+          classificacao: publico
+      - name: dt_ingest
+        description: >
+            Data e hora em que o registro foi gravado na Bronze pela DAG de ingestão.
+        meta:
+          classificacao: publico
+  - name: uasg
+    description: >
+      Unidades administrativas de serviços gerais. Uma linha por UASG.
+      Granularidade: um registro por código de UASG.
+    meta:
+      owner: "@GovHub-br/oss"
+      sistema_origem: compras_gov
+      camada: silver
+      classificacao: publico
+    columns:
+      - name: co_uasg
+        description: >
+            Código da UASG. Unidade Administrativa de Serviços Gerais — unidade que
+            executa compras e contratos no SIASG/Compras.gov.br. Subordinada a um órgão
+            (co_orgao). Normalizada a partir da coluna de origem 'codigouasg'.
+        meta:
+          classificacao: publico
+        data_tests:
+          - not_null
+      - name: co_orgao
+        description: >
+            Código do órgão. Código do órgão na estrutura organizacional do Poder
+            Executivo federal. É a chave de agregação institucional mais alta usada
+            pelos sistemas estruturantes — quase todo cruzamento "por órgão" passa por
+            ela. Normalizada a partir da coluna de origem 'codigoorgao'. Coluna de
+            vínculo com o órgão ainda não confirmada contra o payload ingerido —
+            confirme antes de promover o modelo Silver.
+        meta:
+          classificacao: publico
+        # sem teste not_null: mapeamento ainda não verificado
+        # contra o dado ingerido (ver catálogo).
+      - name: codigouasg
+        description: >
+            PREENCHER: o que a coluna 'codigouasg' significa, na origem
+            compras_gov.raw_uasg.
+        meta:
+          classificacao: publico
+      - name: codigoorgao
+        description: >
+            PREENCHER: o que a coluna 'codigoorgao' significa, na origem
+            compras_gov.raw_uasg.
+        meta:
+          classificacao: publico
+      - name: dt_ingest
+        description: >
+            Data e hora em que o registro foi gravado na Bronze pela DAG de ingestão.
+        meta:
+          classificacao: publico

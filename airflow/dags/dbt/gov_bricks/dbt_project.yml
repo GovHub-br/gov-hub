@@ -1,0 +1,14 @@
+# Pacote base do gov-bricks: macros compartilhados por todo projeto dbt do
+# monorepo. Não contém modelos — só a mecânica comum (ADR-0017).
+
+name: "gov_bricks"
+version: "0.1.0"
+config-version: 2
+
+profile: "gov_bricks"
+
+macro-paths: ["macros"]
+model-paths: []
+seed-paths: []
+snapshot-paths: []
+test-paths: []

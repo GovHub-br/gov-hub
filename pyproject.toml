@@ -82,12 +82,12 @@ select = ["E", "F", "W", "C90"]
 ignore = ["C901"]
 
 [tool.ty.environment]
-root = ["airflow/plugins", "airflow/helpers", "airflow/dags", "tests"]
+root = ["airflow/plugins", "airflow/helpers", "airflow/dags", "tests", "."]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
-pythonpath = ["airflow/helpers", "airflow/plugins", "airflow/dags"]
+pythonpath = ["airflow/helpers", "airflow/plugins", "airflow/dags", "."]
 markers = [
     "integration: requires a live MinIO instance (docker-compose up)",
     "unit: pure unit tests with no external dependencies",
@@ -110,6 +110,9 @@ exclude = [
     "**/dist/**",
     "**/target/**",
     "**/compiled/**",
-    "**/dbt_packages/**"
+    "**/dbt_packages/**",
+    # Artefato gerado por `make catalogo-sync` a partir de catalogo/chaves.yml:
+    # reformatá-lo faria o arquivo divergir do catálogo e reprovar o CI.
+    "**/macros/chaves_geradas.sql"
 ]
 

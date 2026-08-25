@@ -46,6 +46,31 @@ lint:
 	uv run ruff check .
 	uv run ty check .
 	uv run sqlfmt . --check
+	$(MAKE) catalogo-validar
+
+# --- Modelagem a partir do catálogo de sistemas estruturantes (ADR-0017) ---
+
+# Valida o catálogo e a sincronia dos macros dbt derivados dele.
+catalogo-validar:
+	uv run python -m scripts.modelagem validar
+
+# Regera os macros dbt derivados do catálogo. Rode após editar catalogo/chaves.yml.
+catalogo-sync:
+	uv run python -m scripts.modelagem sync
+
+# Mapa de cruzamento: o que dá para cruzar com o quê, e por qual chave.
+# Use ARGS="--mermaid" para emitir o grafo em Mermaid.
+mapa:
+	@uv run python -m scripts.modelagem mapa $(ARGS)
+
+# Gera modelos dbt a partir do catálogo. Exemplos:
+#   make modelo ARGS="--camada bronze --sistema compras_gov"
+#   make modelo ARGS="--camada silver --sistema compras_gov --entidade contratos"
+#   make modelo ARGS="--camada gold --orgao mgi --produto contratacoes \
+#                     --entidade contratos_por_orgao \
+#                     --cruzar compras_gov.contratos --cruzar compras_gov.uasg"
+modelo:
+	@uv run python -m scripts.modelagem gerar $(ARGS)
 
 test:
 	uv run pytest tests/unit --junitxml=report.xml --cov=. --cov-report=xml:coverage.xml
@@ -78,4 +103,5 @@ dev-check:
 	@$(COMPOSE) exec -T $(AIRFLOW_SERVICE) airflow connections get postgres_default >/dev/null
 	@echo "Validação concluída: variables e connection do Airflow estão configuradas."
 
-.PHONY: install requirements setup format lint test test-integration compose dev dev-check
+.PHONY: install requirements setup format lint test test-integration compose dev dev-check \
+	catalogo-validar catalogo-sync mapa modelo

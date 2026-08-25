@@ -15,7 +15,12 @@ BLOCK_SIZE = 15
 
 ENDPOINT = "/modulo-fornecedor/1_consultarFornecedor"
 TABLE = "raw_fornecedor"
-PK = ["nifornecedor"]
+# Sem chave primária: o endpoint não expõe número de inscrição único — o
+# documento chega em `cnpj` ou em `cpf`, exatamente um dos dois por linha. Nenhuma
+# das duas serve como PK no Postgres (PK exige NOT NULL), e o par (cnpj, cpf) só
+# é único porque um dos lados é nulo. A Bronze fica append-only, fiel à fonte
+# (ADR-0006), e a deduplicação por (cnpj, cpf) acontece no Silver — ver
+# catalogo/sistemas/compras_gov.yml.
 PARAMS = {"ativo": "true"}
 
 default_args = {
@@ -74,9 +79,7 @@ def fornecedor_dag() -> None:
             api_total = resp.get("totalRegistros", 0)
             if not data:
                 break
-            db.insert_data(
-                _stamp(data), TABLE, primary_key=PK, conflict_fields=PK, schema=SCHEMA
-            )
+            db.insert_data(_stamp(data), TABLE, schema=SCHEMA)
             ingeridos += len(data)
             if resp.get("paginasRestantes", 0) == 0:
                 break

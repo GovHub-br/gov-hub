@@ -1,0 +1,19 @@
+# Profile compartilhado por todos os projetos dbt do monorepo.
+# Aponte DBT_PROFILES_DIR para esta pasta.
+#
+# Os valores vêm do ambiente para que o mesmo profile sirva ao compose local,
+# à homologação e à produção, sem credencial versionada.
+
+gov_bricks:
+  target: "{{ env_var('DBT_TARGET', 'dev') }}"
+  outputs:
+    dev:
+      type: postgres
+      host: "{{ env_var('DBT_HOST', 'postgres') }}"
+      port: "{{ env_var('DBT_PORT', '5432') | int }}"
+      user: "{{ env_var('DBT_USER', 'postgres') }}"
+      password: "{{ env_var('DBT_PASSWORD', 'postgres') }}"
+      dbname: "{{ env_var('DBT_DATABASE', 'data_warehouse') }}"
+      schema: "002_slv_default"
+      threads: 4
+      keepalives_idle: 0

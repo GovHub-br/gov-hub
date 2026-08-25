@@ -1,0 +1,153 @@
+# Compras.gov.br (SIASG) — catálogo de entidades e chaves de cruzamento.
+# Ver catalogo/README.md e ADR-0017.
+
+sistema: compras_gov
+nome: Compras.gov.br (SIASG)
+descricao: >-
+  Sistema estruturante de compras e contratações do governo federal. Expõe API
+  pública de consulta a órgãos, UASGs, fornecedores, contratos, contratações e
+  catálogos de material e serviço.
+orgao_gestor: mgi
+owner: "@GovHub-br/oss"
+status: ingerido
+
+entidades:
+
+  orgao:
+    descricao: >-
+      Órgãos cadastrados no Compras.gov.br. Uma linha por órgão.
+    granularidade: um registro por código de órgão
+    dominio: organizacional
+    dag: orgao_ingest_dag
+    origem_atual: compras_gov.raw_orgao
+    chave_primaria: [codigoorgao]
+    classificacao: publico
+    chaves:
+      - chave: co_orgao
+        coluna: codigoorgao
+        verificado: true
+
+  uasg:
+    descricao: >-
+      Unidades administrativas de serviços gerais. Uma linha por UASG.
+    granularidade: um registro por código de UASG
+    dominio: organizacional
+    dag: uasg_ingest_dag
+    origem_atual: compras_gov.raw_uasg
+    chave_primaria: [codigouasg]
+    classificacao: publico
+    chaves:
+      - chave: co_uasg
+        coluna: codigouasg
+        verificado: true
+      - chave: co_orgao
+        coluna: codigoorgao
+        verificado: true
+
+  fornecedor:
+    descricao: >-
+      Fornecedores ativos no Compras.gov.br. O cadastro já identifica cada
+      fornecedor pelo documento, em duas colunas distintas — CNPJ para pessoa
+      jurídica, CPF para pessoa física. Não existe aqui uma coluna única de
+      número de inscrição (nu_ni): esta entidade expõe as chaves finais
+      diretamente, sem precisar das pontes de nu_ni.
+    granularidade: um registro por fornecedor ativo, identificado por CNPJ ou CPF
+    dominio: fornecedores
+    dag: fornecedor_ingest_dag
+    origem_atual: compras_gov.raw_fornecedor
+    chave_primaria: [cnpj, cpf]
+    classificacao: pessoal
+    chaves:
+      - chave: nu_cnpj
+        coluna: cnpj
+        verificado: true
+        opcional: true
+        observacao: >-
+          Nulo quando o fornecedor é pessoa física; nesse caso o documento está
+          em cpf.
+      - chave: nu_cpf
+        coluna: cpf
+        verificado: true
+        opcional: true
+        observacao: >-
+          Preenchido apenas para fornecedor pessoa física — dado pessoal sob a
+          LGPD, ainda que a origem seja pública (ADR-0013). Nulo para pessoa
+          jurídica.
+
+  contratos:
+    descricao: >-
+      Contratos administrativos por órgão. Uma linha por contrato de uma
+      unidade gestora com um fornecedor.
+    granularidade: uma linha por unidade gestora, número de contrato e fornecedor
+    dominio: contratacoes
+    dag: contratos_ingest_dag
+    origem_atual: compras_gov.raw_contratos
+    chave_primaria: [codigounidadegestora, numerocontrato, nifornecedor]
+    classificacao: publico
+    chaves:
+      - chave: co_uasg
+        coluna: codigounidadegestora
+        verificado: true
+      - chave: nu_ni
+        coluna: nifornecedor
+        verificado: true
+
+  contratos_item:
+    descricao: >-
+      Itens dos contratos administrativos.
+    granularidade: uma linha por item de um contrato
+    dominio: contratacoes
+    dag: contratos_item_ingest_dag
+    origem_atual: compras_gov.raw_contratos_item
+    chave_primaria:
+      [codigounidadegestora, numerocontrato, nifornecedor, numeroitem, contratoitemexcluido]
+    classificacao: publico
+    chaves:
+      - chave: co_uasg
+        coluna: codigounidadegestora
+        verificado: true
+      - chave: nu_ni
+        coluna: nifornecedor
+        verificado: true
+
+  contratacoes:
+    descricao: >-
+      Contratações publicadas sob a Lei 14.133, via integração com o PNCP.
+    granularidade: uma linha por compra
+    dominio: contratacoes
+    dag: contratacoes_ingest_dag
+    origem_atual: compras_gov.raw_contratacoes
+    chave_primaria: [idcompra]
+    classificacao: publico
+    chaves: []
+
+  itens_contratacoes:
+    descricao: >-
+      Itens das contratações publicadas sob a Lei 14.133.
+    granularidade: uma linha por item de compra
+    dominio: contratacoes
+    dag: itens_contratacoes_ingest_dag
+    origem_atual: compras_gov.raw_itens_contratacoes
+    chave_primaria: [idcompraitem]
+    classificacao: publico
+    chaves: []
+
+  natureza_despesa_material:
+    descricao: >-
+      Associação entre os PDMs (padrões descritivos de material) do catálogo e
+      as naturezas de despesa sob as quais o material é empenhado. Não é um
+      cadastro de naturezas de despesa: a mesma natureza aparece em vários
+      PDMs, e a origem repete pares sem deduplicar.
+    granularidade: uma linha por associação entre PDM e natureza de despesa
+    dominio: catalogo
+    dag: catalogo_material_natureza_despesa_ingest_dag
+    origem_atual: compras_gov.raw_natureza_despesa_material
+    chave_primaria: [codigopdm, codigonaturezadespesa]
+    classificacao: publico
+    chaves:
+      - chave: co_natureza_despesa
+        coluna: codigonaturezadespesa
+        verificado: true
+        observacao: >-
+          A origem entrega a natureza detalhada de 8 dígitos, não a forma curta
+          de 6 usada em parte dos relatórios do SIAFI.

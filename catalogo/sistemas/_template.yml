@@ -1,0 +1,45 @@
+# Template para catalogar um novo sistema estruturante.
+#
+# Copie para catalogo/sistemas/<sistema>.yml, preencha e rode:
+#   make catalogo-validar
+#   make mapa
+#
+# O nome do arquivo deve ser igual ao valor de `sistema` (snake_case), e igual
+# ao <sistema> usado pelas pastas de DAG (ADR-0007) e pelo schema Bronze
+# 001_bnz_<sistema> (ADR-0010). Arquivos iniciados por "_" são ignorados.
+
+sistema: nome_do_sistema
+nome: Nome por extenso do sistema (SIGLA)
+descricao: >-
+  O que o sistema é e que recorte de dado ele expõe.
+orgao_gestor: sigla_do_orgao
+owner: "@GovHub-br/time"
+# ingerido  — já existe DAG de ingestão neste repositório.
+# planejado — catalogado para o roadmap, sem ingestão ainda.
+status: planejado
+
+entidades:
+
+  nome_da_entidade:
+    descricao: O que a tabela representa.
+    granularidade: uma linha representa o quê.
+    dominio: dominio_tematico
+    # dag e origem_atual só se aplicam a sistemas com status "ingerido".
+    dag: nome_da_entidade_ingest_dag
+    origem_atual: schema.tabela_de_origem_hoje
+    chave_primaria: [coluna]
+    classificacao: publico
+    # Chaves conformadas (catalogo/chaves.yml) que esta entidade expõe.
+    # É isto que torna a entidade cruzável com outros sistemas.
+    chaves:
+      - chave: co_orgao
+        coluna: nome_da_coluna_na_origem
+        # false enquanto o nome da coluna não tiver sido confirmado contra o
+        # dado ingerido — o mapa e o CI sinalizam mapeamentos não verificados.
+        verificado: false
+        # true quando a coluna é nula em parte das linhas por natureza do
+        # cadastro (ex.: CPF só existe para pessoa física). Isso é diferente de
+        # não verificado: o mapeamento está certo, a chave é que não se aplica a
+        # todas as linhas. O gerador então não cria teste not_null para ela.
+        opcional: false
+        observacao: Ressalvas ao usar esta coluna como chave.

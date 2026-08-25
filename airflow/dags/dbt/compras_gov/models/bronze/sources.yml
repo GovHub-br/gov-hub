@@ -1,0 +1,99 @@
+# GERADO por `make modelo` a partir de catalogo/sistemas/compras_gov.yml — não edite à mão.
+#
+# A Bronze é materializada pelas DAGs de ingestão, não por dbt: aqui ela é
+# apenas declarada como source (ADR-0006, ADR-0017).
+
+version: 2
+
+sources:
+  - name: compras_gov
+    schema: compras_gov
+    description: >
+      Camada Bronze de Compras.gov.br (SIASG): dado fiel à fonte, gravado pelas
+      DAGs de ingestão. Sistema estruturante de compras e contratações do governo
+      federal. Expõe API pública de consulta a órgãos, UASGs, fornecedores,
+      contratos, contratações e catálogos de material e serviço.
+    meta:
+      owner: "@GovHub-br/oss"
+      sistema_origem: compras_gov
+      camada: bronze
+    tables:
+      - name: contratacoes
+        identifier: raw_contratacoes
+        description: >
+            Contratações publicadas sob a Lei 14.133, via integração com o PNCP.
+            Granularidade: uma linha por compra.
+        meta:
+          classificacao: publico
+          dag_ingestao: contratacoes_ingest_dag
+
+      - name: contratos
+        identifier: raw_contratos
+        description: >
+            Contratos administrativos por órgão. Uma linha por contrato de uma unidade
+            gestora com um fornecedor. Granularidade: uma linha por unidade gestora,
+            número de contrato e fornecedor.
+        meta:
+          classificacao: publico
+          dag_ingestao: contratos_ingest_dag
+
+      - name: contratos_item
+        identifier: raw_contratos_item
+        description: >
+            Itens dos contratos administrativos. Granularidade: uma linha por item de um
+            contrato.
+        meta:
+          classificacao: publico
+          dag_ingestao: contratos_item_ingest_dag
+
+      - name: fornecedor
+        identifier: raw_fornecedor
+        description: >
+            Fornecedores ativos no Compras.gov.br. O cadastro já identifica cada
+            fornecedor pelo documento, em duas colunas distintas — CNPJ para pessoa
+            jurídica, CPF para pessoa física. Não existe aqui uma coluna única de número
+            de inscrição (nu_ni): esta entidade expõe as chaves finais diretamente, sem
+            precisar das pontes de nu_ni. Granularidade: um registro por fornecedor
+            ativo, identificado por CNPJ ou CPF.
+        meta:
+          classificacao: pessoal
+          dag_ingestao: fornecedor_ingest_dag
+
+      - name: itens_contratacoes
+        identifier: raw_itens_contratacoes
+        description: >
+            Itens das contratações publicadas sob a Lei 14.133. Granularidade: uma linha
+            por item de compra.
+        meta:
+          classificacao: publico
+          dag_ingestao: itens_contratacoes_ingest_dag
+
+      - name: natureza_despesa_material
+        identifier: raw_natureza_despesa_material
+        description: >
+            Associação entre os PDMs (padrões descritivos de material) do catálogo e as
+            naturezas de despesa sob as quais o material é empenhado. Não é um cadastro
+            de naturezas de despesa: a mesma natureza aparece em vários PDMs, e a origem
+            repete pares sem deduplicar. Granularidade: uma linha por associação entre
+            PDM e natureza de despesa.
+        meta:
+          classificacao: publico
+          dag_ingestao: catalogo_material_natureza_despesa_ingest_dag
+
+      - name: orgao
+        identifier: raw_orgao
+        description: >
+            Órgãos cadastrados no Compras.gov.br. Uma linha por órgão. Granularidade: um
+            registro por código de órgão.
+        meta:
+          classificacao: publico
+          dag_ingestao: orgao_ingest_dag
+
+      - name: uasg
+        identifier: raw_uasg
+        description: >
+            Unidades administrativas de serviços gerais. Uma linha por UASG.
+            Granularidade: um registro por código de UASG.
+        meta:
+          classificacao: publico
+          dag_ingestao: uasg_ingest_dag

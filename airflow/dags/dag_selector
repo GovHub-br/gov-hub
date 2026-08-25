@@ -2,3 +2,4 @@
 # O que está listado aqui é INCLUÍDO, o resto é ignorado no parsing.
 
 data_ingest/compras_gov/
+data_transform/mgi/

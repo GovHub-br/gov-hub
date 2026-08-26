@@ -54,7 +54,6 @@ relatorios:
   formato: csv
   destinos:
   - storage
-  - email
   nivel: publico
   destinatarios_variavel: relatorio_contratacoes_mgi_destinatarios
   entregas:

@@ -106,12 +106,19 @@ superset:
 test:
 	uv run pytest tests/unit --junitxml=report.xml --cov=. --cov-report=xml:coverage.xml
 
+# Os testes de integração se conectam de FORA do compose, pelo host: as portas
+# vêm do .env, e não dos valores padrão, senão eles batem na porta errada em
+# quem precisou remapear para conviver com outro projeto.
 test-integration:
 	@if [ ! -f .env ]; then cp local.env .env; echo ".env created from local.env"; fi
-	@$(COMPOSE) --env-file local.env up -d minio minio-init postgres
+	@$(COMPOSE) --env-file .env up -d minio minio-init postgres
 	@echo "Waiting for services to be healthy..."
-	@$(COMPOSE) --env-file local.env ps
-	uv run pytest tests/integration/ -m integration -v
+	@$(COMPOSE) --env-file .env ps
+	@set -a; . ./.env; set +a; \
+		POSTGRES_HOST=localhost \
+		POSTGRES_PORT=$${POSTGRES_HOST_PORT:-5432} \
+		MINIO_ENDPOINT=http://localhost:$${MINIO_HOST_PORT:-9000} \
+		uv run pytest tests/integration/ -m integration -v
 
 compose:
 	@echo "Iniciando ambiente local do Airflow com Docker Compose..."

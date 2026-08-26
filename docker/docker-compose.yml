@@ -13,6 +13,10 @@ x-airflow-common: &airflow-common
     - ../airflow/dags:${AIRFLOW_HOME}/dags/
     - ../airflow/plugins:${AIRFLOW_HOME}/plugins/
     - ../airflow/helpers:${AIRFLOW_HOME}/helpers/
+    # Logs de task em volume nomeado, e não no filesystem do container: sem
+    # isso todo `up --build` apaga o log de tudo que já rodou, e a UI de uma
+    # execução antiga fica sem ter o que mostrar.
+    - airflow-logs:${AIRFLOW_HOME}/logs
   depends_on: &airflow-common-depends-on
     postgres:
       condition: service_healthy
@@ -26,7 +30,6 @@ x-airflow-environment: &airflow-common-env
   AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
   AIRFLOW__CORE__TEST_CONNECTION: Enabled
   AIRFLOW__CORE__MIGHT_CONTAIN_DAG_CALLABLE: "dag_discovery.might_contain_selected_dag"
-  AIRFLOW__API__AUTH_BACKENDS: airflow.api.auth.backend.basic_auth
   AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER:-airflow}:${POSTGRES_PASSWORD:-airflow}@postgres/airflow
   AIRFLOW__EMAIL__DEFAULT_EMAIL_ON_RETRY: 'false'
   AIRFLOW__EMAIL__DEFAULT_EMAIL_ON_FAILURE: 'false'
@@ -34,12 +37,23 @@ x-airflow-environment: &airflow-common-env
   AIRFLOW__WEBSERVER__INSTANCE_NAME: "GovHub - Local Dev!"
   AIRFLOW__WEBSERVER__NAVBAR_COLOR: '#98DFFF'
   AIRFLOW__WEBSERVER__RELOAD_ON_PLUGIN_CHANGE: 'true'
-  AIRFLOW__WEBSERVER__SECRET_KEY: '42'
+  AIRFLOW__API__SECRET_KEY: ${AIRFLOW__API__SECRET_KEY:-govhub-airflow-local-dev}
+  # Assina os tokens que o supervisor de task usa para falar com o api-server.
+  # NÃO tem o mesmo default de [api] secret_key: quando não é informado, cada
+  # PROCESSO sorteia o seu (os.urandom) e o Airflow tentaria persistir o sorteio
+  # no airflow.cfg — que aqui vem montado do repositório, sem essa chave. No
+  # `standalone` o scheduler e o api-server são processos separados, então cada
+  # um fica com um segredo diferente e toda task despachada pelo scheduler morre
+  # com "Invalid auth token: Signature verification failed", sem chegar a
+  # escrever log. Por `airflow dags test` não aparecia: ali tudo roda num
+  # processo só.
+  AIRFLOW__API_AUTH__JWT_SECRET: ${AIRFLOW__API_AUTH__JWT_SECRET:-govhub-airflow-local-jwt}
   PYTHONPATH: "/opt/airflow/dags:/opt/airflow/plugins:/opt/airflow/helpers:$PYTHONPATH"
   _AIRFLOW_DB_MIGRATE: 'true'
   _AIRFLOW_WWW_USER_CREATE: 'true'
   _AIRFLOW_WWW_USER_USERNAME: ${_AIRFLOW_WWW_USER_USERNAME:-airflow}
   _AIRFLOW_WWW_USER_PASSWORD: ${_AIRFLOW_WWW_USER_PASSWORD:-airflow}
+  AIRFLOW__CORE__SIMPLE_AUTH_MANAGER_USERS: "${_AIRFLOW_WWW_USER_USERNAME:-airflow}:admin"
   AIRFLOW__CORE__PLUGINS_FOLDER: ${AIRFLOW_HOME}/plugins
   AIRFLOW__CORE__DAGS_FOLDER: ${AIRFLOW_HOME}/dags
   AIRFLOW_REPO_BASE: ${AIRFLOW_HOME}
@@ -54,9 +68,33 @@ services:
     # Usamos o comando de standalone aqui para não rodar múltiplos containers
     # do airflow localmente e assim melhorar a velocidade inicialização
     # doc do standalone: https://airflow.apache.org/docs/apache-airflow/2.8.1/start.html
-    command: standalone
+    # O `standalone` do Airflow 3 NÃO usa _AIRFLOW_WWW_USER_*: essas variáveis são
+    # do entrypoint da imagem oficial, que só roda no fluxo de `airflow-init`.
+    # Quem autentica aqui é o SimpleAuthManager, e ele SORTEIA a senha de todo
+    # usuário que ainda não esteja no arquivo de senhas — arquivo que vive no
+    # filesystem do container, e portanto some a cada recriação, com senha nova
+    # a cada vez.
+    #
+    # Semear o arquivo antes de subir resolve os dois problemas: o manager só
+    # sorteia para quem falta, então a credencial passa a ser a do .env e
+    # sobrevive ao `up --build`.
+    # O Airflow grava em cada task instance o hostname de quem a executou, e a
+    # UI busca o log lá por HTTP (porta 8793) quando não o acha em disco. Com o
+    # hostname aleatório do container, toda recriação deixava as execuções
+    # anteriores apontando para um nome que não resolve mais. `airflow` é o
+    # alias do serviço na rede do compose, então resolve sempre.
+    hostname: airflow
+    command:
+      - bash
+      - -c
+      - |
+        printf '{"%s": "%s"}\n' \
+          "$${_AIRFLOW_WWW_USER_USERNAME:-airflow}" \
+          "$${_AIRFLOW_WWW_USER_PASSWORD:-airflow}" \
+          > "$${AIRFLOW_HOME}/simple_auth_manager_passwords.json.generated"
+        exec airflow standalone
     ports:
-      - "8080:8080"
+      - "${AIRFLOW_HOST_PORT:-8080}:8080"
     healthcheck:
       test: [ "CMD", "curl", "--fail", "http://localhost:8080/api/v2/monitor/health" ]
       interval: 10s
@@ -80,7 +118,7 @@ services:
       - postgres-db:/var/lib/postgresql/data
       - ./postgres/:/docker-entrypoint-initdb.d/
     ports:
-      - "5432:5432"
+      - "${POSTGRES_HOST_PORT:-5432}:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER"]
       interval: 10s
@@ -92,8 +130,8 @@ services:
   minio:
     image: minio/minio:latest
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - "${MINIO_HOST_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_HOST_PORT:-9001}:9001"
     environment:
       MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-minioadmin}
       MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-minioadmin}
@@ -145,7 +183,7 @@ services:
       SUPERSET_ADMIN_USER: ${SUPERSET_ADMIN_USER:-admin}
       SUPERSET_ADMIN_PASSWORD: ${SUPERSET_ADMIN_PASSWORD:-admin}
     ports:
-      - "8088:8088"
+      - "${SUPERSET_HOST_PORT:-8088}:8088"
     volumes:
       # Metadados do Superset (papéis, filtros de recorte, dashboards
       # importadas) em volume nomeado, para sobreviverem a um restart. Em
@@ -165,6 +203,7 @@ services:
     restart: always
 
 volumes:
+  airflow-logs:
   postgres-db:
   minio-data:
   superset-home:

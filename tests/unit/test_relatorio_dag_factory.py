@@ -65,9 +65,13 @@ class TestEntregasDoPlano:
         assert entregas["mgi"] is None
 
     def test_traz_formato_e_destinos_declarados(self) -> None:
+        # Os valores esperados são os declarados em catalogo/publicacao/mgi.yml e
+        # regerados em acesso.yml por `make publicacao-sync`: mudou lá, muda aqui.
+        # `destinatarios_variavel` segue declarada mesmo sem o destino `email`,
+        # que a factory só lê quando o destino está presente.
         entrega = factory.carregar_entregas(PLANO_MGI, "contratacoes_mensal")[0]
         assert entrega["formato"] == "csv"
-        assert set(entrega["destinos"]) == {"storage", "email"}
+        assert set(entrega["destinos"]) == {"storage"}
         assert entrega["destinatarios_variavel"]
 
     def test_relatorio_fora_do_plano_falha(self) -> None:

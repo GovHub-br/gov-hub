@@ -45,10 +45,14 @@ relatorios:
     dag: contratacoes_mgi_report_dag
     dataset: contratos_por_orgao
     formato: csv
-    destinos: [storage, email]
+    # Só `storage` por ora: o relatório é entregue na landing zone. O destino
+    # `email` exige um servidor SMTP alcançável pelo Airflow, que o compose
+    # local não provê — reintroduza-o junto com esse serviço.
+    destinos: [storage]
     nivel: publico
     # Endereço de pessoa é dado pessoal (ADR-0013) e não entra no repositório:
-    # a lista vive nesta Variable do Airflow, como JSON.
+    # a lista vive nesta Variable do Airflow, como JSON. Fica declarada aqui
+    # para quando o destino `email` voltar; sem ele, não é lida.
     destinatarios_variavel: relatorio_contratacoes_mgi_destinatarios
 
 # Quem consome. Cada consumidor vira um papel no Superset — {prefixo}_{orgao}_

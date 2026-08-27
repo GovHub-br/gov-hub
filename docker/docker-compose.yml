@@ -67,7 +67,7 @@ services:
     <<: *airflow-common
     # Usamos o comando de standalone aqui para não rodar múltiplos containers
     # do airflow localmente e assim melhorar a velocidade inicialização
-    # doc do standalone: https://airflow.apache.org/docs/apache-airflow/2.8.1/start.html
+    # doc do standalone: https://airflow.apache.org/docs/apache-airflow/3.2.2/start.html
     # O `standalone` do Airflow 3 NÃO usa _AIRFLOW_WWW_USER_*: essas variáveis são
     # do entrypoint da imagem oficial, que só roda no fluxo de `airflow-init`.
     # Quem autentica aqui é o SimpleAuthManager, e ele SORTEIA a senha de todo

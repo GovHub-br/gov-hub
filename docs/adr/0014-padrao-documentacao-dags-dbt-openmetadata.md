@@ -84,8 +84,8 @@ responsabilidade está mal definida, não que existem dois donos.
 ### Linhagem de ponta a ponta
 
 A ligação entre a DAG de ingestão e os modelos dbt é declarada explicitamente
-por meio dos *datasets* do Airflow: a DAG de ingestão declara como saída o
-conjunto de dados que produz na landing zone
+por meio dos *assets* do Airflow: a DAG de ingestão declara como saída o
+ativo de dados que produz na landing zone
 ([ADR-0012](./0012-ingestao-object-storage-vs-database.md)), e a DAG de
 promoção o declara como entrada. Assim a linhagem exibida vai da fonte
 governamental até a camada Gold, sem lacuna entre ingestão e transformação.
@@ -176,7 +176,7 @@ verificação é feita por análise estática do arquivo, sem executar a DAG.
 - **[Médio impacto]** Adiciona à cadeia de CI/CD uma etapa de geração de
   artefatos dbt e ingestão de metadados, com mais um ponto de falha entre
   o merge e o catálogo atualizado.
-- **[Médio impacto]** Declarar linhagem por datasets exige disciplina nas
+- **[Médio impacto]** Declarar linhagem por assets exige disciplina nas
   duas DAGs de uma fonte; se a de promoção não declarar a entrada
   correspondente, a linhagem quebra silenciosamente — sem erro, apenas com
   um grafo incompleto.
@@ -197,7 +197,7 @@ um caminho de baixa fricção (issue com o texto proposto, convertida em PR
 por quem mantém o domínio) para quem não escreve YAML.
 
 Permanecem como **riscos ativos**: (i) a quebra silenciosa de linhagem
-quando uma das DAGs do par não declara seu dataset, que só é perceptível
+quando uma das DAGs do par não declara seu asset, que só é perceptível
 inspecionando o grafo; e (ii) a defasagem entre merge e catálogo, que faz o
 OpenMetadata exibir estado antigo sem sinalizar que está defasado.
 
@@ -219,7 +219,7 @@ OpenMetadata exibir estado antigo sem sinalizar que está defasado.
   - Adicionar ao CI a verificação estática de `description`, `owner` e
     vocabulário de tags nas DAGs, com mensagem que aponte o arquivo e o
     campo faltante.
-  - Definir e documentar a convenção de datasets que liga DAG de ingestão e
+  - Definir e documentar a convenção de assets que liga DAG de ingestão e
     DAG de promoção, e verificar no CI que toda saída declarada tem uma
     entrada correspondente.
   - Estabelecer o caminho de contribuição para quem não abre PR (issue com
@@ -238,5 +238,5 @@ OpenMetadata exibir estado antigo sem sinalizar que está defasado.
 - [OpenMetadata — ingestão de metadados do dbt](https://docs.open-metadata.org/connectors/ingestion/workflows/dbt)
 - [OpenMetadata — conector do Apache Airflow](https://docs.open-metadata.org/connectors/pipeline/airflow)
 - [dbt — artefatos `manifest.json` e `catalog.json`](https://docs.getdbt.com/reference/artifacts/dbt-artifacts)
-- [Apache Airflow — data-aware scheduling (datasets)](https://airflow.apache.org/docs/apache-airflow/2.8.1/authoring-and-scheduling/datasets.html)
+- [Apache Airflow 3.2.2 — asset-aware scheduling](https://airflow.apache.org/docs/apache-airflow/3.2.2/authoring-and-scheduling/index.html)
 - [Estrutura de ADRs do repositório](./README.md)

@@ -15,7 +15,7 @@ convivem aqui, organizados por sistema e órgão
 
 | Camada | Ferramenta |
 |---|---|
-| Orquestração | Apache Airflow 2.8 ([ADR-0001](docs/adr/0001-airflow-como-orquestrador-de-fluxos-de-dados.md)) |
+| Orquestração | Apache Airflow 3.2.2 ([ADR-0001](docs/adr/0001-airflow-como-orquestrador-de-fluxos-de-dados.md)) |
 | Transformação | dbt + Astronomer Cosmos ([ADR-0002](docs/adr/0002-dbt-como-ferramenta-de-transformacao-de-dados.md)) |
 | Landing zone | Object storage — MinIO on-prem, S3/ADLS na nuvem ([ADR-0012](docs/adr/0012-ingestao-object-storage-vs-database.md)) |
 | Modelagem | Arquitetura medallion: bronze → silver → gold ([ADR-0006](docs/adr/0006-arquitetura-medallion.md)) |
@@ -206,6 +206,11 @@ make compose    # sobe Airflow + Postgres + MinIO e configura variables/connecti
 
 Airflow em http://localhost:8080 (`airflow`/`airflow`), console do MinIO em
 http://localhost:9001 (`minioadmin`/`minioadmin`).
+
+No ambiente local com Airflow 3.2.2, o login do Airflow é resolvido pelo
+`SimpleAuthManager`. O `docker/docker-compose.yml` semeia o arquivo de senhas
+antes de executar `airflow standalone`, mantendo as credenciais locais estáveis
+entre recriações do container. O healthcheck usa `/api/v2/monitor/health`.
 
 O Superset fica em um perfil separado do compose, porque é o serviço mais
 pesado e a maior parte do trabalho no framework não precisa dele:

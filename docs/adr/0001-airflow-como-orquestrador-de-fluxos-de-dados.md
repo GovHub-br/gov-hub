@@ -44,6 +44,9 @@ das primeiras a ser consumida por qualquer projeto que herdar o
 
 O `data-framework` adota o **Apache Airflow** como orquestrador padrão de
 fluxos de dados (DAGs de ingestão, transformação, qualidade e publicação).
+Na configuração atual do repositório, a versão de referência é o
+**Apache Airflow 3.2.2**, refletida em `requirements.txt` e
+`docker/Dockerfile`.
 
 Isso implica que:
 

@@ -2,10 +2,12 @@ import logging
 from datetime import datetime, timedelta
 from typing import Any
 from airflow.sdk import dag, task
+from batching import chunked
 from cliente_compras_gov import ClienteComprasGov
 from landing_zone import distinct_raw_values, write_raw
 
 SISTEMA = "compras_gov"
+BLOCK_SIZE = 100
 default_args = {
     "owner": "mgi",
     "queue": "mgi",
@@ -34,8 +36,8 @@ def pesquisa_preco_material_dag() -> None:
         return itens
 
     @task
-    def gerar_lotes(itens: Any, tamanho: int = 100) -> list[list[str]]:
-        return [itens[i : i + tamanho] for i in range(0, len(itens), tamanho)]
+    def gerar_lotes(itens: Any) -> list[list[str]]:
+        return chunked(itens, BLOCK_SIZE)
 
     @task(max_active_tis_per_dag=4)
     def fetch_preco_material(lote: list[str]) -> dict:

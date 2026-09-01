@@ -4,10 +4,12 @@ from typing import Any
 
 from airflow.sdk import dag, task
 
+from batching import chunked, limit_local
 from cliente_compras_gov import ClienteComprasGov
 from landing_zone import distinct_raw_values, write_raw
 
 SISTEMA = "compras_gov"
+BLOCK_SIZE = 50
 
 default_args = {
     "owner": "mgi",
@@ -34,7 +36,7 @@ def _get_intervalo(context: dict) -> tuple[str, str]:
 )
 def contratos_item_dag() -> None:
     @task
-    def get_orgaos() -> list[str]:
+    def get_orgao_blocks() -> list[list[str]]:
         try:
             orgaos = distinct_raw_values(SISTEMA, "orgao", "codigoorgao")
         except Exception as exc:
@@ -42,51 +44,66 @@ def contratos_item_dag() -> None:
                 "Entidade 'orgao' ainda não está na zona raw. "
                 "Execute orgao_ingest_dag antes de contratos_item_ingest_dag."
             ) from exc
-        logging.info("Total de órgãos a processar: %s", len(orgaos))
-        return orgaos
+        orgaos = limit_local(orgaos, "INGEST_MAX_ORGAOS", "órgãos")
+        blocks = chunked(orgaos, BLOCK_SIZE)
+        logging.info(
+            "Total de órgãos a processar: %s em %s blocos de até %s",
+            len(orgaos),
+            len(blocks),
+            BLOCK_SIZE,
+        )
+        return blocks
 
     @task(max_active_tis_per_dag=4)
-    def ingest_orgao(codigo_orgao: str, **context: dict) -> dict:
+    def ingest_orgaos(codigos_orgao: list[str], **context: dict) -> dict:
         data_inicial, data_final = _get_intervalo(context)
         api = ClienteComprasGov()
         itens = 0
 
-        for batch, _ in api.iter_pages(
-            "/modulo-contratos/2_consultarContratosItem",
-            {
-                "codigoOrgao": codigo_orgao,
-                "dataVigenciaInicialMin": data_inicial,
-                "dataVigenciaInicialMax": data_final,
-            },
-        ):
-            write_raw(
-                SISTEMA,
-                "contratos_item",
-                batch,
-                primary_key=[
-                    "codigounidadegestora",
-                    "numerocontrato",
-                    "nifornecedor",
-                    "numeroitem",
-                    "contratoitemexcluido",
-                ],
-            )
-            itens += len(batch)
+        for codigo_orgao in codigos_orgao:
+            itens_orgao = 0
+            for batch, _ in api.iter_pages(
+                "/modulo-contratos/2_consultarContratosItem",
+                {
+                    "codigoOrgao": codigo_orgao,
+                    "dataVigenciaInicialMin": data_inicial,
+                    "dataVigenciaInicialMax": data_final,
+                },
+            ):
+                write_raw(
+                    SISTEMA,
+                    "contratos_item",
+                    batch,
+                    primary_key=[
+                        "codigounidadegestora",
+                        "numerocontrato",
+                        "nifornecedor",
+                        "numeroitem",
+                        "contratoitemexcluido",
+                    ],
+                )
+                itens_orgao += len(batch)
 
-        logging.info(
-            "Órgão %s %s→%s: itens=%s", codigo_orgao, data_inicial, data_final, itens
-        )
+            logging.info(
+                "Órgão %s %s→%s: itens=%s",
+                codigo_orgao,
+                data_inicial,
+                data_final,
+                itens_orgao,
+            )
+            itens += itens_orgao
+
         return {"itens": itens}
 
     @task
     def validate(results: Any) -> None:
         total_itens = sum(r["itens"] for r in results)
         logging.info(
-            "Contratos item total: itens=%s orgaos=%s", total_itens, len(results)
+            "Contratos item total: itens=%s blocos=%s", total_itens, len(results)
         )
 
-    orgaos = get_orgaos()
-    results = ingest_orgao.expand(codigo_orgao=orgaos)
+    blocks = get_orgao_blocks()
+    results = ingest_orgaos.expand(codigos_orgao=blocks)
     validate(results)
 
 

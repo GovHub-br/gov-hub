@@ -4,6 +4,7 @@ from typing import Any
 
 from airflow.sdk import dag, task
 
+from batching import block_offsets
 from cliente_compras_gov import ClienteComprasGov
 from landing_zone import distinct_raw_rows, write_raw
 
@@ -38,14 +39,14 @@ def arp_detalhes_dag() -> None:
     @task
     def get_item_offsets() -> list[int]:
         total = len(distinct_raw_rows(SISTEMA, "arp_item", COLUNAS_ITEM))
-        offsets = list(range(0, total, BLOCK_SIZE))
+        offsets = block_offsets(total, BLOCK_SIZE)
         logging.info("ARP detalhes itens: %s itens em %s blocos", total, len(offsets))
         return offsets
 
     @task
     def get_par_offsets() -> list[int]:
         total = len(distinct_raw_rows(SISTEMA, "arp_item", COLUNAS_ATA))
-        offsets = list(range(0, total, BLOCK_SIZE))
+        offsets = block_offsets(total, BLOCK_SIZE)
         logging.info("ARP detalhes empenhos: %s atas em %s blocos", total, len(offsets))
         return offsets
 

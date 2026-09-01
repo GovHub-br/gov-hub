@@ -2,10 +2,12 @@ import logging
 from datetime import datetime, timedelta
 from typing import Any
 from airflow.sdk import dag, task
+from batching import chunked
 from cliente_compras_gov import ClienteComprasGov
 from landing_zone import distinct_raw_values, write_raw
 
 SISTEMA = "compras_gov"
+BLOCK_SIZE = 100
 default_args = {
     "owner": "mgi",
     "queue": "mgi",
@@ -28,41 +30,52 @@ default_args = {
 )
 def pesquisa_preco_servico_dag() -> None:
     @task
-    def get_itens_servico() -> list[str]:
+    def get_blocos_servico() -> list[list[str]]:
         itens = distinct_raw_values(SISTEMA, "item_servico", "codigoservico")
-        logging.info("Pesquisa de preços serviço: %s itens a processar", len(itens))
-        return itens
+        blocos = chunked(itens, BLOCK_SIZE)
+        logging.info(
+            "Pesquisa de preços serviço: %s itens em %s blocos de até %s",
+            len(itens),
+            len(blocos),
+            BLOCK_SIZE,
+        )
+        return blocos
 
     @task(max_active_tis_per_dag=4)
-    def fetch_preco_servico(codigo_item: str) -> dict:
+    def fetch_preco_servico(lote: list[str]) -> dict:
         api = ClienteComprasGov()
-        preco, _ = api.fetch_all_pages(
-            "/modulo-pesquisa-preco/3_consultarServico",
-            {"codigoItemCatalogo": codigo_item},
-        )
-        if preco:
-            write_raw(SISTEMA, "pesquisa_preco_servico", preco)
-        detalhe, _ = api.fetch_all_pages(
-            "/modulo-pesquisa-preco/4_consultarServicoDetalhe",
-            {"codigoItemCatalogo": codigo_item},
-        )
-        if detalhe:
-            write_raw(SISTEMA, "pesquisa_preco_servico_detalhe", detalhe)
-        return {"preco": len(preco), "detalhe": len(detalhe)}
+        total_preco = 0
+        total_detalhe = 0
+        for codigo_item in lote:
+            preco, _ = api.fetch_all_pages(
+                "/modulo-pesquisa-preco/3_consultarServico",
+                {"codigoItemCatalogo": codigo_item},
+            )
+            if preco:
+                write_raw(SISTEMA, "pesquisa_preco_servico", preco)
+            detalhe, _ = api.fetch_all_pages(
+                "/modulo-pesquisa-preco/4_consultarServicoDetalhe",
+                {"codigoItemCatalogo": codigo_item},
+            )
+            if detalhe:
+                write_raw(SISTEMA, "pesquisa_preco_servico_detalhe", detalhe)
+            total_preco += len(preco)
+            total_detalhe += len(detalhe)
+        return {"preco": total_preco, "detalhe": total_detalhe}
 
     @task
     def validate(results: Any) -> None:
         total_preco = sum(r["preco"] for r in results)
         total_detalhe = sum(r["detalhe"] for r in results)
         logging.info(
-            "Pesquisa preço serviço: itens=%s preco=%s detalhe=%s",
+            "Pesquisa preço serviço: blocos=%s preco=%s detalhe=%s",
             len(results),
             total_preco,
             total_detalhe,
         )
 
-    itens = get_itens_servico()
-    results = fetch_preco_servico.expand(codigo_item=itens)
+    blocos = get_blocos_servico()
+    results = fetch_preco_servico.expand(lote=blocos)
     validate(results)
 
 

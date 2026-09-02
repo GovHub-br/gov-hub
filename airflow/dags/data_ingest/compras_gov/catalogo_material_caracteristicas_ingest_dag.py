@@ -5,6 +5,7 @@ from typing import Any
 
 from airflow.sdk import dag, task
 
+from batching import page_starts
 from cliente_compras_gov import ClienteComprasGov
 from landing_zone import write_raw
 
@@ -45,7 +46,7 @@ def catalogo_material_caracteristicas_dag() -> None:
         )
         total = resp.get("totalPaginas", 1) if isinstance(resp, dict) else 1
         logging.info("[%s] Total de páginas: %s", ENDPOINT, total)
-        return list(range(1, total + 1, BLOCK_SIZE))
+        return page_starts(total, BLOCK_SIZE)
 
     @task
     def fetch_block(pagina_inicio: int) -> dict:

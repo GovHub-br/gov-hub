@@ -5,6 +5,7 @@ from typing import Any
 
 from airflow.sdk import dag, task
 
+from batching import page_starts
 from cliente_compras_gov import ClienteComprasGov
 from landing_zone import write_raw
 
@@ -63,7 +64,7 @@ def contratacoes_dag() -> None:
             data_final,
             total,
         )
-        return list(range(1, total + 1, BLOCK_SIZE))
+        return page_starts(total, BLOCK_SIZE)
 
     @task
     def fetch_block_contratacoes(

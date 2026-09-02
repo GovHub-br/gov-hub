@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 from typing import Any
 
 from airflow.sdk import dag, task
-
 from batching import chunked, limit_local
 from cliente_compras_gov import ClienteComprasGov
 from landing_zone import distinct_raw_values, write_raw
@@ -21,8 +20,12 @@ default_args = {
 
 
 def _get_intervalo(context: dict) -> tuple[str, str]:
-    data_inicial = str(context["data_interval_start"].date())
-    data_final = str(context["data_interval_end"].date())
+    dag_run = context["dag_run"]
+    fallback = dag_run.logical_date or dag_run.run_after
+    data_interval_start = context.get("data_interval_start") or fallback
+    data_interval_end = context.get("data_interval_end") or fallback
+    data_inicial = str(data_interval_start.date())
+    data_final = str(data_interval_end.date())
     return data_inicial, data_final
 
 

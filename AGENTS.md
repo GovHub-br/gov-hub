@@ -213,9 +213,20 @@ relatório ficam na Variable declarada em `destinatarios_variavel`.
 3. Grave com `write_raw(...)` e declare `primary_key` (vira upsert no
    backend `warehouse`).
 4. Se a DAG deriva o intervalo de `context`, use o padrão tolerante a
-   execuções manuais do `_get_intervalo` em `contratos_ingest_dag.py`
-   (`context.get("data_interval_start") or dag_run.logical_date ...`). Em
-   trigger manual no Airflow 3 essas chaves podem faltar.
+   execuções manuais do `_get_intervalo` em `contratos_ingest_dag.py`.
+   **Importante:** em trigger manual no Airflow 3, `data_interval_start`/
+   `data_interval_end` podem faltar do `context` — e `dag_run.logical_date`
+   *também* pode vir `None` nesses casos. O fallback precisa ir até
+   `dag_run.run_after`, que é o único campo confirmado presente em toda
+   run, manual ou agendada:
+   ```python
+   dag_run = context["dag_run"]
+   fallback = dag_run.logical_date or dag_run.run_after
+   data_interval_start = context.get("data_interval_start") or fallback
+   data_interval_end = context.get("data_interval_end") or fallback
+   ```
+   Parar o fallback em `logical_date` sem chegar a `run_after` reproduz o
+   `KeyError` original
 5. Adicione a entidade em `catalogo/sistemas/<sistema>.yml` (com
    `dag:` e `chave_primaria:`), rode `make modelo ARGS="--camada bronze
    --sistema <sistema>"` para regenerar o `sources.yml`, e
@@ -374,10 +385,13 @@ Cada item abaixo já quebrou algo. Os comentários no código explicam mais.
   não lê Parquet. O padrão do framework é `object_storage`.
 - `INGEST_MAX_ORGAOS=10` no `local.env` para as DAGs por órgão terminarem em
   minutos. Ausente em homologação e produção.
-- `docker/postgres/init.sh` cria os bancos `airflow` e `data_warehouse`. O
-  papel `postgres_dw` que ele cria não é o que o dbt e o Superset usam
-  localmente (ambos usam `postgres`); não aponte a conexão do Superset para
-  ele sem antes dar permissões.
+- `docker/postgres/init.sh` cria os bancos `airflow` e `data_warehouse` e o
+  papel `postgres_dw`. Testado em 2026-09-02: a conexão do Superset local
+  usa `postgres_dw`, e o `init.sh` só dá `GRANT` em `public` — schemas
+  criados depois (ex. `compras_gov`) ficam sem permissão a cada `down -v`.
+  Ao ver `permission denied for schema <x>` no Superset, rode
+  `GRANT USAGE ON SCHEMA <x> TO postgres_dw; GRANT SELECT ON ALL TABLES
+  IN SCHEMA <x> TO postgres_dw;` direto no Postgres.
 
 **dbt e Cosmos**
 
@@ -412,6 +426,14 @@ Cada item abaixo já quebrou algo. Os comentários no código explicam mais.
 - `ClienteComprasGov.iter_pages` dorme 1s entre páginas e continua na página
   seguinte em caso de erro; `max_active_tis_per_dag` nas tasks de fetch
   limita a concorrência contra a API pública.
+- Nunca rode `airflow dags test <dag_id>` (CLI) enquanto a mesma DAG tem uma
+  run ativa disparada pela UI ou por `airflow dags trigger`: as duas
+  competem pelo mesmo `dag_run` no metadata DB e podem gerar
+  `psycopg2.errors.DeadlockDetected`, travando a execução até o timeout.
+  Antes de testar, confira runs presas com
+  `airflow dags list-runs <dag_id> --state running`; para limpar uma run
+  zumbi, `UPDATE dag_run SET state='failed' WHERE state='running'` direto
+  no Postgres de metadados (banco `airflow`) é o caminho mais confiável.
 
 ---
 
@@ -510,7 +532,7 @@ encontrar no `git log` e no `git blame`.
 | #7 | Catálogo de chaves conformadas, gerador de modelos dbt e mapa de cruzamento (ADR-0017); DAG de transformação via Cosmos (ADR-0018); correção da recursão do `might_contain_dag` no Airflow 3; import de `airflow.sdk`. |
 | #9 | Publicação: dashboards versionadas, relatórios por órgão e níveis de acesso (ADR-0019, ADR-0020). Zona raw com backend intercambiável e ingestão sem cliente de banco (ADR-0021). |
 | #11 | Destravar a execução das DAGs no compose: JWT secret, senha do SimpleAuthManager, hostname fixo, logs em volume, portas remapeáveis, `init.sh` do Postgres. |
-| #13 | Fan-out particionado (`batching.py`, `INGEST_MAX_ORGAOS`) após o `max_map_length` estourar com ~10 mil órgãos; `_get_intervalo` tolerante a execução manual. |
+| #13 | Fan-out particionado (`batching.py`, `INGEST_MAX_ORGAOS`) após o `max_map_length` estourar com ~10 mil órgãos; `_get_intervalo` tolerante a execução manual (fallback até `dag_run.run_after`). |
 
 Quando estiver em dúvida sobre *por que* algo é como é, a ordem de consulta
 é: comentário no código → ADR citado → mensagem do commit (`git log -p` nos

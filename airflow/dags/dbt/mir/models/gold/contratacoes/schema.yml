@@ -1,0 +1,22 @@
+version: 2
+
+models:
+  - name: contratos_mir
+    description: >
+      MOCK de time. Contratos do compras_gov com a chave conformada co_orgao
+      anexada, no formato de um produto Gold. Existe para validar o escopo por
+      pasta e o roteamento por fila, não para consumo.
+    meta:
+      owner: "@GovHub-br/oss"
+      sistema_origem: compras_gov
+      camada: gold
+      classificacao: pessoal
+    columns:
+      - name: co_uasg
+        description: Código da UASG, herdado de compras_gov.contratos.
+        meta:
+          classificacao: publico
+      - name: co_orgao
+        description: Chave conformada do órgão (ADR-0017), vinda de compras_gov.uasg.
+        meta:
+          classificacao: publico

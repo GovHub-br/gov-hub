@@ -27,10 +27,16 @@ class TestComprasGovDagsIntegrity:
         assert dagbag.import_errors == {}, dagbag.import_errors
 
     def test_expected_number_of_dags_loaded(self, dagbag: DagBag) -> None:
-        assert len(dagbag.dags) == 23
+        # 23 compartilhadas na raiz do sistema + 1 do recorte do MIR em
+        # compras_gov/mir/ (caso 2 da ADR-0004: sistema compartilhado, código
+        # específico de um órgão).
+        assert len(dagbag.dags) == 24
 
     def test_dag_ids_match_filenames(self, dagbag: DagBag) -> None:
-        py_files = {p.stem for p in DAGS_FOLDER.glob("*.py")}
+        # rglob e não glob: o DagBag varre recursivamente, então as subpastas
+        # de órgão previstas na ADR-0004 também entram. Com glob simples, a
+        # primeira subpasta de órgão criada quebraria este teste.
+        py_files = {p.stem for p in DAGS_FOLDER.rglob("*.py")}
         loaded_ids = set(dagbag.dags.keys())
         assert loaded_ids == py_files
 

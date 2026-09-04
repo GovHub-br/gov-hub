@@ -1,0 +1,24 @@
+# Projeto dbt do órgão MIR — ver ADR-0004 e ADR-0009.
+#
+# Reúne os pacotes dos sistemas estruturantes que o órgão consome e materializa
+# a camada Gold, onde o cruzamento entre sistemas acontece.
+
+name: "mir"
+version: "0.1.0"
+config-version: 2
+
+profile: "gov_bricks"
+
+model-paths: ["models"]
+macro-paths: ["macros"]
+seed-paths: ["seeds"]
+snapshot-paths: ["snapshots"]
+test-paths: ["tests"]
+
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+models:
+  mir:
+    gold:
+      +materialized: table

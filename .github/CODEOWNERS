@@ -48,9 +48,13 @@
 # /airflow/dags/dbt/ipea/             @GovHub-br/ipea
 # /airflow/dags/superset/ipea/        @GovHub-br/ipea
 #
-# /airflow/dags/data_ingest/*/mir/    @GovHub-br/mir
-# /airflow/dags/data_ingest/mir/      @GovHub-br/mir
-# /airflow/dags/dbt/mir/              @GovHub-br/mir
+/airflow/dags/data_ingest/*/mir/     @GovHub-br/mir
+/airflow/dags/data_ingest/mir/       @GovHub-br/mir
+/airflow/dags/data_transform/mir/    @GovHub-br/mir
+/airflow/dags/data_publish/mir/      @GovHub-br/mir
+/airflow/dags/data_report/mir/       @GovHub-br/mir
+/airflow/dags/dbt/mir/               @GovHub-br/mir
+/airflow/dags/superset/mir/          @GovHub-br/mir
 #
 # /airflow/dags/data_ingest/*/mcid/   @GovHub-br/mcid
 # /airflow/dags/data_ingest/mcid/     @GovHub-br/mcid

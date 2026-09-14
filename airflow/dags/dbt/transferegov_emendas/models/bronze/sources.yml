@@ -1,0 +1,138 @@
+# GERADO por `make modelo` a partir de catalogo/sistemas/transferegov_emendas.yml — não edite à mão.
+#
+# A Bronze não é materializada por dbt: ela é um source sobre a zona raw,
+# onde a ingestão entrega o dado (ADR-0006, ADR-0017, ADR-0021).
+#
+# Esta é a forma de tabela, do backend `warehouse`. Em um deployment com a
+# raw em object storage, o source aponta para os arquivos da entidade.
+
+version: 2
+
+sources:
+  - name: transferegov_emendas
+    schema: transferegov_emendas
+    description: >
+      Camada Bronze de TransfereGov — Transferências Especiais: dado fiel à fonte,
+      gravado pelas DAGs de ingestão. Transferências especiais (emendas
+      parlamentares individuais de execução direta pelo beneficiário, sem
+      convênio). Expõe programas, planos de ação, executores, metas, finalidades,
+      empenhos, documentos hábeis, ordens bancárias, histórico de pagamentos,
+      planos de trabalho e relatórios de gestão dessas transferências.
+    meta:
+      owner: "@GovHub-br/oss"
+      sistema_origem: transferegov_emendas
+      camada: bronze
+    tables:
+      - name: documentos_habeis_especiais
+        identifier: raw_documentos_habeis_especiais
+        description: >
+            Documentos hábeis vinculados a um empenho: emissão, situação, unidades
+            gestoras envolvidas e valores. Granularidade: uma linha por documento hábil.
+        meta:
+          classificacao: publico
+          dag_ingestao: documentos_habeis_especiais_ingest_dag
+
+      - name: empenhos_especiais
+        identifier: raw_empenhos_especiais
+        description: >
+            Empenhos (notas de empenho) de um plano de ação, com valores, beneficiário,
+            classificação orçamentária e situação. Granularidade: uma linha por empenho.
+        meta:
+          classificacao: publico
+          dag_ingestao: empenhos_especiais_ingest_dag
+
+      - name: executor_especial
+        identifier: raw_executor_especial
+        description: >
+            Executores de um plano de ação: dados cadastrais, objeto da execução,
+            valores de custeio/investimento e dados bancários. Granularidade: uma linha
+            por executor de um plano de ação.
+        meta:
+          classificacao: publico
+          dag_ingestao: executor_especial_ingest_dag
+
+      - name: finalidades_especiais
+        identifier: raw_finalidades_especiais
+        description: >
+            Áreas de política pública (finalidades) vinculadas a cada executor.
+            Granularidade: uma linha por área de política pública de um executor.
+        meta:
+          classificacao: publico
+          dag_ingestao: finalidades_especiais_ingest_dag
+
+      - name: historico_pagamentos_especiais
+        identifier: raw_historico_pagamentos_especiais
+        description: >
+            Histórico de eventos (mudanças de situação) de uma ordem de pagamento/ordem
+            bancária. Granularidade: uma linha por evento de histórico.
+        meta:
+          classificacao: publico
+          dag_ingestao: historico_pagamentos_especiais_ingest_dag
+
+      - name: metas_especiais
+        identifier: raw_metas_especiais
+        description: >
+            Metas físicas e financeiras de cada executor, discriminando valores de
+            emenda, recursos próprios, rendimentos e doações. Granularidade: uma linha
+            por meta de um executor.
+        meta:
+          classificacao: publico
+          dag_ingestao: metas_especiais_ingest_dag
+
+      - name: ordens_bancarias_especiais
+        identifier: raw_ordens_bancarias_especiais
+        description: >
+            Ordens de pagamento e ordens bancárias vinculadas a um documento hábil.
+            Granularidade: uma linha por ordem de pagamento/ordem bancária.
+        meta:
+          classificacao: publico
+          dag_ingestao: ordens_bancarias_especiais_ingest_dag
+
+      - name: plano_trabalho_especial
+        identifier: raw_plano_trabalho_especial
+        description: >
+            Plano de trabalho de execução de um plano de ação: situação, prazos,
+            indicador de orçamento próprio e justificativas de prorrogação.
+            Granularidade: uma linha por plano de trabalho.
+        meta:
+          classificacao: publico
+          dag_ingestao: plano_trabalho_especial_ingest_dag
+
+      - name: planos_acao_especiais
+        identifier: raw_planos_acao_especiais
+        description: >
+            Planos de ação de um programa de transferência especial: beneficiário, dados
+            bancários, emenda parlamentar de origem, classificação orçamentária e
+            valores de custeio/investimento. Granularidade: uma linha por plano de ação.
+        meta:
+          classificacao: publico
+          dag_ingestao: planos_acao_especiais_ingest_dag
+
+      - name: programas_especiais
+        identifier: raw_programas_especiais
+        description: >
+            Programas de transferências especiais, com valores de necessidade
+            financeira, disponibilização, impedimentos e documentos hábeis gerados.
+            Granularidade: uma linha por programa.
+        meta:
+          classificacao: publico
+          dag_ingestao: programas_especiais_ingest_dag
+
+      - name: relatorio_gestao_especial
+        identifier: raw_relatorio_gestao_especial
+        description: >
+            Situação e parecer final do relatório de gestão vinculado a um plano de
+            ação. Granularidade: uma linha por relatório de gestão.
+        meta:
+          classificacao: publico
+          dag_ingestao: relatorio_gestao_especial_ingest_dag
+
+      - name: relatorios_gestao_novo_especial
+        identifier: raw_relatorios_gestao_novo_especial
+        description: >
+            Registros do novo relatório de gestão: execução financeira declarada por
+            plano de ação, valores executados/pendentes e status de tramitação.
+            Granularidade: uma linha por registro do novo relatório de gestão.
+        meta:
+          classificacao: publico
+          dag_ingestao: relatorios_gestao_novo_especial_ingest_dag

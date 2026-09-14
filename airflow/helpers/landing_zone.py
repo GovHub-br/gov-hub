@@ -194,6 +194,38 @@ def _write_raw_warehouse(
     return destino
 
 
+def truncate_raw_warehouse(source: str, entity: str) -> None:
+    """Esvazia a tabela raw de uma entidade no backend `warehouse`.
+
+    Replica o `truncate_before_insert` que o repositório antigo aplicava a
+    entidades sem chave natural na fonte (full-refresh a cada carga, em vez de
+    upsert): sem isso, cada execução só acrescenta linhas e nunca reflete
+    exclusões feitas na fonte. Não-op em `object_storage` — ali a raw é
+    imutável e append-only por design (ADR-0012), e truncar não se aplica.
+    """
+    if get_raw_backend() != BACKEND_WAREHOUSE:
+        logging.warning(
+            "[landing_zone] truncate_raw_warehouse(%s.%s) ignorado: backend não é "
+            "'warehouse'.",
+            source,
+            entity,
+        )
+        return
+
+    from cliente_postgres import ClientPostgresDB
+    from postgres_helpers import get_postgres_conn
+
+    tabela = raw_table_name(entity)
+    cliente = ClientPostgresDB(get_postgres_conn(CONEXAO_WAREHOUSE_PADRAO))
+    cliente.execute_non_query(
+        f"DO $$ BEGIN IF EXISTS ("
+        f"SELECT FROM pg_tables WHERE schemaname = '{source}' "
+        f"AND tablename = '{tabela}'"
+        f") THEN TRUNCATE TABLE {source}.{tabela}; END IF; END $$;"
+    )
+    logging.info("[landing_zone] %s.%s truncada.", source, tabela)
+
+
 class RawIndisponivel(RuntimeError):
     """A entidade pedida ainda não foi ingerida na zona raw."""
 

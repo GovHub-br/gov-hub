@@ -1,0 +1,28 @@
+# Pacote dbt do sistema estruturante — modelos compartilhados entre órgãos
+# (ADR-0004, ADR-0009). Bronze não é modelada aqui: é materializada pela DAG
+# de ingestão e declarada como source em models/bronze/sources.yml (ADR-0017).
+#
+# A pasta silver/convenios/ inclui os modelos que fazem só a tipagem de cada
+# entidade a partir do source (papel que, antes do ADR-0017, era da Bronze
+# modelada — ver cabeçalho de cada arquivo) além dos cruzamentos que não
+# saem do próprio sistema (proposta+cronograma, proposta+histórico etc.).
+
+name: "siconv"
+version: "0.1.0"
+config-version: 2
+
+profile: "gov_bricks"
+
+model-paths: ["models"]
+macro-paths: ["macros"]
+seed-paths: ["seeds"]
+snapshot-paths: ["snapshots"]
+test-paths: ["tests"]
+
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+models:
+  siconv:
+    silver:
+      +materialized: table

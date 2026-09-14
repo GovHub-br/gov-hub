@@ -1,0 +1,170 @@
+# GERADO por `make modelo` a partir de catalogo/sistemas/siconv.yml — não edite à mão.
+#
+# A Bronze não é materializada por dbt: ela é um source sobre a zona raw,
+# onde a ingestão entrega o dado (ADR-0006, ADR-0017, ADR-0021).
+#
+# Esta é a forma de tabela, do backend `warehouse`. Em um deployment com a
+# raw em object storage, o source aponta para os arquivos da entidade.
+
+version: 2
+
+sources:
+  - name: siconv
+    schema: siconv
+    description: >
+      Camada Bronze de SICONV (Sistema de Gestão de Convênios e Contratos de
+      Repasse): dado fiel à fonte, gravado pelas DAGs de ingestão. Dados abertos
+      do SICONV: propostas, convênios, termos de fomento, desembolsos, empenhos,
+      licitações, pagamentos, aditivos e metas físicas de convênios e
+      transferências voluntárias da União, publicados em zip/CSV único e nacional.
+    meta:
+      owner: "@GovHub-br/oss"
+      sistema_origem: siconv
+      camada: bronze
+    tables:
+      - name: convenio
+        identifier: raw_convenio
+        description: >
+            Convênios/termos de fomento firmados a partir de uma proposta, com situação,
+            vigência e valores globais, de repasse e de contrapartida. Granularidade:
+            uma linha por convênio.
+        meta:
+          classificacao: publico
+          dag_ingestao: siconv_ingest_dag
+
+      - name: cronograma_desembolso
+        identifier: raw_cronograma_desembolso
+        description: >
+            Cronograma de desembolso previsto de uma proposta/convênio. Granularidade:
+            uma linha por parcela do cronograma de desembolso.
+        meta:
+          classificacao: publico
+          dag_ingestao: siconv_ingest_dag
+
+      - name: desbloqueio
+        identifier: raw_desbloqueio
+        description: >
+            Desbloqueios de recursos na conta bancária do convênio (liberação de valores
+            retidos pelo banco). Granularidade: uma linha por desbloqueio.
+        meta:
+          classificacao: publico
+          dag_ingestao: siconv_ingest_dag
+
+      - name: desembolso
+        identifier: raw_desembolso
+        description: >
+            Repasses (desembolsos) efetivamente realizados a um convênio. Granularidade:
+            uma linha por desembolso.
+        meta:
+          classificacao: publico
+          dag_ingestao: siconv_ingest_dag
+
+      - name: empenho
+        identifier: raw_empenho
+        description: >
+            Empenhos orçamentários associados a um convênio. Granularidade: uma linha
+            por empenho.
+        meta:
+          classificacao: publico
+          dag_ingestao: siconv_ingest_dag
+
+      - name: historico_situacao
+        identifier: raw_historico_situacao
+        description: >
+            Histórico de mudanças de situação de uma proposta/convênio. Granularidade:
+            uma linha por mudança de situação.
+        meta:
+          classificacao: publico
+          dag_ingestao: siconv_ingest_dag
+
+      - name: ingresso_contrapartida
+        identifier: raw_ingresso_contrapartida
+        description: >
+            Depósitos de contrapartida feitos pelo convenente na conta do convênio.
+            Granularidade: uma linha por ingresso de contrapartida, por convênio e data.
+        meta:
+          classificacao: publico
+          dag_ingestao: siconv_ingest_dag
+
+      - name: licitacao
+        identifier: raw_licitacao
+        description: >
+            Licitações/processos de compra realizados no âmbito do convênio.
+            Granularidade: uma linha por licitação.
+        meta:
+          classificacao: publico
+          dag_ingestao: siconv_ingest_dag
+
+      - name: meta_crono_fisico
+        identifier: raw_meta_crono_fisico
+        description: >
+            Metas físicas previstas no cronograma de execução de uma proposta/convênio.
+            Granularidade: uma linha por meta física.
+        meta:
+          classificacao: publico
+          dag_ingestao: siconv_ingest_dag
+
+      - name: pagamento
+        identifier: raw_pagamento
+        description: >
+            Pagamentos a fornecedores realizados com recursos do convênio.
+            Granularidade: uma linha por movimento financeiro de pagamento.
+        meta:
+          classificacao: publico
+          dag_ingestao: siconv_ingest_dag
+
+      - name: pagamento_tributo
+        identifier: raw_pagamento_tributo
+        description: >
+            Pagamentos de tributos feitos com recursos do convênio. Granularidade: uma
+            linha por pagamento de tributo, por convênio e data.
+        meta:
+          classificacao: publico
+          dag_ingestao: siconv_ingest_dag
+
+      - name: proposta
+        identifier: raw_proposta
+        description: >
+            Propostas de convênio/termo de fomento apresentadas ao concedente, com dados
+            do proponente, valores globais e vigência propostos. Granularidade: uma
+            linha por proposta.
+        meta:
+          classificacao: publico
+          dag_ingestao: siconv_ingest_dag
+
+      - name: prorroga_oficio
+        identifier: raw_prorroga_oficio
+        description: >
+            Prorrogações de ofício da vigência de um convênio, por atraso do concedente.
+            Granularidade: uma linha por prorrogação de ofício.
+        meta:
+          classificacao: publico
+          dag_ingestao: siconv_ingest_dag
+
+      - name: solicitacao_alteracao
+        identifier: raw_solicitacao_alteracao
+        description: >
+            Solicitações de alteração de um convênio feitas pelo convenente.
+            Granularidade: uma linha por solicitação de alteração.
+        meta:
+          classificacao: publico
+          dag_ingestao: siconv_ingest_dag
+
+      - name: solicitacao_rendimento_aplicacao
+        identifier: raw_solicitacao_rendimento_aplicacao
+        description: >
+            Solicitações de uso do rendimento de aplicação financeira dos recursos do
+            convênio. Granularidade: uma linha por solicitação de rendimento de
+            aplicação.
+        meta:
+          classificacao: publico
+          dag_ingestao: siconv_ingest_dag
+
+      - name: termo_aditivo
+        identifier: raw_termo_aditivo
+        description: >
+            Termos aditivos que alteram valores, prazos ou objeto de um convênio.
+            Granularidade: uma linha por termo aditivo de um convênio.
+        meta:
+          classificacao: publico
+          dag_ingestao: siconv_ingest_dag

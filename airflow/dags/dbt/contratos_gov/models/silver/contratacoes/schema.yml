@@ -1,0 +1,131 @@
+version: 2
+
+models:
+  - name: contratos
+    description: >
+      Contratos ativos por UASG do MIR. Granularidade: um registro por contrato.
+    meta:
+      owner: "@GovHub-br/mir"
+      sistema_origem: contratos_gov
+      camada: silver
+      classificacao: publico
+    columns:
+      - name: id
+        description: >
+            PREENCHER: o que a coluna 'id' significa, na origem
+            contratos_gov.raw_contratos.
+        meta:
+          classificacao: publico
+      - name: dt_ingest
+        description: >
+            Data e hora em que o registro foi gravado na Bronze pela DAG de ingestão.
+        meta:
+          classificacao: publico
+  - name: empenhos
+    description: >
+      Empenhos associados a um contrato. Granularidade: uma linha por empenho de
+      um contrato.
+    meta:
+      owner: "@GovHub-br/mir"
+      sistema_origem: contratos_gov
+      camada: silver
+      classificacao: publico
+    columns:
+      - name: id
+        description: >
+            PREENCHER: o que a coluna 'id' significa, na origem
+            contratos_gov.raw_empenhos.
+        meta:
+          classificacao: publico
+      - name: contrato_id
+        description: >
+            PREENCHER: o que a coluna 'contrato_id' significa, na origem
+            contratos_gov.raw_empenhos.
+        meta:
+          classificacao: publico
+      - name: dt_ingest
+        description: >
+            Data e hora em que o registro foi gravado na Bronze pela DAG de ingestão.
+        meta:
+          classificacao: publico
+  - name: cronograma
+    description: >
+      Cronograma financeiro associado a um contrato. Granularidade: uma linha por
+      item de cronograma de um contrato.
+    meta:
+      owner: "@GovHub-br/mir"
+      sistema_origem: contratos_gov
+      camada: silver
+      classificacao: publico
+    columns:
+      - name: id
+        description: >
+            PREENCHER: o que a coluna 'id' significa, na origem
+            contratos_gov.raw_cronograma.
+        meta:
+          classificacao: publico
+      - name: contrato_id
+        description: >
+            PREENCHER: o que a coluna 'contrato_id' significa, na origem
+            contratos_gov.raw_cronograma.
+        meta:
+          classificacao: publico
+      - name: dt_ingest
+        description: >
+            Data e hora em que o registro foi gravado na Bronze pela DAG de ingestão.
+        meta:
+          classificacao: publico
+  - name: faturas
+    description: >
+      Faturas associadas a um contrato. Granularidade: uma linha por fatura de um
+      contrato.
+    meta:
+      owner: "@GovHub-br/mir"
+      sistema_origem: contratos_gov
+      camada: silver
+      classificacao: publico
+    columns:
+      - name: id
+        description: >
+            PREENCHER: o que a coluna 'id' significa, na origem
+            contratos_gov.raw_faturas.
+        meta:
+          classificacao: publico
+      - name: contrato_id
+        description: >
+            PREENCHER: o que a coluna 'contrato_id' significa, na origem
+            contratos_gov.raw_faturas.
+        meta:
+          classificacao: publico
+      - name: dt_ingest
+        description: >
+            Data e hora em que o registro foi gravado na Bronze pela DAG de ingestão.
+        meta:
+          classificacao: publico
+  - name: terceirizados
+    description: >
+      Trabalhadores terceirizados alocados em um contrato. Granularidade: uma
+      linha por terceirizado de um contrato.
+    meta:
+      owner: "@GovHub-br/mir"
+      sistema_origem: contratos_gov
+      camada: silver
+      classificacao: publico
+    columns:
+      - name: id
+        description: >
+            PREENCHER: o que a coluna 'id' significa, na origem
+            contratos_gov.raw_terceirizados.
+        meta:
+          classificacao: publico
+      - name: contrato_id
+        description: >
+            PREENCHER: o que a coluna 'contrato_id' significa, na origem
+            contratos_gov.raw_terceirizados.
+        meta:
+          classificacao: publico
+      - name: dt_ingest
+        description: >
+            Data e hora em que o registro foi gravado na Bronze pela DAG de ingestão.
+        meta:
+          classificacao: publico

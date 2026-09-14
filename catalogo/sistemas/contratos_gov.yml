@@ -1,0 +1,75 @@
+# Contratos.gov.br (API pública contratos.comprasnet.gov.br) — módulo de
+# gestão de contratos do SIASG, distinto da API dadosabertos.compras.gov.br
+# já catalogada em compras_gov.yml. Ver ADR-0017.
+#
+# Migrado de data-application-mir. As DAGs buscam por código de UG do MIR —
+# não há endpoint "todas as UGs" no cliente hoje, então o sistema fica com
+# código específico de órgão (ADR-0004) até outro órgão precisar do mesmo
+# dado.
+#
+# Escopo desta migração: as 5 entidades da API de contrato — contratos,
+# empenhos, faturas, cronograma e terceirizados.
+
+sistema: contratos_gov
+nome: Contratos.gov.br
+descricao: >-
+  Módulo de gestão de contratos do SIASG. Expõe contratos ativos por UASG e
+  os sub-recursos de empenhos, faturas, cronograma e terceirizados por
+  contrato.
+orgao_gestor: mgi
+owner: "@GovHub-br/mir"
+status: ingerido
+
+entidades:
+
+  contratos:
+    descricao: >-
+      Contratos por UASG do MIR — ativos e inativos, gravados na mesma
+      tabela por duas DAGs distintas.
+    granularidade: um registro por contrato
+    dominio: contratacoes
+    dag: contratos_mir_ingest_dag
+    origem_atual: contratos_gov.raw_contratos
+    chave_primaria: [id]
+    classificacao: publico
+    chaves: []
+
+  empenhos:
+    descricao: Empenhos associados a um contrato.
+    granularidade: uma linha por empenho de um contrato
+    dominio: contratacoes
+    dag: empenhos_mir_ingest_dag
+    origem_atual: contratos_gov.raw_empenhos
+    chave_primaria: [id, contrato_id]
+    classificacao: publico
+    chaves: []
+
+  faturas:
+    descricao: Faturas associadas a um contrato.
+    granularidade: uma linha por fatura de um contrato
+    dominio: contratacoes
+    dag: faturas_mir_ingest_dag
+    origem_atual: contratos_gov.raw_faturas
+    chave_primaria: [id, contrato_id]
+    classificacao: publico
+    chaves: []
+
+  cronograma:
+    descricao: Cronograma financeiro associado a um contrato.
+    granularidade: uma linha por item de cronograma de um contrato
+    dominio: contratacoes
+    dag: cronograma_mir_ingest_dag
+    origem_atual: contratos_gov.raw_cronograma
+    chave_primaria: [id, contrato_id]
+    classificacao: publico
+    chaves: []
+
+  terceirizados:
+    descricao: Trabalhadores terceirizados alocados em um contrato.
+    granularidade: uma linha por terceirizado de um contrato
+    dominio: contratacoes
+    dag: terceirizados_mir_ingest_dag
+    origem_atual: contratos_gov.raw_terceirizados
+    chave_primaria: [id, contrato_id]
+    classificacao: publico
+    chaves: []

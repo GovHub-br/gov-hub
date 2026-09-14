@@ -1,0 +1,16 @@
+# Pacotes dos sistemas estruturantes que este órgão consome (ADR-0004).
+#
+# O caminho é sobrescrevível por variável de ambiente porque o Cosmos renderiza
+# o projeto dbt em um diretório temporário para montar o grafo da DAG de
+# transformação (ADR-0018) — e de lá um `../gov_bricks` apontaria para fora do
+# monorepo. O default `..` mantém `dbt deps` funcionando normalmente quando
+# rodado dentro da pasta do projeto.
+packages:
+  - local: "{{ env_var('GOV_BRICKS_DBT_DIR', '..') }}/gov_bricks"
+  - local: "{{ env_var('GOV_BRICKS_DBT_DIR', '..') }}/contratos_gov"
+  - local: "{{ env_var('GOV_BRICKS_DBT_DIR', '..') }}/tesouro_gerencial"
+  - local: "{{ env_var('GOV_BRICKS_DBT_DIR', '..') }}/camara_deputados"
+  - local: "{{ env_var('GOV_BRICKS_DBT_DIR', '..') }}/senado_federal"
+  - local: "{{ env_var('GOV_BRICKS_DBT_DIR', '..') }}/siconv"
+  - local: "{{ env_var('GOV_BRICKS_DBT_DIR', '..') }}/transferegov_emendas"
+  - local: "{{ env_var('GOV_BRICKS_DBT_DIR', '..') }}/transferegov_ted"

@@ -1,0 +1,53 @@
+# GERADO por `make modelo` a partir de catalogo/sistemas/camara_deputados.yml — não edite à mão.
+#
+# A Bronze não é materializada por dbt: ela é um source sobre a zona raw,
+# onde a ingestão entrega o dado (ADR-0006, ADR-0017, ADR-0021).
+#
+# Esta é a forma de tabela, do backend `warehouse`. Em um deployment com a
+# raw em object storage, o source aponta para os arquivos da entidade.
+
+version: 2
+
+sources:
+  - name: camara_deputados
+    schema: camara_deputados
+    description: >
+      Camada Bronze de Câmara dos Deputados (Dados Abertos): dado fiel à fonte,
+      gravado pelas DAGs de ingestão. API pública de dados abertos da Câmara dos
+      Deputados. Expõe o cadastro de deputados federais, o histórico de mandato
+      (filiação, situação, condição eleitoral) de cada deputado e o cadastro de
+      partidos políticos com a URL do logo de cada um.
+    meta:
+      owner: "@GovHub-br/oss"
+      sistema_origem: camara_deputados
+      camada: bronze
+    tables:
+      - name: deputados
+        identifier: raw_deputados
+        description: >
+            Deputados federais. O mesmo deputado pode aparecer mais de uma vez, uma
+            linha por combinação de partido e legislatura. Granularidade: um registro
+            por deputado, sigla de partido e legislatura.
+        meta:
+          classificacao: publico
+          dag_ingestao: deputados_ingest_dag
+
+      - name: deputados_historico
+        identifier: raw_deputados_historico
+        description: >
+            Eventos de mandato de cada deputado (troca de partido, afastamento, licença,
+            fim de mandato), usados para derivar os períodos de filiação partidária.
+            Granularidade: uma linha por evento histórico de um deputado.
+        meta:
+          classificacao: publico
+          dag_ingestao: deputados_historico_ingest_dag
+
+      - name: logo_partidos
+        identifier: raw_logo_partidos
+        description: >
+            Cadastro de partidos políticos e a URL do logo de cada um. Não consumida por
+            nenhum modelo Silver hoje — catalogada para rastreabilidade da fonte.
+            Granularidade: um registro por partido.
+        meta:
+          classificacao: publico
+          dag_ingestao: logo_partidos_ingest_dag

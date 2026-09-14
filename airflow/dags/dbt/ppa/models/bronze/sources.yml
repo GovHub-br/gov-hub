@@ -1,0 +1,361 @@
+# GERADO por `make modelo` a partir de catalogo/sistemas/ppa.yml — não edite à mão.
+#
+# A Bronze não é materializada por dbt: ela é um source sobre a zona raw,
+# onde a ingestão entrega o dado (ADR-0006, ADR-0017, ADR-0021).
+#
+# Esta é a forma de tabela, do backend `warehouse`. Em um deployment com a
+# raw em object storage, o source aponta para os arquivos da entidade.
+
+version: 2
+
+sources:
+  - name: ppa
+    schema: ppa
+    description: >
+      Camada Bronze de PPA (Plano Plurianual 2024-2027): dado fiel à fonte,
+      gravado pelas DAGs de ingestão. Dados abertos do Plano Plurianual 2024-2027
+      (PPA/SIOP): programas, objetivos, entregas, metas, indicadores,
+      desagregações, regionalizações, medidas institucionais e agendas
+      transversais, publicados anualmente em zip/CSV (revisões 2024, 2025 e 2026).
+    meta:
+      owner: "@GovHub-br/oss"
+      sistema_origem: ppa
+      camada: bronze
+    tables:
+      - name: acao_nao_orcamentaria
+        identifier: raw_acao_nao_orcamentaria
+        description: >
+            Camada bronze do PPA/SIOP — acao_nao_orcamentaria unificada (2024-2026) por
+            ano_ppa, com conversão de tipos e auditoria (dt_ingest). Granularidade: uma
+            linha por registro de acao nao orcamentaria, por ano_ppa (revisão do PPA —
+            2024, 2025 ou 2026).
+        meta:
+          classificacao: publico
+          dag_ingestao: ppa_ingest_dag
+
+      - name: agenda
+        identifier: raw_agenda
+        description: >
+            Camada bronze do PPA/SIOP — agenda unificada (2024-2026) por ano_ppa, com
+            conversão de tipos e auditoria (dt_ingest). Granularidade: uma linha por
+            registro de agenda, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026).
+        meta:
+          classificacao: publico
+          dag_ingestao: ppa_ingest_dag
+
+      - name: agenda_desagregacao_meta_entrega
+        identifier: raw_agenda_desagregacao_meta_entrega
+        description: >
+            Camada bronze do PPA/SIOP — agenda_desagregacao_meta_entrega unificada
+            (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+            Granularidade: uma linha por registro de agenda desagregacao meta entrega,
+            por ano_ppa (revisão do PPA — 2024, 2025 ou 2026).
+        meta:
+          classificacao: publico
+          dag_ingestao: ppa_ingest_dag
+
+      - name: agenda_desagregacao_meta_objetivo_especifico
+        identifier: raw_agenda_desagregacao_meta_objetivo_especifico
+        description: >
+            Camada bronze do PPA/SIOP — agenda_desagregacao_meta_objetivo_especifico
+            unificada (2024-2026) por ano_ppa, com conversão de tipos e auditoria
+            (dt_ingest). Granularidade: uma linha por registro de agenda desagregacao
+            meta objetivo especifico, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026).
+        meta:
+          classificacao: publico
+          dag_ingestao: ppa_ingest_dag
+
+      - name: agenda_entrega
+        identifier: raw_agenda_entrega
+        description: >
+            Camada bronze do PPA/SIOP — agenda_entrega unificada (2024-2026) por
+            ano_ppa, com conversão de tipos e auditoria (dt_ingest). Granularidade: uma
+            linha por registro de agenda entrega, por ano_ppa (revisão do PPA — 2024,
+            2025 ou 2026).
+        meta:
+          classificacao: publico
+          dag_ingestao: ppa_ingest_dag
+
+      - name: agenda_indicador_entrega
+        identifier: raw_agenda_indicador_entrega
+        description: >
+            Camada bronze do PPA/SIOP — agenda_indicador_entrega unificada (2024-2026)
+            por ano_ppa, com conversão de tipos e auditoria (dt_ingest). Granularidade:
+            uma linha por registro de agenda indicador entrega, por ano_ppa (revisão do
+            PPA — 2024, 2025 ou 2026).
+        meta:
+          classificacao: publico
+          dag_ingestao: ppa_ingest_dag
+
+      - name: agenda_indicador_objetivo_especifico
+        identifier: raw_agenda_indicador_objetivo_especifico
+        description: >
+            Camada bronze do PPA/SIOP — agenda_indicador_objetivo_especifico unificada
+            (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+            Granularidade: uma linha por registro de agenda indicador objetivo
+            especifico, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026).
+        meta:
+          classificacao: publico
+          dag_ingestao: ppa_ingest_dag
+
+      - name: agenda_medida_institucional_objetivo_especifico
+        identifier: raw_agenda_medida_institucional_objetivo_especifico
+        description: >
+            Camada bronze do PPA/SIOP — agenda_medida_institucional_objetivo_especifico
+            unificada (2024-2026) por ano_ppa, com conversão de tipos e auditoria
+            (dt_ingest). Granularidade: uma linha por registro de agenda medida
+            institucional objetivo especifico, por ano_ppa (revisão do PPA — 2024, 2025
+            ou 2026).
+        meta:
+          classificacao: publico
+          dag_ingestao: ppa_ingest_dag
+
+      - name: agenda_medida_institucional_programa
+        identifier: raw_agenda_medida_institucional_programa
+        description: >
+            Camada bronze do PPA/SIOP — agenda_medida_institucional_programa unificada
+            (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+            Granularidade: uma linha por registro de agenda medida institucional
+            programa, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026).
+        meta:
+          classificacao: publico
+          dag_ingestao: ppa_ingest_dag
+
+      - name: agenda_meta_entrega
+        identifier: raw_agenda_meta_entrega
+        description: >
+            Camada bronze do PPA/SIOP — agenda_meta_entrega unificada (2024-2026) por
+            ano_ppa, com conversão de tipos e auditoria (dt_ingest). Granularidade: uma
+            linha por registro de agenda meta entrega, por ano_ppa (revisão do PPA —
+            2024, 2025 ou 2026).
+        meta:
+          classificacao: publico
+          dag_ingestao: ppa_ingest_dag
+
+      - name: agenda_meta_objetivo_especifico
+        identifier: raw_agenda_meta_objetivo_especifico
+        description: >
+            Camada bronze do PPA/SIOP — agenda_meta_objetivo_especifico unificada
+            (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+            Granularidade: uma linha por registro de agenda meta objetivo especifico,
+            por ano_ppa (revisão do PPA — 2024, 2025 ou 2026).
+        meta:
+          classificacao: publico
+          dag_ingestao: ppa_ingest_dag
+
+      - name: agenda_objetivo_especifico
+        identifier: raw_agenda_objetivo_especifico
+        description: >
+            Camada bronze do PPA/SIOP — agenda_objetivo_especifico unificada (2024-2026)
+            por ano_ppa, com conversão de tipos e auditoria (dt_ingest). Granularidade:
+            uma linha por registro de agenda objetivo especifico, por ano_ppa (revisão
+            do PPA — 2024, 2025 ou 2026).
+        meta:
+          classificacao: publico
+          dag_ingestao: ppa_ingest_dag
+
+      - name: agenda_objetivo_geral
+        identifier: raw_agenda_objetivo_geral
+        description: >
+            Camada bronze do PPA/SIOP — agenda_objetivo_geral unificada (2024-2026) por
+            ano_ppa, com conversão de tipos e auditoria (dt_ingest). Granularidade: uma
+            linha por registro de agenda objetivo geral, por ano_ppa (revisão do PPA —
+            2024, 2025 ou 2026).
+        meta:
+          classificacao: publico
+          dag_ingestao: ppa_ingest_dag
+
+      - name: agenda_programa
+        identifier: raw_agenda_programa
+        description: >
+            Camada bronze do PPA/SIOP — agenda_programa unificada (2024-2026) por
+            ano_ppa, com conversão de tipos e auditoria (dt_ingest). Granularidade: uma
+            linha por registro de agenda programa, por ano_ppa (revisão do PPA — 2024,
+            2025 ou 2026).
+        meta:
+          classificacao: publico
+          dag_ingestao: ppa_ingest_dag
+
+      - name: agenda_regionalizacao_meta_entrega
+        identifier: raw_agenda_regionalizacao_meta_entrega
+        description: >
+            Camada bronze do PPA/SIOP — agenda_regionalizacao_meta_entrega unificada
+            (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+            Granularidade: uma linha por registro de agenda regionalizacao meta entrega,
+            por ano_ppa (revisão do PPA — 2024, 2025 ou 2026).
+        meta:
+          classificacao: publico
+          dag_ingestao: ppa_ingest_dag
+
+      - name: agenda_regionalizacao_meta_objetivo_especifico
+        identifier: raw_agenda_regionalizacao_meta_objetivo_especifico
+        description: >
+            Camada bronze do PPA/SIOP — agenda_regionalizacao_meta_objetivo_especifico
+            unificada (2024-2026) por ano_ppa, com conversão de tipos e auditoria
+            (dt_ingest). Granularidade: uma linha por registro de agenda regionalizacao
+            meta objetivo especifico, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026).
+        meta:
+          classificacao: publico
+          dag_ingestao: ppa_ingest_dag
+
+      - name: desagregacao_meta_entrega
+        identifier: raw_desagregacao_meta_entrega
+        description: >
+            Camada bronze do PPA/SIOP — desagregacao_meta_entrega unificada (2024-2026)
+            por ano_ppa, com conversão de tipos e auditoria (dt_ingest). Granularidade:
+            uma linha por registro de desagregacao meta entrega, por ano_ppa (revisão do
+            PPA — 2024, 2025 ou 2026).
+        meta:
+          classificacao: publico
+          dag_ingestao: ppa_ingest_dag
+
+      - name: desagregacao_meta_objetivo_especifico
+        identifier: raw_desagregacao_meta_objetivo_especifico
+        description: >
+            Camada bronze do PPA/SIOP — desagregacao_meta_objetivo_especifico unificada
+            (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+            Granularidade: uma linha por registro de desagregacao meta objetivo
+            especifico, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026).
+        meta:
+          classificacao: publico
+          dag_ingestao: ppa_ingest_dag
+
+      - name: entrega
+        identifier: raw_entrega
+        description: >
+            Camada bronze do PPA/SIOP — entrega unificada (2024-2026) por ano_ppa, com
+            conversão de tipos e auditoria (dt_ingest). Granularidade: uma linha por
+            registro de entrega, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026).
+        meta:
+          classificacao: publico
+          dag_ingestao: ppa_ingest_dag
+
+      - name: indicador_entrega
+        identifier: raw_indicador_entrega
+        description: >
+            Camada bronze do PPA/SIOP — indicador_entrega unificada (2024-2026) por
+            ano_ppa, com conversão de tipos e auditoria (dt_ingest). Granularidade: uma
+            linha por registro de indicador entrega, por ano_ppa (revisão do PPA — 2024,
+            2025 ou 2026).
+        meta:
+          classificacao: publico
+          dag_ingestao: ppa_ingest_dag
+
+      - name: indicador_objetivo_especifico
+        identifier: raw_indicador_objetivo_especifico
+        description: >
+            Camada bronze do PPA/SIOP — indicador_objetivo_especifico unificada
+            (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+            Granularidade: uma linha por registro de indicador objetivo especifico, por
+            ano_ppa (revisão do PPA — 2024, 2025 ou 2026).
+        meta:
+          classificacao: publico
+          dag_ingestao: ppa_ingest_dag
+
+      - name: medida_institucional_objetivo_especifico
+        identifier: raw_medida_institucional_objetivo_especifico
+        description: >
+            Camada bronze do PPA/SIOP — medida_institucional_objetivo_especifico
+            unificada (2024-2026) por ano_ppa, com conversão de tipos e auditoria
+            (dt_ingest). Granularidade: uma linha por registro de medida institucional
+            objetivo especifico, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026).
+        meta:
+          classificacao: publico
+          dag_ingestao: ppa_ingest_dag
+
+      - name: medida_institucional_programa
+        identifier: raw_medida_institucional_programa
+        description: >
+            Camada bronze do PPA/SIOP — medida_institucional_programa unificada
+            (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+            Granularidade: uma linha por registro de medida institucional programa, por
+            ano_ppa (revisão do PPA — 2024, 2025 ou 2026).
+        meta:
+          classificacao: publico
+          dag_ingestao: ppa_ingest_dag
+
+      - name: meta_entrega
+        identifier: raw_meta_entrega
+        description: >
+            Camada bronze do PPA/SIOP — meta_entrega unificada (2024-2026) por ano_ppa,
+            com conversão de tipos e auditoria (dt_ingest). Granularidade: uma linha por
+            registro de meta entrega, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026).
+        meta:
+          classificacao: publico
+          dag_ingestao: ppa_ingest_dag
+
+      - name: meta_objetivo_especifico
+        identifier: raw_meta_objetivo_especifico
+        description: >
+            Camada bronze do PPA/SIOP — meta_objetivo_especifico unificada (2024-2026)
+            por ano_ppa, com conversão de tipos e auditoria (dt_ingest). Granularidade:
+            uma linha por registro de meta objetivo especifico, por ano_ppa (revisão do
+            PPA — 2024, 2025 ou 2026).
+        meta:
+          classificacao: publico
+          dag_ingestao: ppa_ingest_dag
+
+      - name: objetivo_especifico
+        identifier: raw_objetivo_especifico
+        description: >
+            Camada bronze do PPA/SIOP — objetivo_especifico unificada (2024-2026) por
+            ano_ppa, com conversão de tipos e auditoria (dt_ingest). Granularidade: uma
+            linha por registro de objetivo especifico, por ano_ppa (revisão do PPA —
+            2024, 2025 ou 2026).
+        meta:
+          classificacao: publico
+          dag_ingestao: ppa_ingest_dag
+
+      - name: objetivo_estrategico_programa
+        identifier: raw_objetivo_estrategico_programa
+        description: >
+            Camada bronze do PPA/SIOP — objetivo_estrategico_programa unificada
+            (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+            Granularidade: uma linha por registro de objetivo estrategico programa, por
+            ano_ppa (revisão do PPA — 2024, 2025 ou 2026).
+        meta:
+          classificacao: publico
+          dag_ingestao: ppa_ingest_dag
+
+      - name: objetivo_geral
+        identifier: raw_objetivo_geral
+        description: >
+            Camada bronze do PPA/SIOP — objetivo_geral unificada (2024-2026) por
+            ano_ppa, com conversão de tipos e auditoria (dt_ingest). Granularidade: uma
+            linha por registro de objetivo geral, por ano_ppa (revisão do PPA — 2024,
+            2025 ou 2026).
+        meta:
+          classificacao: publico
+          dag_ingestao: ppa_ingest_dag
+
+      - name: programa
+        identifier: raw_programa
+        description: >
+            Camada bronze do PPA/SIOP — programa unificada (2024-2026) por ano_ppa, com
+            conversão de tipos e auditoria (dt_ingest). Granularidade: uma linha por
+            registro de programa, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026).
+        meta:
+          classificacao: publico
+          dag_ingestao: ppa_ingest_dag
+
+      - name: regionalizacao_meta_entrega
+        identifier: raw_regionalizacao_meta_entrega
+        description: >
+            Camada bronze do PPA/SIOP — regionalizacao_meta_entrega unificada
+            (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+            Granularidade: uma linha por registro de regionalizacao meta entrega, por
+            ano_ppa (revisão do PPA — 2024, 2025 ou 2026).
+        meta:
+          classificacao: publico
+          dag_ingestao: ppa_ingest_dag
+
+      - name: regionalizacao_meta_objetivo_especifico
+        identifier: raw_regionalizacao_meta_objetivo_especifico
+        description: >
+            Camada bronze do PPA/SIOP — regionalizacao_meta_objetivo_especifico
+            unificada (2024-2026) por ano_ppa, com conversão de tipos e auditoria
+            (dt_ingest). Granularidade: uma linha por registro de regionalizacao meta
+            objetivo especifico, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026).
+        meta:
+          classificacao: publico
+          dag_ingestao: ppa_ingest_dag

@@ -1,0 +1,370 @@
+# PPA (Plano Plurianual) — dados abertos do PPA/SIOP 2024-2027.
+# Ver catalogo/README.md e ADR-0017.
+#
+# Migrado de data-application-mir. Fonte 100% nacional/genérica: os dados
+# abertos do PPA não têm nenhum filtro específico de órgão (ao contrário de
+# tesouro_gerencial/mir, que extrai por e-mail de uma caixa do MIR). Por isso
+# a ingestão vive direto em data_ingest/ppa/, sem subpasta de órgão (ADR-0004).
+#
+# Uma única DAG (ppa_ingest_dag) baixa os 3 zips anuais (revisões 2024, 2025,
+# 2026) e ingere as 31 entidades de dentro de cada um — ver ADR-0007 (exceção
+# deliberada: um zip por ano contém todas as 31 tabelas; separar em 31 DAGs
+# forçaria 31 downloads redundantes do mesmo zip por execução).
+#
+# 3 tabelas presentes na fonte a partir de 2025 ficam FORA do catálogo, mesma
+# exclusão deliberada da ingestão original: Indicador_Entrega_-_Meta_ODS,
+# Indicador_Obj_Espec_-_Meta_ODS e Planos_Regionais_Desenvolvimento_-_Entrega.
+
+sistema: ppa
+nome: PPA (Plano Plurianual 2024-2027)
+descricao: >-
+  Dados abertos do Plano Plurianual 2024-2027 (PPA/SIOP): programas,
+  objetivos, entregas, metas, indicadores, desagregações, regionalizações,
+  medidas institucionais e agendas transversais, publicados anualmente em
+  zip/CSV (revisões 2024, 2025 e 2026).
+orgao_gestor: mpo
+owner: "@GovHub-br/oss"
+status: ingerido
+
+entidades:
+
+  acao_nao_orcamentaria:
+    descricao: >-
+      Camada bronze do PPA/SIOP — acao_nao_orcamentaria unificada (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+    granularidade: uma linha por registro de acao nao orcamentaria, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026)
+    dominio: planejamento_orcamentario
+    dag: ppa_ingest_dag
+    origem_atual: ppa.raw_acao_nao_orcamentaria
+    chave_primaria: [id_hash, ano_ppa]
+    classificacao: publico
+    chaves: []
+
+  programa:
+    descricao: >-
+      Camada bronze do PPA/SIOP — programa unificada (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+    granularidade: uma linha por registro de programa, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026)
+    dominio: planejamento_orcamentario
+    dag: ppa_ingest_dag
+    origem_atual: ppa.raw_programa
+    chave_primaria: [id_hash, ano_ppa]
+    classificacao: publico
+    chaves: []
+
+  objetivo_geral:
+    descricao: >-
+      Camada bronze do PPA/SIOP — objetivo_geral unificada (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+    granularidade: uma linha por registro de objetivo geral, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026)
+    dominio: planejamento_orcamentario
+    dag: ppa_ingest_dag
+    origem_atual: ppa.raw_objetivo_geral
+    chave_primaria: [id_hash, ano_ppa]
+    classificacao: publico
+    chaves: []
+
+  objetivo_especifico:
+    descricao: >-
+      Camada bronze do PPA/SIOP — objetivo_especifico unificada (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+    granularidade: uma linha por registro de objetivo especifico, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026)
+    dominio: planejamento_orcamentario
+    dag: ppa_ingest_dag
+    origem_atual: ppa.raw_objetivo_especifico
+    chave_primaria: [id_hash, ano_ppa]
+    classificacao: publico
+    chaves: []
+
+  objetivo_estrategico_programa:
+    descricao: >-
+      Camada bronze do PPA/SIOP — objetivo_estrategico_programa unificada (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+    granularidade: uma linha por registro de objetivo estrategico programa, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026)
+    dominio: planejamento_orcamentario
+    dag: ppa_ingest_dag
+    origem_atual: ppa.raw_objetivo_estrategico_programa
+    chave_primaria: [id_hash, ano_ppa]
+    classificacao: publico
+    chaves: []
+
+  meta_objetivo_especifico:
+    descricao: >-
+      Camada bronze do PPA/SIOP — meta_objetivo_especifico unificada (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+    granularidade: uma linha por registro de meta objetivo especifico, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026)
+    dominio: planejamento_orcamentario
+    dag: ppa_ingest_dag
+    origem_atual: ppa.raw_meta_objetivo_especifico
+    chave_primaria: [id_hash, ano_ppa]
+    classificacao: publico
+    chaves: []
+
+  entrega:
+    descricao: >-
+      Camada bronze do PPA/SIOP — entrega unificada (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+    granularidade: uma linha por registro de entrega, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026)
+    dominio: planejamento_orcamentario
+    dag: ppa_ingest_dag
+    origem_atual: ppa.raw_entrega
+    chave_primaria: [id_hash, ano_ppa]
+    classificacao: publico
+    chaves: []
+
+  meta_entrega:
+    descricao: >-
+      Camada bronze do PPA/SIOP — meta_entrega unificada (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+    granularidade: uma linha por registro de meta entrega, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026)
+    dominio: planejamento_orcamentario
+    dag: ppa_ingest_dag
+    origem_atual: ppa.raw_meta_entrega
+    chave_primaria: [id_hash, ano_ppa]
+    classificacao: publico
+    chaves: []
+
+  indicador_objetivo_especifico:
+    descricao: >-
+      Camada bronze do PPA/SIOP — indicador_objetivo_especifico unificada (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+    granularidade: uma linha por registro de indicador objetivo especifico, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026)
+    dominio: planejamento_orcamentario
+    dag: ppa_ingest_dag
+    origem_atual: ppa.raw_indicador_objetivo_especifico
+    chave_primaria: [id_hash, ano_ppa]
+    classificacao: publico
+    chaves: []
+
+  indicador_entrega:
+    descricao: >-
+      Camada bronze do PPA/SIOP — indicador_entrega unificada (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+    granularidade: uma linha por registro de indicador entrega, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026)
+    dominio: planejamento_orcamentario
+    dag: ppa_ingest_dag
+    origem_atual: ppa.raw_indicador_entrega
+    chave_primaria: [id_hash, ano_ppa]
+    classificacao: publico
+    chaves: []
+
+  desagregacao_meta_objetivo_especifico:
+    descricao: >-
+      Camada bronze do PPA/SIOP — desagregacao_meta_objetivo_especifico unificada (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+    granularidade: uma linha por registro de desagregacao meta objetivo especifico, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026)
+    dominio: planejamento_orcamentario
+    dag: ppa_ingest_dag
+    origem_atual: ppa.raw_desagregacao_meta_objetivo_especifico
+    chave_primaria: [id_hash, ano_ppa]
+    classificacao: publico
+    chaves: []
+
+  desagregacao_meta_entrega:
+    descricao: >-
+      Camada bronze do PPA/SIOP — desagregacao_meta_entrega unificada (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+    granularidade: uma linha por registro de desagregacao meta entrega, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026)
+    dominio: planejamento_orcamentario
+    dag: ppa_ingest_dag
+    origem_atual: ppa.raw_desagregacao_meta_entrega
+    chave_primaria: [id_hash, ano_ppa]
+    classificacao: publico
+    chaves: []
+
+  regionalizacao_meta_objetivo_especifico:
+    descricao: >-
+      Camada bronze do PPA/SIOP — regionalizacao_meta_objetivo_especifico unificada (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+    granularidade: uma linha por registro de regionalizacao meta objetivo especifico, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026)
+    dominio: planejamento_orcamentario
+    dag: ppa_ingest_dag
+    origem_atual: ppa.raw_regionalizacao_meta_objetivo_especifico
+    chave_primaria: [id_hash, ano_ppa]
+    classificacao: publico
+    chaves: []
+
+  regionalizacao_meta_entrega:
+    descricao: >-
+      Camada bronze do PPA/SIOP — regionalizacao_meta_entrega unificada (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+    granularidade: uma linha por registro de regionalizacao meta entrega, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026)
+    dominio: planejamento_orcamentario
+    dag: ppa_ingest_dag
+    origem_atual: ppa.raw_regionalizacao_meta_entrega
+    chave_primaria: [id_hash, ano_ppa]
+    classificacao: publico
+    chaves: []
+
+  medida_institucional_objetivo_especifico:
+    descricao: >-
+      Camada bronze do PPA/SIOP — medida_institucional_objetivo_especifico unificada (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+    granularidade: uma linha por registro de medida institucional objetivo especifico, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026)
+    dominio: planejamento_orcamentario
+    dag: ppa_ingest_dag
+    origem_atual: ppa.raw_medida_institucional_objetivo_especifico
+    chave_primaria: [id_hash, ano_ppa]
+    classificacao: publico
+    chaves: []
+
+  medida_institucional_programa:
+    descricao: >-
+      Camada bronze do PPA/SIOP — medida_institucional_programa unificada (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+    granularidade: uma linha por registro de medida institucional programa, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026)
+    dominio: planejamento_orcamentario
+    dag: ppa_ingest_dag
+    origem_atual: ppa.raw_medida_institucional_programa
+    chave_primaria: [id_hash, ano_ppa]
+    classificacao: publico
+    chaves: []
+
+  agenda:
+    descricao: >-
+      Camada bronze do PPA/SIOP — agenda unificada (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+    granularidade: uma linha por registro de agenda, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026)
+    dominio: planejamento_orcamentario
+    dag: ppa_ingest_dag
+    origem_atual: ppa.raw_agenda
+    chave_primaria: [id_hash, ano_ppa]
+    classificacao: publico
+    chaves: []
+
+  agenda_programa:
+    descricao: >-
+      Camada bronze do PPA/SIOP — agenda_programa unificada (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+    granularidade: uma linha por registro de agenda programa, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026)
+    dominio: planejamento_orcamentario
+    dag: ppa_ingest_dag
+    origem_atual: ppa.raw_agenda_programa
+    chave_primaria: [id_hash, ano_ppa]
+    classificacao: publico
+    chaves: []
+
+  agenda_objetivo_geral:
+    descricao: >-
+      Camada bronze do PPA/SIOP — agenda_objetivo_geral unificada (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+    granularidade: uma linha por registro de agenda objetivo geral, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026)
+    dominio: planejamento_orcamentario
+    dag: ppa_ingest_dag
+    origem_atual: ppa.raw_agenda_objetivo_geral
+    chave_primaria: [id_hash, ano_ppa]
+    classificacao: publico
+    chaves: []
+
+  agenda_objetivo_especifico:
+    descricao: >-
+      Camada bronze do PPA/SIOP — agenda_objetivo_especifico unificada (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+    granularidade: uma linha por registro de agenda objetivo especifico, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026)
+    dominio: planejamento_orcamentario
+    dag: ppa_ingest_dag
+    origem_atual: ppa.raw_agenda_objetivo_especifico
+    chave_primaria: [id_hash, ano_ppa]
+    classificacao: publico
+    chaves: []
+
+  agenda_entrega:
+    descricao: >-
+      Camada bronze do PPA/SIOP — agenda_entrega unificada (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+    granularidade: uma linha por registro de agenda entrega, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026)
+    dominio: planejamento_orcamentario
+    dag: ppa_ingest_dag
+    origem_atual: ppa.raw_agenda_entrega
+    chave_primaria: [id_hash, ano_ppa]
+    classificacao: publico
+    chaves: []
+
+  agenda_meta_entrega:
+    descricao: >-
+      Camada bronze do PPA/SIOP — agenda_meta_entrega unificada (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+    granularidade: uma linha por registro de agenda meta entrega, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026)
+    dominio: planejamento_orcamentario
+    dag: ppa_ingest_dag
+    origem_atual: ppa.raw_agenda_meta_entrega
+    chave_primaria: [id_hash, ano_ppa]
+    classificacao: publico
+    chaves: []
+
+  agenda_meta_objetivo_especifico:
+    descricao: >-
+      Camada bronze do PPA/SIOP — agenda_meta_objetivo_especifico unificada (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+    granularidade: uma linha por registro de agenda meta objetivo especifico, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026)
+    dominio: planejamento_orcamentario
+    dag: ppa_ingest_dag
+    origem_atual: ppa.raw_agenda_meta_objetivo_especifico
+    chave_primaria: [id_hash, ano_ppa]
+    classificacao: publico
+    chaves: []
+
+  agenda_indicador_entrega:
+    descricao: >-
+      Camada bronze do PPA/SIOP — agenda_indicador_entrega unificada (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+    granularidade: uma linha por registro de agenda indicador entrega, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026)
+    dominio: planejamento_orcamentario
+    dag: ppa_ingest_dag
+    origem_atual: ppa.raw_agenda_indicador_entrega
+    chave_primaria: [id_hash, ano_ppa]
+    classificacao: publico
+    chaves: []
+
+  agenda_indicador_objetivo_especifico:
+    descricao: >-
+      Camada bronze do PPA/SIOP — agenda_indicador_objetivo_especifico unificada (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+    granularidade: uma linha por registro de agenda indicador objetivo especifico, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026)
+    dominio: planejamento_orcamentario
+    dag: ppa_ingest_dag
+    origem_atual: ppa.raw_agenda_indicador_objetivo_especifico
+    chave_primaria: [id_hash, ano_ppa]
+    classificacao: publico
+    chaves: []
+
+  agenda_desagregacao_meta_entrega:
+    descricao: >-
+      Camada bronze do PPA/SIOP — agenda_desagregacao_meta_entrega unificada (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+    granularidade: uma linha por registro de agenda desagregacao meta entrega, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026)
+    dominio: planejamento_orcamentario
+    dag: ppa_ingest_dag
+    origem_atual: ppa.raw_agenda_desagregacao_meta_entrega
+    chave_primaria: [id_hash, ano_ppa]
+    classificacao: publico
+    chaves: []
+
+  agenda_desagregacao_meta_objetivo_especifico:
+    descricao: >-
+      Camada bronze do PPA/SIOP — agenda_desagregacao_meta_objetivo_especifico unificada (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+    granularidade: uma linha por registro de agenda desagregacao meta objetivo especifico, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026)
+    dominio: planejamento_orcamentario
+    dag: ppa_ingest_dag
+    origem_atual: ppa.raw_agenda_desagregacao_meta_objetivo_especifico
+    chave_primaria: [id_hash, ano_ppa]
+    classificacao: publico
+    chaves: []
+
+  agenda_regionalizacao_meta_entrega:
+    descricao: >-
+      Camada bronze do PPA/SIOP — agenda_regionalizacao_meta_entrega unificada (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+    granularidade: uma linha por registro de agenda regionalizacao meta entrega, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026)
+    dominio: planejamento_orcamentario
+    dag: ppa_ingest_dag
+    origem_atual: ppa.raw_agenda_regionalizacao_meta_entrega
+    chave_primaria: [id_hash, ano_ppa]
+    classificacao: publico
+    chaves: []
+
+  agenda_regionalizacao_meta_objetivo_especifico:
+    descricao: >-
+      Camada bronze do PPA/SIOP — agenda_regionalizacao_meta_objetivo_especifico unificada (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+    granularidade: uma linha por registro de agenda regionalizacao meta objetivo especifico, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026)
+    dominio: planejamento_orcamentario
+    dag: ppa_ingest_dag
+    origem_atual: ppa.raw_agenda_regionalizacao_meta_objetivo_especifico
+    chave_primaria: [id_hash, ano_ppa]
+    classificacao: publico
+    chaves: []
+
+  agenda_medida_institucional_objetivo_especifico:
+    descricao: >-
+      Camada bronze do PPA/SIOP — agenda_medida_institucional_objetivo_especifico unificada (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+    granularidade: uma linha por registro de agenda medida institucional objetivo especifico, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026)
+    dominio: planejamento_orcamentario
+    dag: ppa_ingest_dag
+    origem_atual: ppa.raw_agenda_medida_institucional_objetivo_especifico
+    chave_primaria: [id_hash, ano_ppa]
+    classificacao: publico
+    chaves: []
+
+  agenda_medida_institucional_programa:
+    descricao: >-
+      Camada bronze do PPA/SIOP — agenda_medida_institucional_programa unificada (2024-2026) por ano_ppa, com conversão de tipos e auditoria (dt_ingest).
+    granularidade: uma linha por registro de agenda medida institucional programa, por ano_ppa (revisão do PPA — 2024, 2025 ou 2026)
+    dominio: planejamento_orcamentario
+    dag: ppa_ingest_dag
+    origem_atual: ppa.raw_agenda_medida_institucional_programa
+    chave_primaria: [id_hash, ano_ppa]
+    classificacao: publico
+    chaves: []

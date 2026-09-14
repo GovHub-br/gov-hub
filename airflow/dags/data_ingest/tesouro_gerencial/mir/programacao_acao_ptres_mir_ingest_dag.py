@@ -51,7 +51,7 @@ PRIMARY_KEY = [
     "dotacao_atualizada",
 ]
 
-EMAIL_SUBJECT_SUFFIX = "programacao_acao_por_ptres_mir"
+EMAIL_SUBJECT = "programacao_acao_por_ptres_mir"
 SKIPROWS = 5
 
 default_args = {
@@ -94,10 +94,14 @@ def programacao_acao_ptres_mir_dag() -> None:
             creds["email"],
             creds["password"],
             creds["sender_email"],
-            None,
+            # Assunto como critério IMAP nativo SUBJECT (substring, filtrado
+            # no servidor) — mesmo padrão de nc_tesouro_pos_2026_mir_ingest_dag.py.
+            # Sem ele, o fetch(bulk=True) baixa TODAS as mensagens do
+            # remetente na janela, com anexos — risco de [OVERQUOTA] do
+            # provedor (ver mudanca.md, incidente de 2026-09-14).
+            EMAIL_SUBJECT,
             start_date=start_date,
             end_date=end_date,
-            subject_suffix=EMAIL_SUBJECT_SUFFIX,
         )
         if not zip_payloads:
             logging.warning(

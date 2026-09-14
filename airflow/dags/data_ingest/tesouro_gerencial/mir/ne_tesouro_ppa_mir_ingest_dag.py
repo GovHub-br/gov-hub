@@ -119,7 +119,7 @@ PRIMARY_KEY = [
     "restos_a_pagar_pagos",
 ]
 
-EMAIL_SUBJECT_SUFFIX = "notas_empenho_ppa_mir"
+EMAIL_SUBJECT = "notas_empenho_ppa_mir"
 
 default_args = {
     "owner": "mir",
@@ -298,8 +298,12 @@ def ne_tesouro_ppa_mir_dag() -> None:
             creds["email"],
             creds["password"],
             creds["sender_email"],
-            None,
-            subject_suffix=EMAIL_SUBJECT_SUFFIX,
+            # Assunto como critério IMAP nativo SUBJECT (substring, filtrado
+            # no servidor) — mesmo padrão de nc_tesouro_pos_2026_mir_ingest_dag.py.
+            # Sem ele, o fetch(bulk=True) baixa TODAS as mensagens do
+            # remetente na janela, com anexos — foi o que estourou o
+            # [OVERQUOTA] do provedor em 2026-09-14 (ver mudanca.md).
+            EMAIL_SUBJECT,
             start_date=start_date,
             end_date=end_date,
         )

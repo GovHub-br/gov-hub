@@ -55,7 +55,7 @@ PRIMARY_KEY = [
     "despesas_pagas",
 ]
 
-EMAIL_SUBJECT_SUFFIX = "notas_de_empenho_ano_atual"
+EMAIL_SUBJECT = "notas_de_empenho_ano_atual"
 SKIPROWS = 8
 OPTIONAL_COLUMNS = ["restos_a_pagar_inscritos", "restos_a_pagar_pagos"]
 
@@ -98,10 +98,9 @@ def ne_tesouro_mir_dag() -> None:
             creds["email"],
             creds["password"],
             creds["sender_email"],
-            None,
+            EMAIL_SUBJECT,
             start_date=start_date,
             end_date=end_date,
-            subject_suffix=EMAIL_SUBJECT_SUFFIX,
         )
         if not zip_payloads:
             logging.warning("[ne_tesouro_mir_ingest_dag] Nenhum anexo ZIP encontrado.")

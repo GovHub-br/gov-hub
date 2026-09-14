@@ -105,12 +105,25 @@ def write_raw(
     run_id: str | None = None,
     run_date: date | None = None,
     conn_id: str = CONEXAO_WAREHOUSE_PADRAO,
+    conflict_fields: list[str] | None = None,
 ) -> str | None:
     """Entrega um lote à zona raw e devolve o destino onde ele ficou.
 
     É a única função que uma DAG de ingestão usa para gravar: ela não sabe, e
     não deve saber, se o destino é object storage ou um banco (ADR-0011,
     ADR-0021). Devolve `None` quando não há registro nenhum a gravar.
+
+    `primary_key` e `conflict_fields` são separados de propósito. No backend
+    `warehouse`, `primary_key` vira uma constraint `PRIMARY KEY` de verdade no
+    `CREATE TABLE` — o que implica `NOT NULL` em toda coluna da chave.
+    `conflict_fields` só cria o `UNIQUE INDEX` usado pelo `ON CONFLICT`
+    (aceita nulo). Quando a chave de deduplicação inclui uma coluna que pode
+    legitimamente vir vazia da fonte (ex.: uma coluna financeira que o Tesouro
+    só emite quando há valor no período), passe só `conflict_fields` e deixe
+    `primary_key=None` — do contrário um lote cuja chave venha com essa coluna
+    nula derruba o `INSERT` inteiro com `NotNullViolation`. Sem
+    `conflict_fields` explícito, o comportamento é o de sempre: os dois usam a
+    mesma lista.
     """
     if not records:
         logging.warning("[landing_zone] Nada a gravar em %s.%s.", source, entity)
@@ -121,7 +134,9 @@ def write_raw(
 
     if backend == BACKEND_OBJECT_STORAGE:
         return _write_raw_object_storage(source, entity, carimbados, run_id, run_date)
-    return _write_raw_warehouse(source, entity, carimbados, primary_key, conn_id)
+    return _write_raw_warehouse(
+        source, entity, carimbados, primary_key, conn_id, conflict_fields
+    )
 
 
 def _run_id_do_contexto(source: str, entity: str) -> str:
@@ -170,6 +185,7 @@ def _write_raw_warehouse(
     records: list[dict],
     primary_key: list[str] | None,
     conn_id: str,
+    conflict_fields: list[str] | None = None,
 ) -> str:
     """Materializa o lote como tabela raw no destino analítico do órgão.
 
@@ -186,7 +202,7 @@ def _write_raw_warehouse(
         records,
         tabela,
         primary_key=primary_key,
-        conflict_fields=primary_key,
+        conflict_fields=conflict_fields if conflict_fields is not None else primary_key,
         schema=source,
     )
     destino = f"{source}.{tabela}"

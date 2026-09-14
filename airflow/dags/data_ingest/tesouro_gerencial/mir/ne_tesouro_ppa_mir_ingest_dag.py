@@ -96,10 +96,12 @@ SUB_HEADER_LINES = 2
 #
 # Nota: os valores financeiros fazem parte desta chave e, na prática, só um
 # vem preenchido por linha (os demais ficam NULL) — ou seja, a chave admite
-# colunas NULL. O `write_raw` exige `primary_key`, então ela é passada assim
-# mesmo; se o backend materializar isso como PRIMARY KEY (NOT NULL em todas
-# as colunas), o insert quebra. Ver observação no relatório final.
-PRIMARY_KEY = [
+# colunas NULL. Por isso ela vai só como `conflict_fields` (UNIQUE INDEX, que
+# aceita nulo) na chamada a `write_raw` abaixo, nunca como `primary_key`
+# (que materializaria PRIMARY KEY — NOT NULL em toda coluna — e derrubaria o
+# insert assim que um lote trouxesse alguma dessas colunas vazia, como
+# aconteceu em produção em 2026-09-14: ver `mudanca.md`).
+CONFLICT_FIELDS = [
     "ne_ccor",
     "natureza_despesa",
     "doc_observacao",
@@ -261,7 +263,7 @@ def _filter_and_dedupe(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
     # INSERT inteiro falhar.
     seen: dict[tuple[Any, ...], dict[str, Any]] = {}
     for r in kept:
-        key = tuple(r.get(c) for c in PRIMARY_KEY)
+        key = tuple(r.get(c) for c in CONFLICT_FIELDS)
         seen[key] = r
     return list(seen.values())
 
@@ -335,7 +337,13 @@ def ne_tesouro_ppa_mir_dag() -> None:
 
             csv_data = _decode_csv(raw_data)
             registros = _filter_and_dedupe(parse_ppa_csv(csv_data))
-            write_raw(SISTEMA, ENTIDADE, registros, primary_key=PRIMARY_KEY)
+            write_raw(
+                SISTEMA,
+                ENTIDADE,
+                registros,
+                primary_key=None,
+                conflict_fields=CONFLICT_FIELDS,
+            )
             total += len(registros)
             logging.info(
                 "[ne_tesouro_ppa_mir_ingest_dag] anexo %s: %s registros",

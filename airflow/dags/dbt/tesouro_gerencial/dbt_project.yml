@@ -1,0 +1,23 @@
+# Pacote dbt do sistema estruturante — modelos compartilhados entre órgãos
+# (ADR-0004, ADR-0009). Bronze não é modelada aqui: é materializada pela DAG
+# de ingestão e declarada como source em models/bronze/sources.yml (ADR-0017).
+
+name: "tesouro_gerencial"
+version: "0.1.0"
+config-version: 2
+
+profile: "gov_bricks"
+
+model-paths: ["models", "mir/models"]
+macro-paths: ["macros"]
+seed-paths: ["seeds"]
+snapshot-paths: ["snapshots"]
+test-paths: ["tests"]
+
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+models:
+  tesouro_gerencial:
+    silver:
+      +materialized: table

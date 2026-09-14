@@ -1,0 +1,152 @@
+# SIAFI — extração via relatórios do Tesouro Gerencial recebidos por e-mail.
+# Ver ADR-0017.
+#
+# Migrado de data-application-mir. A extração usa a caixa de e-mail
+# corporativa do MIR (assinatura dos relatórios), então fica como código
+# específico de órgão mesmo sendo SIAFI, em si, um sistema nacional
+# (ADR-0004).
+#
+# Escopo inicial: só a entidade ne_tesouro (notas de empenho), única usada
+# pelo fluxo contratos_resumo (via cruzamento em dbt/mir/).
+#
+# ne_tesouro_emendas foi adicionada na migração de transferegov_emendas: é
+# uma ingestão por e-mail distinta (relatório de empenhos de emendas
+# parlamentares), mas continua sendo SIAFI/Tesouro Gerencial, não
+# TransfereGov — por isso fica catalogada aqui, não em
+# catalogo/sistemas/transferegov_emendas.yml.
+
+sistema: tesouro_gerencial
+nome: SIAFI (via Tesouro Gerencial)
+descricao: >-
+  Execução orçamentária e financeira do SIAFI, extraída de relatórios do
+  Tesouro Gerencial recebidos por e-mail (anexo ZIP/CSV).
+orgao_gestor: tesouro_nacional
+owner: "@GovHub-br/mir"
+status: ingerido
+
+entidades:
+
+  ne_tesouro:
+    descricao: Notas de empenho do exercício corrente.
+    granularidade: uma linha por nota de empenho
+    dominio: orcamento_financeiro
+    dag: ne_tesouro_mir_ingest_dag
+    origem_atual: tesouro_gerencial.raw_ne_tesouro
+    chave_primaria:
+      [
+        ne_ccor, natureza_despesa, doc_observacao, ne_ccor_ano_emissao,
+        emissao_dia, emissao_mes, despesas_empenhadas, despesas_liquidadas,
+        despesas_pagas,
+      ]
+    classificacao: publico
+    chaves: []
+
+  ne_tesouro_emendas:
+    descricao: >-
+      Execução orçamentária SIAFI de empenhos vinculados a emendas
+      parlamentares, com dois grãos na mesma tabela: empenho (ne_ccor real) e
+      dotação orçamentária (itens 9/13, ne_ccor = '-9', sem empenho
+      associado).
+    granularidade: >-
+      uma linha por movimentação de nota de empenho de emenda parlamentar, ou
+      por linha de dotação orçamentária de emenda (ne_ccor = '-9')
+    dominio: emendas_parlamentares
+    dag: ne_tesouro_emendas_mir_ingest_dag
+    origem_atual: tesouro_gerencial.raw_ne_tesouro_emendas
+    # Sem chave natural simples na fonte — chave composta por julgamento
+    # (mesmo critério de nc_tesouro_pre_2026): ne_ccor + colunas de
+    # classificação orçamentária, já que ne_ccor='-9' se repete em todas as
+    # linhas de dotação.
+    chave_primaria:
+      [
+        ne_ccor, emissao_mes, emissao_dia, doc_observacao, ptres,
+        natureza_despesa, modalidade_aplicacao, localizador_gasto,
+        fonte_recursos_detalhada,
+      ]
+    classificacao: publico
+    chaves: []
+
+  nc_tesouro_pre_2026:
+    descricao: >-
+      Notas de crédito (enviadas e recebidas) até o exercício de 2025.
+    granularidade: uma linha por movimentação de nota de crédito
+    dominio: orcamento_financeiro
+    dag: nc_tesouro_pre_2026_mir_ingest_dag
+    origem_atual: tesouro_gerencial.raw_nc_tesouro_pre_2026
+    # Sem chave natural na fonte — chave composta por julgamento (ver
+    # docstring da DAG): colunas de código + os dois valores financeiros.
+    chave_primaria:
+      [
+        nc, nc_transferencia, nc_fonte_recursos, ptres, nc_evento,
+        nc_ug_responsavel, nc_natureza_despesa, nc_plano_interno,
+        favorecido_doc, favorecido_municipio, nc_valor_linha,
+        movimento_liquido_moeda_origem,
+      ]
+    classificacao: publico
+    chaves: []
+
+  nc_tesouro_pos_2026:
+    descricao: Notas de crédito a partir do exercício de 2026.
+    granularidade: uma linha por movimentação de nota de crédito
+    dominio: orcamento_financeiro
+    dag: nc_tesouro_pos_2026_mir_ingest_dag
+    origem_atual: tesouro_gerencial.raw_nc_tesouro_pos_2026
+    chave_primaria:
+      [nc, emissao_dia, emissao_mes, emissao_ano, ptres, ugr_codigo, valor_celula, dc]
+    classificacao: publico
+    chaves: []
+
+  pf_tesouro:
+    descricao: Programações financeiras do exercício corrente.
+    granularidade: uma linha por linha de programação financeira
+    dominio: orcamento_financeiro
+    dag: pf_tesouro_mir_ingest_dag
+    origem_atual: tesouro_gerencial.raw_pf_tesouro
+    # Sem chave natural na fonte — chave composta por julgamento (ver
+    # docstring da DAG): colunas de código + o valor financeiro da linha.
+    chave_primaria:
+      [
+        emissao_mes, emissao_dia, ug_emitente, ug_favorecido, pf_evento, pf,
+        pf_inscricao, pf_acao, pf_fonte_recursos, doc_observacao, pf_valor_linha,
+      ]
+    classificacao: publico
+    chaves: []
+
+  programacao_acao_ptres:
+    descricao: Programação de ação por PTRES do exercício corrente.
+    granularidade: uma linha por classificação orçamentária (PTRES)
+    dominio: orcamento_financeiro
+    dag: programacao_acao_ptres_mir_ingest_dag
+    origem_atual: tesouro_gerencial.raw_programacao_acao_ptres
+    # Sem chave natural na fonte — chave composta por julgamento (ver
+    # docstring da DAG): colunas de código + as três colunas de dotação.
+    chave_primaria:
+      [
+        programa_governo, plano_orcamentario, acao_governo, ptres,
+        natureza_despesa, dotacao_inicial, dotacao_suplementar, dotacao_atualizada,
+      ]
+    classificacao: publico
+    chaves: []
+
+  ne_tesouro_ppa:
+    descricao: >-
+      Notas de empenho por programa PPA, no grão de empenho (ne_ccor real) e
+      de dotação (ne_ccor = '-9', sem empenho associado).
+    granularidade: uma linha por movimentação de nota de empenho ou dotação PPA
+    dominio: orcamento_financeiro
+    dag: ne_tesouro_ppa_mir_ingest_dag
+    origem_atual: tesouro_gerencial.raw_ne_tesouro_ppa
+    # Chave deliberadamente sem `primary_key` na fonte original: inclui
+    # colunas financeiras que costumam vir NULL (só uma preenchida por
+    # linha). Aqui é declarada mesmo assim porque write_raw() exige
+    # primary_key — ver observação de risco no relatório da migração.
+    chave_primaria:
+      [
+        ne_ccor, natureza_despesa, doc_observacao, ne_ccor_ano_emissao,
+        emissao_dia, emissao_mes, ne_ccor_favorecido, fonte_recursos_detalhada,
+        ptres, plano_orcamentario_codigo_po, grupo_despesa, dotacao_atualizada,
+        despesas_empenhadas, despesas_liquidadas, despesas_pagas,
+        restos_a_pagar_inscritos, restos_a_pagar_pagos,
+      ]
+    classificacao: publico
+    chaves: []

@@ -1,0 +1,187 @@
+version: 2
+
+models:
+  - name: ne_tesouro_ppa_mir
+    description: >
+      Notas de empenho do relatório "Notas de empenhos por programa PPA" do
+      Tesouro Gerencial, tipadas a partir da fonte. Reúne os dois grãos que
+      vêm na tabela raw: grão de empenho (ne_ccor <> '-9', com a execução
+      empenhado/liquidado/pago de uma NE real) e grão de dotação (ne_ccor =
+      '-9', com o limite orçamentário apropriado por classificação). Já sai
+      escopado às UGs do MIR na origem do relatório. Granularidade: uma linha
+      por movimentação de nota de empenho ou por linha de dotação PPA.
+    meta:
+      owner: "@GovHub-br/mir"
+      sistema_origem: tesouro_gerencial
+      camada: silver
+      classificacao: pessoal
+    columns:
+      - name: programa_governo
+        description: Código identificador do programa de governo (PPA) associado ao registro.
+        meta:
+          classificacao: publico
+      - name: programa_governo_descricao
+        description: Descrição textual do programa de governo.
+        meta:
+          classificacao: publico
+      - name: acao_governo
+        description: Código da ação orçamentária (Ação de Governo).
+        meta:
+          classificacao: publico
+      - name: acao_governo_descricao
+        description: Descrição da ação orçamentária.
+        meta:
+          classificacao: publico
+      - name: emissao_mes
+        description: Mês de emissão da nota de empenho.
+        meta:
+          classificacao: publico
+      - name: emissao_dia
+        description: Dia específico da emissão da nota de empenho.
+        meta:
+          classificacao: publico
+      - name: ne_ccor
+        description: >
+          Número completo da nota de empenho (chave natural principal).
+          Assume o sentinela '-9' nas linhas do grão de dotação.
+        meta:
+          classificacao: publico
+        data_tests:
+          - not_null
+      - name: ug_responsavel_codigo
+        description: Código da Unidade Gestora (UG) responsável pela NE.
+        meta:
+          classificacao: publico
+      - name: ug_responsavel_nome
+        description: Nome da Unidade Gestora (UG) responsável pela NE.
+        meta:
+          classificacao: publico
+      - name: ne_num_processo
+        description: >
+          Número do processo administrativo, limpo de caracteres especiais
+          (pontos, barras, hifens) via regex.
+        meta:
+          classificacao: publico
+      - name: ne_info_complementar
+        description: Informações adicionais registradas na nota de empenho.
+        meta:
+          classificacao: publico
+      - name: ne_ccor_descricao
+        description: Descrição detalhada do item ou serviço empenhado.
+        meta:
+          classificacao: publico
+      - name: doc_observacao
+        description: Observações registradas no documento fiscal ou contábil.
+        meta:
+          classificacao: publico
+      - name: natureza_despesa
+        description: "Código da natureza da despesa (ex.: 339030)."
+        meta:
+          classificacao: publico
+      - name: natureza_despesa_descricao
+        description: Descrição da categoria da natureza de despesa.
+        meta:
+          classificacao: publico
+      - name: ne_ccor_favorecido
+        description: >
+          CNPJ ou CPF do favorecido do empenho, convertido para caixa alta.
+          Dado pessoal quando o documento é um CPF.
+        meta:
+          classificacao: pessoal
+      - name: ne_ccor_favorecido_descricao
+        description: Nome ou razão social do favorecido.
+        meta:
+          classificacao: pessoal
+      - name: ne_ccor_ano_emissao
+        description: >
+          Ano de emissão do empenho (YYYY). Assume o sentinela -9 nas linhas
+          do grão de dotação.
+        meta:
+          classificacao: publico
+      - name: ptres
+        description: Programa de Trabalho Resumido (PTRES).
+        meta:
+          classificacao: publico
+      - name: fonte_recursos_detalhada
+        description: Código detalhado da fonte de financiamento.
+        meta:
+          classificacao: publico
+      - name: fonte_recursos_detalhada_descricao
+        description: Descrição da fonte de recursos.
+        meta:
+          classificacao: publico
+      - name: plano_orcamentario_codigo_uo
+        description: Código da Unidade Orçamentária (UO) na classificação do plano orçamentário.
+        meta:
+          classificacao: publico
+      - name: plano_orcamentario_codigo_funcao
+        description: Código da função de governo na classificação do plano orçamentário.
+        meta:
+          classificacao: publico
+      - name: plano_orcamentario_codigo_subfuncao
+        description: Código da subfunção de governo na classificação do plano orçamentário.
+        meta:
+          classificacao: publico
+      - name: plano_orcamentario_codigo_programa
+        description: Código do programa na classificação do plano orçamentário.
+        meta:
+          classificacao: publico
+      - name: plano_orcamentario_codigo_acao
+        description: Código da ação na classificação do plano orçamentário.
+        meta:
+          classificacao: publico
+      - name: plano_orcamentario_codigo_po
+        description: Código do Plano Orçamentário (PO) associado à despesa.
+        meta:
+          classificacao: publico
+      - name: plano_orcamentario_nome
+        description: Nome do Plano Orçamentário.
+        meta:
+          classificacao: publico
+      - name: resultado_eof_codigo
+        description: "Código do resultado primário/EOF (ex.: 2 = primário discricionário)."
+        meta:
+          classificacao: publico
+      - name: resultado_eof_nome
+        description: Descrição do resultado primário/EOF.
+        meta:
+          classificacao: publico
+      - name: grupo_despesa
+        description: Código do grupo de despesa orçamentária.
+        meta:
+          classificacao: publico
+      - name: grupo_despesa_desc
+        description: Descrição do grupo de despesa orçamentária.
+        meta:
+          classificacao: publico
+      - name: dotacao_atualizada
+        description: >
+          Valor da dotação orçamentária atualizada (após créditos adicionais),
+          preenchido apenas nas linhas do grão de dotação (ne_ccor = '-9'),
+          convertido para numeric(15,2).
+        meta:
+          classificacao: publico
+      - name: despesas_empenhadas
+        description: Valor total das despesas empenhadas, convertido para numeric(15,2).
+        meta:
+          classificacao: publico
+      - name: despesas_liquidadas
+        description: Valor das despesas que já passaram pela liquidação, convertido para numeric(15,2).
+        meta:
+          classificacao: publico
+      - name: despesas_pagas
+        description: Valor efetivamente pago ao favorecido, convertido para numeric(15,2).
+        meta:
+          classificacao: publico
+      - name: restos_a_pagar_inscritos
+        description: Valor inscrito em Restos a Pagar (RP), convertido para numeric(15,2).
+        meta:
+          classificacao: publico
+      - name: restos_a_pagar_pagos
+        description: Valor de Restos a Pagar que já foram quitados, convertido para numeric(15,2).
+        meta:
+          classificacao: publico
+      - name: dt_ingest
+        description: Timestamp da ingestão dos dados na camada raw, ajustado para o fuso horário de Brasília (UTC-3).
+        meta:
+          classificacao: publico

@@ -48,9 +48,18 @@
 # /airflow/dags/dbt/ipea/             @GovHub-br/ipea
 # /airflow/dags/superset/ipea/        @GovHub-br/ipea
 #
-# /airflow/dags/data_ingest/*/mir/    @GovHub-br/mir
+# contratos_gov/ e tesouro_gerencial/ são pacotes de sistema compartilhados por
+# padrão — só a subpasta mir/ (filtrada por UG/e-mail do MIR) e o projeto do
+# órgão são específicos do MIR.
+/airflow/dags/data_ingest/contratos_gov/mir/       @GovHub-br/mir
+/airflow/dags/data_ingest/tesouro_gerencial/mir/   @GovHub-br/mir
+/airflow/dags/data_ingest/transferegov_ted/mir/    @GovHub-br/mir
+/airflow/dags/data_transform/mir/                  @GovHub-br/mir
+/airflow/dags/dbt/contratos_gov/mir/               @GovHub-br/mir
+/airflow/dags/dbt/tesouro_gerencial/mir/           @GovHub-br/mir
+/airflow/dags/dbt/transferegov_ted/mir/            @GovHub-br/mir
+/airflow/dags/dbt/mir/                             @GovHub-br/mir
 # /airflow/dags/data_ingest/mir/      @GovHub-br/mir
-# /airflow/dags/dbt/mir/              @GovHub-br/mir
 #
 # /airflow/dags/data_ingest/*/mcid/   @GovHub-br/mcid
 # /airflow/dags/data_ingest/mcid/     @GovHub-br/mcid

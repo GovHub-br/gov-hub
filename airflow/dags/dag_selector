@@ -2,6 +2,16 @@
 # O que está listado aqui é INCLUÍDO, o resto é ignorado no parsing.
 
 data_ingest/compras_gov/
+data_ingest/ppa/
+data_ingest/siconv/
 data_transform/mgi/
 data_publish/mgi/
 data_report/mgi/
+
+data_ingest/contratos_gov/mir/
+data_ingest/tesouro_gerencial/mir/
+data_ingest/camara_deputados/
+data_ingest/senado_federal/
+data_ingest/transferegov_emendas/
+data_ingest/transferegov_ted/mir/
+data_transform/mir/

@@ -113,6 +113,7 @@ with
             vl_ingresso_contrapartida,
             vl_saldo_conta,
             valor_global_original_conv,
+            dt_ingest,
             round((vl_desembolsado_conv / nullif(vl_global_conv, 0) * 100)::numeric, 1) as percentual_executado,
             round(
                 ((vl_global_conv - vl_desembolsado_conv) / nullif(vl_global_conv, 0) * 100)::numeric, 1

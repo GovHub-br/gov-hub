@@ -1,0 +1,28 @@
+# Pacote dbt do sistema estruturante — modelos compartilhados entre órgãos
+# (ADR-0004, ADR-0009). Bronze não é modelada aqui: é materializada pela DAG
+# de ingestão e declarada como source em models/bronze/sources.yml (ADR-0017).
+#
+# model-paths inclui "mir/models" porque as 4 DAGs de ingestão deste sistema
+# vivem em data_ingest/transferegov_ted/mir/ (filtro real/indireto de órgão) —
+# mesma situação de tesouro_gerencial, cujos únicos modelos Silver hoje também
+# vivem só na subpasta mir/.
+
+name: "transferegov_ted"
+version: "0.1.0"
+config-version: 2
+
+profile: "gov_bricks"
+
+model-paths: ["models", "mir/models"]
+macro-paths: ["macros"]
+seed-paths: ["seeds"]
+snapshot-paths: ["snapshots"]
+test-paths: ["tests"]
+
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+models:
+  transferegov_ted:
+    silver:
+      +materialized: table

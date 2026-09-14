@@ -1,0 +1,85 @@
+# TransfereGov — Termo de Execução Descentralizada (TED). Ver ADR-0017.
+#
+# Migrado de data-application-mir (transfere_gov/ + empenhos_ted_dbt). Ao
+# contrário do TransfereGov de Transferências Especiais (transferegov_emendas,
+# 100% nacional/genérico), a API de TED é consumida com escopo real de órgão:
+#
+#   - `programas` filtra explicitamente pela sigla da unidade
+#     descentralizadora (Variable `airflow_orgao_ted`, default "MIR") —
+#     filtro real de órgão, confirmado no cliente/DAG.
+#   - `planos_acao`, `programacao_financeira` e `notas_de_credito` não
+#     filtram por órgão na própria chamada, mas iteram sobre os
+#     id_programa/id_plano_acao já ingeridos por `programas`/`planos_acao` —
+#     escopo de órgão indireto, herdado da cadeia de dependência.
+#
+# Por isso as 4 DAGs de ingestão vivem em data_ingest/transferegov_ted/mir/
+# (ADR-0004, situação 2: sistema compartilhado, DAGs específicas de um
+# órgão), e os modelos Silver que só tipam esses dados (sem cruzar outro
+# sistema) vivem em dbt/transferegov_ted/mir/ pelo mesmo motivo — mesmo
+# padrão já usado em tesouro_gerencial/mir (empenhos_tesouro_mir).
+#
+# As 4 entidades abaixo alimentam a cadeia de modelos Silver/Gold de
+# transferências (dbt/mir/models/{silver,gold}/transferencias/), que cruzam
+# tesouro_gerencial (SIAFI) — cruzamento verificado na migração, não só
+# suposto.
+
+sistema: transferegov_ted
+nome: TransfereGov — Termo de Execução Descentralizada (TED)
+descricao: >-
+  Termos de Execução Descentralizada: programas de descentralização de
+  crédito orçamentário entre órgãos, seus planos de ação, programação
+  financeira e notas de crédito associadas.
+orgao_gestor: seges
+owner: "@GovHub-br/mir"
+status: ingerido
+
+entidades:
+
+  programas:
+    descricao: >-
+      Programas de TED, com unidade descentralizadora/responsável, objetivo,
+      grupos de investimento e prazos de recebimento de plano.
+    granularidade: uma linha por programa
+    dominio: transferencias
+    dag: programas_mir_ingest_dag
+    origem_atual: transferegov_ted.raw_programas
+    chave_primaria: [id_programa]
+    classificacao: publico
+    chaves: []
+
+  planos_acao:
+    descricao: >-
+      Planos de ação de um programa de TED: unidade descentralizada/
+      responsável pela execução, objeto, forma de execução, vigência e
+      valores.
+    granularidade: uma linha por plano de ação
+    dominio: transferencias
+    dag: planos_acao_mir_ingest_dag
+    origem_atual: transferegov_ted.raw_planos_acao
+    chave_primaria: [id_plano_acao]
+    classificacao: publico
+    chaves: []
+
+  programacao_financeira:
+    descricao: >-
+      Programação financeira de um plano de ação de TED: tipo, minuta,
+      número, situação, UG emitente/favorecida e recebimento.
+    granularidade: uma linha por linha de programação financeira
+    dominio: transferencias
+    dag: programacao_financeira_mir_ingest_dag
+    origem_atual: transferegov_ted.raw_programacao_financeira
+    chave_primaria: [id_programacao]
+    classificacao: publico
+    chaves: []
+
+  notas_de_credito:
+    descricao: >-
+      Notas de crédito de um plano de ação de TED: minuta, número, emissão,
+      gestão/UG emitente e favorecida, situação.
+    granularidade: uma linha por nota de crédito
+    dominio: transferencias
+    dag: notas_de_credito_mir_ingest_dag
+    origem_atual: transferegov_ted.raw_notas_de_credito
+    chave_primaria: [id_nota]
+    classificacao: publico
+    chaves: []

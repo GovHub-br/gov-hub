@@ -25,7 +25,7 @@ dependencies = [
     "chardet",
     "pytz",
     "astronomer-cosmos>=1.14",
-    "polars",
+    "polars[rtcompat]",
     "pyarrow",
     "s3fs",
     "boto3",

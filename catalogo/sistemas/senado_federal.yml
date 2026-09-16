@@ -1,0 +1,74 @@
+# Senado Federal (API pública legis.senado.leg.br/dadosabertos) — senadores,
+# suas filiações partidárias e as legislaturas do Congresso Nacional. Ver
+# ADR-0017.
+#
+# Migrado de data-application-mir. Como camara_deputados, esta API não é
+# filtrada por UG/órgão nenhum (ADR-0004, situação 1: sistema compartilhado,
+# código compartilhado). As DAGs ficam direto em
+# data_ingest/senado_federal/, sem subpasta de órgão.
+#
+# senadores_filiacoes (formato simplificado) e senadores_historico (formato
+# bruto da API) vêm do mesmo endpoint de filiações, mas servem propósitos
+# diferentes: a primeira é uma tabela de consulta direta; a segunda alimenta
+# o cálculo de parlamentares_historico em dbt/mir/.
+
+sistema: senado_federal
+nome: Senado Federal (Dados Abertos)
+descricao: >-
+  API pública de dados abertos do Senado Federal. Expõe o cadastro de
+  senadores, o histórico de filiações partidárias de cada senador e as
+  legislaturas do Congresso Nacional.
+orgao_gestor: senado_federal
+owner: "@GovHub-br/oss"
+status: ingerido
+
+entidades:
+
+  senadores:
+    descricao: Senadores ativos e inativos cadastrados no Senado Federal.
+    granularidade: um registro por senador
+    dominio: parlamentares
+    dag: senadores_ingest_dag
+    origem_atual: senado_federal.raw_senadores
+    chave_primaria: [id]
+    classificacao: publico
+    chaves: []
+
+  senadores_filiacoes:
+    descricao: >-
+      Histórico de filiações partidárias de cada senador, em formato
+      simplificado (sigla e nome do partido, datas de filiação e
+      desfiliação).
+    granularidade: uma linha por filiação partidária de um senador
+    dominio: parlamentares
+    dag: senadores_filiacoes_ingest_dag
+    origem_atual: senado_federal.raw_senadores_filiacoes
+    chave_primaria: [id, sigla_partido, dt_filiacao]
+    classificacao: publico
+    chaves: []
+
+  senadores_historico:
+    descricao: >-
+      Histórico de filiações partidárias de cada senador, na estrutura bruta
+      devolvida pela API (partido aninhado). Usada para compor a Silver de
+      parlamentares_historico em dbt/mir/.
+    granularidade: uma linha por evento de filiação partidária de um senador
+    dominio: parlamentares
+    dag: senadores_historico_ingest_dag
+    origem_atual: senado_federal.raw_senadores_historico
+    # A fonte não expõe um id de evento, mas a filiação é identificada por
+    # senador, partido e data de início — a mesma chave que a Silver usa para
+    # deduplicar a raw append-only (ADR-0021).
+    chave_primaria: [parlamentar_id, partido__siglapartido, datafiliacao]
+    classificacao: publico
+    chaves: []
+
+  legislaturas:
+    descricao: Legislaturas do Congresso Nacional, com período de vigência e data de eleição.
+    granularidade: um registro por legislatura
+    dominio: parlamentares
+    dag: legislaturas_ingest_dag
+    origem_atual: senado_federal.raw_legislaturas
+    chave_primaria: [id]
+    classificacao: publico
+    chaves: []

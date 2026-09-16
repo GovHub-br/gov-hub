@@ -71,7 +71,7 @@ make publicacao-validar / publicacao-sync / acesso
 **Antes de considerar uma tarefa pronta: `make lint && make test` verdes.**
 O CI (`.github/workflows/main.yml`) roda exatamente esses dois alvos e depois
 faz o build da imagem Docker. O hook de pre-push instalado por `make setup`
-roda os mesmos dois. Estado em 2026-09-03: ambos verdes, 281 testes.
+roda os mesmos dois. Estado em 2026-09-16: ambos verdes, 494 testes.
 
 Rodar um único teste ou uma DAG:
 
@@ -92,6 +92,7 @@ airflow/
     data_ingest/<sistema>/         # {entidade}_ingest_dag.py — compartilhadas entre órgãos
     data_ingest/<sistema>/<orgao>/ # {entidade}_{orgao}_ingest_dag.py — específica de um órgão
     data_transform/<orgao>/        # {orgao}_transform_dag.py — DbtDag via Cosmos (ADR-0018)
+    data_indicators/<orgao>/       # {indicador}_{orgao}_indicator_dag.py — cálculo em Python (ADR-0022)
     data_publish/<orgao>/          # {orgao}_publish_dag.py — importa bundles no Superset (ADR-0019)
     data_report/<orgao>/           # {relatorio}_{orgao}_report_dag.py — via relatorio_dag_factory
     dbt/gov_bricks/                # pacote base: macros compartilhados (chave_conformada, schema_medallion)
@@ -131,12 +132,18 @@ Estas não são preferências. Violar qualquer uma quebra `make lint` ou
 - Só `a-z`, `0-9` e `_` em nomes de pasta, arquivo, `dag_id`, modelo, schema
   e tabela. Nada de hífen, acento ou maiúscula.
 - `dag_id` **igual** ao nome do arquivo sem `.py`. Sufixos fixos:
-  `_ingest_dag`, `_transform_dag`, `_publish_dag`, `_report_dag`.
+  `_ingest_dag`, `_transform_dag`, `_indicator_dag`, `_publish_dag`,
+  `_report_dag`.
 - Toda DAG tem `description`, `default_args["owner"]` e tags no formato
   `dimensao:valor` com dimensão em `{sistema, orgao, camada, dominio}`.
   `sistema:` é obrigatória; `orgao:` obrigatória quando a DAG é de um órgão.
 - DAG de transformação fica **sempre** em `data_transform/<orgao>/` e o nome
   termina em `{orgao}_transform_dag`.
+- DAG de indicador (ADR-0022) fica em `data_indicators/<orgao>/`, termina em
+  `{orgao}_indicator_dag`, lê modelos já materializados pela connection
+  `postgres_dw` e grava em `003_gld_indicadores`. A regra fica em
+  `airflow/helpers/indicadores/`, como função pura. Use esta categoria só
+  quando a regra não couber em SQL; o que couber é modelo dbt.
 - Modelos dbt vivem em `models/{bronze|silver|gold}/<escopo>/{entidade}.sql`.
   O schema de destino é derivado da pasta pelo macro `schema_medallion`:
   `silver/contratacoes/x.sql` → `002_slv_contratacoes.x`. Não use `+schema`
@@ -309,7 +316,7 @@ DBT_PROFILES_DIR=.. DBT_HOST=localhost dbt deps && dbt build --select +contratos
 ### Novo ADR
 
 Copie `docs/adr/template.md` para `NNNN-titulo-kebab.md` (próximo número:
-0022), preencha **todas** as seções, inclusive Alternativas e Tradeoffs com
+0023), preencha **todas** as seções, inclusive Alternativas e Tradeoffs com
 `[Alto/Médio/Baixo impacto]` e uma Avaliação explícita. Um ADR só cita ADRs
 de número menor. Adicione a linha ao índice do `docs/adr/README.md`. ADR
 aceito não é editado retroativamente: crie um novo e marque o antigo como

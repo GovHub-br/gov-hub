@@ -1,0 +1,188 @@
+# TransfereGov — Transferências Especiais (emendas parlamentares individuais
+# de execução direta, popularmente "emendas Pix"). Ver ADR-0017.
+#
+# Migrado de data-application-mir. A API (PostgREST) é 100% nacional/genérica:
+# nenhum dos 12 endpoints aceita ou filtra por órgão — mesma situação do
+# SICONV e do PPA. Por isso a ingestão vive direto em
+# data_ingest/transferegov_emendas/, sem subpasta de órgão (ADR-0004).
+#
+# Das 12 entidades abaixo, só `planos_acao_especiais` alimenta um modelo
+# Silver hoje (`planos_acoes`, em dbt/transferegov_emendas/) — confirmado por
+# varredura completa do repositório antigo: nenhuma das outras 11 é
+# referenciada por nenhum modelo dbt. As demais ficam catalogadas só para
+# rastreabilidade de linhagem (Bronze).
+#
+# Duas entidades relacionadas (execução orçamentária SIAFI de emendas,
+# grãos de empenho e de dotação) vêm de uma ingestão por e-mail distinta e
+# ficam catalogadas em catalogo/sistemas/tesouro_gerencial.yml
+# (entidade ne_tesouro_emendas) — são, de fato, SIAFI/Tesouro Gerencial, não
+# TransfereGov.
+
+sistema: transferegov_emendas
+nome: TransfereGov — Transferências Especiais
+descricao: >-
+  Transferências especiais (emendas parlamentares individuais de execução
+  direta pelo beneficiário, sem convênio). Expõe programas, planos de ação,
+  executores, metas, finalidades, empenhos, documentos hábeis, ordens
+  bancárias, histórico de pagamentos, planos de trabalho e relatórios de
+  gestão dessas transferências.
+orgao_gestor: seges
+owner: "@GovHub-br/oss"
+status: ingerido
+
+entidades:
+
+  programas_especiais:
+    descricao: >-
+      Programas de transferências especiais, com valores de necessidade
+      financeira, disponibilização, impedimentos e documentos hábeis gerados.
+    granularidade: uma linha por programa
+    dominio: emendas_parlamentares
+    dag: programas_especiais_ingest_dag
+    origem_atual: transferegov_emendas.raw_programas_especiais
+    chave_primaria: [id_programa]
+    classificacao: publico
+    chaves: []
+
+  planos_acao_especiais:
+    descricao: >-
+      Planos de ação de um programa de transferência especial: beneficiário,
+      dados bancários, emenda parlamentar de origem, classificação
+      orçamentária e valores de custeio/investimento.
+    granularidade: uma linha por plano de ação
+    dominio: emendas_parlamentares
+    dag: planos_acao_especiais_ingest_dag
+    origem_atual: transferegov_emendas.raw_planos_acao_especiais
+    chave_primaria: [id_plano_acao]
+    classificacao: publico
+    chaves: []
+
+  executor_especial:
+    descricao: >-
+      Executores de um plano de ação: dados cadastrais, objeto da execução,
+      valores de custeio/investimento e dados bancários.
+    granularidade: uma linha por executor de um plano de ação
+    dominio: emendas_parlamentares
+    dag: executor_especial_ingest_dag
+    origem_atual: transferegov_emendas.raw_executor_especial
+    chave_primaria: [id_plano_acao, id_executor]
+    classificacao: publico
+    chaves: []
+    # Não consumida por nenhum modelo Silver hoje — catalogada para
+    # rastreabilidade da fonte (ver cabeçalho deste arquivo).
+
+  metas_especiais:
+    descricao: >-
+      Metas físicas e financeiras de cada executor, discriminando valores de
+      emenda, recursos próprios, rendimentos e doações.
+    granularidade: uma linha por meta de um executor
+    dominio: emendas_parlamentares
+    dag: metas_especiais_ingest_dag
+    origem_atual: transferegov_emendas.raw_metas_especiais
+    chave_primaria: [id_meta]
+    classificacao: publico
+    chaves: []
+    # Não consumida por nenhum modelo Silver hoje.
+
+  finalidades_especiais:
+    descricao: >-
+      Áreas de política pública (finalidades) vinculadas a cada executor.
+    granularidade: uma linha por área de política pública de um executor
+    dominio: emendas_parlamentares
+    dag: finalidades_especiais_ingest_dag
+    origem_atual: transferegov_emendas.raw_finalidades_especiais
+    chave_primaria:
+      [id_executor, cd_area_politica_publica_tipo_pt, area_politica_publica_pt]
+    classificacao: publico
+    chaves: []
+    # Não consumida por nenhum modelo Silver hoje.
+
+  empenhos_especiais:
+    descricao: >-
+      Empenhos (notas de empenho) de um plano de ação, com valores,
+      beneficiário, classificação orçamentária e situação.
+    granularidade: uma linha por empenho
+    dominio: emendas_parlamentares
+    dag: empenhos_especiais_ingest_dag
+    origem_atual: transferegov_emendas.raw_empenhos_especiais
+    chave_primaria: [id_empenho]
+    classificacao: publico
+    chaves: []
+    # Não consumida por nenhum modelo Silver hoje.
+
+  documentos_habeis_especiais:
+    descricao: >-
+      Documentos hábeis vinculados a um empenho: emissão, situação, unidades
+      gestoras envolvidas e valores.
+    granularidade: uma linha por documento hábil
+    dominio: emendas_parlamentares
+    dag: documentos_habeis_especiais_ingest_dag
+    origem_atual: transferegov_emendas.raw_documentos_habeis_especiais
+    chave_primaria: [id_dh]
+    classificacao: publico
+    chaves: []
+    # Não consumida por nenhum modelo Silver hoje.
+
+  ordens_bancarias_especiais:
+    descricao: >-
+      Ordens de pagamento e ordens bancárias vinculadas a um documento hábil.
+    granularidade: uma linha por ordem de pagamento/ordem bancária
+    dominio: emendas_parlamentares
+    dag: ordens_bancarias_especiais_ingest_dag
+    origem_atual: transferegov_emendas.raw_ordens_bancarias_especiais
+    chave_primaria: [id_op_ob]
+    classificacao: publico
+    chaves: []
+    # Não consumida por nenhum modelo Silver hoje.
+
+  historico_pagamentos_especiais:
+    descricao: >-
+      Histórico de eventos (mudanças de situação) de uma ordem de
+      pagamento/ordem bancária.
+    granularidade: uma linha por evento de histórico
+    dominio: emendas_parlamentares
+    dag: historico_pagamentos_especiais_ingest_dag
+    origem_atual: transferegov_emendas.raw_historico_pagamentos_especiais
+    chave_primaria: [id_historico_op_ob]
+    classificacao: publico
+    chaves: []
+    # Não consumida por nenhum modelo Silver hoje.
+
+  plano_trabalho_especial:
+    descricao: >-
+      Plano de trabalho de execução de um plano de ação: situação, prazos,
+      indicador de orçamento próprio e justificativas de prorrogação.
+    granularidade: uma linha por plano de trabalho
+    dominio: emendas_parlamentares
+    dag: plano_trabalho_especial_ingest_dag
+    origem_atual: transferegov_emendas.raw_plano_trabalho_especial
+    chave_primaria: [id_plano_trabalho]
+    classificacao: publico
+    chaves: []
+    # Não consumida por nenhum modelo Silver hoje.
+
+  relatorio_gestao_especial:
+    descricao: >-
+      Situação e parecer final do relatório de gestão vinculado a um plano de
+      ação.
+    granularidade: uma linha por relatório de gestão
+    dominio: emendas_parlamentares
+    dag: relatorio_gestao_especial_ingest_dag
+    origem_atual: transferegov_emendas.raw_relatorio_gestao_especial
+    chave_primaria: [id_relatorio_gestao]
+    classificacao: publico
+    chaves: []
+    # Não consumida por nenhum modelo Silver hoje.
+
+  relatorios_gestao_novo_especial:
+    descricao: >-
+      Registros do novo relatório de gestão: execução financeira declarada
+      por plano de ação, valores executados/pendentes e status de tramitação.
+    granularidade: uma linha por registro do novo relatório de gestão
+    dominio: emendas_parlamentares
+    dag: relatorios_gestao_novo_especial_ingest_dag
+    origem_atual: transferegov_emendas.raw_relatorios_gestao_novo_especial
+    chave_primaria: [id_relatorio_gestao_novo]
+    classificacao: publico
+    chaves: []
+    # Não consumida por nenhum modelo Silver hoje.

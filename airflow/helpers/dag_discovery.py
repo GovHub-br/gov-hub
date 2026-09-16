@@ -22,6 +22,16 @@ log = logging.getLogger(__name__)
 
 SELECTOR_FILENAME = "dag_selector"
 
+# Caminho alternativo para o arquivo de allowlist (ADR-0005).
+#
+# O ADR pede que cada deployment de órgão declare a própria allowlist,
+# "validada no manifesto/Helm". Sem esta variável isso é impossível: o arquivo
+# só podia vir de `<dags_folder>/dag_selector`, que no deployment é conteúdo do
+# repositório clonado — igual para todo mundo que sincroniza a mesma branch.
+# Com ela, o deployment monta o próprio arquivo (ConfigMap, por exemplo) em um
+# caminho qualquer e aponta o env para lá.
+SELECTOR_PATH_ENVVAR = "GOVHUB_DAG_SELECTOR"
+
 # Special line that includes everything
 INCLUDE_ALL_MARKER = "*"
 
@@ -50,6 +60,9 @@ class DagSelector:
 
     @property
     def selector_path(self) -> Path:
+        override = os.environ.get(SELECTOR_PATH_ENVVAR)
+        if override:
+            return Path(override)
         return self.dags_folder / SELECTOR_FILENAME
 
     def _reload_if_needed(self) -> None:

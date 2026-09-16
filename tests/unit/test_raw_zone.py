@@ -87,6 +87,35 @@ class TestEscritaNoWarehouse:
         assert kwargs["primary_key"] == kwargs["conflict_fields"] == ["codigoorgao"]
         assert all("dt_ingest" in r for r in registros)
 
+    def test_conflict_fields_separado_de_primary_key(self, backend_warehouse) -> None:
+        """Uma chave com coluna que pode vir nula não pode virar PRIMARY KEY.
+
+        Reproduz o caso de `ne_tesouro_ppa` (colunas financeiras que o
+        Tesouro só emite quando há valor no período): a DAG passa só
+        `conflict_fields` para ganhar o UNIQUE INDEX (aceita nulo) sem a
+        constraint PRIMARY KEY (NOT NULL em toda coluna), que derrubaria o
+        insert assim que um lote trouxesse a coluna vazia.
+        """
+        cliente = MagicMock()
+        with patch.dict(
+            "sys.modules",
+            {
+                "cliente_postgres": MagicMock(ClientPostgresDB=lambda _: cliente),
+                "postgres_helpers": MagicMock(get_postgres_conn=lambda _: "conn"),
+            },
+        ):
+            landing_zone.write_raw(
+                "tesouro_gerencial",
+                "ne_tesouro_ppa",
+                list(REGISTROS),
+                primary_key=None,
+                conflict_fields=["ne_ccor", "restos_a_pagar_pagos"],
+            )
+
+        _, kwargs = cliente.insert_data.call_args
+        assert kwargs["primary_key"] is None
+        assert kwargs["conflict_fields"] == ["ne_ccor", "restos_a_pagar_pagos"]
+
 
 class TestEscritaEmObjectStorage:
     def test_grava_parquet_no_caminho_do_adr_0012(self, backend_object_storage) -> None:

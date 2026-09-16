@@ -1,0 +1,21 @@
+# Pacote dbt do sistema estruturante — modelos compartilhados entre órgãos
+# (ADR-0004, ADR-0009). Bronze não é modelada aqui: é materializada pela DAG
+# de ingestão e declarada como source em models/bronze/sources.yml (ADR-0017).
+#
+# PPA é fonte 100% nacional/genérica — sem Silver/Gold nesta migração (nenhum
+# existia em data-application-mir), só a Bronze das 31 entidades.
+
+name: "ppa"
+version: "0.1.0"
+config-version: 2
+
+profile: "gov_bricks"
+
+model-paths: ["models"]
+macro-paths: ["macros"]
+seed-paths: ["seeds"]
+snapshot-paths: ["snapshots"]
+test-paths: ["tests"]
+
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]

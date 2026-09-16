@@ -1,0 +1,67 @@
+# Câmara dos Deputados (API pública dadosabertos.camara.leg.br) — deputados,
+# o histórico de mandato de cada deputado e o cadastro/logo de partidos. Ver
+# ADR-0017.
+#
+# Migrado de data-application-mir. Ao contrário de contratos_gov e
+# tesouro_gerencial, esta API não é filtrada por UG/órgão nenhum — é
+# genuinamente compartilhada, sem código específico de MIR (ADR-0004,
+# situação 1: sistema compartilhado, código compartilhado). As DAGs ficam
+# direto em data_ingest/camara_deputados/, sem subpasta de órgão.
+#
+# logo_partidos é catalogada para rastreabilidade da fonte, mas não alimenta
+# nenhum modelo Silver hoje (confirmado: nenhum modelo dbt consome essa
+# tabela).
+
+sistema: camara_deputados
+nome: Câmara dos Deputados (Dados Abertos)
+descricao: >-
+  API pública de dados abertos da Câmara dos Deputados. Expõe o cadastro de
+  deputados federais, o histórico de mandato (filiação, situação, condição
+  eleitoral) de cada deputado e o cadastro de partidos políticos com a URL do
+  logo de cada um.
+orgao_gestor: camara_dos_deputados
+owner: "@GovHub-br/oss"
+status: ingerido
+
+entidades:
+
+  deputados:
+    descricao: >-
+      Deputados federais. O mesmo deputado pode aparecer mais de uma vez, uma
+      linha por combinação de partido e legislatura.
+    granularidade: um registro por deputado, sigla de partido e legislatura
+    dominio: parlamentares
+    dag: deputados_ingest_dag
+    origem_atual: camara_deputados.raw_deputados
+    chave_primaria: [id, siglapartido, idlegislatura]
+    classificacao: publico
+    chaves: []
+
+  deputados_historico:
+    descricao: >-
+      Eventos de mandato de cada deputado (troca de partido, afastamento,
+      licença, fim de mandato), usados para derivar os períodos de filiação
+      partidária.
+    granularidade: uma linha por evento histórico de um deputado
+    dominio: parlamentares
+    dag: deputados_historico_ingest_dag
+    origem_atual: camara_deputados.raw_deputados_historico
+    # A fonte não expõe um id de evento, mas o evento é identificado por
+    # deputado, instante, situação, partido e legislatura — a mesma chave que a
+    # Silver usa para deduplicar a raw append-only (ADR-0021).
+    chave_primaria: [id, datahora, situacao, siglapartido, idlegislatura]
+    classificacao: publico
+    chaves: []
+
+  logo_partidos:
+    descricao: >-
+      Cadastro de partidos políticos e a URL do logo de cada um. Não
+      consumida por nenhum modelo Silver hoje — catalogada para
+      rastreabilidade da fonte.
+    granularidade: um registro por partido
+    dominio: parlamentares
+    dag: logo_partidos_ingest_dag
+    origem_atual: camara_deputados.raw_logo_partidos
+    chave_primaria: [id]
+    classificacao: publico
+    chaves: []

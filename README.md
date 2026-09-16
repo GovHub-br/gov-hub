@@ -32,6 +32,7 @@ airflow/
     data_ingest/<sistema>/[<orgao>/]   # DAGs de ingestão
     data_ingest/<orgao>/               # sistema interno de um único órgão
     data_transform/<orgao>/            # DAGs de transformação (dbt via Cosmos)
+    data_indicators/<orgao>/           # DAGs de indicador calculado em Python
     data_publish/<orgao>/              # DAGs de publicação (dashboards e acesso)
     data_report/<orgao>/               # DAGs de relatório periódico
     dbt/gov_bricks/                    # pacote base: macros compartilhados
@@ -81,6 +82,7 @@ de relatório).
 | Módulo | O que faz |
 |---|---|
 | `landing_zone.py` | `build_landing_path`, `write_parquet`, `read_parquet`, `list_files` |
+| `indicadores/` | Regra dos indicadores do MIR (I1, I2, I3, I7, I9) como funções puras, sem I/O (ADR-0022) |
 | `homologation_helpers.py` | Checks de qualidade em Polars (`not_null`, `schema`, `row_count`, `no_duplicates`, `null_rate`) |
 | `homologation_flow.py` | Fluxo landing zone → validação → Postgres |
 | `postgres_helpers.py` | Resolução de connection string a partir de uma connection do Airflow |

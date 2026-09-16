@@ -1,0 +1,61 @@
+# GERADO por `make modelo` a partir de catalogo/sistemas/senado_federal.yml — não edite à mão.
+#
+# A Bronze não é materializada por dbt: ela é um source sobre a zona raw,
+# onde a ingestão entrega o dado (ADR-0006, ADR-0017, ADR-0021).
+#
+# Esta é a forma de tabela, do backend `warehouse`. Em um deployment com a
+# raw em object storage, o source aponta para os arquivos da entidade.
+
+version: 2
+
+sources:
+  - name: senado_federal
+    schema: senado_federal
+    description: >
+      Camada Bronze de Senado Federal (Dados Abertos): dado fiel à fonte, gravado
+      pelas DAGs de ingestão. API pública de dados abertos do Senado Federal.
+      Expõe o cadastro de senadores, o histórico de filiações partidárias de cada
+      senador e as legislaturas do Congresso Nacional.
+    meta:
+      owner: "@GovHub-br/oss"
+      sistema_origem: senado_federal
+      camada: bronze
+    tables:
+      - name: legislaturas
+        identifier: raw_legislaturas
+        description: >
+            Legislaturas do Congresso Nacional, com período de vigência e data de
+            eleição. Granularidade: um registro por legislatura.
+        meta:
+          classificacao: publico
+          dag_ingestao: legislaturas_ingest_dag
+
+      - name: senadores
+        identifier: raw_senadores
+        description: >
+            Senadores ativos e inativos cadastrados no Senado Federal. Granularidade: um
+            registro por senador.
+        meta:
+          classificacao: publico
+          dag_ingestao: senadores_ingest_dag
+
+      - name: senadores_filiacoes
+        identifier: raw_senadores_filiacoes
+        description: >
+            Histórico de filiações partidárias de cada senador, em formato simplificado
+            (sigla e nome do partido, datas de filiação e desfiliação). Granularidade:
+            uma linha por filiação partidária de um senador.
+        meta:
+          classificacao: publico
+          dag_ingestao: senadores_filiacoes_ingest_dag
+
+      - name: senadores_historico
+        identifier: raw_senadores_historico
+        description: >
+            Histórico de filiações partidárias de cada senador, na estrutura bruta
+            devolvida pela API (partido aninhado). Usada para compor a Silver de
+            parlamentares_historico em dbt/mir/. Granularidade: uma linha por evento de
+            filiação partidária de um senador.
+        meta:
+          classificacao: publico
+          dag_ingestao: senadores_historico_ingest_dag

@@ -1,0 +1,63 @@
+# GERADO por `make modelo` a partir de catalogo/sistemas/transferegov_ted.yml — não edite à mão.
+#
+# A Bronze não é materializada por dbt: ela é um source sobre a zona raw,
+# onde a ingestão entrega o dado (ADR-0006, ADR-0017, ADR-0021).
+#
+# Esta é a forma de tabela, do backend `warehouse`. Em um deployment com a
+# raw em object storage, o source aponta para os arquivos da entidade.
+
+version: 2
+
+sources:
+  - name: transferegov_ted
+    schema: transferegov_ted
+    description: >
+      Camada Bronze de TransfereGov — Termo de Execução Descentralizada (TED):
+      dado fiel à fonte, gravado pelas DAGs de ingestão. Termos de Execução
+      Descentralizada: programas de descentralização de crédito orçamentário entre
+      órgãos, seus planos de ação, programação financeira e notas de crédito
+      associadas.
+    meta:
+      owner: "@GovHub-br/mir"
+      sistema_origem: transferegov_ted
+      camada: bronze
+    tables:
+      - name: notas_de_credito
+        identifier: raw_notas_de_credito
+        description: >
+            Notas de crédito de um plano de ação de TED: minuta, número, emissão,
+            gestão/UG emitente e favorecida, situação. Granularidade: uma linha por nota
+            de crédito.
+        meta:
+          classificacao: publico
+          dag_ingestao: notas_de_credito_mir_ingest_dag
+
+      - name: planos_acao
+        identifier: raw_planos_acao
+        description: >
+            Planos de ação de um programa de TED: unidade descentralizada/ responsável
+            pela execução, objeto, forma de execução, vigência e valores. Granularidade:
+            uma linha por plano de ação.
+        meta:
+          classificacao: publico
+          dag_ingestao: planos_acao_mir_ingest_dag
+
+      - name: programacao_financeira
+        identifier: raw_programacao_financeira
+        description: >
+            Programação financeira de um plano de ação de TED: tipo, minuta, número,
+            situação, UG emitente/favorecida e recebimento. Granularidade: uma linha por
+            linha de programação financeira.
+        meta:
+          classificacao: publico
+          dag_ingestao: programacao_financeira_mir_ingest_dag
+
+      - name: programas
+        identifier: raw_programas
+        description: >
+            Programas de TED, com unidade descentralizadora/responsável, objetivo,
+            grupos de investimento e prazos de recebimento de plano. Granularidade: uma
+            linha por programa.
+        meta:
+          classificacao: publico
+          dag_ingestao: programas_mir_ingest_dag

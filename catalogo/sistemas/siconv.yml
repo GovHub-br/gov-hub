@@ -1,0 +1,215 @@
+# SICONV — Sistema de Gestão de Convênios e Contratos de Repasse.
+# Ver catalogo/README.md e ADR-0017.
+#
+# Migrado de data-application-mir. Fonte 100% nacional/genérica: o zip de
+# dados abertos do SICONV (repositorio.dados.gov.br) não tem nenhum filtro de
+# órgão. Por isso a ingestão vive direto em data_ingest/siconv/, sem subpasta
+# de órgão (ADR-0004) — mesma situação do PPA.
+#
+# 4 das 16 entidades (desbloqueio, prorroga_oficio, empenho,
+# historico_situacao) não têm coluna nem combinação estável de colunas que
+# sirva de chave natural na fonte. A chave_primaria abaixo, para essas 4, é
+# uma composição de julgamento sobre todas as colunas de código/valor
+# disponíveis (mesmo critério usado em tesouro_gerencial.nc_tesouro_pre_2026),
+# só para fins de documentação/teste de unicidade em Silver — a ingestão em
+# si grava essas 4 com primary_key=None (ver tabelas_siconv.py).
+
+sistema: siconv
+nome: SICONV (Sistema de Gestão de Convênios e Contratos de Repasse)
+descricao: >-
+  Dados abertos do SICONV: propostas, convênios, termos de fomento,
+  desembolsos, empenhos, licitações, pagamentos, aditivos e metas físicas de
+  convênios e transferências voluntárias da União, publicados em zip/CSV
+  único e nacional.
+orgao_gestor: seges
+owner: "@GovHub-br/oss"
+status: ingerido
+
+entidades:
+
+  proposta:
+    descricao: >-
+      Propostas de convênio/termo de fomento apresentadas ao concedente, com
+      dados do proponente, valores globais e vigência propostos.
+    granularidade: uma linha por proposta
+    dominio: convenios
+    dag: siconv_ingest_dag
+    origem_atual: siconv.raw_proposta
+    chave_primaria: [id_proposta]
+    classificacao: publico
+    chaves: []
+
+  convenio:
+    descricao: >-
+      Convênios/termos de fomento firmados a partir de uma proposta, com
+      situação, vigência e valores globais, de repasse e de contrapartida.
+    granularidade: uma linha por convênio
+    dominio: convenios
+    dag: siconv_ingest_dag
+    origem_atual: siconv.raw_convenio
+    chave_primaria: [nr_convenio]
+    classificacao: publico
+    chaves: []
+
+  desembolso:
+    descricao: Repasses (desembolsos) efetivamente realizados a um convênio.
+    granularidade: uma linha por desembolso
+    dominio: convenios
+    dag: siconv_ingest_dag
+    origem_atual: siconv.raw_desembolso
+    chave_primaria: [id_desembolso]
+    classificacao: publico
+    chaves: []
+
+  desbloqueio:
+    descricao: >-
+      Desbloqueios de recursos na conta bancária do convênio (liberação de
+      valores retidos pelo banco).
+    granularidade: uma linha por desbloqueio
+    dominio: convenios
+    dag: siconv_ingest_dag
+    origem_atual: siconv.raw_desbloqueio
+    # Sem chave natural na fonte — ver cabeçalho deste arquivo.
+    chave_primaria:
+      [
+        nr_convenio, nr_ob, data_cadastro, data_envio,
+        tipo_recurso_desbloqueio, vl_total_desbloqueio, vl_desbloqueado,
+        vl_bloqueado,
+      ]
+    classificacao: publico
+    chaves: []
+
+  solicitacao_alteracao:
+    descricao: Solicitações de alteração de um convênio feitas pelo convenente.
+    granularidade: uma linha por solicitação de alteração
+    dominio: convenios
+    dag: siconv_ingest_dag
+    origem_atual: siconv.raw_solicitacao_alteracao
+    chave_primaria: [id_solicitacao]
+    classificacao: publico
+    chaves: []
+
+  termo_aditivo:
+    descricao: Termos aditivos que alteram valores, prazos ou objeto de um convênio.
+    granularidade: uma linha por termo aditivo de um convênio
+    dominio: convenios
+    dag: siconv_ingest_dag
+    origem_atual: siconv.raw_termo_aditivo
+    chave_primaria: [nr_convenio, numero_ta]
+    classificacao: publico
+    chaves: []
+
+  solicitacao_rendimento_aplicacao:
+    descricao: >-
+      Solicitações de uso do rendimento de aplicação financeira dos recursos
+      do convênio.
+    granularidade: uma linha por solicitação de rendimento de aplicação
+    dominio: convenios
+    dag: siconv_ingest_dag
+    origem_atual: siconv.raw_solicitacao_rendimento_aplicacao
+    chave_primaria: [id_solicitacao_rend_aplicacao]
+    classificacao: publico
+    chaves: []
+
+  prorroga_oficio:
+    descricao: Prorrogações de ofício da vigência de um convênio, por atraso do concedente.
+    granularidade: uma linha por prorrogação de ofício
+    dominio: convenios
+    dag: siconv_ingest_dag
+    origem_atual: siconv.raw_prorroga_oficio
+    # Sem chave natural na fonte — ver cabeçalho deste arquivo.
+    chave_primaria:
+      [
+        nr_convenio, nr_prorroga, dt_inicio_prorroga, dt_fim_prorroga,
+        dias_prorroga, dt_assinatura_prorroga, sit_prorroga,
+      ]
+    classificacao: publico
+    chaves: []
+
+  pagamento_tributo:
+    descricao: Pagamentos de tributos feitos com recursos do convênio.
+    granularidade: uma linha por pagamento de tributo, por convênio e data
+    dominio: convenios
+    dag: siconv_ingest_dag
+    origem_atual: siconv.raw_pagamento_tributo
+    chave_primaria: [nr_convenio, data_tributo]
+    classificacao: publico
+    chaves: []
+
+  pagamento:
+    descricao: Pagamentos a fornecedores realizados com recursos do convênio.
+    granularidade: uma linha por movimento financeiro de pagamento
+    dominio: convenios
+    dag: siconv_ingest_dag
+    origem_atual: siconv.raw_pagamento
+    chave_primaria: [nr_mov_fin]
+    classificacao: publico
+    chaves: []
+
+  licitacao:
+    descricao: Licitações/processos de compra realizados no âmbito do convênio.
+    granularidade: uma linha por licitação
+    dominio: convenios
+    dag: siconv_ingest_dag
+    origem_atual: siconv.raw_licitacao
+    chave_primaria: [id_licitacao]
+    classificacao: publico
+    chaves: []
+
+  ingresso_contrapartida:
+    descricao: Depósitos de contrapartida feitos pelo convenente na conta do convênio.
+    granularidade: uma linha por ingresso de contrapartida, por convênio e data
+    dominio: convenios
+    dag: siconv_ingest_dag
+    origem_atual: siconv.raw_ingresso_contrapartida
+    chave_primaria: [nr_convenio, dt_ingresso_contrapartida]
+    classificacao: publico
+    chaves: []
+
+  empenho:
+    descricao: Empenhos orçamentários associados a um convênio.
+    granularidade: uma linha por empenho
+    dominio: convenios
+    dag: siconv_ingest_dag
+    origem_atual: siconv.raw_empenho
+    # Sem chave natural na fonte — ver cabeçalho deste arquivo.
+    chave_primaria:
+      [
+        nr_convenio, nr_empenho, tipo_nota, data_emissao, cod_situacao_empenho,
+        ug_emitente, ug_responsavel, fonte_recurso, natureza_despesa,
+        plano_interno, ptres, valor_empenho,
+      ]
+    classificacao: publico
+    chaves: []
+
+  historico_situacao:
+    descricao: Histórico de mudanças de situação de uma proposta/convênio.
+    granularidade: uma linha por mudança de situação
+    dominio: convenios
+    dag: siconv_ingest_dag
+    origem_atual: siconv.raw_historico_situacao
+    # Sem chave natural na fonte — ver cabeçalho deste arquivo.
+    chave_primaria:
+      [id_proposta, nr_convenio, dia_historico_sit, historico_sit, dias_historico_sit, cod_historico_sit]
+    classificacao: publico
+    chaves: []
+
+  cronograma_desembolso:
+    descricao: Cronograma de desembolso previsto de uma proposta/convênio.
+    granularidade: uma linha por parcela do cronograma de desembolso
+    dominio: convenios
+    dag: siconv_ingest_dag
+    origem_atual: siconv.raw_cronograma_desembolso
+    chave_primaria: [id_proposta, nr_convenio, nr_parcela_crono_desembolso]
+    classificacao: publico
+    chaves: []
+
+  meta_crono_fisico:
+    descricao: Metas físicas previstas no cronograma de execução de uma proposta/convênio.
+    granularidade: uma linha por meta física
+    dominio: convenios
+    dag: siconv_ingest_dag
+    origem_atual: siconv.raw_meta_crono_fisico
+    chave_primaria: [id_meta]
+    classificacao: publico
+    chaves: []

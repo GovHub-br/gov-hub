@@ -36,5 +36,15 @@ WORKDIR ${AIRFLOW_HOME}
 
 # Para rodar o airflow só precisamos instalar as dependências visto que o código
 # sempre será sincronizado via git sync ou via volumes localmente
+COPY --from=ghcr.io/astral-sh/uv:0.12.9 /uv /usr/local/bin/uv
+
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+# `uv pip` no lugar do pip: mesma resolucao a partir do requirements.txt ja
+# pinado, porem varias vezes mais rapido.
+#
+# --python e obrigatorio aqui, nao e preferencia. A imagem do Airflow instala
+# tudo em /home/airflow/.local, que e um venv de verdade (tem pyvenv.cfg) e e
+# o sys.prefix do interpretador. Sem apontar para ele, o uv tenta o Python do
+# sistema em /usr/python e falha com "Permission denied", porque este estagio
+# roda como o usuario airflow.
+RUN uv pip install --python /home/airflow/.local/bin/python --no-cache -r requirements.txt

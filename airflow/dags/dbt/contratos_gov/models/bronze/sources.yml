@@ -1,0 +1,67 @@
+# GERADO por `make modelo` a partir de catalogo/sistemas/contratos_gov.yml — não edite à mão.
+#
+# A Bronze não é materializada por dbt: ela é um source sobre a zona raw,
+# onde a ingestão entrega o dado (ADR-0006, ADR-0017, ADR-0021).
+#
+# Esta é a forma de tabela, do backend `warehouse`. Em um deployment com a
+# raw em object storage, o source aponta para os arquivos da entidade.
+
+version: 2
+
+sources:
+  - name: contratos_gov
+    schema: contratos_gov
+    description: >
+      Camada Bronze de Contratos.gov.br: dado fiel à fonte, gravado pelas DAGs de
+      ingestão. Módulo de gestão de contratos do SIASG. Expõe contratos ativos por
+      UASG e os sub-recursos de empenhos, faturas, cronograma e terceirizados por
+      contrato.
+    meta:
+      owner: "@GovHub-br/mir"
+      sistema_origem: contratos_gov
+      camada: bronze
+    tables:
+      - name: contratos
+        identifier: raw_contratos
+        description: >
+            Contratos por UASG do MIR — ativos e inativos, gravados na mesma tabela por
+            duas DAGs distintas. Granularidade: um registro por contrato.
+        meta:
+          classificacao: publico
+          dag_ingestao: contratos_mir_ingest_dag
+
+      - name: cronograma
+        identifier: raw_cronograma
+        description: >
+            Cronograma financeiro associado a um contrato. Granularidade: uma linha por
+            item de cronograma de um contrato.
+        meta:
+          classificacao: publico
+          dag_ingestao: cronograma_mir_ingest_dag
+
+      - name: empenhos
+        identifier: raw_empenhos
+        description: >
+            Empenhos associados a um contrato. Granularidade: uma linha por empenho de
+            um contrato.
+        meta:
+          classificacao: publico
+          dag_ingestao: empenhos_mir_ingest_dag
+
+      - name: faturas
+        identifier: raw_faturas
+        description: >
+            Faturas associadas a um contrato. Granularidade: uma linha por fatura de um
+            contrato.
+        meta:
+          classificacao: publico
+          dag_ingestao: faturas_mir_ingest_dag
+
+      - name: terceirizados
+        identifier: raw_terceirizados
+        description: >
+            Trabalhadores terceirizados alocados em um contrato. Granularidade: uma
+            linha por terceirizado de um contrato.
+        meta:
+          classificacao: publico
+          dag_ingestao: terceirizados_mir_ingest_dag

@@ -1,0 +1,90 @@
+# GERADO por `make modelo` a partir de catalogo/sistemas/tesouro_gerencial.yml — não edite à mão.
+#
+# A Bronze não é materializada por dbt: ela é um source sobre a zona raw,
+# onde a ingestão entrega o dado (ADR-0006, ADR-0017, ADR-0021).
+#
+# Esta é a forma de tabela, do backend `warehouse`. Em um deployment com a
+# raw em object storage, o source aponta para os arquivos da entidade.
+
+version: 2
+
+sources:
+  - name: tesouro_gerencial
+    schema: tesouro_gerencial
+    description: >
+      Camada Bronze de SIAFI (via Tesouro Gerencial): dado fiel à fonte, gravado
+      pelas DAGs de ingestão. Execução orçamentária e financeira do SIAFI,
+      extraída de relatórios do Tesouro Gerencial recebidos por e-mail (anexo
+      ZIP/CSV).
+    meta:
+      owner: "@GovHub-br/mir"
+      sistema_origem: tesouro_gerencial
+      camada: bronze
+    tables:
+      - name: nc_tesouro_pos_2026
+        identifier: raw_nc_tesouro_pos_2026
+        description: >
+            Notas de crédito a partir do exercício de 2026. Granularidade: uma linha por
+            movimentação de nota de crédito.
+        meta:
+          classificacao: publico
+          dag_ingestao: nc_tesouro_pos_2026_mir_ingest_dag
+
+      - name: nc_tesouro_pre_2026
+        identifier: raw_nc_tesouro_pre_2026
+        description: >
+            Notas de crédito (enviadas e recebidas) até o exercício de 2025.
+            Granularidade: uma linha por movimentação de nota de crédito.
+        meta:
+          classificacao: publico
+          dag_ingestao: nc_tesouro_pre_2026_mir_ingest_dag
+
+      - name: ne_tesouro
+        identifier: raw_ne_tesouro
+        description: >
+            Notas de empenho do exercício corrente. Granularidade: uma linha por nota de
+            empenho.
+        meta:
+          classificacao: publico
+          dag_ingestao: ne_tesouro_mir_ingest_dag
+
+      - name: ne_tesouro_emendas
+        identifier: raw_ne_tesouro_emendas
+        description: >
+            Execução orçamentária SIAFI de empenhos vinculados a emendas parlamentares,
+            com dois grãos na mesma tabela: empenho (ne_ccor real) e dotação
+            orçamentária (itens 9/13, ne_ccor = '-9', sem empenho associado).
+            Granularidade: uma linha por movimentação de nota de empenho de emenda
+            parlamentar, ou por linha de dotação orçamentária de emenda (ne_ccor =
+            '-9').
+        meta:
+          classificacao: publico
+          dag_ingestao: ne_tesouro_emendas_mir_ingest_dag
+
+      - name: ne_tesouro_ppa
+        identifier: raw_ne_tesouro_ppa
+        description: >
+            Notas de empenho por programa PPA, no grão de empenho (ne_ccor real) e de
+            dotação (ne_ccor = '-9', sem empenho associado). Granularidade: uma linha
+            por movimentação de nota de empenho ou dotação PPA.
+        meta:
+          classificacao: publico
+          dag_ingestao: ne_tesouro_ppa_mir_ingest_dag
+
+      - name: pf_tesouro
+        identifier: raw_pf_tesouro
+        description: >
+            Programações financeiras do exercício corrente. Granularidade: uma linha por
+            linha de programação financeira.
+        meta:
+          classificacao: publico
+          dag_ingestao: pf_tesouro_mir_ingest_dag
+
+      - name: programacao_acao_ptres
+        identifier: raw_programacao_acao_ptres
+        description: >
+            Programação de ação por PTRES do exercício corrente. Granularidade: uma
+            linha por classificação orçamentária (PTRES).
+        meta:
+          classificacao: publico
+          dag_ingestao: programacao_acao_ptres_mir_ingest_dag

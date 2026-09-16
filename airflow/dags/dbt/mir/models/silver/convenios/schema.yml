@@ -1,0 +1,545 @@
+version: 2
+
+# Metadados dos modelos de convênios da Silver do MIR (ADR-0013). Por ora só
+# os dois modelos consolidados — base de toda a pasta e dos resumos Gold —
+# estão documentados; os demais convenio_*.sql entram conforme forem tocados.
+models:
+  - name: convenios_consolidados
+    description: >
+      Convênios do SICONV relacionados à UG 810008 do MIR. Inclui (a) todos os
+      convênios cuja ug_emitente é 810008 na Bronze siconv.convenio e (b)
+      convênios adicionais identificados a partir dos empenhos do Tesouro
+      (tesouro_gerencial.ne_tesouro_ppa_mir) cujo ne_ccor começa com '810008' e
+      cujo ne_info_complementar corresponde ao nr_convenio. As UGs responsáveis
+      são consolidadas em atributo (string_agg) por convênio, garantindo
+      exatamente uma linha por nr_convenio — um mesmo convênio pode ter
+      empenhos em várias UGs, e mantê-las na chave duplicaria a linha inteira
+      (com todos os valores) e inflaria as somas nos resumos Gold. Substitui a
+      entidade siconv.convenio como base de todos os cruzamentos de convênios
+      da Silver. Granularidade: uma linha por convênio.
+    meta:
+      owner: "@GovHub-br/mir"
+      sistema_origem: siconv
+      camada: silver
+      classificacao: publico
+    columns:
+      - name: nr_convenio
+        description: Número do convênio — chave natural do modelo.
+        meta:
+          classificacao: publico
+        data_tests:
+          - unique
+          - not_null
+      - name: id_proposta
+        description: Identificador único da proposta que originou o convênio.
+        meta:
+          classificacao: publico
+      - name: dia
+        description: Dia de assinatura do convênio.
+        meta:
+          classificacao: publico
+      - name: mes
+        description: Mês de assinatura do convênio.
+        meta:
+          classificacao: publico
+      - name: ano
+        description: Ano de assinatura do convênio.
+        meta:
+          classificacao: publico
+      - name: dia_assin_conv
+        description: Data de assinatura do convênio.
+        meta:
+          classificacao: publico
+      - name: sit_convenio
+        description: Situação do convênio.
+        meta:
+          classificacao: publico
+      - name: subsituacao_conv
+        description: Subsituação do convênio.
+        meta:
+          classificacao: publico
+      - name: situacao_publicacao
+        description: Situação de publicação do convênio.
+        meta:
+          classificacao: publico
+      - name: instrumento_ativo
+        description: Indica se o instrumento está ativo.
+        meta:
+          classificacao: publico
+      - name: ind_opera_obtv
+        description: Indicador de operação OBTV (Ordem Bancária de Transferência Voluntária).
+        meta:
+          classificacao: publico
+      - name: nr_processo
+        description: Número do processo administrativo do convênio.
+        meta:
+          classificacao: publico
+      - name: ug_emitente
+        description: Código da UG emitente do convênio no SICONV.
+        meta:
+          classificacao: publico
+      - name: dia_publ_conv
+        description: Data de publicação do convênio.
+        meta:
+          classificacao: publico
+      - name: dia_inic_vigenc_conv
+        description: Data de início da vigência do convênio.
+        meta:
+          classificacao: publico
+      - name: dia_fim_vigenc_conv
+        description: Data de fim da vigência do convênio.
+        meta:
+          classificacao: publico
+      - name: dia_fim_vigenc_original_conv
+        description: Data de fim da vigência original do convênio, antes de aditivos.
+        meta:
+          classificacao: publico
+      - name: dias_prest_contas
+        description: Prazo em dias para prestação de contas.
+        meta:
+          classificacao: publico
+      - name: dia_limite_prest_contas
+        description: Data limite para prestação de contas.
+        meta:
+          classificacao: publico
+      - name: data_suspensiva
+        description: Data da cláusula suspensiva.
+        meta:
+          classificacao: publico
+      - name: data_retirada_suspensiva
+        description: Data de retirada da cláusula suspensiva.
+        meta:
+          classificacao: publico
+      - name: dias_clausula_suspensiva
+        description: Quantidade de dias em cláusula suspensiva.
+        meta:
+          classificacao: publico
+      - name: situacao_contratacao
+        description: Situação da contratação associada ao convênio.
+        meta:
+          classificacao: publico
+      - name: ind_assinado
+        description: Indica se o convênio foi assinado.
+        meta:
+          classificacao: publico
+      - name: motivo_suspensao
+        description: Motivo da suspensão do convênio.
+        meta:
+          classificacao: publico
+      - name: ind_foto
+        description: Indica se há registro de imagem/foto associado ao convênio.
+        meta:
+          classificacao: publico
+      - name: qtde_convenios
+        description: Quantidade de instrumentos vinculados ao registro.
+        meta:
+          classificacao: publico
+      - name: qtd_ta
+        description: Quantidade de termos aditivos celebrados.
+        meta:
+          classificacao: publico
+      - name: qtd_prorroga
+        description: Quantidade de prorrogações de ofício concedidas.
+        meta:
+          classificacao: publico
+      - name: vl_global_conv
+        description: Valor global (atualizado) do convênio.
+        meta:
+          classificacao: publico
+      - name: vl_repasse_conv
+        description: Valor de repasse federal previsto no convênio.
+        meta:
+          classificacao: publico
+      - name: vl_contrapartida_conv
+        description: Valor de contrapartida pactuada no convênio.
+        meta:
+          classificacao: publico
+      - name: vl_empenhado_conv
+        description: Valor empenhado do convênio.
+        meta:
+          classificacao: publico
+      - name: vl_desembolsado_conv
+        description: Valor acumulado já desembolsado/liberado do convênio.
+        meta:
+          classificacao: publico
+      - name: vl_saldo_reman_tesouro
+        description: Saldo remanescente a devolver ao Tesouro Nacional.
+        meta:
+          classificacao: publico
+      - name: vl_saldo_reman_convenente
+        description: Saldo remanescente sob guarda do convenente.
+        meta:
+          classificacao: publico
+      - name: vl_rendimento_aplicacao
+        description: Rendimentos auferidos com aplicação financeira dos recursos.
+        meta:
+          classificacao: publico
+      - name: vl_ingresso_contrapartida
+        description: Valor efetivamente depositado a título de contrapartida.
+        meta:
+          classificacao: publico
+      - name: vl_saldo_conta
+        description: Saldo financeiro disponível na conta específica do convênio.
+        meta:
+          classificacao: publico
+      - name: valor_global_original_conv
+        description: Valor global original do convênio, antes de qualquer aditivo.
+        meta:
+          classificacao: publico
+      - name: percentual_executado
+        description: >
+          Percentual desembolsado sobre o valor global do convênio
+          (vl_desembolsado_conv / vl_global_conv x 100), com uma casa decimal.
+        meta:
+          classificacao: publico
+      - name: percentual_faltante
+        description: >
+          Percentual ainda não desembolsado sobre o valor global do convênio,
+          complementar a percentual_executado.
+        meta:
+          classificacao: publico
+      - name: ug_responsavel_codigo
+        description: >
+          Código(s) da(s) Unidade(s) Gestora(s) responsável(is) pela gestão
+          orçamentária do instrumento no SIAFI/Tesouro. Quando o convênio tem
+          empenhos em mais de uma UG, os códigos são concatenados por vírgula.
+          NULL quando o convênio não tem empenho correspondente no Tesouro.
+        meta:
+          classificacao: publico
+      - name: ug_responsavel_nome
+        description: >
+          Nome(s)/sigla(s) da(s) Unidade(s) Gestora(s) responsável(is) pela
+          gestão orçamentária do instrumento no SIAFI/Tesouro, concatenados por
+          vírgula quando há mais de uma.
+        meta:
+          classificacao: publico
+      - name: qtd_ugs_responsaveis
+        description: >
+          Quantidade de UGs responsáveis distintas associadas ao convênio via
+          empenhos do Tesouro. 0 quando não há empenho correspondente. Serve
+          para identificar os convênios multi-UG sem precisar quebrar a string
+          de ug_responsavel_codigo.
+        meta:
+          classificacao: publico
+
+  - name: termo_fomento_consolidado
+    description: >
+      Instrumentos da modalidade Termo de Fomento: convenios_consolidados
+      cruzado com os dados detalhados da proposta (siconv.proposta), filtrado
+      por proposta.modalidade = 'TERMO DE FOMENTO'. É a base do Gold
+      resumo_termos_fomento. Granularidade: uma linha por termo de fomento —
+      herdada de convenios_consolidados, que já consolida as UGs em atributo.
+    meta:
+      owner: "@GovHub-br/mir"
+      sistema_origem: siconv
+      camada: silver
+      classificacao: pessoal
+    columns:
+      - name: nr_convenio
+        description: Número de identificação do instrumento no Transferegov/SICONV.
+        meta:
+          classificacao: publico
+        data_tests:
+          - unique
+          - not_null
+      - name: id_proposta
+        description: Identificador único da proposta vinculada ao instrumento.
+        meta:
+          classificacao: publico
+        data_tests:
+          - not_null
+      - name: dia_conv
+        description: Dia do registro/assinatura do instrumento.
+        meta:
+          classificacao: publico
+      - name: mes_conv
+        description: Mês do registro/assinatura do instrumento.
+        meta:
+          classificacao: publico
+      - name: ano_conv
+        description: Ano do registro/assinatura do instrumento.
+        meta:
+          classificacao: publico
+      - name: dia_assin_conv
+        description: Data de assinatura do termo de fomento.
+        meta:
+          classificacao: publico
+      - name: sit_convenio
+        description: "Situação atual do instrumento (ex.: Em execução, Prestação de Contas Concluída)."
+        meta:
+          classificacao: publico
+      - name: subsituacao_conv
+        description: Subsituação detalhada do instrumento.
+        meta:
+          classificacao: publico
+      - name: situacao_publicacao
+        description: Status da publicação do instrumento no Diário Oficial.
+        meta:
+          classificacao: publico
+      - name: instrumento_ativo
+        description: Indica se o instrumento está ativo no sistema.
+        meta:
+          classificacao: publico
+      - name: ind_opera_obtv
+        description: Indica se o instrumento opera via Ordens Bancárias de Transferência Voluntária (OBTV).
+        meta:
+          classificacao: publico
+      - name: nr_processo
+        description: Número do processo administrativo associado.
+        meta:
+          classificacao: publico
+      - name: ug_emitente
+        description: Código da Unidade Gestora emitente no SIAFI.
+        meta:
+          classificacao: publico
+      - name: ug_responsavel_codigo
+        description: >
+          Código(s) da(s) Unidade(s) Gestora(s) responsável(is) pela gestão
+          orçamentária do instrumento no SIAFI/Tesouro, concatenados por
+          vírgula quando há mais de uma (herdado de convenios_consolidados).
+        meta:
+          classificacao: publico
+      - name: ug_responsavel_nome
+        description: >
+          Nome(s)/sigla(s) da(s) Unidade(s) Gestora(s) responsável(is) pela
+          gestão orçamentária do instrumento no SIAFI/Tesouro, concatenados por
+          vírgula quando há mais de uma.
+        meta:
+          classificacao: publico
+      - name: qtd_ugs_responsaveis
+        description: >
+          Quantidade de UGs responsáveis distintas do instrumento, herdada de
+          convenios_consolidados. 0 quando não há empenho correspondente no
+          Tesouro.
+        meta:
+          classificacao: publico
+      - name: dia_publ_conv
+        description: Data de publicação do termo.
+        meta:
+          classificacao: publico
+      - name: dia_inic_vigenc_conv
+        description: Data de início da vigência do termo de fomento.
+        meta:
+          classificacao: publico
+      - name: dia_fim_vigenc_conv
+        description: Data de término da vigência atual do termo de fomento.
+        meta:
+          classificacao: publico
+      - name: dia_fim_vigenc_original_conv
+        description: Data de término da vigência original, antes de aditivos/prorrogações.
+        meta:
+          classificacao: publico
+      - name: dias_prest_contas
+        description: Prazo em dias para a prestação de contas.
+        meta:
+          classificacao: publico
+      - name: dia_limite_prest_contas
+        description: Data limite para envio da prestação de contas.
+        meta:
+          classificacao: publico
+      - name: data_suspensiva
+        description: Data em que foi aplicada condição suspensiva.
+        meta:
+          classificacao: publico
+      - name: data_retirada_suspensiva
+        description: Data de retirada da condição suspensiva.
+        meta:
+          classificacao: publico
+      - name: dias_clausula_suspensiva
+        description: Quantidade de dias em cláusula suspensiva.
+        meta:
+          classificacao: publico
+      - name: situacao_contratacao
+        description: Situação da contratação associada ao termo.
+        meta:
+          classificacao: publico
+      - name: ind_assinado
+        description: Indicador se o termo já foi formalmente assinado.
+        meta:
+          classificacao: publico
+      - name: motivo_suspensao
+        description: Motivo de eventual suspensão do instrumento.
+        meta:
+          classificacao: publico
+      - name: ind_foto
+        description: Indicador de registro de imagem/foto do projeto.
+        meta:
+          classificacao: publico
+      - name: qtde_convenios
+        description: Contagem de instrumentos vinculados.
+        meta:
+          classificacao: publico
+      - name: qtd_ta
+        description: Quantidade de termos aditivos celebrados.
+        meta:
+          classificacao: publico
+      - name: qtd_prorroga
+        description: Quantidade de prorrogações de ofício concedidas.
+        meta:
+          classificacao: publico
+      - name: vl_global_conv
+        description: Valor global atualizado do termo de fomento.
+        meta:
+          classificacao: publico
+      - name: vl_repasse_conv
+        description: Valor total de repasse federal previsto.
+        meta:
+          classificacao: publico
+      - name: vl_contrapartida_conv
+        description: Valor da contrapartida pactuada.
+        meta:
+          classificacao: publico
+      - name: vl_empenhado_conv
+        description: Valor total empenhado para o termo.
+        meta:
+          classificacao: publico
+      - name: vl_desembolsado_conv
+        description: Valor acumulado já desembolsado/liberado.
+        meta:
+          classificacao: publico
+      - name: vl_saldo_reman_tesouro
+        description: Saldo remanescente a ser devolvido ao Tesouro Nacional.
+        meta:
+          classificacao: publico
+      - name: vl_saldo_reman_convenente
+        description: Saldo remanescente sob guarda da organização proponente.
+        meta:
+          classificacao: publico
+      - name: vl_rendimento_aplicacao
+        description: Rendimentos auferidos de aplicações financeiras dos recursos.
+        meta:
+          classificacao: publico
+      - name: vl_ingresso_contrapartida
+        description: Valor efetivamente depositado referente à contrapartida.
+        meta:
+          classificacao: publico
+      - name: vl_saldo_conta
+        description: Saldo financeiro disponível na conta bancária específica do termo.
+        meta:
+          classificacao: publico
+      - name: valor_global_original_conv
+        description: Valor global original firmado no início do termo.
+        meta:
+          classificacao: publico
+      - name: uf_proponente
+        description: UF da organização da sociedade civil ou proponente.
+        meta:
+          classificacao: publico
+      - name: munic_proponente
+        description: Município do proponente.
+        meta:
+          classificacao: publico
+      - name: cod_munic_ibge
+        description: Código IBGE do município do proponente.
+        meta:
+          classificacao: publico
+      - name: cod_orgao_sup
+        description: Código do órgão superior concedente.
+        meta:
+          classificacao: publico
+      - name: desc_orgao_sup
+        description: Nome do órgão superior concedente.
+        meta:
+          classificacao: publico
+      - name: natureza_juridica
+        description: "Natureza jurídica da entidade proponente (ex.: Organização da Sociedade Civil)."
+        meta:
+          classificacao: publico
+      - name: nr_proposta
+        description: Número da proposta no Transferegov/SICONV.
+        meta:
+          classificacao: publico
+      - name: dia_proposta
+        description: Data de apresentação da proposta.
+        meta:
+          classificacao: publico
+      - name: cod_orgao
+        description: Código do órgão concedente.
+        meta:
+          classificacao: publico
+      - name: desc_orgao
+        description: Nome do órgão concedente.
+        meta:
+          classificacao: publico
+      - name: modalidade
+        description: "Modalidade da transferência — sempre 'TERMO DE FOMENTO' neste modelo."
+        meta:
+          classificacao: publico
+      - name: identif_proponente
+        description: >
+          CNPJ ou CPF do proponente. Pode ser CPF quando o proponente é pessoa
+          física, por isso a coluna é classificada como dado pessoal.
+        meta:
+          classificacao: pessoal
+      - name: nm_proponente
+        description: Razão social ou nome da entidade proponente.
+        meta:
+          classificacao: publico
+      - name: cep_proponente
+        description: CEP da entidade proponente.
+        meta:
+          classificacao: publico
+      - name: endereco_proponente
+        description: Endereço da entidade proponente.
+        meta:
+          classificacao: publico
+      - name: bairro_proponente
+        description: Bairro do proponente.
+        meta:
+          classificacao: publico
+      - name: nm_banco
+        description: Nome da instituição financeira onde a conta específica foi aberta.
+        meta:
+          classificacao: publico
+      - name: situacao_conta
+        description: Situação da conta bancária vinculada.
+        meta:
+          classificacao: publico
+      - name: situacao_projeto_basico
+        description: Situação do projeto básico/termo de referência.
+        meta:
+          classificacao: publico
+      - name: sit_proposta
+        description: "Situação da proposta (ex.: Aprovada)."
+        meta:
+          classificacao: publico
+      - name: dia_inic_vigencia_proposta
+        description: Início de vigência previsto na proposta.
+        meta:
+          classificacao: publico
+      - name: dia_fim_vigencia_proposta
+        description: Fim de vigência previsto na proposta.
+        meta:
+          classificacao: publico
+      - name: objeto_proposta
+        description: Descrição sucinta do objeto do termo de fomento.
+        meta:
+          classificacao: publico
+      - name: item_investimento
+        description: Itens ou categorias de investimento previstos.
+        meta:
+          classificacao: publico
+      - name: enviada_mandataria
+        description: Indicador de envio para instituição mandatária.
+        meta:
+          classificacao: publico
+      - name: nome_subtipo_proposta
+        description: Nome do subtipo da proposta.
+        meta:
+          classificacao: publico
+      - name: descricao_subtipo_proposta
+        description: Descrição detalhada do subtipo da proposta.
+        meta:
+          classificacao: publico
+      - name: vl_global_prop
+        description: Valor global previsto na proposta.
+        meta:
+          classificacao: publico
+      - name: vl_repasse_prop
+        description: Valor de repasse previsto na proposta.
+        meta:
+          classificacao: publico
+      - name: vl_contrapartida_prop
+        description: Valor de contrapartida previsto na proposta.
+        meta:
+          classificacao: publico

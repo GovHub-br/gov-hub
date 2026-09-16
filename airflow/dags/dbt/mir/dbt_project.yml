@@ -1,0 +1,36 @@
+# Projeto dbt do órgão MIR — ver ADR-0004 e ADR-0009.
+#
+# Reúne os pacotes dos sistemas estruturantes que o órgão consome e materializa
+# a camada Gold (e, quando o modelo cruza pacotes, parte da Silver).
+
+name: "mir"
+version: "0.1.0"
+config-version: 2
+
+profile: "gov_bricks"
+
+model-paths: ["models"]
+macro-paths: ["macros"]
+seed-paths: ["seeds"]
+snapshot-paths: ["snapshots"]
+test-paths: ["tests"]
+
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+models:
+  mir:
+    silver:
+      +materialized: table
+    gold:
+      +materialized: table
+
+# Seeds não têm pasta de camada (bronze/silver/gold) sob models/, então
+# generate_schema_name não consegue derivar o schema por convenção
+# (schema_medallion espera ref/, bronze/, silver/ ou gold/ como pasta de
+# topo, ADR-0009/0010). Fixar +schema aqui contorna o macro (que devolve
+# custom_schema_name direto quando ele não é none) e trata os seeds de
+# partidos como dado de referência (prefixo "ref", ADR-0010).
+seeds:
+  mir:
+    +schema: "000_ref_mir"

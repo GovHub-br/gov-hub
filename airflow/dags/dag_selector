@@ -15,3 +15,4 @@ data_ingest/senado_federal/
 data_ingest/transferegov_emendas/
 data_ingest/transferegov_ted/mir/
 data_transform/mir/
+data_indicators/mir/

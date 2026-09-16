@@ -55,6 +55,7 @@
 /airflow/dags/data_ingest/tesouro_gerencial/mir/   @GovHub-br/mir
 /airflow/dags/data_ingest/transferegov_ted/mir/    @GovHub-br/mir
 /airflow/dags/data_transform/mir/                  @GovHub-br/mir
+/airflow/dags/data_indicators/mir/                 @GovHub-br/mir
 /airflow/dags/dbt/contratos_gov/mir/               @GovHub-br/mir
 /airflow/dags/dbt/tesouro_gerencial/mir/           @GovHub-br/mir
 /airflow/dags/dbt/transferegov_ted/mir/            @GovHub-br/mir

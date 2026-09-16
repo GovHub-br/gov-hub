@@ -17,9 +17,32 @@ class ClientPostgresDB:
     SEPARATOR = "__"
     TYPE_MAP = {int: "BIGINT", float: "NUMERIC", bool: "BOOLEAN"}
 
+    # Identificador que o Postgres aceita sem aspas: minúsculo, sem acento e
+    # sem começar por dígito.
+    _IDENT_SIMPLES = re.compile(r"[a-z_][a-z0-9_]*\Z")
+
     @staticmethod
     def _get_column_type(value: Any) -> str:
         return ClientPostgresDB.TYPE_MAP.get(type(value), "TEXT")
+
+    @staticmethod
+    def _ident(nome: str) -> str:
+        """Identificador pronto para ser interpolado em SQL.
+
+        Nomes que o Postgres já aceita sem aspas voltam intactos: é o caso de
+        todo schema e tabela que este cliente criou até aqui, e não citá-los
+        preserva as tabelas existentes — com aspas, `Foo` deixaria de casar
+        com o `foo` que o Postgres gravou ao dobrar o nome para minúsculo.
+        Os demais são citados, sem o que os schemas do ADR-0010, que começam
+        por dígito (`003_gld_indicadores`), nem chegam a ser parseados.
+        """
+        if ClientPostgresDB._IDENT_SIMPLES.match(nome):
+            return nome
+        return '"' + nome.replace('"', '""') + '"'
+
+    @classmethod
+    def _qualificado(cls, schema: str, table_name: str) -> str:
+        return f"{cls._ident(schema)}.{cls._ident(table_name)}"
 
     @staticmethod
     def _unique_index_name(table_name: str, columns: List[str]) -> str:
@@ -73,7 +96,7 @@ class ClientPostgresDB:
     ) -> None:
         def _execute(connection):
             with connection.cursor() as cursor:
-                cursor.execute(f"CREATE SCHEMA IF NOT EXISTS {schema};")
+                cursor.execute(f"CREATE SCHEMA IF NOT EXISTS {self._ident(schema)};")
                 logging.info(f"[cliente_postgres.py] Schema {schema} ensured to exist")
 
                 flattened_sample = self._flatten_data([sample_data])[0]
@@ -87,7 +110,8 @@ class ClientPostgresDB:
                     column_definitions.append(f"PRIMARY KEY ({pk_str})")
 
                 create_table_query = (
-                    f"CREATE TABLE IF NOT EXISTS {schema}.{table_name} ("
+                    f"CREATE TABLE IF NOT EXISTS "
+                    f"{self._qualificado(schema, table_name)} ("
                     f"{', '.join(column_definitions)});"
                 )
 
@@ -141,7 +165,10 @@ class ClientPostgresDB:
 
         values = [tuple(item.get(col) for col in columns) for item in flattened_data]
 
-        sql = f"INSERT INTO {schema}.{table_name} ({', '.join(columns)}) VALUES %s"
+        sql = (
+            f"INSERT INTO {self._qualificado(schema, table_name)} "
+            f"({', '.join(columns)}) VALUES %s"
+        )
 
         if conflict_fields:
             conflict_str = ", ".join(conflict_fields)
@@ -201,11 +228,35 @@ class ClientPostgresDB:
                 )
                 return results
 
+    def fetch_table(self, schema: str, table_name: str) -> List[Dict[str, Any]]:
+        """Lê uma tabela inteira como lista de dicts (coluna -> valor).
+
+        Existe para que um consumidor que processa em Python — os indicadores
+        do ADR-0022 — leia um modelo já materializado pelo dbt sem escrever
+        SQL na DAG. `execute_query` devolve tuplas, que obrigariam quem chama
+        a saber a ordem das colunas; aqui o nome vem junto, que é o contrato
+        que a lógica dos indicadores espera.
+        """
+        query = f"SELECT * FROM {self._qualificado(schema, table_name)}"
+        with self._connect() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(query)
+                columns = [desc[0] for desc in cursor.description]
+                rows = cursor.fetchall()
+
+        logging.info(
+            f"[cliente_postgres.py] Lidas {len(rows)} linhas de {schema}.{table_name}"
+        )
+        return [dict(zip(columns, row)) for row in rows]
+
     def drop_table_if_exists(self, table_name: str, schema: str = "raw") -> None:
         with self._connect() as conn:
             with conn.cursor() as cursor:
                 try:
-                    cursor.execute(f"DROP TABLE IF EXISTS {schema}.{table_name};")
+                    cursor.execute(
+                        f"DROP TABLE IF EXISTS "
+                        f"{self._qualificado(schema, table_name)};"
+                    )
                     conn.commit()
                     print(f"Tabela {schema}.{table_name} removida com sucesso.")
                 except Exception as e:
@@ -242,7 +293,7 @@ class ClientPostgresDB:
                 for column in columns:
                     if column not in existing_columns:
                         alter_query = (
-                            f"ALTER TABLE {schema}.{table_name} "
+                            f"ALTER TABLE {self._qualificado(schema, table_name)} "
                             f"ADD COLUMN IF NOT EXISTS {column} TEXT;"
                         )
                         try:
@@ -342,7 +393,8 @@ class ClientPostgresDB:
         # indice padrao nao protegia praticamente nenhuma linha.
         query = (
             f"CREATE UNIQUE INDEX IF NOT EXISTS {index_name} "
-            f"ON {schema}.{table_name} ({cols_sql}) NULLS NOT DISTINCT;"
+            f"ON {self._qualificado(schema, table_name)} "
+            f"({cols_sql}) NULLS NOT DISTINCT;"
         )
         # IF NOT EXISTS nao recria um indice que ja existe: tabelas criadas antes
         # desta correcao mantem o indice antigo (NULLS DISTINCT) e continuariam
@@ -356,7 +408,7 @@ class ClientPostgresDB:
             f"WHERE n.nspname = '{schema}' AND c.relname = '{index_name}' "
             "AND NOT i.indnullsnotdistinct"
             ") THEN "
-            f"DROP INDEX {schema}.{index_name}; "
+            f"DROP INDEX {self._qualificado(schema, index_name)}; "
             "END IF; END $$;"
         )
 

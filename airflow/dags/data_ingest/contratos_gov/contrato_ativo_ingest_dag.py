@@ -20,6 +20,15 @@ Por que uma escrita por UG, e não por bloco?
     fica no log — é dela que sai o alerta de queda para zero numa UG que tinha
     contratos.
 
+Por que comparar com o que já está na raw?
+    UG inexistente e UG sem contrato respondem igual (200 []), então uma UG
+    vazia sozinha não diz nada. O que diz é a UG que já tinha contrato na raw e
+    agora voltou vazia: pode ser inativação em massa, mas também pode ser a
+    fonte falhando só para ela. Antes de varrer, get_ugs_com_contrato lê da raw
+    as UGs que já tiveram contrato; o validate cruza com as vazias desta
+    execução e loga um alerta nomeando cada uma. Não falha a DAG, porque zerar
+    é um caso possível na fonte; quem decide é quem lê o alerta.
+
 Por que não roda inteira na máquina do desenvolvedor?
     A varredura completa são milhares de chamadas, estimadas em horas. No
     compose, INGEST_MAX_UGS (local.env) trunca a lista e é com essa amostra que
@@ -43,12 +52,13 @@ from typing import Any
 from airflow.sdk import dag, task
 from batching import chunked, limit_local
 from cliente_contratos_gov import ClienteContratosGov
-from landing_zone import distinct_raw_values, write_raw
+from landing_zone import RawIndisponivel, distinct_raw_values, write_raw
 
 SISTEMA = "contratos_gov"
 ENTIDADE = "contrato_ativo"
 DEPENDENCIA = "unidade_contratante"
 PK = ["id"]
+COLUNA_UG = "unidade_gestora_codigo"
 BLOCK_SIZE = 25
 
 default_args = {
@@ -101,6 +111,21 @@ def contrato_ativo_dag() -> None:
         )
         return blocos
 
+    @task
+    def get_ugs_com_contrato() -> list[str]:
+        """UGs que já têm contrato na raw, lidas antes da varredura."""
+        try:
+            ugs = distinct_raw_values(SISTEMA, ENTIDADE, COLUNA_UG)
+        except RawIndisponivel:
+            logging.info(
+                "Entidade '%s' ainda não está na raw: primeira execução, "
+                "sem base para comparar UGs que zeraram.",
+                ENTIDADE,
+            )
+            return []
+        logging.info("UGs com contrato antes desta execução: %s", len(ugs))
+        return ugs
+
     @task(max_active_tis_per_dag=4)
     def ingest_ugs(codigos_ug: list[str]) -> dict:
         api = ClienteContratosGov()
@@ -125,15 +150,24 @@ def contrato_ativo_dag() -> None:
         return {"contratos": contratos, "ugs_vazias": ugs_vazias}
 
     @task
-    def validate(results: Any) -> int:
+    def validate(results: Any, ugs_com_contrato: Any = None) -> int:
         total = sum(r["contratos"] for r in results)
         vazias = [ug for r in results for ug in r["ugs_vazias"]]
+        zeradas = sorted(set(vazias) & set(ugs_com_contrato or []))
         logging.info(
             "Contratos ativos total: contratos=%s blocos=%s ugs_vazias=%s",
             total,
             len(results),
             len(vazias),
         )
+
+        if zeradas:
+            logging.warning(
+                "ALERTA: %s UG(s) tinham contrato na raw e voltaram vazias "
+                "nesta execução: %s",
+                len(zeradas),
+                ", ".join(zeradas),
+            )
 
         if total == 0:
             raise RuntimeError(
@@ -145,9 +179,11 @@ def contrato_ativo_dag() -> None:
 
         return total
 
+    ugs_antes = get_ugs_com_contrato()
     blocos = get_ug_blocks()
     resultados = ingest_ugs.expand(codigos_ug=blocos)
-    validate(resultados)
+    ugs_antes >> resultados
+    validate(resultados, ugs_antes)
 
 
 contrato_ativo_dag()

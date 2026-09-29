@@ -11,6 +11,7 @@ from unittest.mock import MagicMock, call
 
 import pytest
 from airflow.models import DagBag
+from landing_zone import RawIndisponivel
 
 pytestmark = pytest.mark.unit
 
@@ -262,3 +263,44 @@ class TestValidacaoFinal:
             validacao([{"contratos": 0, "ugs_vazias": [UG_A, UG_B]}])
 
         assert "nenhum contrato" in str(erro.value)
+
+
+class TestUgsQueZeraram:
+    """UG que já tinha contrato na raw e voltou vazia vira alerta, não erro."""
+
+    def test_le_as_ugs_da_propria_raw_de_contrato_ativo(self, dagbag, monkeypatch):
+        antes = task(dagbag, "get_ugs_com_contrato")
+        consulta = usar_ugs_da_raw(antes, monkeypatch, [UG_A])
+
+        assert antes() == [UG_A]
+        consulta.assert_called_once_with(SISTEMA, ENTIDADE, "unidade_gestora_codigo")
+
+    def test_primeira_execucao_sem_raw_nao_falha(self, dagbag, monkeypatch):
+        antes = task(dagbag, "get_ugs_com_contrato")
+        consulta = usar_ugs_da_raw(antes, monkeypatch, [])
+        consulta.side_effect = RawIndisponivel("raw_contrato_ativo")
+
+        assert antes() == []
+
+    def test_roda_antes_da_varredura(self, dagbag):
+        dag = dagbag.dags[DAG_ID]
+
+        assert "ingest_ugs" in dag.get_task("get_ugs_com_contrato").downstream_task_ids
+
+    def test_ug_que_tinha_contrato_e_zerou_gera_alerta(self, dagbag, caplog):
+        validacao = task(dagbag, "validate")
+
+        with caplog.at_level("WARNING"):
+            validacao([{"contratos": 5, "ugs_vazias": [UG_A]}], [UG_A, UG_B])
+
+        alertas = [r for r in caplog.records if r.levelname == "WARNING"]
+        assert len(alertas) == 1
+        assert UG_A in alertas[0].getMessage()
+
+    def test_ug_que_sempre_foi_vazia_nao_gera_alerta(self, dagbag, caplog):
+        validacao = task(dagbag, "validate")
+
+        with caplog.at_level("WARNING"):
+            validacao([{"contratos": 5, "ugs_vazias": [UG_A]}], [UG_B])
+
+        assert not [r for r in caplog.records if r.levelname == "WARNING"]

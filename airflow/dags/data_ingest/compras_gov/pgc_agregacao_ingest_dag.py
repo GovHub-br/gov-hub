@@ -16,6 +16,7 @@ default_args = {
     "retry_delay": timedelta(minutes=5),
 }
 
+
 @dag(
     dag_id="pgc_agregacao_ingest_dag",
     schedule="0 3 * * 0",
@@ -23,19 +24,25 @@ default_args = {
     catchup=False,
     default_args=default_args,
     description=(
-            "Ingere dados detalhados do módulo PGC Agregação da API Compras.gov.br "
-            "para a zona raw."),
-    tags=["sistema:compras_gov", 
-              "orgao:mgi", 
-              "camada:raw", 
-              "dominio:pgc"],
+        "Ingere dados detalhados do módulo PGC Agregação da API Compras.gov.br "
+        "para a zona raw."
+    ),
+    tags=["sistema:compras_gov", "orgao:mgi", "camada:raw", "dominio:pgc"],
     params={
-        "modo": Param("incremental", enum=["incremental", "fria"], description="Modo de execução do DAG: incremental ou fria"), 
-        "ano_inicio": Param(2023, type="integer", description="Ano de início para a execução do dag PGC Agregação, (2023)"),
+        "modo": Param(
+            "incremental",
+            enum=["incremental", "fria"],
+            description="Modo de execução do DAG: incremental ou fria",
+        ),
+        "ano_inicio": Param(
+            2023,
+            type="integer",
+            description="Ano de início para a execução do dag PGC Agregação, (2023)",
+        ),
     },
-)   
+)
 def pgc_agregacao_dag() -> None:
-    
+
     @task
     def get_codigos_pgc() -> list[list[str]]:
         try:
@@ -43,7 +50,7 @@ def pgc_agregacao_dag() -> None:
                 SISTEMA,
                 "orgao",
                 "cnpjCpfOrgaoVinculado",
-        )
+            )
         except Exception as exc:
             raise RuntimeError(
                 "Execute orgao_ingest_dag antes de pgc_agregacao_ingest_dag."
@@ -51,17 +58,22 @@ def pgc_agregacao_dag() -> None:
 
         if not codigos:
             raise RuntimeError(
-            "Nenhum CNPJ de órgão vinculado foi encontrado na entidade 'orgao'."
+                "Nenhum CNPJ de órgão vinculado foi encontrado na entidade 'orgao'."
             )
 
         blocos = chunked(codigos, BLOCK_SIZE)
-        logging.info("PGC Agregação: %s órgãos em %s blocos de até %s para processar", len(codigos), len(blocos), BLOCK_SIZE)
-    
+        logging.info(
+            "PGC Agregação: %s órgãos em %s blocos de até %s para processar",
+            len(codigos),
+            len(blocos),
+            BLOCK_SIZE,
+        )
+
         return blocos
 
     @task(max_active_tis_per_dag=2)
     def fetch_agregacao_pgc(bloco: list[str]) -> dict:
-        context = get_current_context() 
+        context = get_current_context()
         current_year = datetime.now().year
         ano_atual = current_year
         modo = context["params"]["modo"]
@@ -80,12 +92,11 @@ def pgc_agregacao_dag() -> None:
 
         for codigo_orgao in bloco:
             for ano in anos:
-                try: 
+                try:
                     pgc, _ = api.fetch_all_pages(
                         "/modulo-pgc/3_consultarPgcAgregacao",
-                        {"orgao": codigo_orgao, "ano": ano}
-
-                )
+                        {"orgao": codigo_orgao, "ano": ano},
+                    )
                     if not pgc:
                         logging.info(
                             "Sem registros: órgão=%s, ano=%s",
@@ -99,7 +110,8 @@ def pgc_agregacao_dag() -> None:
                         "PGC Agregação: órgão=%s, ano=%s, registros=%s",
                         codigo_orgao,
                         ano,
-                        len(pgc),)
+                        len(pgc),
+                    )
                 except Exception:
                     logging.exception(
                         "Erro ao buscar PGC Agregação: órgão=%s, ano=%s",
@@ -111,7 +123,6 @@ def pgc_agregacao_dag() -> None:
             "orgaos_processados": len(bloco),
             "registros": total_registros,
         }
-            
 
     @task
     def validate(results: list[dict]) -> None:
@@ -126,7 +137,8 @@ def pgc_agregacao_dag() -> None:
 
     blocos = get_codigos_pgc()
     results = fetch_agregacao_pgc.expand(bloco=blocos)
-    validate(results)
+    # O Airflow resolve o XComArg para os resultados antes de executar a task.
+    validate(results)  # ty: ignore[invalid-argument-type]
+
 
 pgc_agregacao_dag()
-

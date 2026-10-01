@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from typing import Any
 
 from airflow.sdk import dag, task
@@ -25,9 +25,15 @@ default_args = {
 
 
 def _get_intervalo(context: dict) -> tuple[str, str]:
-    data_inicial = str(context["data_interval_start"].date())
-    data_final = str(context["data_interval_end"].date())
-    return data_inicial, data_final
+    # data_inicial = str(context["data_interval_start"].date())
+    # data_final = str(context["data_interval_end"].date())
+    # return data_inicial, data_final
+    dag_run = context["dag_run"]
+    fallback=dag_run.logical_date or dag_run.run_after
+    data_inicial= context.get("data_interval_start") or fallback
+    data_final= context.get("data_interval_end") or fallback
+    return str(data_inicial.date()), str(data_final.date())
+    
 
 
 @dag(
@@ -83,7 +89,15 @@ def arp_dag() -> None:
             api_total = resp.get("totalRegistros", 0)
             if not data:
                 break
-            write_raw(SISTEMA, ENTIDADE, data, primary_key=PK)
+            # write_raw(SISTEMA, ENTIDADE, data, primary_key=PK)
+            write_raw(
+                SISTEMA,
+                ENTIDADE,
+                data,
+                primary_key=PK,
+                run_id = f"{context['run_id']}-pagina-{pagina}",
+                run_date = date.fromisoformat(data_inicial),
+            )
             ingeridos += len(data)
             if resp.get("paginasRestantes", 0) == 0:
                 break

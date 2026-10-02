@@ -40,7 +40,7 @@ def _get_run_date(context: dict) -> date:
         "Ingere detalhes de unidades, adesões e empenhos das ARPs já ingeridas, a partir da API do Compras.gov.br, "
         "para compras_gov.raw_arp_unidades_item, raw_arp_adesoes_item e raw_arp_empenhos_saldo."
     ),
-    tags=["sistema:compras_gov", "dominio:arp"],
+    tags=["sistema:compras_gov", "dominio:arp", "orgao:mgi"],
 )
 def arp_detalhes_dag() -> None:
     @task

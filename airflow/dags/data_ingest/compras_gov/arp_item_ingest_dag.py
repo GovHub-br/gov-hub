@@ -16,11 +16,11 @@ BLOCK_SIZE = 15
 ENDPOINT = "/modulo-arp/2_consultarARPItem"
 ENTIDADE = "arp_item"
 PK = [
-    "numeroataregistropreco",
-    "codigounidadegerenciadora",
-    "numeroitem",
-    "idcompra",
-    "nifornecedor",
+    "numeroAtaRegistroPreco",
+    "codigoUnidadeGerenciadora",
+    "numeroItem",
+    "idCompra",
+    "numeroFornecedor",
 ]
 
 default_args = {
@@ -49,7 +49,7 @@ def _get_intervalo(context: dict) -> tuple[str, str]:
         "Ingere itens de Atas de Registro de Preço (ARP) da API do Compras.gov.br para a tabela "
         "compras_gov.raw_arp_item."
     ),
-    tags=["sistema:compras_gov", "dominio:arp"],
+    tags=["sistema:compras_gov", "dominio:arp", "orgao:mgi"],
 )
 def arp_item_dag() -> None:
     @task

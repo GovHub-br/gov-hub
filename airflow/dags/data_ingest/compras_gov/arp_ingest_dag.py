@@ -14,7 +14,7 @@ BLOCK_SIZE = 10
 
 ENDPOINT = "/modulo-arp/1_consultarARP"
 ENTIDADE = "arp"
-PK = ["numeroataregistropreco", "idcompra"]
+PK = ["numeroAtaRegistroPreco", "idCompra"]
 
 default_args = {
     "owner": "mgi",
@@ -25,9 +25,6 @@ default_args = {
 
 
 def _get_intervalo(context: dict) -> tuple[str, str]:
-    # data_inicial = str(context["data_interval_start"].date())
-    # data_final = str(context["data_interval_end"].date())
-    # return data_inicial, data_final
     dag_run = context["dag_run"]
     fallback=dag_run.logical_date or dag_run.run_after
     data_inicial= context.get("data_interval_start") or fallback
@@ -43,7 +40,7 @@ def _get_intervalo(context: dict) -> tuple[str, str]:
     catchup=False,
     default_args=default_args,
     description="Ingere Atas de Registro de Preço (ARP) da API do Compras.gov.br para a tabela compras_gov.raw_arp.",
-    tags=["sistema:compras_gov", "dominio:arp"],
+    tags=["sistema:compras_gov", "dominio:arp", "orgao:mgi"],
 )
 def arp_dag() -> None:
     @task

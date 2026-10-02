@@ -1,6 +1,6 @@
 import logging
 import time
-from datetime import date,datetime, timedelta
+from datetime import date, datetime, timedelta
 from typing import Any
 
 from airflow.sdk import dag, task
@@ -33,9 +33,9 @@ default_args = {
 
 def _get_intervalo(context: dict) -> tuple[str, str]:
     dag_run = context["dag_run"]
-    fallback=dag_run.logical_date or dag_run.run_after
-    data_inicial= context.get("data_interval_start") or fallback
-    data_final= context.get("data_interval_end") or fallback
+    fallback = dag_run.logical_date or dag_run.run_after
+    data_inicial = context.get("data_interval_start") or fallback
+    data_final = context.get("data_interval_end") or fallback
     return str(data_inicial.date()), str(data_final.date())
 
 
@@ -97,7 +97,11 @@ def arp_item_dag() -> None:
             if not data:
                 break
             pk_lower = [f.lower() for f in PK]
-            incompletos= [registro for registro in data  if not all(registro.get(k) is not None for k in pk_lower)]
+            incompletos = [
+                registro
+                for registro in data
+                if not all(registro.get(k) is not None for k in pk_lower)
+            ]
             if incompletos:
                 logging.warning(
                     "[%s] p.%s: %s registro(s) por incompletos",
@@ -105,8 +109,15 @@ def arp_item_dag() -> None:
                     pagina,
                     len(incompletos),
                 )
-            
-            write_raw(SISTEMA, ENTIDADE, data, primary_key=PK, run_id = f"{context['run_id']}-pagina-{pagina}", run_date = date.fromisoformat(data_inicial))
+
+            write_raw(
+                SISTEMA,
+                ENTIDADE,
+                data,
+                primary_key=PK,
+                run_id=f"{context['run_id']}-pagina-{pagina}",
+                run_date=date.fromisoformat(data_inicial),
+            )
             ingeridos += len(data)
             if resp.get("paginasRestantes", 0) == 0:
                 break

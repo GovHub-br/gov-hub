@@ -22,12 +22,12 @@ default_args = {
     "retry_delay": timedelta(minutes=5),
 }
 
+
 def _get_run_date(context: dict) -> date:
     dag_run = context["dag_run"]
-    fallback=dag_run.logical_date or dag_run.run_after
-    data_inicial= context.get("data_interval_start") or fallback
+    fallback = dag_run.logical_date or dag_run.run_after
+    data_inicial = context.get("data_interval_start") or fallback
     return data_inicial.date()
-    
 
 
 @dag(
@@ -73,14 +73,22 @@ def arp_detalhes_dag() -> None:
             }
             unidades, _ = api.consultar_arp_unidades_item(str(ata), str(ug), str(item))
             if unidades:
-                write_raw(SISTEMA, "arp_unidades_item", [{**ctx, **r} for r in unidades],
-                        run_id=f"{context['run_id']}-offset-{offset}-unidades-{ata}-{ug}-{item}",
-                        run_date=_get_run_date(context))
+                write_raw(
+                    SISTEMA,
+                    "arp_unidades_item",
+                    [{**ctx, **r} for r in unidades],
+                    run_id=f"{context['run_id']}-offset-{offset}-unidades-{ata}-{ug}-{item}",
+                    run_date=_get_run_date(context),
+                )
             adesoes, _ = api.consultar_arp_adesoes_item(str(ata), str(ug), str(item))
             if adesoes:
-                write_raw(SISTEMA, "arp_adesoes_item", [{**ctx, **r} for r in adesoes], 
-                          run_id=f"{context['run_id']}-offset-{offset}-adesoes-{ata}-{ug}-{item}", 
-                          run_date=_get_run_date(context))
+                write_raw(
+                    SISTEMA,
+                    "arp_adesoes_item",
+                    [{**ctx, **r} for r in adesoes],
+                    run_id=f"{context['run_id']}-offset-{offset}-adesoes-{ata}-{ug}-{item}",
+                    run_date=_get_run_date(context),
+                )
             total_unidades += len(unidades)
             total_adesoes += len(adesoes)
         return {"unidades": total_unidades, "adesoes": total_adesoes}
@@ -99,9 +107,13 @@ def arp_detalhes_dag() -> None:
             }
             empenhos, _ = api.consultar_arp_empenhos_saldo(str(ata), str(ug))
             if empenhos:
-                write_raw(SISTEMA, "arp_empenhos_saldo", [{**ctx, **r} for r in empenhos], 
-                          run_id=f"{context['run_id']}-offset-{offset}-empenhos-{ata}-{ug}", 
-                          run_date=_get_run_date(context))
+                write_raw(
+                    SISTEMA,
+                    "arp_empenhos_saldo",
+                    [{**ctx, **r} for r in empenhos],
+                    run_id=f"{context['run_id']}-offset-{offset}-empenhos-{ata}-{ug}",
+                    run_date=_get_run_date(context),
+                )
             total_empenhos += len(empenhos)
         return {"empenhos": total_empenhos}
 

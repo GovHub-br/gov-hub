@@ -26,11 +26,10 @@ default_args = {
 
 def _get_intervalo(context: dict) -> tuple[str, str]:
     dag_run = context["dag_run"]
-    fallback=dag_run.logical_date or dag_run.run_after
-    data_inicial= context.get("data_interval_start") or fallback
-    data_final= context.get("data_interval_end") or fallback
+    fallback = dag_run.logical_date or dag_run.run_after
+    data_inicial = context.get("data_interval_start") or fallback
+    data_final = context.get("data_interval_end") or fallback
     return str(data_inicial.date()), str(data_final.date())
-    
 
 
 @dag(
@@ -92,8 +91,8 @@ def arp_dag() -> None:
                 ENTIDADE,
                 data,
                 primary_key=PK,
-                run_id = f"{context['run_id']}-pagina-{pagina}",
-                run_date = date.fromisoformat(data_inicial),
+                run_id=f"{context['run_id']}-pagina-{pagina}",
+                run_date=date.fromisoformat(data_inicial),
             )
             ingeridos += len(data)
             if resp.get("paginasRestantes", 0) == 0:

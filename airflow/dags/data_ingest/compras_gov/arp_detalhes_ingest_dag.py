@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from typing import Any
 
 from airflow.sdk import dag, task
@@ -11,8 +11,8 @@ from landing_zone import distinct_raw_rows, write_raw
 SISTEMA = "compras_gov"
 
 # Combinações da raw de itens de ARP sobre as quais esta DAG pagina.
-COLUNAS_ATA = ["numeroataregistropreco", "codigounidadegerenciadora"]
-COLUNAS_ITEM = COLUNAS_ATA + ["numeroitem"]
+COLUNAS_ATA = ["numeroAtaRegistroPreco", "codigoUnidadeGerenciadora"]
+COLUNAS_ITEM = COLUNAS_ATA + ["numeroItem"]
 BLOCK_SIZE = 150
 
 default_args = {
@@ -21,6 +21,13 @@ default_args = {
     "retries": 3,
     "retry_delay": timedelta(minutes=5),
 }
+
+
+def _get_run_date(context: dict) -> date:
+    dag_run = context["dag_run"]
+    fallback = dag_run.logical_date or dag_run.run_after
+    data_inicial = context.get("data_interval_start") or fallback
+    return data_inicial.date()
 
 
 @dag(
@@ -33,7 +40,7 @@ default_args = {
         "Ingere detalhes de unidades, adesões e empenhos das ARPs já ingeridas, a partir da API do Compras.gov.br, "
         "para compras_gov.raw_arp_unidades_item, raw_arp_adesoes_item e raw_arp_empenhos_saldo."
     ),
-    tags=["sistema:compras_gov", "dominio:arp"],
+    tags=["sistema:compras_gov", "dominio:arp", "orgao:mgi"],
 )
 def arp_detalhes_dag() -> None:
     @task
@@ -50,8 +57,8 @@ def arp_detalhes_dag() -> None:
         logging.info("ARP detalhes empenhos: %s atas em %s blocos", total, len(offsets))
         return offsets
 
-    @task(max_active_tis_per_dag=4)
-    def fetch_unidades_adesoes(offset: int) -> dict:
+    @task(max_active_tis_per_dag=2)
+    def fetch_unidades_adesoes(offset: int, **context: dict) -> dict:
         rows = distinct_raw_rows(SISTEMA, "arp_item", COLUNAS_ITEM)[
             offset : offset + BLOCK_SIZE
         ]
@@ -60,22 +67,34 @@ def arp_detalhes_dag() -> None:
         total_adesoes = 0
         for ata, ug, item in rows:
             ctx = {
-                "numeroataregistropreco": str(ata),
-                "codigounidadegerenciadora": str(ug),
-                "numeroitem": str(item),
+                "numeroAtaRegistroPreco": str(ata),
+                "codigoUnidadeGerenciadora": str(ug),
+                "numeroItem": str(item),
             }
             unidades, _ = api.consultar_arp_unidades_item(str(ata), str(ug), str(item))
             if unidades:
-                write_raw(SISTEMA, "arp_unidades_item", [{**ctx, **r} for r in unidades])
+                write_raw(
+                    SISTEMA,
+                    "arp_unidades_item",
+                    [{**ctx, **r} for r in unidades],
+                    run_id=f"{context['run_id']}-offset-{offset}-unidades-{ata}-{ug}-{item}",
+                    run_date=_get_run_date(context),
+                )
             adesoes, _ = api.consultar_arp_adesoes_item(str(ata), str(ug), str(item))
             if adesoes:
-                write_raw(SISTEMA, "arp_adesoes_item", [{**ctx, **r} for r in adesoes])
+                write_raw(
+                    SISTEMA,
+                    "arp_adesoes_item",
+                    [{**ctx, **r} for r in adesoes],
+                    run_id=f"{context['run_id']}-offset-{offset}-adesoes-{ata}-{ug}-{item}",
+                    run_date=_get_run_date(context),
+                )
             total_unidades += len(unidades)
             total_adesoes += len(adesoes)
         return {"unidades": total_unidades, "adesoes": total_adesoes}
 
-    @task(max_active_tis_per_dag=4)
-    def fetch_empenhos(offset: int) -> dict:
+    @task(max_active_tis_per_dag=2)
+    def fetch_empenhos(offset: int, **context: dict) -> dict:
         rows = distinct_raw_rows(SISTEMA, "arp_item", COLUNAS_ATA)[
             offset : offset + BLOCK_SIZE
         ]
@@ -83,12 +102,18 @@ def arp_detalhes_dag() -> None:
         total_empenhos = 0
         for ata, ug in rows:
             ctx = {
-                "numeroataregistropreco": str(ata),
-                "codigounidadegerenciadora": str(ug),
+                "numeroAtaRegistroPreco": str(ata),
+                "codigoUnidadeGerenciadora": str(ug),
             }
             empenhos, _ = api.consultar_arp_empenhos_saldo(str(ata), str(ug))
             if empenhos:
-                write_raw(SISTEMA, "arp_empenhos_saldo", [{**ctx, **r} for r in empenhos])
+                write_raw(
+                    SISTEMA,
+                    "arp_empenhos_saldo",
+                    [{**ctx, **r} for r in empenhos],
+                    run_id=f"{context['run_id']}-offset-{offset}-empenhos-{ata}-{ug}",
+                    run_date=_get_run_date(context),
+                )
             total_empenhos += len(empenhos)
         return {"empenhos": total_empenhos}
 

@@ -151,3 +151,65 @@ entidades:
         observacao: >-
           A origem entrega a natureza detalhada de 8 dígitos, não a forma curta
           de 6 usada em parte dos relatórios do SIAFI.
+
+  arp:
+    descricao: >-
+      Atas de Registro de Preço consultadas no módulo ARP do Compras.gov.br.
+    granularidade: uma linha por ata de registro de preço e compra
+    dominio: arp
+    dag: arp_ingest_dag
+    origem_atual: compras_gov.raw_arp
+    chave_primaria: [numeroAtaRegistroPreco, idCompra]
+    classificacao: publico
+    chaves: []
+
+  arp_item:
+    descricao: >-
+      Itens associados às Atas de Registro de Preço do Compras.gov.br.
+    granularidade: uma linha por item, fornecedor, ata, unidade gerenciadora e compra
+    dominio: arp
+    dag: arp_item_ingest_dag
+    origem_atual: compras_gov.raw_arp_item
+    chave_primaria:
+      [
+        numeroAtaRegistroPreco,
+        codigoUnidadeGerenciadora,
+        numeroItem,
+        idCompra,
+        numeroFornecedor,
+      ]
+    classificacao: publico
+    chaves: []
+
+  arp_unidades_item:
+    descricao: >-
+      Unidades vinculadas aos itens das Atas de Registro de Preço.
+    granularidade: uma linha por unidade vinculada a um item de ata
+    dominio: arp
+    dag: arp_detalhes_ingest_dag
+    origem_atual: compras_gov.raw_arp_unidades_item
+    chave_primaria: []
+    classificacao: publico
+    chaves: []
+
+  arp_adesoes_item:
+    descricao: >-
+      Adesões vinculadas aos itens das Atas de Registro de Preço.
+    granularidade: uma linha por adesão vinculada a um item de ata
+    dominio: arp
+    dag: arp_detalhes_ingest_dag
+    origem_atual: compras_gov.raw_arp_adesoes_item
+    chave_primaria: []
+    classificacao: publico
+    chaves: []
+
+  arp_empenhos_saldo:
+    descricao: >-
+      Empenhos e saldos vinculados às Atas de Registro de Preço.
+    granularidade: uma linha por empenho e saldo de uma ata
+    dominio: arp
+    dag: arp_detalhes_ingest_dag
+    origem_atual: compras_gov.raw_arp_empenhos_saldo
+    chave_primaria: []
+    classificacao: publico
+    chaves: []

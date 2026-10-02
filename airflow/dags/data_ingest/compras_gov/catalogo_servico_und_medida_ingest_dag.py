@@ -1,6 +1,6 @@
 import logging
 import time
-from datetime import date,datetime, timedelta
+from datetime import date, datetime, timedelta
 from typing import Any
 
 from airflow.sdk import dag, task
@@ -18,10 +18,11 @@ PARAMS = {"statusUnidadeMedida": "true"}
 ENTIDADE = "und_medida_servico"
 PK = ["codigoservico", "siglaunidademedida"]
 
+
 def _run_date(context: dict) -> date:
-    dag_run=context["dag_run"]
-    fallback= dag_run.logical_date or dag_run.run_after
-    inicio=context.get("data_interval_start") or fallback
+    dag_run = context["dag_run"]
+    fallback = dag_run.logical_date or dag_run.run_after
+    inicio = context.get("data_interval_start") or fallback
     return inicio.date()
 
 

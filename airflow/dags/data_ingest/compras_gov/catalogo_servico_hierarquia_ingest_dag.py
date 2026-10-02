@@ -1,6 +1,6 @@
 import logging
 import time
-from datetime import date,datetime, timedelta
+from datetime import date, datetime, timedelta
 from typing import Any
 
 from airflow.sdk import dag, task
@@ -53,10 +53,11 @@ default_args = {
     "retry_delay": timedelta(minutes=5),
 }
 
+
 def _run_date(context: dict) -> date:
-    dag_run=context["dag_run"]
-    fallback= dag_run.logical_date or dag_run.run_after
-    inicio=context.get("data_interval_start") or fallback
+    dag_run = context["dag_run"]
+    fallback = dag_run.logical_date or dag_run.run_after
+    inicio = context.get("data_interval_start") or fallback
     return inicio.date()
 
 
@@ -94,7 +95,7 @@ def catalogo_servico_hierarquia_dag() -> None:
         pk: list[str],
         **context: dict,
     ) -> dict:
-        run_date=_run_date(context)
+        run_date = _run_date(context)
         api = ClienteComprasGov()
         ingeridos = 0
         api_total = 0

@@ -131,22 +131,28 @@ def pgc_detalhe_catalogo_dag() -> None:
                         tipo,
                         codigo_item,
                     )
+                    raise
         return {
             "itens_processados": len(bloco),
             "registros": total_registros,
         }
 
     @task
-    def validate_resultados(resultados_itens: list[dict]) -> None:
-        total_itens = sum(r["itens_processados"] for r in resultados_itens)
-        total_registros = sum(r["registros"] for r in resultados_itens)
-        logging.info("Validação: %s itens, %s registros", total_itens, total_registros)
+    def validate(results: list[dict]) -> None:
+        total_itens = sum(result["itens_processados"] for result in results)
+        total_registros = sum(result["registros"] for result in results)
+
+        logging.info(
+            "PGC Detalhe Catálogo: itens processados=%s, registros=%s",
+            total_itens,
+            total_registros,
+        )
 
     blocos = get_codigos_itens()
-    resultados = fetch_pgc_detalhe_catalogo.expand(bloco=blocos)
+    results = fetch_pgc_detalhe_catalogo.expand(bloco=blocos)
 
     # O Airflow resolve o XComArg para os resultados antes de executar a task.
-    validate_resultados(resultados)  # ty: ignore[invalid-argument-type]
+    validate(results)  # ty: ignore[invalid-argument-type]
 
 
 pgc_detalhe_catalogo_dag()

@@ -66,7 +66,7 @@ def itens_contratacoes_dag() -> None:
         )
         return page_starts(total, BLOCK_SIZE)
 
-    @task
+    @task(max_active_tis_per_dag=2)
     def fetch_block(pagina_inicio: int, **context: dict) -> dict:
         data_inicial, data_final = _get_intervalo(context)
         api = ClienteComprasGov()

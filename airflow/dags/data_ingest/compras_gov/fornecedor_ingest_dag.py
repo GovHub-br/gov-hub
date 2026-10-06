@@ -60,7 +60,7 @@ def fornecedor_dag() -> None:
         logging.info("[%s] total_paginas=%s", ENDPOINT, total)
         return page_starts(total, BLOCK_SIZE)
 
-    @task
+    @task(max_active_tis_per_dag=4)
     def fetch_block(pagina_inicio: int, **context: dict) -> dict:
         api = ClienteComprasGov()
         run_date = _run_date(context)
@@ -72,6 +72,7 @@ def fornecedor_dag() -> None:
                 "GET",
                 ENDPOINT,
                 params={**PARAMS, "pagina": pagina, "tamanhoPagina": PAGE_SIZE},
+                timeout=20,
             )
             if not isinstance(resp, dict):
                 break

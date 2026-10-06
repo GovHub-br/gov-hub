@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from typing import Any
 
 from airflow.providers.standard.operators.trigger_dagrun import TriggerDagRunOperator
-from airflow.sdk import dag, task
+from airflow.sdk import dag, get_current_context, task
 
 from batching import page_starts
 from cliente_compras_gov import ClienteComprasGov
@@ -34,9 +34,10 @@ default_args = {
     catchup=False,
     default_args=default_args,
     description=(
-        "Ingere órgãos (UASG) da API do Compras.gov.br para compras_gov.raw_orgao e dispara a DAG de contratos."
+        "Ingere órgãos da API do Compras.gov.br para a zona raw "
+        "e dispara a DAG de contratos."
     ),
-    tags=["sistema:compras_gov", "dominio:uasg"],
+    tags=["sistema:compras_gov", "camada:raw", "dominio:uasg"],
 )
 def orgao_dag() -> None:
     @task
@@ -49,13 +50,14 @@ def orgao_dag() -> None:
         logging.info("[%s] Total de páginas: %s", ENDPOINT, total)
         return page_starts(total, BLOCK_SIZE)
 
-    @task
+    @task(max_active_tis_per_dag=1)
     def fetch_block(pagina_inicio: int) -> dict:
+        context = get_current_context()
         api = ClienteComprasGov()
-        ingeridos = 0
+        total_registros = 0
         api_total = 0
         for pagina in range(pagina_inicio, pagina_inicio + BLOCK_SIZE):
-            time.sleep(1)
+            time.sleep(3)
             _, resp = api.request(
                 "GET",
                 ENDPOINT,
@@ -67,25 +69,33 @@ def orgao_dag() -> None:
             api_total = resp.get("totalRegistros", 0)
             if not data:
                 break
-            write_raw(SISTEMA, ENTIDADE, data, primary_key=PK)
-            ingeridos += len(data)
+            write_raw(
+                SISTEMA,
+                ENTIDADE,
+                data,
+                primary_key=PK,
+                run_id=f"{context['run_id']}-pagina-{pagina}",
+            )
+            total_registros += len(data)
             if resp.get("paginasRestantes", 0) == 0:
                 break
-        return {"ingeridos": ingeridos, "api_total": api_total}
+        return {"registros": total_registros, "api_total": api_total}
 
     @task
     def validate(results: Any) -> None:
-        total_ingerido = sum(r["ingeridos"] for r in results)
+        total_registros = sum(result["registros"] for result in results)
         api_total = results[0]["api_total"] if results else 0
-        if total_ingerido != api_total:
+        if total_registros != api_total:
             logging.warning(
-                "[%s] Divergência: ingeridos=%s api_total=%s",
+                "[%s] Divergência: total de registros=%s api_total=%s",
                 ENDPOINT,
-                total_ingerido,
+                total_registros,
                 api_total,
             )
         else:
-            logging.info("[%s] Validação OK: ingeridos=%s", ENDPOINT, total_ingerido)
+            logging.info(
+                "[%s] Validação OK: total de registros=%s", ENDPOINT, total_registros
+            )
 
     trigger_contratos = TriggerDagRunOperator(
         task_id="trigger_contratos",

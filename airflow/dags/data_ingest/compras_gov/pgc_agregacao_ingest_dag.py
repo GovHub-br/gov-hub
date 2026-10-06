@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 import logging
-
+import time
 from airflow.sdk import dag, task, Param, get_current_context
 from batching import chunked
 from cliente_compras_gov import ClienteComprasGov
@@ -71,7 +71,7 @@ def pgc_agregacao_dag() -> None:
 
         return blocos
 
-    @task(max_active_tis_per_dag=2)
+    @task(max_active_tis_per_dag=1)
     def fetch_agregacao_pgc(bloco: list[str]) -> dict:
         context = get_current_context()
         current_year = datetime.now().year
@@ -82,10 +82,10 @@ def pgc_agregacao_dag() -> None:
             ano_inicio = context["params"]["ano_inicio"]
             ano_fim = ano_atual
             anos = range(ano_inicio, ano_fim + 1)
-            logging.info("Modo de execução: fria. Anos a procesar: %s", list(anos))
+            logging.info("Modo de execução: fria. Anos a processar: %s", list(anos))
         else:
             anos = [ano_atual]
-            logging.info("Modo de execução: incremental. Ano a procesar: %s", anos)
+            logging.info("Modo de execução: incremental. Ano a processar: %s", anos)
 
         api = ClienteComprasGov()
         total_registros = 0
@@ -93,6 +93,7 @@ def pgc_agregacao_dag() -> None:
         for codigo_orgao in bloco:
             for ano in anos:
                 try:
+                    time.sleep(3)
                     pgc, _ = api.fetch_all_pages(
                         "/modulo-pgc/3_consultarPgcAgregacao",
                         {"orgao": codigo_orgao, "ano": ano},
@@ -118,6 +119,7 @@ def pgc_agregacao_dag() -> None:
                         codigo_orgao,
                         ano,
                     )
+                    raise
 
         return {
             "orgaos_processados": len(bloco),

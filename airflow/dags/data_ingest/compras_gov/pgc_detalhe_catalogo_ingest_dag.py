@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 import logging
-
+import time
 
 from airflow.sdk import dag, task, Param, get_current_context
 from batching import chunked
@@ -70,7 +70,7 @@ def pgc_detalhe_catalogo_dag() -> None:
         logging.info("PGC Detalhe Catálogo: %s itens para processar", len(itens))
         return blocos
 
-    @task(max_active_tis_per_dag=4)
+    @task(max_active_tis_per_dag=1)
     def fetch_pgc_detalhe_catalogo(bloco: list[dict]) -> dict:
         context = get_current_context()
         current_date = datetime.now()
@@ -95,6 +95,7 @@ def pgc_detalhe_catalogo_dag() -> None:
 
             for ano in anos:
                 try:
+                    time.sleep(3)
                     pgc, _ = api.fetch_all_pages(
                         "/modulo-pgc/2_consultarPgcDetalheCatalogo",
                         {"anoPcaProjetoCompra": ano, "tipo": tipo, "codigo": codigo_item},

@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 import logging
-
+import time
 from airflow.sdk import dag, task, Param, get_current_context
 from batching import chunked
 from cliente_compras_gov import ClienteComprasGov
@@ -45,7 +45,6 @@ default_args = {
             description="Ano inicial para consulta de PGC Detalhe (2023)",
         ),
     },
-    max_active_tasks=4,
 )
 def pgc_detalhe_dag() -> None:
 
@@ -66,16 +65,10 @@ def pgc_detalhe_dag() -> None:
             raise RuntimeError("Nenhum CNPJ de órgão foi encontrado na entidade 'orgao'.")
 
         blocos = chunked(codigos, BLOCK_SIZE)
-        logging.info(
-            "PGC Detalhe: %s órgãos em %s blocos de até %s para processar",
-            len(codigos),
-            len(blocos),
-            BLOCK_SIZE,
-        )
 
         return blocos
 
-    @task
+    @task(max_active_tis_per_dag=4)
     def fetch_pgc_detalhe(bloco: list[str]) -> dict:
         context = get_current_context()
         current_date = datetime.now()
@@ -97,17 +90,11 @@ def pgc_detalhe_dag() -> None:
         for orgao in bloco:
             for ano in anos:
                 try:
+                    time.sleep(3)
                     pgc, _ = api.fetch_all_pages(
                         "/modulo-pgc/1_consultarPgcDetalhe",
                         {"orgao": orgao, "anoPcaProjetoCompra": ano},
                     )
-                    logging.info(
-                        "PGC Detalhe: órgão=%s, ano=%s, registros=%s",
-                        orgao,
-                        ano,
-                        len(pgc),
-                    )
-
                     if not pgc:
                         logging.info(
                             "Nenhum registro de PGC Detalhe encontrado para órgão=%s, ano=%s",

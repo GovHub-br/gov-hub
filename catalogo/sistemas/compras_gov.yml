@@ -151,3 +151,68 @@ entidades:
         observacao: >-
           A origem entrega a natureza detalhada de 8 dígitos, não a forma curta
           de 6 usada em parte dos relatórios do SIAFI.
+
+  grupo_material:
+    descricao: >-
+      Grupos da hierarquia do catálogo de materiais.
+    granularidade: uma linha por grupo
+    dominio: catalogo
+    dag: catalogo_material_grupo_classe_ingest_dag
+    origem_atual: compras_gov.raw_grupo_material
+    chave_primaria: [codigogrupo]
+    classificacao: publico
+    chaves: []
+
+  classe_material:
+    descricao: >-
+      Classes da hierarquia do catálogo de materiais.
+    granularidade: uma linha por classe
+    dominio: catalogo
+    dag: catalogo_material_grupo_classe_ingest_dag
+    origem_atual: compras_gov.raw_classe_material
+    chave_primaria: [codigoclasse]
+    classificacao: publico
+    chaves: []
+
+  pdm_material:
+    descricao: >-
+      Padrões descritivos de material (PDM) da hierarquia do catálogo de
+      materiais.
+    granularidade: uma linha por PDM
+    dominio: catalogo
+    dag: catalogo_material_pdm_ingest_dag
+    origem_atual: compras_gov.raw_pdm_material
+    chave_primaria: [codigopdm]
+    classificacao: publico
+    chaves: []
+
+  item_material:
+    descricao: >-
+      Itens da hierarquia do catálogo de materiais.
+    granularidade: uma linha por item
+    dominio: catalogo
+    dag: catalogo_material_item_ingest_dag
+    origem_atual: compras_gov.raw_item_material
+    chave_primaria: [codigoitem]
+    classificacao: publico
+    chaves: []
+
+  unidade_fornecimento_material:
+    descricao: Unidades de fornecimento associadas aos PDMs.
+    granularidade: uma linha por PDM e unidade de fornecimento
+    dominio: catalogo
+    dag: catalogo_material_unidade_fornecimento_ingest_dag
+    origem_atual: compras_gov.raw_unidade_fornecimento_material
+    chave_primaria: []
+    classificacao: publico
+    chaves: []
+
+  caracteristicas_material:
+    descricao: Características dos itens e seus valores.
+    granularidade: uma linha por item, característica e valor de característica
+    dominio: catalogo
+    dag: catalogo_material_caracteristicas_ingest_dag
+    origem_atual: compras_gov.raw_caracteristicas_material
+    chave_primaria: []
+    classificacao: publico
+    chaves: []

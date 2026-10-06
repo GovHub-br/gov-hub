@@ -35,7 +35,7 @@ default_args = {
         "Ingere unidades de fornecimento de materiais do catálogo do Compras.gov.br para "
         "compras_gov.raw_unidade_fornecimento_material."
     ),
-    tags=["sistema:compras_gov", "dominio:material"],
+    tags=["sistema:compras_gov", "dominio:material", "orgao:mgi"],
 )
 def catalogo_material_unidade_fornecimento_dag() -> None:
     @task
@@ -48,8 +48,8 @@ def catalogo_material_unidade_fornecimento_dag() -> None:
         logging.info("[%s] Total de páginas: %s", ENDPOINT, total)
         return page_starts(total, BLOCK_SIZE)
 
-    @task
-    def fetch_block(pagina_inicio: int) -> dict:
+    @task(max_active_tis_per_dag=4)
+    def fetch_block(pagina_inicio: int, **context: dict) -> dict:
         api = ClienteComprasGov()
         ingeridos = 0
         api_total = 0
@@ -66,7 +66,9 @@ def catalogo_material_unidade_fornecimento_dag() -> None:
             api_total = resp.get("totalRegistros", 0)
             if not data:
                 break
-            write_raw(SISTEMA, ENTIDADE, data)
+            write_raw(
+                SISTEMA, ENTIDADE, data, run_id=f"{context['run_id']}-pagina-{pagina}"
+            )
             ingeridos += len(data)
             if resp.get("paginasRestantes", 0) == 0:
                 break

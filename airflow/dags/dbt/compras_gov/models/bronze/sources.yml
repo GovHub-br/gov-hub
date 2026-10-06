@@ -21,6 +21,24 @@ sources:
       sistema_origem: compras_gov
       camada: bronze
     tables:
+      - name: caracteristicas_material
+        identifier: raw_caracteristicas_material
+        description: >
+            Características dos itens e seus valores. Granularidade: uma linha por item,
+            característica e valor de característica.
+        meta:
+          classificacao: publico
+          dag_ingestao: catalogo_material_caracteristicas_ingest_dag
+
+      - name: classe_material
+        identifier: raw_classe_material
+        description: >
+            Classes da hierarquia do catálogo de materiais. Granularidade: uma linha por
+            classe.
+        meta:
+          classificacao: publico
+          dag_ingestao: catalogo_material_grupo_classe_ingest_dag
+
       - name: contratacoes
         identifier: raw_contratacoes
         description: >
@@ -62,6 +80,24 @@ sources:
           classificacao: pessoal
           dag_ingestao: fornecedor_ingest_dag
 
+      - name: grupo_material
+        identifier: raw_grupo_material
+        description: >
+            Grupos da hierarquia do catálogo de materiais. Granularidade: uma linha por
+            grupo.
+        meta:
+          classificacao: publico
+          dag_ingestao: catalogo_material_grupo_classe_ingest_dag
+
+      - name: item_material
+        identifier: raw_item_material
+        description: >
+            Itens da hierarquia do catálogo de materiais. Granularidade: uma linha por
+            item.
+        meta:
+          classificacao: publico
+          dag_ingestao: catalogo_material_item_ingest_dag
+
       - name: itens_contratacoes
         identifier: raw_itens_contratacoes
         description: >
@@ -92,6 +128,15 @@ sources:
           classificacao: publico
           dag_ingestao: orgao_ingest_dag
 
+      - name: pdm_material
+        identifier: raw_pdm_material
+        description: >
+            Padrões descritivos de material (PDM) da hierarquia do catálogo de
+            materiais. Granularidade: uma linha por PDM.
+        meta:
+          classificacao: publico
+          dag_ingestao: catalogo_material_pdm_ingest_dag
+
       - name: uasg
         identifier: raw_uasg
         description: >
@@ -100,3 +145,12 @@ sources:
         meta:
           classificacao: publico
           dag_ingestao: uasg_ingest_dag
+
+      - name: unidade_fornecimento_material
+        identifier: raw_unidade_fornecimento_material
+        description: >
+            Unidades de fornecimento associadas aos PDMs. Granularidade: uma linha por
+            PDM e unidade de fornecimento.
+        meta:
+          classificacao: publico
+          dag_ingestao: catalogo_material_unidade_fornecimento_ingest_dag

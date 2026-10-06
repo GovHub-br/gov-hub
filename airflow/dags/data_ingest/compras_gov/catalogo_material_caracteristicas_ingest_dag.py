@@ -11,7 +11,7 @@ from landing_zone import write_raw
 
 SISTEMA = "compras_gov"
 PAGE_SIZE = 500
-BLOCK_SIZE = 15
+BLOCK_SIZE = 10
 
 ENDPOINT = "/modulo-material/7_consultarMaterialCaracteristicas"
 PARAMS: dict = {}
@@ -35,7 +35,7 @@ default_args = {
         "Ingere características de materiais do catálogo do Compras.gov.br para "
         "compras_gov.raw_caracteristicas_material."
     ),
-    tags=["sistema:compras_gov", "dominio:material"],
+    tags=["sistema:compras_gov", "dominio:material", "orgao:mgi"],
 )
 def catalogo_material_caracteristicas_dag() -> None:
     @task
@@ -48,8 +48,10 @@ def catalogo_material_caracteristicas_dag() -> None:
         logging.info("[%s] Total de páginas: %s", ENDPOINT, total)
         return page_starts(total, BLOCK_SIZE)
 
-    @task
-    def fetch_block(pagina_inicio: int) -> dict:
+    # endpoint lento e instável. algumas páginas levam 10s ou mais. por isso o
+    # timeout de 30s só aqui (o do cliente é 10s) e a concorrência reduzida.
+    @task(max_active_tis_per_dag=1)
+    def fetch_block(pagina_inicio: int, **context: dict) -> dict:
         api = ClienteComprasGov()
         ingeridos = 0
         api_total = 0
@@ -59,6 +61,7 @@ def catalogo_material_caracteristicas_dag() -> None:
                 "GET",
                 ENDPOINT,
                 params={**PARAMS, "pagina": pagina, "tamanhoPagina": PAGE_SIZE},
+                timeout=30,
             )
             if not isinstance(resp, dict):
                 break
@@ -66,7 +69,9 @@ def catalogo_material_caracteristicas_dag() -> None:
             api_total = resp.get("totalRegistros", 0)
             if not data:
                 break
-            write_raw(SISTEMA, ENTIDADE, data)
+            write_raw(
+                SISTEMA, ENTIDADE, data, run_id=f"{context['run_id']}-pagina-{pagina}"
+            )
             ingeridos += len(data)
             if resp.get("paginasRestantes", 0) == 0:
                 break

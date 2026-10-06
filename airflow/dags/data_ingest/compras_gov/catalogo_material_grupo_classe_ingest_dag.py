@@ -36,7 +36,7 @@ default_args = {
         "Ingere grupos e classes de materiais do catálogo do Compras.gov.br para compras_gov.raw_grupo_material e "
         "raw_classe_material."
     ),
-    tags=["sistema:compras_gov", "dominio:material"],
+    tags=["sistema:compras_gov", "dominio:material", "orgao:mgi"],
 )
 def catalogo_material_grupo_classe_dag() -> None:
     @task
@@ -51,13 +51,14 @@ def catalogo_material_grupo_classe_dag() -> None:
         logging.info("[%s] Total de páginas: %s", endpoint, total)
         return page_starts(total, BLOCK_SIZE)
 
-    @task
+    @task(max_active_tis_per_dag=4)
     def fetch_block(
         pagina_inicio: int,
         endpoint: str,
         query_params: dict,
         entidade: str,
         pk: list[str],
+        **context: dict,
     ) -> dict:
         api = ClienteComprasGov()
         ingeridos = 0
@@ -75,7 +76,13 @@ def catalogo_material_grupo_classe_dag() -> None:
             api_total = resp.get("totalRegistros", 0)
             if not data:
                 break
-            write_raw(SISTEMA, entidade, data, primary_key=pk)
+            write_raw(
+                SISTEMA,
+                entidade,
+                data,
+                primary_key=pk,
+                run_id=f"{context['run_id']}-pagina-{pagina}",
+            )
             ingeridos += len(data)
             if resp.get("paginasRestantes", 0) == 0:
                 break

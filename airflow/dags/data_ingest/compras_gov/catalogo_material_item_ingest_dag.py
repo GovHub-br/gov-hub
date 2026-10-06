@@ -33,7 +33,7 @@ default_args = {
     catchup=False,
     default_args=default_args,
     description="Ingere itens de materiais do catálogo do Compras.gov.br para compras_gov.raw_item_material.",
-    tags=["sistema:compras_gov", "dominio:material"],
+    tags=["sistema:compras_gov", "dominio:material", "orgao:mgi"],
 )
 def catalogo_material_item_dag() -> None:
     @task
@@ -46,8 +46,8 @@ def catalogo_material_item_dag() -> None:
         logging.info("[%s] Total de páginas: %s", ENDPOINT, total)
         return page_starts(total, BLOCK_SIZE)
 
-    @task
-    def fetch_block(pagina_inicio: int) -> dict:
+    @task(max_active_tis_per_dag=4)
+    def fetch_block(pagina_inicio: int, **context: dict) -> dict:
         api = ClienteComprasGov()
         ingeridos = 0
         api_total = 0
@@ -64,7 +64,13 @@ def catalogo_material_item_dag() -> None:
             api_total = resp.get("totalRegistros", 0)
             if not data:
                 break
-            write_raw(SISTEMA, ENTIDADE, data, primary_key=PK)
+            write_raw(
+                SISTEMA,
+                ENTIDADE,
+                data,
+                primary_key=PK,
+                run_id=f"{context['run_id']}-pagina-{pagina}",
+            )
             ingeridos += len(data)
             if resp.get("paginasRestantes", 0) == 0:
                 break

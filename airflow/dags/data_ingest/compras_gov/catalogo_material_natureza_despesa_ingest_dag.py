@@ -22,6 +22,7 @@ ENDPOINT = "/modulo-material/5_consultarMaterialNaturezaDespesa"
 # a coluna statusNaturezaDespesa vem nula em todos os registros de qualquer jeito.
 PARAMS: dict[str, str] = {}
 ENTIDADE = "natureza_despesa_material"
+PK = ["codigopdm", "codigonaturezadespesa"]
 
 default_args = {
     "owner": "mgi",
@@ -41,7 +42,7 @@ default_args = {
         "Ingere naturezas de despesa de materiais do catálogo do Compras.gov.br para "
         "compras_gov.raw_natureza_despesa_material."
     ),
-    tags=["sistema:compras_gov", "dominio:material"],
+    tags=["sistema:compras_gov", "dominio:material", "orgao:mgi"],
 )
 def catalogo_material_natureza_despesa_dag() -> None:
     @task
@@ -54,8 +55,8 @@ def catalogo_material_natureza_despesa_dag() -> None:
         logging.info("[%s] Total de páginas: %s", ENDPOINT, total)
         return page_starts(total, BLOCK_SIZE)
 
-    @task
-    def fetch_block(pagina_inicio: int) -> dict:
+    @task(max_active_tis_per_dag=4)
+    def fetch_block(pagina_inicio: int, **context: dict) -> dict:
         api = ClienteComprasGov()
         ingeridos = 0
         api_total = 0
@@ -72,7 +73,13 @@ def catalogo_material_natureza_despesa_dag() -> None:
             api_total = resp.get("totalRegistros", 0)
             if not data:
                 break
-            write_raw(SISTEMA, ENTIDADE, data)
+            write_raw(
+                SISTEMA,
+                ENTIDADE,
+                data,
+                primary_key=PK,
+                run_id=f"{context['run_id']}-pagina-{pagina}",
+            )
             ingeridos += len(data)
             if resp.get("paginasRestantes", 0) == 0:
                 break

@@ -108,7 +108,14 @@ def pgc_detalhe_catalogo_dag() -> None:
                             codigo_item,
                         )
                         continue
-                    write_raw(SISTEMA, "pgc_detalhe_catalogo", pgc)
+                    write_raw(
+                        SISTEMA,
+                        "pgc_detalhe_catalogo",
+                        pgc,
+                        run_id=(
+                            f"{context['run_id']}-tipo-{tipo}-codigo-{codigo_item}-ano-{ano}"
+                        ),
+                    )
                     total_registros += len(pgc)
                     logging.info(
                         "PGC Detalhe Catalogo: ano=%s, tipo=%s, codigo=%s, registros=%s",

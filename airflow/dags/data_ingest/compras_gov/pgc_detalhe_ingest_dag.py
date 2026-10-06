@@ -103,7 +103,12 @@ def pgc_detalhe_dag() -> None:
                         )
                         continue
 
-                    write_raw(SISTEMA, "pgc_detalhe", pgc)
+                    write_raw(
+                        SISTEMA,
+                        "pgc_detalhe",
+                        pgc,
+                        run_id=f"{context['run_id']}-orgao-{orgao}-ano-{ano}",
+                    )
                     total_registros += len(pgc)
 
                     logging.info(

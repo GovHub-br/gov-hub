@@ -105,7 +105,12 @@ def pgc_agregacao_dag() -> None:
                             ano,
                         )
                         continue
-                    write_raw(SISTEMA, "pgc_agregacao", pgc)
+                    write_raw(
+                        SISTEMA,
+                        "pgc_agregacao",
+                        pgc,
+                        run_id=(f"{context['run_id']}-orgao-{codigo_orgao}-ano-{ano}"),
+                    )
                     total_registros += len(pgc)
                     logging.info(
                         "PGC Agregação: órgão=%s, ano=%s, registros=%s",

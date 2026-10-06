@@ -99,13 +99,14 @@ sources:
           dag_ingestao: catalogo_servico_item_ingest_dag
 
       - name: itens_contratacoes
-        identifier: raw_itens_contratacoes
+        identifier: raw_resultado_itens_contratacoes
         description: >
-            Itens das contratações publicadas sob a Lei 14.133. Granularidade: uma linha
-            por item de compra.
+            Resultados dos itens das contratações publicadas sob a Lei 14.133, incluindo
+            fornecedores, quantidades e valores apresentados. Granularidade: uma linha
+            por resultado de item de contratação.
         meta:
           classificacao: publico
-          dag_ingestao: itens_contratacoes_ingest_dag
+          dag_ingestao: resultado_itens_contratacoes_ingest_dag
 
       - name: natureza_despesa_material
         identifier: raw_natureza_despesa_material

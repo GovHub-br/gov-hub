@@ -21,6 +21,52 @@ sources:
       sistema_origem: compras_gov
       camada: bronze
     tables:
+      - name: arp
+        identifier: raw_arp
+        description: >
+            Atas de Registro de Preço consultadas no módulo ARP do Compras.gov.br.
+            Granularidade: uma linha por ata de registro de preço e compra.
+        meta:
+          classificacao: publico
+          dag_ingestao: arp_ingest_dag
+
+      - name: arp_adesoes_item
+        identifier: raw_arp_adesoes_item
+        description: >
+            Adesões vinculadas aos itens das Atas de Registro de Preço. Granularidade:
+            uma linha por adesão vinculada a um item de ata.
+        meta:
+          classificacao: publico
+          dag_ingestao: arp_detalhes_ingest_dag
+
+      - name: arp_empenhos_saldo
+        identifier: raw_arp_empenhos_saldo
+        description: >
+            Empenhos e saldos vinculados às Atas de Registro de Preço. Granularidade:
+            uma linha por empenho e saldo de uma ata.
+        meta:
+          classificacao: publico
+          dag_ingestao: arp_detalhes_ingest_dag
+
+      - name: arp_item
+        identifier: raw_arp_item
+        description: >
+            Itens associados às Atas de Registro de Preço do Compras.gov.br.
+            Granularidade: uma linha por item, fornecedor, ata, unidade gerenciadora e
+            compra.
+        meta:
+          classificacao: publico
+          dag_ingestao: arp_item_ingest_dag
+
+      - name: arp_unidades_item
+        identifier: raw_arp_unidades_item
+        description: >
+            Unidades vinculadas aos itens das Atas de Registro de Preço. Granularidade:
+            uma linha por unidade vinculada a um item de ata.
+        meta:
+          classificacao: publico
+          dag_ingestao: arp_detalhes_ingest_dag
+
       - name: contratacoes
         identifier: raw_contratacoes
         description: >

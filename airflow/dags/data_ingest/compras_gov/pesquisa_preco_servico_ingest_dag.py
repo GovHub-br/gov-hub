@@ -1,4 +1,5 @@
 import logging
+import time
 from datetime import datetime, timedelta
 from typing import Any
 from airflow.sdk import dag, task
@@ -26,12 +27,12 @@ default_args = {
         "Consulta preços e detalhes de serviços já catalogados na API de pesquisa de preço do Compras.gov.br, gravando "
         "em compras_gov.raw_pesquisa_preco_servico e raw_pesquisa_preco_servico_detalhe."
     ),
-    tags=["sistema:compras_gov", "dominio:pesquisa_preco"],
+    tags=["sistema:compras_gov", "dominio:pesquisa_preco", "orgao:mgi"],
 )
 def pesquisa_preco_servico_dag() -> None:
     @task
     def get_blocos_servico() -> list[list[str]]:
-        itens = distinct_raw_values(SISTEMA, "item_servico", "codigoservico")
+        itens = distinct_raw_values(SISTEMA, "item_servico", "codigoServico")
         blocos = chunked(itens, BLOCK_SIZE)
         logging.info(
             "Pesquisa de preços serviço: %s itens em %s blocos de até %s",
@@ -42,23 +43,36 @@ def pesquisa_preco_servico_dag() -> None:
         return blocos
 
     @task(max_active_tis_per_dag=4)
-    def fetch_preco_servico(lote: list[str]) -> dict:
+    def fetch_preco_servico(lote: list[str], **context: Any) -> dict:
         api = ClienteComprasGov()
         total_preco = 0
         total_detalhe = 0
+        indice = context["ti"].map_index
         for codigo_item in lote:
+            time.sleep(3)
             preco, _ = api.fetch_all_pages(
                 "/modulo-pesquisa-preco/3_consultarServico",
                 {"codigoItemCatalogo": codigo_item},
             )
             if preco:
-                write_raw(SISTEMA, "pesquisa_preco_servico", preco)
+                write_raw(
+                    SISTEMA,
+                    "pesquisa_preco_servico",
+                    preco,
+                    run_id=f"{context['run_id']}-map-{indice}-item-{codigo_item}-preco",
+                )
+            time.sleep(3)
             detalhe, _ = api.fetch_all_pages(
                 "/modulo-pesquisa-preco/4_consultarServicoDetalhe",
                 {"codigoItemCatalogo": codigo_item},
             )
             if detalhe:
-                write_raw(SISTEMA, "pesquisa_preco_servico_detalhe", detalhe)
+                write_raw(
+                    SISTEMA,
+                    "pesquisa_preco_servico_detalhe",
+                    detalhe,
+                    run_id=f"{context['run_id']}-map-{indice}-item-{codigo_item}-detalhe",
+                )
             total_preco += len(preco)
             total_detalhe += len(detalhe)
         return {"preco": total_preco, "detalhe": total_detalhe}

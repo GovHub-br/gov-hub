@@ -196,3 +196,42 @@ entidades:
       - chave: nu_cnpj
         coluna: orgao
         verificado: true
+  pesquisa_preco_material:
+    descricao: Registros de preços consultados para itens do catálogo de materiais
+    granularidade: uma linha por registro de preço de material
+    dominio: pesquisa_preco
+    dag: pesquisa_preco_material_ingest_dag
+    origem_atual: compras_gov.raw_pesquisa_preco_material
+    chave_primaria: []
+    classificacao: pessoal
+    chaves: []
+
+  pesquisa_preco_material_detalhe:
+    descricao: Detalhes de compras associados aos preços de materiais
+    granularidade: uma linha por detalhe de compra de item de material
+    dominio: pesquisa_preco
+    dag: pesquisa_preco_material_ingest_dag
+    origem_atual: compras_gov.raw_pesquisa_preco_material_detalhe
+    chave_primaria: []
+    classificacao: publico
+    chaves: []
+
+  pesquisa_preco_servico:
+    descricao: Registros de preços consultados para itens do catálogo de serviços
+    granularidade: uma linha por registro de preço de serviço
+    dominio: pesquisa_preco
+    dag: pesquisa_preco_servico_ingest_dag
+    origem_atual: compras_gov.raw_pesquisa_preco_servico
+    chave_primaria: []
+    classificacao: pessoal
+    chaves: []
+
+  pesquisa_preco_servico_detalhe:
+    descricao: Detalhes de compras associados aos preços de serviços
+    granularidade: uma linha por detalhe de compra de item de serviço
+    dominio: pesquisa_preco
+    dag: pesquisa_preco_servico_ingest_dag
+    origem_atual: compras_gov.raw_pesquisa_preco_servico_detalhe
+    chave_primaria: []
+    classificacao: publico
+    chaves: []

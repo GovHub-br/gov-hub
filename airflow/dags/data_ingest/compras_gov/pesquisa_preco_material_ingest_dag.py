@@ -41,38 +41,57 @@ def pesquisa_preco_material_dag() -> None:
         return chunked(itens, BLOCK_SIZE)
 
     @task(max_active_tis_per_dag=2)
-    def fetch_preco_material(lote: list[str], **context: Any) -> dict:
+    def fetch_preco_material(lote: list[str]) -> dict:
         api = ClienteComprasGov()
         total_preco = 0
         total_detalhe = 0
-        indice = context["ti"].map_index
         for codigo_item in lote:
             time.sleep(1)
-            preco, _ = api.fetch_all_pages(
+            registros_preco = 0
+            api_total_preco = None
+            for batch, api_total_preco in api.iter_pages(
                 "/modulo-pesquisa-preco/1_consultarMaterial",
                 {"tipo": "codigoItemCatalogo", "codigo": codigo_item},
-            )
-            if preco:
-                write_raw(
-                    SISTEMA,
-                    "pesquisa_preco_material",
-                    preco,
-                    run_id=f"{context['run_id']}-map-{indice}-item-{codigo_item}-preco",
+            ):
+                write_raw(SISTEMA, "pesquisa_preco_material", batch)
+                registros_preco += len(batch)
+            if api_total_preco is None:
+                raise RuntimeError(
+                    f"A API não retornou resposta válida (preço): item={codigo_item}."
                 )
-            total_preco += len(preco)
+            if registros_preco != api_total_preco:
+                raise RuntimeError(
+                    f"Resposta incompleta (preço): item={codigo_item}, "
+                    f"gravados={registros_preco}, api_total={api_total_preco}."
+                )
+            total_preco += registros_preco
+
             time.sleep(1)
-            detalhe, _ = api.fetch_all_pages(
+            registros_detalhe = 0
+            api_total_detalhe = None
+            for batch, api_total_detalhe in api.iter_pages(
                 "/modulo-pesquisa-preco/2_consultarMaterialDetalhe",
                 {"codigoItemCatalogo": codigo_item},
-            )
-            if detalhe:
-                write_raw(
-                    SISTEMA,
-                    "pesquisa_preco_material_detalhe",
-                    detalhe,
-                    run_id=f"{context['run_id']}-map-{indice}-item-{codigo_item}-detalhe",
+            ):
+                write_raw(SISTEMA, "pesquisa_preco_material_detalhe", batch)
+                registros_detalhe += len(batch)
+            if api_total_detalhe is None:
+                raise RuntimeError(
+                    f"A API não retornou resposta válida (detalhe): item={codigo_item}."
                 )
-            total_detalhe += len(detalhe)
+            if registros_detalhe != api_total_detalhe:
+                raise RuntimeError(
+                    f"Resposta incompleta (detalhe): item={codigo_item}, "
+                    f"gravados={registros_detalhe}, api_total={api_total_detalhe}."
+                )
+            total_detalhe += registros_detalhe
+
+            logging.info(
+                "Item %s: preco=%s detalhe=%s",
+                codigo_item,
+                registros_preco,
+                registros_detalhe,
+            )
 
         return {"itens": len(lote), "preco": total_preco, "detalhe": total_detalhe}
 

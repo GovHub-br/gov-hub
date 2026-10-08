@@ -43,38 +43,65 @@ def pesquisa_preco_servico_dag() -> None:
         return blocos
 
     @task(max_active_tis_per_dag=4)
-    def fetch_preco_servico(lote: list[str], **context: Any) -> dict:
+    def fetch_preco_servico(lote: list[str]) -> dict:
         api = ClienteComprasGov()
         total_preco = 0
         total_detalhe = 0
-        indice = context["ti"].map_index
         for codigo_item in lote:
             time.sleep(3)
-            preco, _ = api.fetch_all_pages(
+            registros_preco = 0
+            api_total_preco = None
+            for batch, api_total_preco in api.iter_pages(
                 "/modulo-pesquisa-preco/3_consultarServico",
                 {"codigoItemCatalogo": codigo_item},
-            )
-            if preco:
+            ):
                 write_raw(
                     SISTEMA,
                     "pesquisa_preco_servico",
-                    preco,
-                    run_id=f"{context['run_id']}-map-{indice}-item-{codigo_item}-preco",
+                    batch,
                 )
+                registros_preco += len(batch)
+            if api_total_preco is None:
+                raise RuntimeError(
+                    f"A API não retornou resposta válida (preço): item={codigo_item}."
+                )
+            if registros_preco != api_total_preco:
+                raise RuntimeError(
+                    f"Resposta incompleta (preço): item={codigo_item}, "
+                    f"gravados={registros_preco}, api_total={api_total_preco}."
+                )
+            total_preco += registros_preco
+
             time.sleep(3)
-            detalhe, _ = api.fetch_all_pages(
+            registros_detalhe = 0
+            api_total_detalhe = None
+            for batch, api_total_detalhe in api.iter_pages(
                 "/modulo-pesquisa-preco/4_consultarServicoDetalhe",
                 {"codigoItemCatalogo": codigo_item},
-            )
-            if detalhe:
+            ):
                 write_raw(
                     SISTEMA,
                     "pesquisa_preco_servico_detalhe",
-                    detalhe,
-                    run_id=f"{context['run_id']}-map-{indice}-item-{codigo_item}-detalhe",
+                    batch,
                 )
-            total_preco += len(preco)
-            total_detalhe += len(detalhe)
+                registros_detalhe += len(batch)
+            if api_total_detalhe is None:
+                raise RuntimeError(
+                    f"A API não retornou resposta válida (detalhe): item={codigo_item}."
+                )
+            if registros_detalhe != api_total_detalhe:
+                raise RuntimeError(
+                    f"Resposta incompleta (detalhe): item={codigo_item}, "
+                    f"gravados={registros_detalhe}, api_total={api_total_detalhe}."
+                )
+            total_detalhe += registros_detalhe
+
+            logging.info(
+                "Item %s: preco=%s detalhe=%s",
+                codigo_item,
+                registros_preco,
+                registros_detalhe,
+            )
         return {"preco": total_preco, "detalhe": total_detalhe}
 
     @task

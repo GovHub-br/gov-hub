@@ -17,3 +17,35 @@ gov_bricks:
       schema: "002_slv_default"
       threads: 4
       keepalives_idle: 0
+
+    # Target para ler os Parquets do MinIO com DuckDB e materializar o
+    # resultado no PostgreSQL anexado (mesmo padrão do data-application-cidades).
+    prod_duckdb:
+      type: duckdb
+      path: "{{ env_var('DUCKDB_GOVHUB_PATH', '/tmp/govhub_local.duckdb') }}"
+      database: govhub_local
+      schema: "001_bnz_compras_gov"
+      threads: 2
+      extensions:
+        - httpfs
+        - postgres
+      attach:
+        - path: >-
+            dbname={{ env_var('DBT_DATABASE', 'data_warehouse') }}
+            host={{ env_var('DBT_HOST', 'localhost') }}
+            port={{ env_var('DBT_PORT', '5432') }}
+            user={{ env_var('DBT_USER', 'postgres') }}
+            password={{ env_var('DBT_PASSWORD', 'postgres') }}
+          type: postgres
+          alias: data_warehouse
+      settings:
+        # DuckDB espera host:porta sem http:// neste parâmetro.
+        s3_endpoint: >-
+          {{ env_var('MINIO_ENDPOINT', 'minio:9000')
+             | replace('https://', '')
+             | replace('http://', '')
+             | trim('/') }}
+        s3_access_key_id: "{{ env_var('MINIO_ACCESS_KEY', 'minioadmin') }}"
+        s3_secret_access_key: "{{ env_var('MINIO_SECRET_KEY', 'minioadmin') }}"
+        s3_url_style: path
+        s3_use_ssl: false

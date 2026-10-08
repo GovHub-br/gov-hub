@@ -127,8 +127,25 @@ services:
     restart: always
 
   # Landing zone (object storage) — ver ADR-0012
+  #
+  # Fica no perfil `object_storage`, o mesmo nome do RAW_BACKEND que o usa: o
+  # compose local roda com RAW_BACKEND=warehouse (local.env), e nenhum serviço
+  # depende do MinIO para subir. Fora do perfil padrão, uma imagem do MinIO
+  # indisponível deixa de derrubar o `make compose` inteiro, que foi o que
+  # aconteceu quando o quay.io e o Docker Hub passaram a exigir login para
+  # minio/minio e minio/mc (verificado em 2026-10-07).
+  #
+  # Quem precisar do backend object_storage local sobe com
+  # `docker compose --profile object_storage up -d`; `make test-integration`
+  # nomeia os serviços e sobe o perfil sozinho.
+  #
+  # Imagem da Chainguard, a alternativa pública que restou, fixada por digest:
+  # o plano gratuito só publica a tag `latest`, e o digest é o que mantém a
+  # versão fixa que o #35 pediu. A mesma imagem serve ao minio-init, porque traz
+  # `sh` e `mc`. Atualizar é trocar o digest pelo do `latest` do momento.
   minio:
-    image: quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z
+    image: cgr.dev/chainguard/minio@sha256:e7ca559d9f7c0b5f24f5f669bb92f40f3ca88d56273b808bf3a7c116c17d2ffa
+    profiles: ["object_storage"]
     ports:
       - "${MINIO_HOST_PORT:-9000}:9000"
       - "${MINIO_CONSOLE_HOST_PORT:-9001}:9001"
@@ -147,7 +164,8 @@ services:
 
   # Creates the landing zone bucket on first start
   minio-init:
-    image: quay.io/minio/mc:RELEASE.2025-08-13T08-35-41Z
+    image: cgr.dev/chainguard/minio@sha256:e7ca559d9f7c0b5f24f5f669bb92f40f3ca88d56273b808bf3a7c116c17d2ffa
+    profiles: ["object_storage"]
     depends_on:
       minio:
         condition: service_healthy

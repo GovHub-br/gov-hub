@@ -1,4 +1,5 @@
 import logging
+import time
 from datetime import date, datetime, timedelta
 from typing import Any
 
@@ -14,6 +15,7 @@ SISTEMA = "compras_gov"
 COLUNAS_ATA = ["numeroAtaRegistroPreco", "codigoUnidadeGerenciadora"]
 COLUNAS_ITEM = COLUNAS_ATA + ["numeroItem"]
 BLOCK_SIZE = 150
+PAGE_SIZE = 500
 
 default_args = {
     "owner": "mgi",
@@ -28,6 +30,38 @@ def _get_run_date(context: dict) -> date:
     fallback = dag_run.logical_date or dag_run.run_after
     data_inicial = context.get("data_interval_start") or fallback
     return data_inicial.date()
+
+
+def _fetch_all_pages_strict(
+    api: ClienteComprasGov,
+    endpoint: str,
+    params: dict[str, str],
+) -> list[dict]:
+    """Busca todas as páginas e deixa a task falhar se uma página falhar."""
+    registros: list[dict] = []
+    pagina = 1
+
+    while True:
+        _, resposta = api.request(
+            "GET",
+            endpoint,
+            params={
+                **params,
+                "pagina": pagina,
+                "tamanhoPagina": PAGE_SIZE,
+            },
+        )
+        if not isinstance(resposta, dict):
+            raise RuntimeError(f"Resposta inválida da API em {endpoint}, página {pagina}")
+
+        registros.extend(
+            registro for registro in resposta.get("resultado", []) if registro is not None
+        )
+        if resposta.get("paginasRestantes", 0) == 0:
+            return registros
+
+        pagina += 1
+        time.sleep(1)
 
 
 @dag(
@@ -71,22 +105,36 @@ def arp_detalhes_dag() -> None:
                 "codigoUnidadeGerenciadora": str(ug),
                 "numeroItem": str(item),
             }
-            unidades, _ = api.consultar_arp_unidades_item(str(ata), str(ug), str(item))
+            unidades = _fetch_all_pages_strict(
+                api,
+                "/modulo-arp/3_consultarUnidadesItem",
+                {
+                    "numeroAta": str(ata),
+                    "unidadeGerenciadora": str(ug),
+                    "numeroItem": str(item),
+                },
+            )
             if unidades:
                 write_raw(
                     SISTEMA,
                     "arp_unidades_item",
                     [{**ctx, **r} for r in unidades],
-                    run_id=f"{context['run_id']}-offset-{offset}-unidades-{ata}-{ug}-{item}",
                     run_date=_get_run_date(context),
                 )
-            adesoes, _ = api.consultar_arp_adesoes_item(str(ata), str(ug), str(item))
+            adesoes = _fetch_all_pages_strict(
+                api,
+                "/modulo-arp/5_consultarAdesoesItem",
+                {
+                    "numeroAta": str(ata),
+                    "unidadeGerenciadora": str(ug),
+                    "numeroItem": str(item),
+                },
+            )
             if adesoes:
                 write_raw(
                     SISTEMA,
                     "arp_adesoes_item",
                     [{**ctx, **r} for r in adesoes],
-                    run_id=f"{context['run_id']}-offset-{offset}-adesoes-{ata}-{ug}-{item}",
                     run_date=_get_run_date(context),
                 )
             total_unidades += len(unidades)
@@ -105,13 +153,19 @@ def arp_detalhes_dag() -> None:
                 "numeroAtaRegistroPreco": str(ata),
                 "codigoUnidadeGerenciadora": str(ug),
             }
-            empenhos, _ = api.consultar_arp_empenhos_saldo(str(ata), str(ug))
+            empenhos = _fetch_all_pages_strict(
+                api,
+                "/modulo-arp/4_consultarEmpenhosSaldoItem",
+                {
+                    "numeroAta": str(ata),
+                    "unidadeGerenciadora": str(ug),
+                },
+            )
             if empenhos:
                 write_raw(
                     SISTEMA,
                     "arp_empenhos_saldo",
                     [{**ctx, **r} for r in empenhos],
-                    run_id=f"{context['run_id']}-offset-{offset}-empenhos-{ata}-{ug}",
                     run_date=_get_run_date(context),
                 )
             total_empenhos += len(empenhos)

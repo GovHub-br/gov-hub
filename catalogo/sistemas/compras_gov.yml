@@ -241,3 +241,47 @@ entidades:
     chave_primaria: [codigoservico, siglaunidademedida]
     classificacao: publico
     chaves: []
+  pgc_agregacao:
+    descricao: >-
+      Dados agregados do Plano de Contratações Anual por órgão e ano, incluindo
+      quantidade total de itens e valor total estimado.
+    granularidade: uma linha por órgão e ano do Plano de Contratações Anual
+    dominio: pgc
+    dag: pgc_agregacao_ingest_dag
+    origem_atual: compras_gov.raw_pgc_agregacao
+    chave_primaria: []
+    classificacao: publico
+    chaves: 
+      - chave: nu_cnpj
+        coluna: orgao
+        verificado: true
+
+  pgc_detalhe:
+    descricao: >-
+      Itens planejados no Plano de Contratações Anual, com informações do
+      artefato, DFD, item de catálogo, quantidade e valor estimado.
+    granularidade: uma linha por item planejado de um Plano de Contratações Anual
+    dominio: pgc
+    dag: pgc_detalhe_ingest_dag
+    origem_atual: compras_gov.raw_pgc_detalhe
+    chave_primaria: []
+    classificacao: publico
+    chaves: 
+      - chave: nu_cnpj
+        coluna: orgao
+        verificado: true
+
+  pgc_detalhe_catalogo:
+    descricao: >-
+      Itens planejados no Plano de Contratações Anual consultados a partir de
+      códigos de material e serviço do catálogo Compras.gov.br.
+    granularidade: uma linha por item planejado de um Plano de Contratações Anual, consultado por código de catálogo
+    dominio: pgc
+    dag: pgc_detalhe_catalogo_ingest_dag
+    origem_atual: compras_gov.raw_pgc_detalhe_catalogo
+    chave_primaria: []
+    classificacao: publico
+    chaves: 
+      - chave: nu_cnpj
+        coluna: orgao
+        verificado: true

@@ -27,7 +27,7 @@ class TestComprasGovDagsIntegrity:
         assert dagbag.import_errors == {}, dagbag.import_errors
 
     def test_expected_number_of_dags_loaded(self, dagbag: DagBag) -> None:
-        assert len(dagbag.dags) == 23
+        assert len(dagbag.dags) == 26
 
     def test_dag_ids_match_filenames(self, dagbag: DagBag) -> None:
         py_files = {p.stem for p in DAGS_FOLDER.glob("*.py")}

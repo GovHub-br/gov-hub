@@ -225,9 +225,10 @@ Airflow em http://localhost:8080 (`airflow`/`airflow`).
 
 O MinIO fica no perfil `object_storage` do compose e não sobe com
 `make compose`: localmente a raw vai para o Postgres (`RAW_BACKEND=warehouse`).
-Desde 2026-10-07 as imagens `minio/minio` e `minio/mc` exigem login tanto no
-quay.io quanto no Docker Hub, então subir o perfil pede antes trocar a imagem
-por uma acessível.
+Para subi-lo, `docker compose --profile object_storage up -d`; o
+`make test-integration` já faz isso. A imagem é a da Chainguard, fixada por
+digest, porque desde 2026-10-07 `minio/minio` e `minio/mc` exigem login no
+quay.io e no Docker Hub.
 
 O Superset fica em um perfil separado do compose, porque é o serviço mais
 pesado e a maior parte do trabalho no framework não precisa dele:

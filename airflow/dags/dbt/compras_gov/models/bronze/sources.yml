@@ -92,6 +92,37 @@ sources:
           classificacao: publico
           dag_ingestao: orgao_ingest_dag
 
+      - name: pgc_agregacao
+        identifier: raw_pgc_agregacao
+        description: >
+            Dados agregados do Plano de Contratações Anual por órgão e ano, incluindo
+            quantidade total de itens e valor total estimado. Granularidade: uma linha
+            por órgão e ano do Plano de Contratações Anual.
+        meta:
+          classificacao: publico
+          dag_ingestao: pgc_agregacao_ingest_dag
+
+      - name: pgc_detalhe
+        identifier: raw_pgc_detalhe
+        description: >
+            Itens planejados no Plano de Contratações Anual, com informações do
+            artefato, DFD, item de catálogo, quantidade e valor estimado. Granularidade:
+            uma linha por item planejado de um Plano de Contratações Anual.
+        meta:
+          classificacao: publico
+          dag_ingestao: pgc_detalhe_ingest_dag
+
+      - name: pgc_detalhe_catalogo
+        identifier: raw_pgc_detalhe_catalogo
+        description: >
+            Itens planejados no Plano de Contratações Anual consultados a partir de
+            códigos de material e serviço do catálogo Compras.gov.br. Granularidade: uma
+            linha por item planejado de um Plano de Contratações Anual, consultado por
+            código de catálogo.
+        meta:
+          classificacao: publico
+          dag_ingestao: pgc_detalhe_catalogo_ingest_dag
+
       - name: uasg
         identifier: raw_uasg
         description: >

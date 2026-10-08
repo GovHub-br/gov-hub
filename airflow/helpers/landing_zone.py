@@ -1,6 +1,8 @@
 import logging
 import os
 from datetime import date, datetime
+import uuid
+
 
 import polars as pl
 
@@ -157,7 +159,8 @@ def _write_raw_object_storage(
 ) -> str:
     """Grava um Parquet novo, imutável, na convenção do ADR-0012."""
     run_id = run_id or _run_id_do_contexto(source, entity)
-    caminho = build_landing_path(source, entity, run_date or date.today(), run_id)
+    identificador = f"{run_id}--lote-{uuid.uuid4().hex[:8]}"
+    caminho = build_landing_path(source, entity, run_date or date.today(), identificador)
     # `infer_schema_length=None` faz o Polars olhar todos os registros antes de
     # decidir o tipo: com amostragem, uma coluna nula nas primeiras linhas viraria
     # Null e perderia os valores das seguintes.

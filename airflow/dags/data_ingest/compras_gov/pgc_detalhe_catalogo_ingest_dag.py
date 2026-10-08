@@ -33,7 +33,7 @@ default_args = {
         "modo": Param(
             "incremental",
             enum=["incremental", "fria"],
-            description="Modo de execução da DAG: incremental ou full",
+            description="Modo de execução da DAG: incremental ou fria",
         ),
         "ano_inicio": Param(
             2023,
@@ -96,33 +96,32 @@ def pgc_detalhe_catalogo_dag() -> None:
             for ano in anos:
                 try:
                     time.sleep(3)
-                    pgc, _ = api.fetch_all_pages(
+                    registros = 0
+                    # None distingue falha sem resposta de uma consulta válida vazia.
+                    api_total = None
+                    for batch, api_total in api.iter_pages(
                         "/modulo-pgc/2_consultarPgcDetalheCatalogo",
                         {"anoPcaProjetoCompra": ano, "tipo": tipo, "codigo": codigo_item},
-                    )
-                    if not pgc:
-                        logging.info(
-                            "Sem registros: ano=%s, tipo=%s, codigo=%s",
-                            ano,
-                            tipo,
-                            codigo_item,
+                    ):
+                        write_raw(SISTEMA, "pgc_detalhe_catalogo", batch)
+                        registros += len(batch)
+
+                    if api_total is None:
+                        raise RuntimeError(
+                            f"A API não retornou resposta válida: tipo={tipo}, codigo={codigo_item}, ano={ano}."
                         )
-                        continue
-                    write_raw(
-                        SISTEMA,
-                        "pgc_detalhe_catalogo",
-                        pgc,
-                        run_id=(
-                            f"{context['run_id']}-tipo-{tipo}-codigo-{codigo_item}-ano-{ano}"
-                        ),
-                    )
-                    total_registros += len(pgc)
+                    if registros != api_total:
+                        raise RuntimeError(
+                            f"Resposta incompleta: tipo={tipo}, codigo={codigo_item}, ano={ano}, "
+                            f"gravados={registros}, api_total={api_total}."
+                        )
+                    total_registros += registros
                     logging.info(
                         "PGC Detalhe Catalogo: ano=%s, tipo=%s, codigo=%s, registros=%s",
                         ano,
                         tipo,
                         codigo_item,
-                        len(pgc),
+                        registros,
                     )
                 except Exception:
                     logging.exception(

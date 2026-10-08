@@ -49,7 +49,7 @@ def pgc_agregacao_dag() -> None:
             codigos = distinct_raw_values(
                 SISTEMA,
                 "orgao",
-                "cnpjCpfOrgaoVinculado",
+                "cnpjCpfOrgao",
             )
         except Exception as exc:
             raise RuntimeError(
@@ -57,9 +57,7 @@ def pgc_agregacao_dag() -> None:
             ) from exc
 
         if not codigos:
-            raise RuntimeError(
-                "Nenhum CNPJ de órgão vinculado foi encontrado na entidade 'orgao'."
-            )
+            raise RuntimeError("Nenhum CNPJ de órgão foi encontrado na entidade 'orgao'.")
 
         blocos = chunked(codigos, BLOCK_SIZE)
         logging.info(
@@ -94,29 +92,31 @@ def pgc_agregacao_dag() -> None:
             for ano in anos:
                 try:
                     time.sleep(3)
-                    pgc, _ = api.fetch_all_pages(
+                    registros = 0
+                    # None distingue falha sem resposta de uma consulta válida vazia.
+                    api_total = None
+                    for batch, api_total in api.iter_pages(
                         "/modulo-pgc/3_consultarPgcAgregacao",
                         {"orgao": codigo_orgao, "ano": ano},
-                    )
-                    if not pgc:
-                        logging.info(
-                            "Sem registros: órgão=%s, ano=%s",
-                            codigo_orgao,
-                            ano,
+                    ):
+                        write_raw(SISTEMA, "pgc_agregacao", batch)
+                        registros += len(batch)
+
+                    if api_total is None:
+                        raise RuntimeError(
+                            f"A API não retornou resposta válida: órgão={codigo_orgao}, ano={ano}."
                         )
-                        continue
-                    write_raw(
-                        SISTEMA,
-                        "pgc_agregacao",
-                        pgc,
-                        run_id=(f"{context['run_id']}-orgao-{codigo_orgao}-ano-{ano}"),
-                    )
-                    total_registros += len(pgc)
+                    if registros != api_total:
+                        raise RuntimeError(
+                            f"Resposta incompleta: órgão={codigo_orgao}, ano={ano}, "
+                            f"gravados={registros}, api_total={api_total}."
+                        )
+                    total_registros += registros
                     logging.info(
                         "PGC Agregação: órgão=%s, ano=%s, registros=%s",
                         codigo_orgao,
                         ano,
-                        len(pgc),
+                        registros,
                     )
                 except Exception:
                     logging.exception(

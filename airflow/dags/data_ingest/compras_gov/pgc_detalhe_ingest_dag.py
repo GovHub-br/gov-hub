@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 import logging
 import time
 from airflow.sdk import dag, task, Param, get_current_context
-from batching import chunked
+from batching import chunked, limit_local
 from cliente_compras_gov import ClienteComprasGov
 from landing_zone import distinct_raw_values, write_raw
 
@@ -37,7 +37,7 @@ default_args = {
         "modo": Param(
             "incremental",
             enum=["incremental", "fria"],
-            description="Modo de execução do DAG: incremental ou full",
+            description="Modo de execução do DAG: incremental ou fria",
         ),
         "ano_inicio": Param(
             2023,
@@ -64,7 +64,14 @@ def pgc_detalhe_dag() -> None:
         if not codigos:
             raise RuntimeError("Nenhum CNPJ de órgão foi encontrado na entidade 'orgao'.")
 
+        codigos = limit_local(codigos, "INGEST_MAX_ORGAOS", "órgãos")
         blocos = chunked(codigos, BLOCK_SIZE)
+        logging.info(
+            "PGC Detalhe: %s órgãos em %s blocos de até %s para processar",
+            len(codigos),
+            len(blocos),
+            BLOCK_SIZE,
+        )
 
         return blocos
 
@@ -91,31 +98,31 @@ def pgc_detalhe_dag() -> None:
             for ano in anos:
                 try:
                     time.sleep(3)
-                    pgc, _ = api.fetch_all_pages(
+                    registros = 0
+                    # None distingue falha sem resposta de uma consulta válida vazia.
+                    api_total = None
+                    for batch, api_total in api.iter_pages(
                         "/modulo-pgc/1_consultarPgcDetalhe",
                         {"orgao": orgao, "anoPcaProjetoCompra": ano},
-                    )
-                    if not pgc:
-                        logging.info(
-                            "Nenhum registro de PGC Detalhe encontrado para órgão=%s, ano=%s",
-                            orgao,
-                            ano,
+                    ):
+                        write_raw(SISTEMA, "pgc_detalhe", batch)
+                        registros += len(batch)
+
+                    if api_total is None:
+                        raise RuntimeError(
+                            f"A API não retornou resposta válida: órgão={orgao}, ano={ano}."
                         )
-                        continue
-
-                    write_raw(
-                        SISTEMA,
-                        "pgc_detalhe",
-                        pgc,
-                        run_id=f"{context['run_id']}-orgao-{orgao}-ano-{ano}",
-                    )
-                    total_registros += len(pgc)
-
+                    if registros != api_total:
+                        raise RuntimeError(
+                            f"Resposta incompleta: órgão={orgao}, ano={ano}, "
+                            f"gravados={registros}, api_total={api_total}."
+                        )
+                    total_registros += registros
                     logging.info(
                         "PGC Detalhe: órgão=%s, ano=%s, registros=%s",
                         orgao,
                         ano,
-                        len(pgc),
+                        registros,
                     )
 
                 except Exception:

@@ -3,7 +3,7 @@ import time
 from datetime import datetime, timedelta
 from typing import Any
 
-from airflow.sdk import dag, get_current_context, task
+from airflow.sdk import dag, task
 
 from batching import page_starts
 from cliente_compras_gov import ClienteComprasGov
@@ -50,10 +50,10 @@ def uasg_dag() -> None:
 
     @task(max_active_tis_per_dag=1)
     def fetch_block(pagina_inicio: int) -> dict:
-        context = get_current_context()
         api = ClienteComprasGov()
         total_registros = 0
-        api_total = 0
+        # None distingue resposta sem total de uma consulta válida vazia.
+        api_total = None
         for pagina in range(pagina_inicio, pagina_inicio + BLOCK_SIZE):
             time.sleep(3)
             _, resp = api.request(
@@ -62,9 +62,12 @@ def uasg_dag() -> None:
                 params={**PARAMS, "pagina": pagina, "tamanhoPagina": PAGE_SIZE},
             )
             if not isinstance(resp, dict):
+                api_total = None
+                break
+            api_total = resp.get("totalRegistros")
+            if api_total is None:
                 break
             data = [r for r in resp.get("resultado", []) if r is not None]
-            api_total = resp.get("totalRegistros", 0)
             if not data:
                 break
             write_raw(
@@ -72,23 +75,27 @@ def uasg_dag() -> None:
                 ENTIDADE,
                 data,
                 primary_key=PK,
-                run_id=f"{context['run_id']}-pagina-{pagina}",
             )
             total_registros += len(data)
             if resp.get("paginasRestantes", 0) == 0:
                 break
+        if api_total is None:
+            raise RuntimeError(
+                f"[{ENDPOINT}] A API não retornou resposta válida: página={pagina}."
+            )
         return {"registros": total_registros, "api_total": api_total}
 
     @task
     def validate(results: Any) -> None:
+        results = list(results)
         total_registros = sum(result["registros"] for result in results)
-        api_total = results[0]["api_total"] if results else 0
+        if not results or any(result["api_total"] is None for result in results):
+            raise RuntimeError(f"[{ENDPOINT}] A API não retornou um total válido.")
+        api_total = results[0]["api_total"]
         if total_registros != api_total:
-            logging.warning(
-                "[%s] Divergência: total de registros=%s api_total=%s",
-                ENDPOINT,
-                total_registros,
-                api_total,
+            raise RuntimeError(
+                f"[{ENDPOINT}] Resposta incompleta: "
+                f"gravados={total_registros}, api_total={api_total}."
             )
         else:
             logging.info(

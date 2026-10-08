@@ -21,6 +21,15 @@ sources:
       sistema_origem: compras_gov
       camada: bronze
     tables:
+      - name: classe_servico
+        identifier: raw_classe_servico
+        description: >
+            Classes da hierarquia do catálogo de serviços. Granularidade: uma linha por
+            classe.
+        meta:
+          classificacao: publico
+          dag_ingestao: catalogo_servico_hierarquia_ingest_dag
+
       - name: contratacoes
         identifier: raw_contratacoes
         description: >
@@ -49,6 +58,15 @@ sources:
           classificacao: publico
           dag_ingestao: contratos_item_ingest_dag
 
+      - name: divisao_servico
+        identifier: raw_divisao_servico
+        description: >
+            Divisões da hierarquia do catálogo de serviços. Granularidade: uma linha por
+            divisão.
+        meta:
+          classificacao: publico
+          dag_ingestao: catalogo_servico_hierarquia_ingest_dag
+
       - name: fornecedor
         identifier: raw_fornecedor
         description: >
@@ -61,6 +79,24 @@ sources:
         meta:
           classificacao: pessoal
           dag_ingestao: fornecedor_ingest_dag
+
+      - name: grupo_servico
+        identifier: raw_grupo_servico
+        description: >
+            Grupos da hierarquia do catálogo de serviços. Granularidade: uma linha por
+            grupo.
+        meta:
+          classificacao: publico
+          dag_ingestao: catalogo_servico_hierarquia_ingest_dag
+
+      - name: item_servico
+        identifier: raw_item_servico
+        description: >
+            Itens da hierarquia do catálogo de serviços. Granularidade: uma linha por
+            item.
+        meta:
+          classificacao: publico
+          dag_ingestao: catalogo_servico_item_ingest_dag
 
       - name: itens_contratacoes
         identifier: raw_itens_contratacoes
@@ -83,6 +119,18 @@ sources:
           classificacao: publico
           dag_ingestao: catalogo_material_natureza_despesa_ingest_dag
 
+      - name: natureza_despesa_servico
+        identifier: raw_natureza_despesa_servico
+        description: >
+            Associação entre os serviços do catálogo e as naturezas de despesa sob as
+            quais o serviço é empenhado. Não é um cadastro de naturezas de despesa: a
+            mesma natureza aparece em vários serviços, e a origem repete pares sem
+            deduplicar. Granularidade: uma linha por associação entre serviço e natureza
+            de despesa.
+        meta:
+          classificacao: publico
+          dag_ingestao: catalogo_servico_natureza_despesa_ingest_dag
+
       - name: orgao
         identifier: raw_orgao
         description: >
@@ -92,6 +140,23 @@ sources:
           classificacao: publico
           dag_ingestao: orgao_ingest_dag
 
+      - name: secao_servico
+        identifier: raw_secao_servico
+        description: >
+            Seções da hierarquia do catálogo de serviços. Granularidade: uma linha por
+            seção.
+        meta:
+          classificacao: publico
+          dag_ingestao: catalogo_servico_hierarquia_ingest_dag
+
+      - name: subclasse_servico
+        identifier: raw_subclasse_servico
+        description: >
+            Subclasses da hierarquia do catálogo de serviços. Granularidade: uma linha
+            por subclasse.
+        meta:
+          classificacao: publico
+          dag_ingestao: catalogo_servico_hierarquia_ingest_dag
       - name: pgc_agregacao
         identifier: raw_pgc_agregacao
         description: >
@@ -131,3 +196,12 @@ sources:
         meta:
           classificacao: publico
           dag_ingestao: uasg_ingest_dag
+
+      - name: und_medida_servico
+        identifier: raw_und_medida_servico
+        description: >
+            Unidades de medida associadas aos serviços. Granularidade: uma linha por
+            serviço e unidade de medida.
+        meta:
+          classificacao: publico
+          dag_ingestao: catalogo_servico_und_medida_ingest_dag

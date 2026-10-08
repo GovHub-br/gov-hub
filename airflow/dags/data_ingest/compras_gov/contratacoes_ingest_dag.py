@@ -100,7 +100,6 @@ def contratacoes_dag() -> None:
                 "contratacoes",
                 data,
                 primary_key=["idcompra"],
-                run_id=f"{context['run_id']}-modalidade-{modalidade}-pagina-{pagina}",
                 run_date=date.fromisoformat(data_inicial),
             )
             ingeridos += len(data)

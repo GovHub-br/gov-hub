@@ -95,7 +95,6 @@ def itens_contratacoes_dag() -> None:
                 ENTIDADE,
                 data,
                 primary_key=PK,
-                run_id=f"{context['run_id']}-pagina-{pagina}",
                 run_date=date.fromisoformat(data_inicial),
             )
             ingeridos += len(data)

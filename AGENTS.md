@@ -57,7 +57,7 @@ make format            # black, ruff --fix, sqlfmt
 make lint              # black --check, ruff, ty, sqlfmt --check, catalogo-validar, publicacao-validar
 make test              # pytest tests/unit com cobertura — é o que roda no CI
 make test-integration  # sobe MinIO + Postgres e roda tests/integration
-make compose           # sobe Airflow + Postgres + MinIO e cria variables/connections
+make compose           # sobe Airflow + Postgres e cria variables/connections (MinIO fica no perfil object_storage)
 make superset          # sobe o Superset (perfil bi do compose) — pesado, só quando precisar
 ```
 
@@ -383,6 +383,11 @@ Cada item abaixo já quebrou algo. Os comentários no código explicam mais.
   compose nada muda.
 - `RAW_BACKEND=warehouse` no `local.env` porque o compose só tem Postgres, que
   não lê Parquet. O padrão do framework é `object_storage`.
+- MinIO e `minio-init` ficam no perfil `object_storage` do compose e não sobem
+  com `make compose`. Desde 2026-10-07 o quay.io e o Docker Hub exigem login
+  para `minio/minio` e `minio/mc`: com o MinIO no perfil padrão, o pull
+  falhava e derrubava o `make compose` inteiro. `make test-integration` nomeia
+  os serviços do MinIO e continua dependendo de uma imagem acessível.
 - `INGEST_MAX_ORGAOS=10` no `local.env` para as DAGs por órgão terminarem em
   minutos. Ausente em homologação e produção.
 - `docker/postgres/init.sh` cria os bancos `airflow` e `data_warehouse` e o

@@ -218,11 +218,16 @@ Docker, Docker Compose e Make.
 
 ```bash
 make setup      # instala deps, gera requirements.txt, cria .env e instala git hooks
-make compose    # sobe Airflow + Postgres + MinIO e configura variables/connections
+make compose    # sobe Airflow + Postgres e configura variables/connections
 ```
 
-Airflow em http://localhost:8080 (`airflow`/`airflow`), console do MinIO em
-http://localhost:9001 (`minioadmin`/`minioadmin`).
+Airflow em http://localhost:8080 (`airflow`/`airflow`).
+
+O MinIO fica no perfil `object_storage` do compose e não sobe com
+`make compose`: localmente a raw vai para o Postgres (`RAW_BACKEND=warehouse`).
+Desde 2026-10-07 as imagens `minio/minio` e `minio/mc` exigem login tanto no
+quay.io quanto no Docker Hub, então subir o perfil pede antes trocar a imagem
+por uma acessível.
 
 O Superset fica em um perfil separado do compose, porque é o serviço mais
 pesado e a maior parte do trabalho no framework não precisa dele:

@@ -68,16 +68,13 @@ def contratos_dag() -> None:
         for codigo_orgao in codigos_orgao:
             registros_orgao = 0
             api_total_orgao = None
-            for numero_lote, (batch, api_total_orgao) in enumerate(
-                api.iter_pages(
-                    "/modulo-contratos/1_consultarContratos",
-                    {
-                        "codigoOrgao": codigo_orgao,
-                        "dataVigenciaInicialMin": data_inicial,
-                        "dataVigenciaInicialMax": data_final,
-                    },
-                ),
-                start=1,
+            for batch, api_total_orgao in api.iter_pages(
+                "/modulo-contratos/1_consultarContratos",
+                {
+                    "codigoOrgao": codigo_orgao,
+                    "dataVigenciaInicialMin": data_inicial,
+                    "dataVigenciaInicialMax": data_final,
+                },
             ):
                 write_raw(
                     SISTEMA,
@@ -88,9 +85,6 @@ def contratos_dag() -> None:
                         "numerocontrato",
                         "nifornecedor",
                     ],
-                    run_id=(
-                        f"{context['run_id']}-orgao-{codigo_orgao}-lote-{numero_lote}"
-                    ),
                 )
                 registros_orgao += len(batch)
 

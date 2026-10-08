@@ -64,19 +64,14 @@ def contratos_item_dag() -> None:
         for codigo_orgao in codigos_orgao:
             registros_orgao = 0
             api_total_orgao = None
-            for numero_lote, (batch, api_total_orgao) in enumerate(
-                api.iter_pages(
-                    "/modulo-contratos/2_consultarContratosItem",
-                    {
-                        "codigoOrgao": codigo_orgao,
-                        "dataVigenciaInicialMin": data_inicial,
-                        "dataVigenciaInicialMax": data_final,
-                    },
-                ),
-                start=1,
+            for batch, api_total_orgao in api.iter_pages(
+                "/modulo-contratos/2_consultarContratosItem",
+                {
+                    "codigoOrgao": codigo_orgao,
+                    "dataVigenciaInicialMin": data_inicial,
+                    "dataVigenciaInicialMax": data_final,
+                },
             ):
-                # O cliente retorna lotes sem o número da página. Identificar
-                # órgão e lote evita sobrescrita na raw (ADR-0012, ADR-0021).
                 write_raw(
                     SISTEMA,
                     "contratos_item",
@@ -88,9 +83,6 @@ def contratos_item_dag() -> None:
                         "numeroitem",
                         "contratoitemexcluido",
                     ],
-                    run_id=(
-                        f"{context['run_id']}-orgao-{codigo_orgao}-lote-{numero_lote}"
-                    ),
                 )
                 registros_orgao += len(batch)
 

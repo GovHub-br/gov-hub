@@ -84,7 +84,6 @@ def fornecedor_dag() -> None:
                 SISTEMA,
                 ENTIDADE,
                 data,
-                run_id=f"{context['run_id']}-pagina-{pagina}",
                 run_date=run_date,
             )
             ingeridos += len(data)

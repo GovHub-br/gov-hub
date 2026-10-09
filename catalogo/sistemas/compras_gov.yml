@@ -152,6 +152,95 @@ entidades:
           A origem entrega a natureza detalhada de 8 dígitos, não a forma curta
           de 6 usada em parte dos relatórios do SIAFI.
 
+  secao_servico:
+    descricao: >-
+      Seções da hierarquia do catálogo de serviços.
+    granularidade: uma linha por seção
+    dominio: catalogo
+    dag: catalogo_servico_hierarquia_ingest_dag
+    origem_atual: compras_gov.raw_secao_servico
+    chave_primaria: [codigosecao]
+    classificacao: publico
+    chaves: []
+
+  divisao_servico:
+    descricao: >-
+      Divisões da hierarquia do catálogo de serviços.
+    granularidade: uma linha por divisão
+    dominio: catalogo
+    dag: catalogo_servico_hierarquia_ingest_dag
+    origem_atual: compras_gov.raw_divisao_servico
+    chave_primaria: [codigodivisao]
+    classificacao: publico
+    chaves: [] 
+
+  grupo_servico:
+    descricao: >-
+      Grupos da hierarquia do catálogo de serviços.
+    granularidade: uma linha por grupo
+    dominio: catalogo
+    dag: catalogo_servico_hierarquia_ingest_dag
+    origem_atual: compras_gov.raw_grupo_servico
+    chave_primaria: [codigogrupo]
+    classificacao: publico
+    chaves: []
+  
+  classe_servico:
+    descricao: >-
+      Classes da hierarquia do catálogo de serviços.
+    granularidade: uma linha por classe
+    dominio: catalogo
+    dag: catalogo_servico_hierarquia_ingest_dag
+    origem_atual: compras_gov.raw_classe_servico
+    chave_primaria: [codigoclasse]
+    classificacao: publico
+    chaves: []
+
+  subclasse_servico:
+    descricao: >-
+      Subclasses da hierarquia do catálogo de serviços.
+    granularidade: uma linha por subclasse
+    dominio: catalogo
+    dag: catalogo_servico_hierarquia_ingest_dag
+    origem_atual: compras_gov.raw_subclasse_servico
+    chave_primaria: [codigosubclasse]
+    classificacao: publico
+    chaves: []
+
+  item_servico:
+    descricao: >-
+      Itens da hierarquia do catálogo de serviços.
+    granularidade: uma linha por item
+    dominio: catalogo
+    dag: catalogo_servico_item_ingest_dag
+    origem_atual: compras_gov.raw_item_servico
+    chave_primaria: [codigoservico]
+    classificacao: publico
+    chaves: []
+
+  natureza_despesa_servico:
+    descricao: >-
+      Associação entre os serviços do catálogo e as naturezas de despesa sob
+      as quais o serviço é empenhado. Não é um cadastro de naturezas de
+      despesa: a mesma natureza aparece em vários serviços, e a origem repete
+      pares sem deduplicar.
+    granularidade: uma linha por associação entre serviço e natureza de despesa
+    dominio: catalogo
+    dag: catalogo_servico_natureza_despesa_ingest_dag
+    origem_atual: compras_gov.raw_natureza_despesa_servico
+    chave_primaria: [codigoservico, codigonaturezadespesa]
+    classificacao: publico
+    chaves: []
+
+  und_medida_servico:
+    descricao: Unidades de medida associadas aos serviços.
+    granularidade: uma linha por serviço e unidade de medida
+    dominio: catalogo
+    dag: catalogo_servico_und_medida_ingest_dag
+    origem_atual: compras_gov.raw_und_medida_servico
+    chave_primaria: [codigoservico, siglaunidademedida]
+    classificacao: publico
+    chaves: []
   pgc_agregacao:
     descricao: >-
       Dados agregados do Plano de Contratações Anual por órgão e ano, incluindo

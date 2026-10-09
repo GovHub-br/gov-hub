@@ -132,6 +132,18 @@ entidades:
     classificacao: publico
     chaves: []
 
+    resultado_itens_contratacoes:
+    descricao: >-
+      Resultados dos itens das contratações publicadas sob a Lei 14.133,
+      incluindo fornecedores, quantidades e valores apresentados.
+    granularidade: uma linha por resultado de item de contratação
+    dominio: contratacoes
+    dag: resultado_itens_contratacoes_ingest_dag
+    origem_atual: compras_gov.raw_resultado_itens_contratacoes
+    chave_primaria: [idcompraitem, sequencialresultado]
+    classificacao: publico
+    chaves: []
+
   natureza_despesa_material:
     descricao: >-
       Associação entre os PDMs (padrões descritivos de material) do catálogo e

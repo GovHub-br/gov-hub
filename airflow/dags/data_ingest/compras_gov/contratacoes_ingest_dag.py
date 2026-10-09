@@ -1,6 +1,6 @@
 import logging
 import time
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from typing import Any
 
 from airflow.sdk import dag, task
@@ -23,9 +23,11 @@ default_args = {
 
 
 def _get_intervalo(context: dict) -> tuple[str, str]:
-    data_inicial = str(context["data_interval_start"].date())
-    data_final = str(context["data_interval_end"].date())
-    return data_inicial, data_final
+    dag_run = context["dag_run"]
+    fallback = dag_run.logical_date or dag_run.run_after
+    data_inicial = context.get("data_interval_start") or fallback
+    data_final = context.get("data_interval_end") or fallback
+    return str(data_inicial.date()), str(data_final.date())
 
 
 @dag(
@@ -38,7 +40,7 @@ def _get_intervalo(context: dict) -> tuple[str, str]:
         "Ingere contratações públicas (PNCP/Lei 14.133) por modalidade da API do Compras.gov.br para "
         "compras_gov.raw_contratacoes."
     ),
-    tags=["sistema:compras_gov", "dominio:contratacoes"],
+    tags=["sistema:compras_gov", "dominio:contratacoes", "orgao:mgi"],
 )
 def contratacoes_dag() -> None:
     @task
@@ -93,7 +95,13 @@ def contratacoes_dag() -> None:
             api_total = resp.get("totalRegistros", 0)
             if not data:
                 break
-            write_raw(SISTEMA, "contratacoes", data, primary_key=["idcompra"])
+            write_raw(
+                SISTEMA,
+                "contratacoes",
+                data,
+                primary_key=["idcompra"],
+                run_date=date.fromisoformat(data_inicial),
+            )
             ingeridos += len(data)
             if resp.get("paginasRestantes", 0) == 0:
                 break

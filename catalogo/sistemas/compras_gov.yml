@@ -285,3 +285,110 @@ entidades:
       - chave: nu_cnpj
         coluna: orgao
         verificado: true
+
+  pgc_agregacao:
+    descricao: >-
+      Dados agregados do Plano de Contratações Anual por órgão e ano, incluindo
+      quantidade total de itens e valor total estimado.
+    granularidade: uma linha por órgão e ano do Plano de Contratações Anual
+    dominio: pgc
+    dag: pgc_agregacao_ingest_dag
+    origem_atual: compras_gov.raw_pgc_agregacao
+    chave_primaria: []
+    classificacao: publico
+    chaves: 
+      - chave: nu_cnpj
+        coluna: orgao
+        verificado: true
+
+  pgc_detalhe:
+    descricao: >-
+      Itens planejados no Plano de Contratações Anual, com informações do
+      artefato, DFD, item de catálogo, quantidade e valor estimado.
+    granularidade: uma linha por item planejado de um Plano de Contratações Anual
+    dominio: pgc
+    dag: pgc_detalhe_ingest_dag
+    origem_atual: compras_gov.raw_pgc_detalhe
+    chave_primaria: []
+    classificacao: publico
+    chaves: 
+      - chave: nu_cnpj
+        coluna: orgao
+        verificado: true
+
+  pgc_detalhe_catalogo:
+    descricao: >-
+      Itens planejados no Plano de Contratações Anual consultados a partir de
+      códigos de material e serviço do catálogo Compras.gov.br.
+    granularidade: uma linha por item planejado de um Plano de Contratações Anual, consultado por código de catálogo
+    dominio: pgc
+    dag: pgc_detalhe_catalogo_ingest_dag
+    origem_atual: compras_gov.raw_pgc_detalhe_catalogo
+    chave_primaria: []
+    classificacao: publico
+    chaves: 
+      - chave: nu_cnpj
+        coluna: orgao
+        verificado: true
+
+  arp:
+    descricao: >-
+      Atas de Registro de Preço consultadas no módulo ARP do Compras.gov.br.
+    granularidade: uma linha por ata de registro de preço e compra
+    dominio: arp
+    dag: arp_ingest_dag
+    origem_atual: compras_gov.raw_arp
+    chave_primaria: [numeroAtaRegistroPreco, idCompra]
+    classificacao: publico
+    chaves: []
+
+  arp_item:
+    descricao: >-
+      Itens associados às Atas de Registro de Preço do Compras.gov.br.
+    granularidade: uma linha por item, fornecedor, ata, unidade gerenciadora e compra
+    dominio: arp
+    dag: arp_item_ingest_dag
+    origem_atual: compras_gov.raw_arp_item
+    chave_primaria:
+      [
+        numeroAtaRegistroPreco,
+        codigoUnidadeGerenciadora,
+        numeroItem,
+        idCompra,
+        numeroFornecedor,
+      ]
+    classificacao: publico
+    chaves: []
+
+  arp_unidades_item:
+    descricao: >-
+      Unidades vinculadas aos itens das Atas de Registro de Preço.
+    granularidade: uma linha por unidade vinculada a um item de ata
+    dominio: arp
+    dag: arp_detalhes_ingest_dag
+    origem_atual: compras_gov.raw_arp_unidades_item
+    chave_primaria: []
+    classificacao: publico
+    chaves: []
+
+  arp_adesoes_item:
+    descricao: >-
+      Adesões vinculadas aos itens das Atas de Registro de Preço.
+    granularidade: uma linha por adesão vinculada a um item de ata
+    dominio: arp
+    dag: arp_detalhes_ingest_dag
+    origem_atual: compras_gov.raw_arp_adesoes_item
+    chave_primaria: []
+    classificacao: publico
+    chaves: []
+
+  arp_empenhos_saldo:
+    descricao: >-
+      Empenhos e saldos vinculados às Atas de Registro de Preço.
+    granularidade: uma linha por empenho e saldo de uma ata
+    dominio: arp
+    dag: arp_detalhes_ingest_dag
+    origem_atual: compras_gov.raw_arp_empenhos_saldo
+    chave_primaria: []
+    classificacao: publico
+    chaves: []

@@ -1,4 +1,5 @@
 import logging
+import time
 from datetime import datetime, timedelta
 from typing import Any
 from airflow.sdk import dag, task
@@ -26,12 +27,12 @@ default_args = {
         "Consulta preços e detalhes de serviços já catalogados na API de pesquisa de preço do Compras.gov.br, gravando "
         "em compras_gov.raw_pesquisa_preco_servico e raw_pesquisa_preco_servico_detalhe."
     ),
-    tags=["sistema:compras_gov", "dominio:pesquisa_preco"],
+    tags=["sistema:compras_gov", "dominio:pesquisa_preco", "orgao:mgi"],
 )
 def pesquisa_preco_servico_dag() -> None:
     @task
     def get_blocos_servico() -> list[list[str]]:
-        itens = distinct_raw_values(SISTEMA, "item_servico", "codigoservico")
+        itens = distinct_raw_values(SISTEMA, "item_servico", "codigoServico")
         blocos = chunked(itens, BLOCK_SIZE)
         logging.info(
             "Pesquisa de preços serviço: %s itens em %s blocos de até %s",
@@ -47,20 +48,60 @@ def pesquisa_preco_servico_dag() -> None:
         total_preco = 0
         total_detalhe = 0
         for codigo_item in lote:
-            preco, _ = api.fetch_all_pages(
+            time.sleep(3)
+            registros_preco = 0
+            api_total_preco = None
+            for batch, api_total_preco in api.iter_pages(
                 "/modulo-pesquisa-preco/3_consultarServico",
                 {"codigoItemCatalogo": codigo_item},
-            )
-            if preco:
-                write_raw(SISTEMA, "pesquisa_preco_servico", preco)
-            detalhe, _ = api.fetch_all_pages(
+            ):
+                write_raw(
+                    SISTEMA,
+                    "pesquisa_preco_servico",
+                    batch,
+                )
+                registros_preco += len(batch)
+            if api_total_preco is None:
+                raise RuntimeError(
+                    f"A API não retornou resposta válida (preço): item={codigo_item}."
+                )
+            if registros_preco != api_total_preco:
+                raise RuntimeError(
+                    f"Resposta incompleta (preço): item={codigo_item}, "
+                    f"gravados={registros_preco}, api_total={api_total_preco}."
+                )
+            total_preco += registros_preco
+
+            time.sleep(3)
+            registros_detalhe = 0
+            api_total_detalhe = None
+            for batch, api_total_detalhe in api.iter_pages(
                 "/modulo-pesquisa-preco/4_consultarServicoDetalhe",
                 {"codigoItemCatalogo": codigo_item},
+            ):
+                write_raw(
+                    SISTEMA,
+                    "pesquisa_preco_servico_detalhe",
+                    batch,
+                )
+                registros_detalhe += len(batch)
+            if api_total_detalhe is None:
+                raise RuntimeError(
+                    f"A API não retornou resposta válida (detalhe): item={codigo_item}."
+                )
+            if registros_detalhe != api_total_detalhe:
+                raise RuntimeError(
+                    f"Resposta incompleta (detalhe): item={codigo_item}, "
+                    f"gravados={registros_detalhe}, api_total={api_total_detalhe}."
+                )
+            total_detalhe += registros_detalhe
+
+            logging.info(
+                "Item %s: preco=%s detalhe=%s",
+                codigo_item,
+                registros_preco,
+                registros_detalhe,
             )
-            if detalhe:
-                write_raw(SISTEMA, "pesquisa_preco_servico_detalhe", detalhe)
-            total_preco += len(preco)
-            total_detalhe += len(detalhe)
         return {"preco": total_preco, "detalhe": total_detalhe}
 
     @task

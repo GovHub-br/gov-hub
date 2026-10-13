@@ -30,6 +30,9 @@ def _get_intervalo(context: dict) -> tuple[str, str]:
     fallback = dag_run.logical_date or dag_run.run_after
     data_inicial = context.get("data_interval_start") or fallback
     data_final = context.get("data_interval_end") or fallback
+    if data_final.date() <= data_inicial.date():
+        data_final = data_inicial + timedelta(days=1)
+        # Ajuste para garantir que o intervalo seja de pelo menos um dia
     return str(data_inicial.date()), str(data_final.date())
 
 

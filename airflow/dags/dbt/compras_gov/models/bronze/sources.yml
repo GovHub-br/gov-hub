@@ -99,14 +99,13 @@ sources:
           dag_ingestao: catalogo_servico_item_ingest_dag
 
       - name: itens_contratacoes
-        identifier: raw_resultado_itens_contratacoes
+        identifier: raw_itens_contratacoes
         description: >
-            Resultados dos itens das contratações publicadas sob a Lei 14.133, incluindo
-            fornecedores, quantidades e valores apresentados. Granularidade: uma linha
-            por resultado de item de contratação.
+            Itens das contratações publicadas sob a Lei 14.133. Granularidade: uma linha
+            por item de compra.
         meta:
           classificacao: publico
-          dag_ingestao: resultado_itens_contratacoes_ingest_dag
+          dag_ingestao: itens_contratacoes_ingest_dag
 
       - name: natureza_despesa_material
         identifier: raw_natureza_despesa_material
@@ -141,23 +140,6 @@ sources:
           classificacao: publico
           dag_ingestao: orgao_ingest_dag
 
-      - name: secao_servico
-        identifier: raw_secao_servico
-        description: >
-            Seções da hierarquia do catálogo de serviços. Granularidade: uma linha por
-            seção.
-        meta:
-          classificacao: publico
-          dag_ingestao: catalogo_servico_hierarquia_ingest_dag
-
-      - name: subclasse_servico
-        identifier: raw_subclasse_servico
-        description: >
-            Subclasses da hierarquia do catálogo de serviços. Granularidade: uma linha
-            por subclasse.
-        meta:
-          classificacao: publico
-          dag_ingestao: catalogo_servico_hierarquia_ingest_dag
       - name: pgc_agregacao
         identifier: raw_pgc_agregacao
         description: >
@@ -188,6 +170,34 @@ sources:
         meta:
           classificacao: publico
           dag_ingestao: pgc_detalhe_catalogo_ingest_dag
+
+      - name: resultado_itens_contratacoes
+        identifier: raw_resultado_itens_contratacoes
+        description: >
+            Resultados dos itens das contratações publicadas sob a Lei 14.133, incluindo
+            fornecedores, quantidades e valores apresentados. Granularidade: uma linha
+            por resultado de item de contratação.
+        meta:
+          classificacao: publico
+          dag_ingestao: resultado_itens_contratacoes_ingest_dag
+
+      - name: secao_servico
+        identifier: raw_secao_servico
+        description: >
+            Seções da hierarquia do catálogo de serviços. Granularidade: uma linha por
+            seção.
+        meta:
+          classificacao: publico
+          dag_ingestao: catalogo_servico_hierarquia_ingest_dag
+
+      - name: subclasse_servico
+        identifier: raw_subclasse_servico
+        description: >
+            Subclasses da hierarquia do catálogo de serviços. Granularidade: uma linha
+            por subclasse.
+        meta:
+          classificacao: publico
+          dag_ingestao: catalogo_servico_hierarquia_ingest_dag
 
       - name: uasg
         identifier: raw_uasg

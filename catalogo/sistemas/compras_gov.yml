@@ -132,7 +132,7 @@ entidades:
     classificacao: publico
     chaves: []
 
-    resultado_itens_contratacoes:
+  resultado_itens_contratacoes:
     descricao: >-
       Resultados dos itens das contratações publicadas sob a Lei 14.133,
       incluindo fornecedores, quantidades e valores apresentados.

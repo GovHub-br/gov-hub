@@ -149,3 +149,128 @@ def test_invalid_response_fails_before_write(
 
     with pytest.raises(RuntimeError, match=mensagem):
         fetch_and_store()
+
+
+def test_historico_ingere_blocos_de_contratos_e_preserva_chave(
+    dagbag: DagBag, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    get_contract_blocks = (
+        dagbag.dags["contrato_historico_ingest_dag"]
+        .get_task("get_contract_blocks")
+        .python_callable
+    )
+    ingest_contracts = (
+        dagbag.dags["contrato_historico_ingest_dag"]
+        .get_task("ingest_contracts")
+        .python_callable
+    )
+    respostas = {
+        "contrato_ativo": [("2", "46000"), ("10", "99999")],
+        "contrato_inativo": [("10", "46000"), ("3", "46000")],
+    }
+    chamadas: list[tuple[object, ...]] = []
+    escritas: list[tuple[tuple[object, ...], dict[str, object]]] = []
+
+    def linhas(
+        _sistema: str, entidade: str, _colunas: list[str]
+    ) -> list[tuple[str, str]]:
+        return respostas[entidade]
+
+    class VariableFake:
+        @staticmethod
+        def get(*_args: object, **_kwargs: object) -> list[str]:
+            return ["46000"]
+
+    class ClienteFake:
+        def listar_subrecurso(
+            self, contrato_id: str, recurso: str
+        ) -> list[dict[str, object]]:
+            chamadas.append((contrato_id, recurso))
+            return [{"id": int(contrato_id), "contrato_id": contrato_id}]
+
+    def registrar_escrita(*args: object, **kwargs: object) -> None:
+        escritas.append((args, kwargs))
+
+    monkeypatch.setitem(get_contract_blocks.__globals__, "distinct_raw_rows", linhas)
+    monkeypatch.setitem(get_contract_blocks.__globals__, "Variable", VariableFake)
+    monkeypatch.setenv("INGEST_MAX_CONTRATOS", "2")
+    monkeypatch.setitem(ingest_contracts.__globals__, "ClienteContratosGov", ClienteFake)
+    monkeypatch.setitem(ingest_contracts.__globals__, "write_raw", registrar_escrita)
+
+    assert get_contract_blocks() == [["10", "2"]]
+    assert ingest_contracts(["10", "2"]) == {"historicos": 2}
+    assert chamadas == [("10", "historico"), ("2", "historico")]
+    assert [chamada[1] for chamada in escritas] == [
+        {"primary_key": ["id"]},
+        {"primary_key": ["id"]},
+    ]
+
+
+def test_historico_falha_se_cabecalho_ainda_nao_estiver_na_raw(
+    dagbag: DagBag, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    get_contract_blocks = (
+        dagbag.dags["contrato_historico_ingest_dag"]
+        .get_task("get_contract_blocks")
+        .python_callable
+    )
+
+    def indisponivel(
+        _sistema: str, entidade: str, _colunas: list[str]
+    ) -> list[tuple[str, str]]:
+        if entidade == "contrato_ativo":
+            raise RuntimeError("raw ausente")
+        return [("1", "46000")]
+
+    monkeypatch.setitem(
+        get_contract_blocks.__globals__, "distinct_raw_rows", indisponivel
+    )
+
+    with pytest.raises(RuntimeError, match="contrato_ativo.*contrato_inativo"):
+        get_contract_blocks()
+
+
+def test_historico_falha_com_resposta_vazia(
+    dagbag: DagBag, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    ingest_contracts = (
+        dagbag.dags["contrato_historico_ingest_dag"]
+        .get_task("ingest_contracts")
+        .python_callable
+    )
+
+    class ClienteFake:
+        def listar_subrecurso(
+            self, _contrato_id: str, _recurso: str
+        ) -> list[dict[str, object]]:
+            return []
+
+    monkeypatch.setitem(ingest_contracts.__globals__, "ClienteContratosGov", ClienteFake)
+
+    with pytest.raises(RuntimeError, match="Resposta vazia"):
+        ingest_contracts(["1"])
+
+
+def test_historico_falha_com_id_duplicado(
+    dagbag: DagBag, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    ingest_contracts = (
+        dagbag.dags["contrato_historico_ingest_dag"]
+        .get_task("ingest_contracts")
+        .python_callable
+    )
+
+    class ClienteFake:
+        def listar_subrecurso(
+            self, _contrato_id: str, _recurso: str
+        ) -> list[dict[str, object]]:
+            return [{"id": 1}, {"id": 1}]
+
+    def escrita_proibida(*_args: object, **_kwargs: object) -> None:
+        pytest.fail("write_raw não pode ser chamado para um histórico duplicado")
+
+    monkeypatch.setitem(ingest_contracts.__globals__, "ClienteContratosGov", ClienteFake)
+    monkeypatch.setitem(ingest_contracts.__globals__, "write_raw", escrita_proibida)
+
+    with pytest.raises(RuntimeError, match="IDs duplicados"):
+        ingest_contracts(["1"])

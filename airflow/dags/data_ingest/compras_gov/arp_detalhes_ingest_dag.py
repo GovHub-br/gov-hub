@@ -14,8 +14,10 @@ SISTEMA = "compras_gov"
 # Combinações da raw de itens de ARP sobre as quais esta DAG pagina.
 COLUNAS_ATA = ["numeroAtaRegistroPreco", "codigoUnidadeGerenciadora"]
 COLUNAS_ITEM = COLUNAS_ATA + ["numeroItem"]
-BLOCK_SIZE = 150
+BLOCK_SIZE = 40
 PAGE_SIZE = 500
+REQUEST_DELAY_SECONDS = 1
+TASK_TIMEOUT = timedelta(minutes=20)
 
 default_args = {
     "owner": "mgi",
@@ -42,6 +44,7 @@ def _fetch_all_pages_strict(
     pagina = 1
 
     while True:
+        time.sleep(REQUEST_DELAY_SECONDS)
         _, resposta = api.request(
             "GET",
             endpoint,
@@ -61,7 +64,6 @@ def _fetch_all_pages_strict(
             return registros
 
         pagina += 1
-        time.sleep(1)
 
 
 @dag(
@@ -91,7 +93,7 @@ def arp_detalhes_dag() -> None:
         logging.info("ARP detalhes empenhos: %s atas em %s blocos", total, len(offsets))
         return offsets
 
-    @task(max_active_tis_per_dag=2)
+    @task(max_active_tis_per_dag=2, execution_timeout=TASK_TIMEOUT)
     def fetch_unidades_adesoes(offset: int, **context: dict) -> dict:
         rows = distinct_raw_rows(SISTEMA, "arp_item", COLUNAS_ITEM)[
             offset : offset + BLOCK_SIZE
@@ -141,7 +143,7 @@ def arp_detalhes_dag() -> None:
             total_adesoes += len(adesoes)
         return {"unidades": total_unidades, "adesoes": total_adesoes}
 
-    @task(max_active_tis_per_dag=2)
+    @task(max_active_tis_per_dag=2, execution_timeout=TASK_TIMEOUT)
     def fetch_empenhos(offset: int, **context: dict) -> dict:
         rows = distinct_raw_rows(SISTEMA, "arp_item", COLUNAS_ATA)[
             offset : offset + BLOCK_SIZE

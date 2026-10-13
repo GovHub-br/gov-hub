@@ -20,7 +20,7 @@ PK = [
     "codigoUnidadeGerenciadora",
     "numeroItem",
     "idCompra",
-    "numeroFornecedor",
+    "niFornecedor",
 ]
 
 default_args = {
@@ -65,6 +65,7 @@ def arp_item_dag() -> None:
                 "pagina": 1,
                 "tamanhoPagina": PAGE_SIZE,
             },
+            timeout=60,
         )
         total = resp.get("totalPaginas", 1) if isinstance(resp, dict) else 1
         logging.info(
@@ -89,6 +90,7 @@ def arp_item_dag() -> None:
                     "pagina": pagina,
                     "tamanhoPagina": PAGE_SIZE,
                 },
+                timeout=60,
             )
             if not isinstance(resp, dict):
                 break
@@ -96,20 +98,18 @@ def arp_item_dag() -> None:
             api_total = resp.get("totalRegistros", 0)
             if not data:
                 break
-            pk_lower = [f.lower() for f in PK]
             incompletos = [
                 registro
                 for registro in data
-                if not all(registro.get(k) is not None for k in pk_lower)
+                if not all(registro.get(k) is not None for k in PK)
             ]
             if incompletos:
                 logging.warning(
-                    "[%s] p.%s: %s registro(s) por incompletos",
+                    "[%s] p.%s: %s registro(s) com chave primária incompleta",
                     ENDPOINT,
                     pagina,
                     len(incompletos),
                 )
-
             write_raw(
                 SISTEMA,
                 ENTIDADE,

@@ -129,6 +129,33 @@ def test_request_retries_429_using_retry_after(cliente_base: ClienteBase) -> Non
     assert mock_sleep.call_args_list == [((17,),)]
 
 
+def test_request_429_does_not_reduce_exponential_backoff(
+    cliente_base: ClienteBase,
+) -> None:
+    failing_response = _mock_response(status_code=HTTPStatus.TOO_MANY_REQUESTS)
+    failing_response.headers = {"Retry-After": "1"}
+    failing_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+        "Too Many Requests",
+        request=Mock(),
+        response=failing_response,
+    )
+    success_response = _mock_response(json_body={"recovered": True})
+
+    with (
+        patch.object(
+            cliente_base.client,
+            "request",
+            side_effect=[failing_response, success_response],
+        ),
+        patch("cliente_base.time.sleep") as mock_sleep,
+    ):
+        status, data = cliente_base.request("GET", "/test")
+
+    assert status == HTTPStatus.OK
+    assert data == {"recovered": True}
+    assert mock_sleep.call_args_list == [((5,),)]
+
+
 def test_request_does_not_retry_permanent_http_error(cliente_base: ClienteBase) -> None:
     response = _mock_response(status_code=HTTPStatus.NOT_FOUND)
     response.raise_for_status.side_effect = httpx.HTTPStatusError(

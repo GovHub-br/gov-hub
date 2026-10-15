@@ -70,13 +70,17 @@ class ClienteBase:
                     ) from e
 
                 retry_after = e.response.headers.get("Retry-After", "")
-                if str(retry_after).isdigit():
-                    espera = min(int(retry_after), self.DEFAULT_MAX_BACKOFF_SECONDS)
-                else:
-                    espera = min(
-                        self.DEFAULT_BACKOFF_SECONDS * 2**attempt,
-                        self.DEFAULT_MAX_BACKOFF_SECONDS,
-                    )
+                backoff = min(
+                    self.DEFAULT_BACKOFF_SECONDS * 2**attempt,
+                    self.DEFAULT_MAX_BACKOFF_SECONDS,
+                )
+                retry_after_segundos = (
+                    int(retry_after) if str(retry_after).isdigit() else 0
+                )
+                espera = min(
+                    max(backoff, retry_after_segundos),
+                    self.DEFAULT_MAX_BACKOFF_SECONDS,
+                )
                 logging.warning(
                     "[cliente_base.py] API returned status %s on attempt %s; "
                     "retrying in %ss",

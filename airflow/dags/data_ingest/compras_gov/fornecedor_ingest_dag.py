@@ -55,6 +55,7 @@ def fornecedor_dag() -> None:
             "GET",
             ENDPOINT,
             params={**PARAMS, "pagina": 1, "tamanhoPagina": PAGE_SIZE},
+            timeout=30,
         )
         total = resp.get("totalPaginas", 1) if isinstance(resp, dict) else 1
         logging.info("[%s] total_paginas=%s", ENDPOINT, total)
@@ -66,6 +67,7 @@ def fornecedor_dag() -> None:
         run_date = _run_date(context)
         ingeridos = 0
         api_total = 0
+        lote = []
         for pagina in range(pagina_inicio, pagina_inicio + BLOCK_SIZE):
             time.sleep(1)
             _, resp = api.request(
@@ -74,21 +76,22 @@ def fornecedor_dag() -> None:
                 params={**PARAMS, "pagina": pagina, "tamanhoPagina": PAGE_SIZE},
                 timeout=20,
             )
+
             if not isinstance(resp, dict):
                 break
+
             data = [r for r in resp.get("resultado", []) if r is not None]
             api_total = resp.get("totalRegistros", 0)
             if not data:
                 break
-            write_raw(
-                SISTEMA,
-                ENTIDADE,
-                data,
-                run_date=run_date,
-            )
+            lote.extend(data)
             ingeridos += len(data)
             if resp.get("paginasRestantes", 0) == 0:
                 break
+
+        if lote:
+            write_raw(SISTEMA, ENTIDADE, lote, run_date=run_date)
+
         return {"ingeridos": ingeridos, "api_total": api_total}
 
     @task

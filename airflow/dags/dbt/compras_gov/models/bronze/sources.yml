@@ -66,6 +66,7 @@ sources:
         meta:
           classificacao: publico
           dag_ingestao: arp_detalhes_ingest_dag
+
       - name: classe_servico
         identifier: raw_classe_servico
         description: >
@@ -184,6 +185,42 @@ sources:
         meta:
           classificacao: publico
           dag_ingestao: orgao_ingest_dag
+
+      - name: pesquisa_preco_material
+        identifier: raw_pesquisa_preco_material
+        description: >
+            Registros de preços consultados para itens do catálogo de materiais
+            Granularidade: uma linha por registro de preço de material.
+        meta:
+          classificacao: pessoal
+          dag_ingestao: pesquisa_preco_material_ingest_dag
+
+      - name: pesquisa_preco_material_detalhe
+        identifier: raw_pesquisa_preco_material_detalhe
+        description: >
+            Detalhes de compras associados aos preços de materiais Granularidade: uma
+            linha por detalhe de compra de item de material.
+        meta:
+          classificacao: publico
+          dag_ingestao: pesquisa_preco_material_ingest_dag
+
+      - name: pesquisa_preco_servico
+        identifier: raw_pesquisa_preco_servico
+        description: >
+            Registros de preços consultados para itens do catálogo de serviços
+            Granularidade: uma linha por registro de preço de serviço.
+        meta:
+          classificacao: pessoal
+          dag_ingestao: pesquisa_preco_servico_ingest_dag
+
+      - name: pesquisa_preco_servico_detalhe
+        identifier: raw_pesquisa_preco_servico_detalhe
+        description: >
+            Detalhes de compras associados aos preços de serviços Granularidade: uma
+            linha por detalhe de compra de item de serviço.
+        meta:
+          classificacao: publico
+          dag_ingestao: pesquisa_preco_servico_ingest_dag
 
       - name: pgc_agregacao
         identifier: raw_pgc_agregacao

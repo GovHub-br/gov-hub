@@ -1,5 +1,4 @@
 import logging
-import time
 from datetime import datetime, timedelta
 from typing import Any
 from airflow.sdk import dag, task
@@ -20,6 +19,7 @@ default_args = {
 @dag(
     dag_id="pesquisa_preco_material_ingest_dag",
     schedule="0 3 * * 0",
+    max_active_runs=1,
     start_date=datetime(2024, 1, 1),
     catchup=False,
     default_args=default_args,
@@ -46,7 +46,6 @@ def pesquisa_preco_material_dag() -> None:
         total_preco = 0
         total_detalhe = 0
         for codigo_item in lote:
-            time.sleep(1)
             registros_preco = 0
             api_total_preco = None
             for batch, api_total_preco in api.iter_pages(
@@ -66,7 +65,6 @@ def pesquisa_preco_material_dag() -> None:
                 )
             total_preco += registros_preco
 
-            time.sleep(1)
             registros_detalhe = 0
             api_total_detalhe = None
             for batch, api_total_detalhe in api.iter_pages(

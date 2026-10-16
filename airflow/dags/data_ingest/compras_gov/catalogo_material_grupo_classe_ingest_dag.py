@@ -1,5 +1,4 @@
 import logging
-import time
 from datetime import datetime, timedelta
 from typing import Any
 
@@ -47,7 +46,9 @@ def catalogo_material_grupo_classe_dag() -> None:
             endpoint,
             params={**query_params, "pagina": 1, "tamanhoPagina": PAGE_SIZE},
         )
-        total = resp.get("totalPaginas", 1) if isinstance(resp, dict) else 1
+        if not isinstance(resp, dict):
+            raise RuntimeError(f"A API não retornou resposta válida: {endpoint}.")
+        total = resp.get("totalPaginas", 1)
         logging.info("[%s] Total de páginas: %s", endpoint, total)
         return page_starts(total, BLOCK_SIZE)
 
@@ -58,20 +59,20 @@ def catalogo_material_grupo_classe_dag() -> None:
         query_params: dict,
         entidade: str,
         pk: list[str],
-        **context: dict,
     ) -> dict:
         api = ClienteComprasGov()
         ingeridos = 0
         api_total = 0
         for pagina in range(pagina_inicio, pagina_inicio + BLOCK_SIZE):
-            time.sleep(1)
             _, resp = api.request(
                 "GET",
                 endpoint,
                 params={**query_params, "pagina": pagina, "tamanhoPagina": PAGE_SIZE},
             )
             if not isinstance(resp, dict):
-                break
+                raise RuntimeError(
+                    f"A API não retornou resposta válida: {endpoint}, página={pagina}."
+                )
             data = [r for r in resp.get("resultado", []) if r is not None]
             api_total = resp.get("totalRegistros", 0)
             if not data:
@@ -81,7 +82,6 @@ def catalogo_material_grupo_classe_dag() -> None:
                 entidade,
                 data,
                 primary_key=pk,
-                run_id=f"{context['run_id']}-pagina-{pagina}",
             )
             ingeridos += len(data)
             if resp.get("paginasRestantes", 0) == 0:

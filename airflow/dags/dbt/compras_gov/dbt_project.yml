@@ -1,8 +1,8 @@
 # Pacote dbt do sistema estruturante Compras.gov.br (SIASG).
 # Modelos compartilhados entre órgãos — ver ADR-0004 e ADR-0009.
 #
-# Bronze não é modelada aqui: é materializada pelas DAGs de ingestão e
-# declarada como source em models/bronze/sources.yml (ADR-0017).
+# As fontes relacionais são declaradas em models/bronze/sources.yml (ADR-0017).
+# A ARP também tem um modelo Bronze que materializa os Parquets no PostgreSQL.
 
 name: "compras_gov"
 version: "0.1.0"
@@ -22,4 +22,8 @@ clean-targets: ["target", "dbt_packages"]
 models:
   compras_gov:
     silver:
+      # Exceção local aos ADRs 0009/0010, registrada no ADR-0022.
+      # Domínios continuam nas pastas; todas as Silvers deste sistema compartilham o schema.
+      +schema: 002_slv_compras_gov
+      +database: "{{ 'data_warehouse' if target.type == 'duckdb' else target.database }}"
       +materialized: table

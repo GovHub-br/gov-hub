@@ -135,9 +135,10 @@ services:
   # aconteceu quando o quay.io e o Docker Hub passaram a exigir login para
   # minio/minio e minio/mc (verificado em 2026-10-07).
   #
-  # Quem precisar do backend object_storage local sobe com
-  # `docker compose --profile object_storage up -d`; `make test-integration`
-  # nomeia os serviços e sobe o perfil sozinho.
+  # Quem precisar do backend object_storage local sobe, da raiz do repositório,
+  # com `docker compose --env-file .env -f docker/docker-compose.yml --profile
+  # object_storage up -d`; `make test-integration` nomeia os serviços e sobe o
+  # perfil sozinho.
   #
   # Imagem da Chainguard, a alternativa pública que restou, fixada por digest:
   # o plano gratuito só publica a tag `latest`, e o digest é o que mantém a

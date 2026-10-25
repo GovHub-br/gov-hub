@@ -225,8 +225,13 @@ Airflow em http://localhost:8080 (`airflow`/`airflow`).
 
 O MinIO fica no perfil `object_storage` do compose e não sobe com
 `make compose`: localmente a raw vai para o Postgres (`RAW_BACKEND=warehouse`).
-Para subi-lo, `docker compose --profile object_storage up -d`; o
-`make test-integration` já faz isso. A imagem é a da Chainguard, fixada por
+Para subi-lo, a partir da raiz do repositório:
+
+```bash
+docker compose --env-file .env -f docker/docker-compose.yml --profile object_storage up -d
+```
+
+O `make test-integration` já faz isso. A imagem é a da Chainguard, fixada por
 digest, porque desde 2026-10-07 `minio/minio` e `minio/mc` exigem login no
 quay.io e no Docker Hub.
 

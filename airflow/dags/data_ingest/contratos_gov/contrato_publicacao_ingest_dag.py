@@ -10,6 +10,12 @@ de contrato_ativo e contrato_inativo que pertencem aos órgãos da Variable
 contratos_gov_escopo_orgaos (docs/notas/contratos-gov-ingestao.md). O recorte
 temporal fica para a Silver, por data_publicacao.
 
+Por que distinct_raw_rows, e não distinct_raw_values só com id?
+    O recorte por órgão precisa de orgao_codigo ao lado de cada id; com só o id
+    não haveria como restringir ao escopo antes de criar as chamadas. Ids
+    repetidos entre ativos e inativos (contrato inativado entre varreduras)
+    viram um só no conjunto.
+
 Por que contrato_id vem da URL?
     O payload traz contratohistorico_id, não contrato_id: a publicação pertence a
     um evento do histórico (o contrato original ou um termo aditivo). O cliente
@@ -31,6 +37,11 @@ Por que contrato sem publicação não falha a DAG?
     anomalia quando cobriu pelo menos MIN_CONTRATOS_PARA_EXIGIR_PUBLICACAO
     contratos: com 1 em 40 vazio, 10 contratos todos vazios por acaso tem
     probabilidade da ordem de 1e-16.
+
+Lista vazia não é falha de acesso.
+    Só 200 [] conta como contrato sem publicação. Erro HTTP passa pelos retries
+    do ClienteBase e, esgotados, levanta exceção: a task falha e o retry do
+    Airflow age, em vez de a raw ficar sem as publicações daquele bloco.
 
 Por que blocos em vez de .expand() sobre os contratos?
     Expandir sobre a lista crua criaria uma task instance por contrato e

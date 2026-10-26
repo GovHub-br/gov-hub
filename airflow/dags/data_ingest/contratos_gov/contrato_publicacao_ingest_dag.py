@@ -30,6 +30,14 @@ Por que a chave primária é só id?
     do histórico. No backend warehouse, write_raw faz upsert por `id`; no
     object_storage a raw é append-only e a Silver deduplica por dt_ingest.
 
+Por que cada contrato grava com run_id próprio?
+    No object_storage, o arquivo da raw é nomeado pelo run_id, e esta DAG grava
+    uma vez por contrato dentro do mesmo run: com o run_id da execução, cada
+    contrato sobrescreveria o arquivo do anterior e só o último sobreviveria.
+    O sufixo __contrato_{id} dá um arquivo por contrato, como na
+    contrato_empenho_ingest_dag; o retry do mesmo contrato reescreve o mesmo
+    arquivo com o mesmo conteúdo. No warehouse o run_id não é usado.
+
 Por que contrato sem publicação não falha a DAG?
     Na mesma amostra, 1 dos 40 contratos voltou com 200 []. Ao contrário do
     histórico, que existe para todo contrato, a ausência de publicação é
@@ -67,7 +75,7 @@ from datetime import datetime, timedelta
 from math import ceil
 from typing import Any
 
-from airflow.sdk import Variable, dag, task
+from airflow.sdk import Variable, dag, get_current_context, task
 from batching import chunked, limit_local
 from cliente_contratos_gov import ClienteContratosGov
 from landing_zone import RawIndisponivel, distinct_raw_rows, write_raw
@@ -143,6 +151,17 @@ def _deduplicar_publicacoes(
     return list(unicos.values())
 
 
+def _run_id_da_execucao() -> str | None:
+    """run_id da execução em curso; None quando a task é chamada fora do Airflow.
+
+    Sem contexto (em teste), write_raw gera sozinho um identificador.
+    """
+    try:
+        return str(get_current_context()["run_id"])
+    except Exception:
+        return None
+
+
 @dag(
     dag_id="contrato_publicacao_ingest_dag",
     schedule="30 14 * * 6",
@@ -201,6 +220,7 @@ def contrato_publicacao_dag() -> None:
     @task(max_active_tis_per_dag=4)
     def ingest_contracts(contrato_ids: list[str]) -> dict[str, int]:
         api = ClienteContratosGov()
+        run_id = _run_id_da_execucao()
         publicacoes = 0
         vazios = 0
         repetidas = 0
@@ -221,7 +241,13 @@ def contrato_publicacao_dag() -> None:
                     len(registros) - len(lote),
                 )
 
-            write_raw(SISTEMA, ENTIDADE, lote, primary_key=PK)
+            write_raw(
+                SISTEMA,
+                ENTIDADE,
+                lote,
+                primary_key=PK,
+                run_id=f"{run_id}__contrato_{contrato_id}" if run_id else None,
+            )
             publicacoes += len(lote)
             logging.info("Contrato %s: publicacoes=%s", contrato_id, len(lote))
 

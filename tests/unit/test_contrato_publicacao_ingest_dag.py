@@ -9,12 +9,17 @@ diferença em relação ao histórico — contrato sem publicação é possível
 então só a execução grande e inteira vazia é anomalia.
 """
 
+import json
+from datetime import timedelta
 from pathlib import Path
 from typing import Any
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
+import httpx
+import landing_zone
 import pytest
 from airflow.models import DagBag
+from cliente_contratos_gov import ClienteContratosGov
 from landing_zone import RawIndisponivel
 
 pytestmark = pytest.mark.unit
@@ -230,7 +235,9 @@ class TestIngestao:
         ]
         escrita.assert_called_once()
         (sistema, entidade, lote), kwargs = escrita.call_args
-        assert (sistema, entidade, kwargs) == (SISTEMA, ENTIDADE, {"primary_key": ["id"]})
+        assert (sistema, entidade) == (SISTEMA, ENTIDADE)
+        # Sem contexto do Airflow (chamada direta), run_id fica a cargo do write_raw.
+        assert kwargs == {"primary_key": ["id"], "run_id": None}
         assert {r["contrato_id"] for r in lote} == {"2289"}
 
     def test_linha_identica_repetida_e_descartada(
@@ -303,3 +310,140 @@ class TestValidacao:
         alvo = task(dagbag, "validate")
         with pytest.raises(RuntimeError, match="anomalia"):
             alvo([self._resultado(0, MIN_CONTRATOS)])
+
+
+# Payload no formato da API (contrato 2289 e publicação importada de 2016, em
+# 2026-10-26): texto longo com \r\n, link nulo, texto vazio. A API ficou fora do
+# ar (HTTP 500) antes da comparação campo a campo com a raw; estes testes
+# fixam o comportamento, mas não substituem essa comparação.
+PAYLOAD_REAL = [
+    {
+        "id": 580530,
+        "contratohistorico_id": 492642,
+        "data_publicacao": "2023-05-11",
+        "status_publicacao_id": "02",
+        "status": "PUBLICADA",
+        "texto_dou": (
+            "##ATO EXTRATO DE TERMO ADITIVO Nº 5/2023 - UASG 201057\r\n\r\n"
+            "Número do Contrato: 2/2019. \r\n\r\n##TEX Pregão. Nº 1/2019. "
+            "Contratante: CENTRAL DE COMPRAS.\r\no prazo de vigência"
+        ),
+        "link_publicacao": None,
+    },
+    {
+        "id": 79080,
+        "contratohistorico_id": 1,
+        "data_publicacao": "2016-11-08",
+        "status_publicacao_id": "01",
+        "status": "Importado",
+        "texto_dou": "",
+        "link_publicacao": "https://www.in.gov.br/web/dou/-/x",
+    },
+]
+
+
+def usar_api(alvo: Any, monkeypatch: pytest.MonkeyPatch, resposta: httpx.Response):
+    """Usa o ClienteContratosGov de verdade, com a resposta HTTP simulada.
+
+    Testa o caminho real: retries do ClienteBase, _como_lista, injeção do
+    contrato_id. Só o transporte é trocado, e os sleeps são zerados.
+    """
+    cliente = ClienteContratosGov(request_delay=0)
+    chamada = MagicMock(return_value=resposta)
+    monkeypatch.setattr(cliente.client, "request", chamada)
+    monkeypatch.setitem(alvo.__globals__, "ClienteContratosGov", lambda: cliente)
+    monkeypatch.setattr("cliente_base.time.sleep", lambda _s: None)
+    return chamada
+
+
+def http(status: int, corpo: str) -> httpx.Response:
+    requisicao = httpx.Request("GET", "https://contratos.comprasnet.gov.br/api")
+    return httpx.Response(status, text=corpo, request=requisicao)
+
+
+class TestFonteReal:
+    def test_payload_chega_ao_write_raw_intacto_mais_contrato_id(
+        self, dagbag: DagBag, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        alvo = task(dagbag, "ingest_contracts")
+        usar_api(alvo, monkeypatch, http(200, json.dumps(PAYLOAD_REAL)))
+        escrita = capturar_escritas(alvo, monkeypatch)
+
+        alvo(["2289"])
+
+        lote = escrita.call_args.args[2]
+        assert lote == [{**p, "contrato_id": "2289"} for p in PAYLOAD_REAL]
+        assert lote[0]["texto_dou"].count("\r\n") == 5
+        assert lote[0]["link_publicacao"] is None
+        assert lote[1]["texto_dou"] == ""
+        assert lote[0]["contratohistorico_id"] == 492642
+
+    def test_lista_vazia_e_contrato_sem_publicacao(
+        self, dagbag: DagBag, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        alvo = task(dagbag, "ingest_contracts")
+        usar_api(alvo, monkeypatch, http(200, "[]"))
+        escrita = capturar_escritas(alvo, monkeypatch)
+
+        assert alvo(["2289"])["contratos_vazios"] == 1
+        escrita.assert_not_called()
+
+    def test_http_500_falha_a_task_depois_dos_retries_sem_gravar(
+        self, dagbag: DagBag, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """É o que a API respondeu em 2026-10-26: 500 com uma página HTML."""
+        alvo = task(dagbag, "ingest_contracts")
+        chamada = usar_api(alvo, monkeypatch, http(500, "<html>erro</html>"))
+        escrita = capturar_escritas(alvo, monkeypatch)
+
+        with pytest.raises(Exception, match="API failed after the maximum"):
+            alvo(["2289"])
+        assert chamada.call_count == ClienteContratosGov.DEFAULT_MAX_RETRIES + 1
+        escrita.assert_not_called()
+
+    def test_corpo_que_nao_e_json_falha_em_vez_de_virar_vazio(
+        self, dagbag: DagBag, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        alvo = task(dagbag, "ingest_contracts")
+        usar_api(alvo, monkeypatch, http(200, "<html>manutenção</html>"))
+        escrita = capturar_escritas(alvo, monkeypatch)
+
+        with pytest.raises(ValueError):
+            alvo(["2289"])
+        escrita.assert_not_called()
+
+    def test_task_falha_e_o_airflow_tenta_de_novo(self, dagbag: DagBag) -> None:
+        """A falha de acesso vira retry: 3 novas tentativas, 10 minutos entre elas."""
+        tarefa = dagbag.dags[DAG_ID].get_task("ingest_contracts")
+
+        assert tarefa.retries == 3
+        assert tarefa.retry_delay == timedelta(minutes=10)
+        assert tarefa.max_active_tis_per_dag == 4
+
+
+class TestObjectStorage:
+    def test_cada_contrato_grava_em_arquivo_proprio(
+        self, dagbag: DagBag, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Com o run_id da execução em todo write_raw, o arquivo do segundo
+        contrato sobrescreveria o do primeiro no object_storage."""
+        alvo = task(dagbag, "ingest_contracts")
+        usar_cliente(
+            alvo, monkeypatch, {"2289": [publicacao(1)], "9099": [publicacao(2)]}
+        )
+        monkeypatch.setitem(
+            alvo.__globals__, "get_current_context", lambda: {"run_id": "manual__x"}
+        )
+        monkeypatch.setenv("RAW_BACKEND", "object_storage")
+        # Numa execução real o landing_zone também acha o run_id no contexto; fora
+        # do Airflow ele inventaria um nome por chamada e esconderia a colisão.
+        monkeypatch.setattr(landing_zone, "_run_id_do_contexto", lambda *_a: "manual__x")
+        caminhos: list[str] = []
+        with patch.object(
+            landing_zone, "write_parquet", side_effect=lambda _df, c: caminhos.append(c)
+        ):
+            alvo(["2289", "9099"])
+
+        assert len(caminhos) == 2
+        assert len(set(caminhos)) == 2
+        assert all("manual__x__contrato_" in c for c in caminhos)

@@ -183,6 +183,8 @@ entidades:
     chave_primaria: [id]
     classificacao: publico
     chaves: []
+    # O payload traz contrato_id; o cliente confere o valor recebido contra o
+    # id da URL e falha em caso de divergência antes de gravar na raw.
 
   contrato_cronograma:
     descricao: >-

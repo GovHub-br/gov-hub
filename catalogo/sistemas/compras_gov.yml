@@ -410,7 +410,8 @@ entidades:
     granularidade: uma linha por ata de registro de preço e compra
     dominio: arp
     dag: arp_ingest_dag
-    origem_atual: compras_gov.raw_arp
+    # Tabela Bronze materializada pelo modelo dbt arp a partir dos Parquets.
+    origem_atual: 001_bnz_compras_gov.arp
     chave_primaria: [numeroAtaRegistroPreco, idCompra]
     classificacao: publico
     chaves: []

@@ -231,17 +231,22 @@ def test_object_storage_mantem_arquivos_por_contrato_e_execucao(
     monkeypatch.setenv("RAW_BACKEND", "object_storage")
 
     assert ingerir(["47411", "2289"])["garantias"] == 2
+    # Retry da mesma DagRun também deve preservar os arquivos anteriores.
+    assert ingerir(["47411", "2289"])["garantias"] == 2
     run_id[0] = "segundo"
     assert ingerir(["47411", "2289"])["garantias"] == 2
 
     arquivos = sorted(tmp_path.rglob("*.parquet"))
-    assert len(arquivos) == 4
-    assert {arquivo.stem.split("--lote-")[0] for arquivo in arquivos} == {
+    assert len(arquivos) == 6
+    identificadores = [arquivo.stem.split("--lote-")[0] for arquivo in arquivos]
+    assert set(identificadores) == {
         "primeiro__contrato_47411",
         "primeiro__contrato_2289",
         "segundo__contrato_47411",
         "segundo__contrato_2289",
     }
+    assert identificadores.count("primeiro__contrato_47411") == 2
+    assert identificadores.count("primeiro__contrato_2289") == 2
     for arquivo in arquivos:
         registro = pl.read_parquet(arquivo).to_dicts()[0]
         assert str(registro["contrato_id"]) in arquivo.stem

@@ -1,7 +1,8 @@
--- Schema, database e materialização herdados de dbt_project.yml (ADR-0022).
+-- Schema derivado da pasta (002_slv_arp, ADR-0010); database, materialização e a
+-- tag `duckdb` vêm de dbt_project.yml. A tag leva este nó para a
+-- duckdb_<orgao>_transform_dag, no target prod_duckdb, porque a Bronze lê Parquet.
 -- Silver inicial: valida o percurso Bronze → Silver, ainda sem limpeza.
 -- Mantém todas as linhas, valores e tipos; somente os nomes seguem snake_case.
--- ref garante a ordem no mesmo fluxo dbt, sem uma nova DAG.
 select
     "numeroAtaRegistroPreco" as numero_ata_registro_preco,
     "codigoUnidadeGerenciadora" as codigo_unidade_gerenciadora,

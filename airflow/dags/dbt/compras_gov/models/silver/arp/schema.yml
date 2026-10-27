@@ -13,6 +13,15 @@ models:
       sistema_origem: compras_gov
       camada: silver
       classificacao: publico
+    # Contrato da Silver inicial: mesmas linhas e valores da Bronze, só com os
+    # nomes em snake_case. Saem quando a Silver passar a tratar o dado.
+    data_tests:
+      - gov_bricks.mesma_contagem:
+          arguments:
+            comparar_com: ref("arp")
+      - gov_bricks.mesmo_conteudo_em_snake_case:
+          arguments:
+            comparar_com: ref("arp")
     columns:
       - name: numero_ata_registro_preco
         description: Número da ata de registro de preço informado pela fonte.

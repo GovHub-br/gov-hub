@@ -2,7 +2,14 @@
 # Modelos compartilhados entre órgãos — ver ADR-0004 e ADR-0009.
 #
 # As fontes relacionais são declaradas em models/bronze/sources.yml (ADR-0017).
-# A ARP também tem um modelo Bronze que materializa os Parquets no PostgreSQL.
+# Os domínios que já leem a raw em Parquet têm Bronze e Silver materializadas
+# pelo DuckDB e gravadas no PostgreSQL anexado. Esses nós levam a tag `duckdb`,
+# rodam no target prod_duckdb pela data_transform/<orgao>/duckdb_<orgao>_transform_dag.py
+# e ficam fora da DAG do projeto inteiro, que roda no PostgreSQL.
+#
+# Para um domínio novo nesse modelo:
+#   1. models/bronze/<entidade>.sql com `{{ gov_bricks.bronze_parquet() }}`;
+#   2. a Silver em models/silver/<dominio>/ e a pasta listada abaixo com a tag.
 
 name: "compras_gov"
 version: "0.1.0"
@@ -21,9 +28,15 @@ clean-targets: ["target", "dbt_packages"]
 
 models:
   compras_gov:
-    silver:
-      # Exceção local aos ADRs 0009/0010, registrada no ADR-0022.
-      # Domínios continuam nas pastas; todas as Silvers deste sistema compartilham o schema.
-      +schema: 002_slv_compras_gov
-      +database: "{{ 'data_warehouse' if target.type == 'duckdb' else target.database }}"
+    # No DuckDB, `data_warehouse` é o alias do PostgreSQL anexado (profiles.yml);
+    # no PostgreSQL, o próprio banco do target. A tabela física é a mesma nos
+    # dois, então um modelo que rode no PostgreSQL pode dar ref() num nó `duckdb`.
+    +database: "{{ 'data_warehouse' if target.type == 'duckdb' else target.database }}"
+    # Só modelos que leem Parquet: a Bronze relacional continua como source.
+    bronze:
       +materialized: table
+      +tags: ["duckdb"]
+    silver:
+      +materialized: table
+      arp:
+        +tags: ["duckdb"]

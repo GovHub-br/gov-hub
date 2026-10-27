@@ -54,8 +54,10 @@ entidades:
 
   unidade_contratante:
     descricao: >-
-      Unidades gestoras com contrato registrado no Contratos.gov.br. Enumeração
-      pura, só o código. É a lista que dirige a varredura de cabeçalhos por UG.
+      Unidades gestoras com contrato ativo no Contratos.gov.br: numa amostra de
+      60 UGs (2026-10-07), nenhuma estava sem contrato ativo, então UG só com
+      contrato inativo não aparece aqui. Enumeração pura, só o código. É a lista
+      que dirige a varredura de cabeçalhos por UG.
     granularidade: um registro por código de unidade gestora
     dominio: organizacional
     dag: unidade_contratante_ingest_dag
@@ -181,6 +183,8 @@ entidades:
     chave_primaria: [id]
     classificacao: publico
     chaves: []
+    # O payload traz contrato_id; o cliente confere o valor recebido contra o
+    # id da URL e falha em caso de divergência antes de gravar na raw.
 
   contrato_cronograma:
     descricao: >-

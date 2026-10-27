@@ -230,6 +230,7 @@ def test_object_storage_mantem_arquivos_por_contrato_e_execucao(
 
     arquivos = sorted(tmp_path.rglob("*.parquet"))
     assert len(arquivos) == 4
+    # O write_raw acrescenta "--lote-<uuid>" ao nome de cada arquivo.
     assert {arquivo.stem.split("--lote-")[0] for arquivo in arquivos} == {
         "primeiro__contrato_2289",
         "primeiro__contrato_2290",

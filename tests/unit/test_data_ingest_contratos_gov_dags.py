@@ -25,7 +25,10 @@ DAGS_FOLDER = (
 )
 
 TAG_FORMAT = re.compile(r"^[a-z_]+:[a-z0-9_]+$")
-TAGS_OBRIGATORIAS = {"sistema:contratos_gov", "dominio:contratacoes"}
+# Só o sistema é fixo: o domínio varia entre as DAGs da pasta (unidade_contratante
+# é organizacional, os contratos são contratacoes) e é cobrado por
+# test_all_dags_have_dominio_tag.
+TAGS_OBRIGATORIAS = {"sistema:contratos_gov"}
 
 
 @pytest.fixture(scope="module")

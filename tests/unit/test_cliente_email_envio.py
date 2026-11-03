@@ -90,7 +90,9 @@ class TestEnvioDeRelatorio:
 
     def test_extensao_desconhecida_vira_binario(self, smtp, monkeypatch) -> None:
         monkeypatch.setattr(cliente_email, "guess_type", lambda _nome: (None, None))
-        self._enviar(["a@ipea.gov.br"], anexos=[("relatorio.extensao_desconhecida", b"PAR1")])
+        self._enviar(
+            ["a@ipea.gov.br"], anexos=[("relatorio.extensao_desconhecida", b"PAR1")]
+        )
         anexo = next(smtp.instancias[0].mensagem.iter_attachments())
         assert anexo.get_content_type() == "application/octet-stream"
 

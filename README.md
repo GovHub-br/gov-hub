@@ -258,6 +258,8 @@ make superset   # http://localhost:8088 (admin/admin) + connection no Airflow
 
 Leia o [Guia de Contribuição](.github/CONTRIBUTING.md) e o
 [Protocolo de Aprovação de Pull Requests](.github/MERGE_REQUEST_PROTOCOL.md).
+Para dúvidas e ideias ainda em discussão, use as [Discussions](https://github.com/GovHub-br/gov-hub/discussions);
+para bugs e tarefas com escopo definido, abra uma [issue](https://github.com/GovHub-br/gov-hub/issues).
 Commits e títulos de PR seguem [Conventional Commits](.github/TEMPLATES/COMMIT_TEMPLATE.md).
 A revisão obrigatória por pasta é definida em [`.github/CODEOWNERS`](.github/CODEOWNERS).
 

@@ -88,11 +88,8 @@ class TestEnvioDeRelatorio:
         anexo = next(smtp.instancias[0].mensagem.iter_attachments())
         assert anexo.get_content_type() == "text/csv"
 
-    def test_extensao_desconhecida_vira_binario(self, smtp, monkeypatch) -> None:
-        monkeypatch.setattr(cliente_email, "guess_type", lambda _nome: (None, None))
-        self._enviar(
-            ["a@ipea.gov.br"], anexos=[("relatorio.extensao_desconhecida", b"PAR1")]
-        )
+    def test_extensao_desconhecida_vira_binario(self, smtp) -> None:
+        self._enviar(["a@ipea.gov.br"], anexos=[("relatorio.parquet", b"PAR1")])
         anexo = next(smtp.instancias[0].mensagem.iter_attachments())
         assert anexo.get_content_type() == "application/octet-stream"
 

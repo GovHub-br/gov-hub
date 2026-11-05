@@ -82,6 +82,7 @@ de relatório).
 | Módulo | O que faz |
 |---|---|
 | `landing_zone.py` | `build_landing_path`, `write_parquet`, `read_parquet`, `list_files` |
+| `estado_catalogo.py` | `contar_inativos`: códigos de catálogo cujo registro mais recente na raw está inativo |
 | `homologation_helpers.py` | Checks de qualidade em Polars (`not_null`, `schema`, `row_count`, `no_duplicates`, `null_rate`) |
 | `homologation_flow.py` | Fluxo landing zone → validação → Postgres |
 | `postgres_helpers.py` | Resolução de connection string a partir de uma connection do Airflow |

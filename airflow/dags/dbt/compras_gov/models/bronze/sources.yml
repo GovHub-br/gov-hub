@@ -1,10 +1,8 @@
 # GERADO por `make modelo` a partir de catalogo/sistemas/compras_gov.yml — não edite à mão.
 #
-# A Bronze não é materializada por dbt: ela é um source sobre a zona raw,
-# onde a ingestão entrega o dado (ADR-0006, ADR-0017, ADR-0021).
-#
-# Esta é a forma de tabela, do backend `warehouse`. Em um deployment com a
-# raw em object storage, o source aponta para os arquivos da entidade.
+# Fontes relacionais descritas por origem_atual no catálogo.
+# Tabelas raw mantêm o source do sistema; a Bronze materializada
+# usa o source <sistema>_bronze, sem alterar a ingestão.
 
 version: 2
 
@@ -21,15 +19,6 @@ sources:
       sistema_origem: compras_gov
       camada: bronze
     tables:
-      - name: arp
-        identifier: raw_arp
-        description: >
-            Atas de Registro de Preço consultadas no módulo ARP do Compras.gov.br.
-            Granularidade: uma linha por ata de registro de preço e compra.
-        meta:
-          classificacao: publico
-          dag_ingestao: arp_ingest_dag
-
       - name: arp_adesoes_item
         identifier: raw_arp_adesoes_item
         description: >
@@ -351,3 +340,25 @@ sources:
         meta:
           classificacao: publico
           dag_ingestao: catalogo_material_unidade_fornecimento_ingest_dag
+
+  - name: compras_gov_bronze
+    schema: 001_bnz_compras_gov
+    database: "{{ 'data_warehouse' if target.type == 'duckdb' else env_var('DBT_DATABASE', 'data_warehouse') }}"
+    description: >
+      Camada Bronze de Compras.gov.br (SIASG): dado fiel à fonte, gravado pelo
+      dbt. Sistema estruturante de compras e contratações do governo federal.
+      Expõe API pública de consulta a órgãos, UASGs, fornecedores, contratos,
+      contratações e catálogos de material e serviço.
+    meta:
+      owner: "@GovHub-br/oss"
+      sistema_origem: compras_gov
+      camada: bronze
+    tables:
+      - name: arp
+        identifier: arp
+        description: >
+            Atas de Registro de Preço consultadas no módulo ARP do Compras.gov.br.
+            Granularidade: uma linha por ata de registro de preço e compra.
+        meta:
+          classificacao: publico
+          dag_ingestao: arp_ingest_dag

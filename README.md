@@ -81,7 +81,7 @@ de relatório).
 
 | Módulo | O que faz |
 |---|---|
-| `landing_zone.py` | `build_landing_path`, `write_parquet`, `read_parquet`, `list_files` |
+| `landing_zone.py` | `build_landing_path`, `write_parquet`, `read_parquet`, `list_files`, `asset_raw` (Asset da raw que aciona a transformação, [ADR-0022](docs/adr/0022-transformacao-parquet-com-duckdb-e-assets.md)) |
 | `homologation_helpers.py` | Checks de qualidade em Polars (`not_null`, `schema`, `row_count`, `no_duplicates`, `null_rate`) |
 | `homologation_flow.py` | Fluxo landing zone → validação → Postgres |
 | `postgres_helpers.py` | Resolução de connection string a partir de uma connection do Airflow |
@@ -161,6 +161,12 @@ por teste**, com as dependências herdadas dos próprios `ref()`.
 Na prática isso significa que um modelo Gold que falha não obriga a reprocessar
 a Silver inteira no retry, e que acrescentar um modelo ao projeto dbt não exige
 mudança nenhuma no arquivo da DAG.
+
+Os modelos que leem a raw em Parquet (hoje, a ARP) levam a tag dbt `duckdb` e
+ficam fora dessa DAG. Eles rodam na `duckdb_{orgao}_transform_dag`, em que o
+DuckDB lê o object storage e grava no PostgreSQL anexado. Essa DAG é acionada
+pelos Assets que as DAGs de ingestão emitem ao terminar
+([ADR-0022](docs/adr/0022-transformacao-parquet-com-duckdb-e-assets.md)).
 
 > Os pacotes locais em `packages.yml` são referenciados via
 > `{{ env_var('GOV_BRICKS_DBT_DIR', '..') }}` porque o Cosmos renderiza o projeto

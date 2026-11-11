@@ -164,6 +164,42 @@ class TestSubrecursos:
         assert [p["contrato_id"] for p in publicacoes] == [106156, 106156]
         assert publicacoes[0]["contratohistorico_id"] == 9
 
+    def test_contrato_id_igual_ao_da_url_e_preservado(
+        self, cliente: ClienteContratosGov
+    ) -> None:
+        """faturas e itens trazem contrato_id como int; a URL é montada com o id
+        da raw, em texto. Mesmo valor em tipos diferentes não é divergência, e
+        a raw fica com o valor da origem."""
+        resposta = _resposta(json_body=[{"id": 1001069, "contrato_id": 2289}])
+
+        with patch.object(cliente.client, "request", return_value=resposta):
+            faturas = cliente.listar_subrecurso("2289", "faturas")
+
+        assert faturas == [{"id": 1001069, "contrato_id": 2289}]
+
+    def test_contrato_id_divergente_da_url_falha(
+        self, cliente: ClienteContratosGov
+    ) -> None:
+        """Sobrescrever apontaria o registro de outro contrato para o consultado."""
+        resposta = _resposta(json_body=[{"id": 1001069, "contrato_id": 9999}])
+
+        with (
+            patch.object(cliente.client, "request", return_value=resposta),
+            pytest.raises(RuntimeError, match="contrato_id divergente"),
+        ):
+            cliente.listar_subrecurso(2289, "faturas")
+
+    def test_registro_sem_contrato_id_recebe_o_da_url(
+        self, cliente: ClienteContratosGov
+    ) -> None:
+        """empenhos não traz o campo: o vínculo vem só da URL."""
+        resposta = _resposta(json_body=[{"id": 7, "numero": "2024NE000001"}])
+
+        with patch.object(cliente.client, "request", return_value=resposta):
+            empenhos = cliente.listar_subrecurso("2289", "empenhos")
+
+        assert empenhos == [{"id": 7, "numero": "2024NE000001", "contrato_id": "2289"}]
+
     def test_404_no_domicilio_bancario_vira_lista_vazia(
         self, cliente: ClienteContratosGov
     ) -> None:

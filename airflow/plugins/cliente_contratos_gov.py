@@ -137,7 +137,17 @@ class ClienteContratosGov(ClienteBase):
             registros = self._listar_tolerando_404(caminho)
         else:
             registros = self._listar(caminho)
-        return [{**r, "contrato_id": contrato_id} for r in registros]
+
+        vinculados = []
+        for indice, registro in enumerate(registros):
+            payload_id = registro.get("contrato_id")
+            if payload_id is not None and str(payload_id) != str(contrato_id):
+                raise RuntimeError(
+                    f"[{caminho}] Registro {indice} possui contrato_id "
+                    f"{payload_id!r}, mas a URL identifica {contrato_id!r}."
+                )
+            vinculados.append({**registro, "contrato_id": contrato_id})
+        return vinculados
 
     def _listar(self, caminho: str) -> list[dict]:
         time.sleep(self.request_delay)

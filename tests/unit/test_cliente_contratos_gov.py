@@ -164,6 +164,17 @@ class TestSubrecursos:
         assert [p["contrato_id"] for p in publicacoes] == [106156, 106156]
         assert publicacoes[0]["contratohistorico_id"] == 9
 
+    def test_rejeita_contrato_id_divergente_no_payload(
+        self, cliente: ClienteContratosGov
+    ) -> None:
+        resposta = _resposta(json_body=[{"id": 1, "contrato_id": 999}])
+
+        with (
+            patch.object(cliente.client, "request", return_value=resposta),
+            pytest.raises(RuntimeError, match="contrato_id.*999.*106156"),
+        ):
+            cliente.listar_subrecurso(106156, "historico")
+
     def test_404_no_domicilio_bancario_vira_lista_vazia(
         self, cliente: ClienteContratosGov
     ) -> None:

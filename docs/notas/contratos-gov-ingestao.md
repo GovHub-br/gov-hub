@@ -78,6 +78,48 @@ O sábado é deliberado: a varredura de cabeçalhos leva mais de uma hora, os
 sub-recursos vêm depois dela, e assim a cadeia inteira termina com folga antes da
 janela do `compras_gov` no domingo de madrugada.
 
+## Contratos inativos: UG vazia é a regra
+
+Amostra de 12 UGs sorteadas (semente 1) contra
+`/api/contrato/inativo/ug/{codigo}`, em **2026-10-07**, de um total de 3.786
+UGs:
+
+| UGs | Com inativo | Vazias | Contratos | `id` repetido |
+|---|---|---|---|---|
+| 12 | 4 | 8 | 100 | 0 |
+
+O formato é o mesmo do cabeçalho ativo, com `situacao: "Inativo"` e
+`justificativa_inativo` preenchida (ex.: `"Rescindido"`). Como dois terços das
+UGs não têm inativo, a `contrato_inativo_ingest_dag` não pode reprovar uma
+execução sem nenhum contrato da mesma forma que a de ativos faz: com as 10 UGs do
+`INGEST_MAX_UGS` local, isso aconteceria por acaso em cerca de 2% das execuções.
+A DAG só trata o zero como anomalia da fonte a partir de **50 UGs varridas**,
+onde a chance de todas virem vazias por acaso é da ordem de 1e-9.
+
+O mesmo `id` aparece em `raw_contrato_ativo` e em `raw_contrato_inativo` quando o
+contrato é inativado entre duas varreduras. A Silver que unifica as duas precisa
+deduplicar por `id` **entre** as duas raws, pelo `dt_ingest`.
+
+### Cobertura: UG só com contrato inativo fica de fora
+
+A varredura parte da raw de `unidade_contratante`, isto é, de
+`/api/contrato/unidades`. Numa segunda amostra, de 60 UGs dessa lista
+(sorteio com semente 7, em **2026-10-07**), as 59 que responderam ao endpoint
+de ativos tinham pelo menos um contrato ativo; a 60ª excedeu 180 s nele. A lista
+se comporta, então, como lista de UGs **com contrato ativo**, e uma UG cujos
+contratos estão todos inativos não é alcançada.
+
+A primeira versão aceita essa lacuna. Fechá-la pede outra fonte de UGs (a issue
+#19 propõe `compras_gov.uasg`), o que cria dependência entre sistemas e
+multiplica as chamadas por UGs que, na maioria, não têm contrato nenhum. O
+tamanho da lacuna ainda não foi medido; isso fica para quando a raw de
+`compras_gov.uasg` estiver disponível para comparar as duas listas.
+
+A mesma amostra mostrou menos UGs vazias de inativo do que a de 12: 17 das 60
+(28%), contra 8 das 12. Com menos UGs vazias, a chance de uma varredura vir
+inteira vazia por acaso só diminui, então o limiar de 50 UGs continua
+conservador.
+
 ## Escopo de detalhamento dos sub-recursos
 
 Detalhar todos os contratos a cada execução não é viável. O escopo é
@@ -92,14 +134,159 @@ As DAGs de sub-recurso (#20 a #33) leem essa Variable, filtram na raw os
 contratos cujas UGs pertencem a esses órgãos e só detalham esses. O default é o
 MGI, único órgão consumidor hoje.
 
+No compose, `INGEST_MAX_UGS=10` limita os cabeçalhos (#18 e #19). As dez
+primeiras UGs por código não incluem o MGI; portanto, numa raw local recém-criada,
+a DAG de empenhos (#22) falha corretamente por não encontrar contratos do órgão
+46000. Para validá-la, ingira primeiro cabeçalhos de uma UG do MGI (por exemplo,
+201057) nas duas raws ou ajuste **somente no ambiente de teste** a Variable de
+escopo para um órgão presente na amostra. Nenhuma dessas escolhas altera o
+escopo padrão de homologação ou produção.
+
 **Para ampliar**: acrescente o código do órgão à Variable. O custo cresce com o
 número de contratos dos órgãos incluídos, não com o número de órgãos — um órgão
 com muitos contratos pesa mais que vários pequenos. Antes de incluir um órgão
 grande, vale medir quantos contratos ele tem (`contrato_ativo` já na raw) e
 estimar: uma chamada por contrato por sub-recurso.
 
-O resolvedor dessa Variable não foi escrito na fundação: ele entra com a primeira
-DAG que precisa dele (#18/#19), para não versionar código que nada chama.
+O resolvedor dessa Variable é `airflow/helpers/contratos_gov_scope.py`, escrito
+com a primeira DAG de sub-recurso (#22). Ele valida a lista e une os `id` de
+`contrato_ativo` e `contrato_inativo` dos órgãos no escopo; as demais DAGs de
+sub-recurso reutilizam as mesmas duas funções.
+
+### Empenhos: o `id` não identifica a linha sozinho
+
+A issue #22 registrou `id` como chave de `contrato_empenho`, com base em
+contratos olhados um a um. Medição de **2026-10-08** em 80 contratos ativos da
+UG 201057 (órgão 46000), contra `GET /api/contrato/{contrato_id}/empenhos`:
+
+| Contratos | Com empenho | Linhas | `id` distintos | `id` em mais de um contrato | Linhas repetidas no mesmo contrato |
+|---|---|---|---|---|---|
+| 80 | 24 | 3.205 | 1.627 | 715 | 13 (12 no contrato 93055, 1 no 212249) |
+
+O `id` é o da nota de empenho, e a fonte vincula a mesma nota a vários
+contratos: o empenho 13243362 aparece nos contratos 2289, 212249, 213150,
+223657, 226366 e 227024. No código da fonte
+(`ContratoController::empenhosPorContratoId`, em gitlab.com/comprasnet/contratos)
+a consulta parte da tabela de vínculo `contratoempenhos` e devolve
+`empenho->id`, sem restrição de unicidade no vínculo.
+
+Daí duas decisões na `contrato_empenho_ingest_dag`:
+
+- a chave primária é `(contrato_id, id)`. Com `id` sozinho, o upsert do backend
+  `warehouse` reduziria os 3.192 vínculos distintos da amostra a 1.627 linhas e
+  deixaria em cada uma o `contrato_id` do último contrato lido;
+- linha idêntica repetida dentro do mesmo contrato é descartada antes da
+  escrita, com aviso no log. O contrato 93055 devolveu 563 linhas para 551 ids,
+  e as 13 linhas repetidas da amostra eram cópias exatas. Mesmo `id` com
+  conteúdo diferente no mesmo contrato continua sendo erro.
+
+Conferido no backend `warehouse` com as mesmas 80 chamadas: 3.192 linhas na
+raw, 3.192 pares `(contrato_id, id)` distintos, nenhum par da API faltando, e a
+mesma contagem depois de uma segunda execução.
+
+Os demais sub-recursos (#20 a #33) ainda não foram medidos dessa forma.
+
+### Itens: `id` sozinho, objeto de data e histórico aninhado
+
+`GET /api/contrato/{contrato_id}/itens` responde sem token, em lista, sem
+paginação nem filtro de data. Ao contrário dos empenhos, o payload já traz
+`contrato_id` (como número); a `contrato_item_ingest_dag` compara esse valor
+com o da URL em toda linha e falha antes da escrita se divergirem.
+
+Medição de **2026-10-12** em 50 contratos do órgão 17000 (escopo local; o
+padrão é 46000), com `INGEST_MAX_CONTRATOS=50` no compose:
+
+| Contratos | Com item | Linhas | `id` distintos | `id` em mais de um contrato |
+|---|---|---|---|---|
+| 50 | 50 | 147 | 147 | 0 |
+
+Daí as decisões da DAG:
+
+- a chave primária é só `id`, como o catálogo declara: na amostra, nenhum `id`
+  de item apareceu em mais de um contrato. `id` repetido no mesmo lote
+  interrompe a execução em vez de ser descartado, porque a repetição observada
+  nos empenhos não apareceu nos itens e descartá-la esconderia o caso;
+- `data_inicio_item` é objeto `{date, timezone_type, timezone}` (serialização
+  do Carbon/PHP) e `historico_item` é lista de termos. Os dois são gravados
+  como JSON no `warehouse` e como objetos nativos no `object_storage`, e a
+  Silver converte a data e explode o histórico.
+
+Particularidades do payload que a Silver precisa tratar (contrato 2289, mesma
+data):
+
+- `catmatseritem_id` e `tipo_id` chegam como **texto descritivo** (por exemplo,
+  `"Serviço"`), não como código. O cruzamento com o catálogo de
+  material/serviço do `compras_gov`, previsto no catálogo, não pode usar esse
+  campo como está;
+- `quantidade`, `valorunitario` e `valortotal` são strings com formatação
+  brasileira (`"7.532.888,13"`);
+- dentro de `historico_item`, o mesmo `contrato_historico_id` pode aparecer
+  mais de uma vez com valores diferentes (235545, duas linhas de 2021-04-16 com
+  `valor_unitario` 2,90 e 2,97). Ele não serve sozinho como chave da linha
+  explodida.
+
+Conferido no backend `warehouse`: 147 linhas na raw, 147 `id` distintos, igual
+ao total que a DAG leu da API, amostra igual à API na mesma data (contrato
+166513: 11 itens na raw e na API, com quantidade e valor unitário iguais),
+`dt_ingest` e `contrato_id` preenchidos em toda linha, e a mesma contagem
+depois de uma segunda execução. O `object_storage` (um Parquet por contrato,
+com a data e o histórico preservados) é coberto por
+`test_object_storage_preserva_data_e_historico_aninhados`.
+
+### Ocorrências: `id` sozinho, estrutura vista só no código-fonte
+
+`GET /api/contrato/{contrato_id}/ocorrencias` responde sem token, em lista, sem
+paginação nem filtro de data. A `contrato_ocorrencia_ingest_dag` faz uma chamada
+por contrato do escopo, e o recorte temporal fica para a Silver, pelo campo
+`data`.
+
+Nenhuma ocorrência real foi observada. Todas as chamadas das três amostras
+abaixo responderam `200 []`, sem erro HTTP:
+
+| Data | Amostra | Chamadas | Com ocorrência |
+|---|---|---|---|
+| 2026-11-16 | contratos da UG 201057 (órgão 46000) | 40 | 0 |
+| 2026-11-17 | DagRun manual da DAG no compose, escopo local no órgão 17000, `INGEST_MAX_CONTRATOS=50`, 2 blocos | 50 | 0 |
+| 2026-11-17 | sondagem com o cliente da DAG: sorteio de 220 contratos ativos e 80 inativos da raw local (órgãos 17000, 11000, 02000 e 13000), intervalo mínimo de 1 segundo entre chamadas, sem retentativa | 300 | 0 |
+
+As contagens não devem ser somadas como contratos distintos: 18 dos 50
+contratos da DagRun também estão entre os 300 da sondagem, conferido pelos ids
+registrados nas duas execuções.
+
+Sem dado real, a estrutura foi conferida no código-fonte público
+(`Contratoocorrencia::ocorrenciaAPI`, em gitlab.com/comprasnet/contratos) e no
+schema `Ocorrencias` da spec OpenAPI. Daí as decisões da DAG:
+
+- a chave primária é só `id`. Na migration, `id` é a chave da tabela
+  `contratoocorrencias`, e a consulta filtra por `contrato_id` direto nessa
+  tabela, sem a tabela de vínculo que faz o mesmo empenho aparecer em vários
+  contratos. É evidência de código, não de dado: a unicidade ainda precisa ser
+  confirmada numa ocorrência real;
+- o payload traz `contrato_id`, conferido contra a URL no cliente e de novo na
+  DAG. Divergência, linha sem `id` ou `id` repetido com conteúdo diferente
+  interrompem a execução antes da escrita; cópia idêntica é descartada com
+  aviso, porque o upsert do `warehouse` recusa a mesma chave duas vezes no mesmo
+  comando;
+- `arquivos` é lista de objetos: vai como JSON no `warehouse` e como objeto
+  nativo no `object_storage`;
+- a entidade é classificada como `pessoal`. O payload identifica quem registrou
+  a ocorrência (nome completo e CPF parcial, pela mesma função de mascaramento
+  usada em `contrato_preposto` e `contrato_responsavel`) e traz o e-mail do
+  preposto notificado.
+
+Como nenhuma chamada devolveu linha, nada foi gravado:
+`contratos_gov.raw_contrato_ocorrencia` não existe no `warehouse` local
+(conferido em 2026-11-17), e a Bronze não tem o que ler. É o esperado: a tabela
+só nasce na primeira execução que encontrar ocorrência, e o `validate` registra
+a ausência no log em vez de falhar. O caminho não vazio é coberto só pelos
+testes unitários, com fixture sintética montada a partir dos exemplos da
+OpenAPI.
+
+Fica para a homologação, na primeira ocorrência real: confirmar que `id` não se
+repete entre contratos, comparar a raw com a API na mesma data (`contrato_id`,
+`dt_ingest` e os campos do payload), conferir a forma de `arquivos` e a
+classificação, e repetir a execução para verificar que o upsert não duplica
+linhas.
 
 ### Sobre o código do MGI: 46000, não 48000
 
@@ -121,6 +308,8 @@ ADR-0019/0020). Fica o dado para quem for fechar a pendência.
 - **Comportamento sob varredura completa.** Nunca observado. Ver a ressalva da
   decisão de concorrência.
 - **Estrutura das entidades da Fase 4.** `contrato_terceirizado`,
-  `contrato_despesa_acessoria`, `contrato_ocorrencia` e
-  `contrato_domicilio_bancario` vieram vazias em toda a amostra: a chave primária
-  declarada no catálogo para elas é hipótese, a confirmar ao implementar a DAG.
+  `contrato_despesa_acessoria` e `contrato_domicilio_bancario` vieram vazias em
+  toda a amostra: a chave primária declarada no catálogo para elas é hipótese, a
+  confirmar ao implementar a DAG. `contrato_ocorrencia` já tem DAG, e a chave
+  `[id]` tem evidência no código-fonte (ver "Ocorrências", acima); falta
+  confirmá-la em dado real, na homologação.

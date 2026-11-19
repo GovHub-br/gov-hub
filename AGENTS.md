@@ -142,6 +142,13 @@ Estas não são preferências. Violar qualquer uma quebra `make lint` ou
   O schema de destino é derivado da pasta pelo macro `schema_medallion`:
   `silver/contratacoes/x.sql` → `002_slv_contratacoes.x`. Não use `+schema`
   no `dbt_project.yml` sem justificativa.
+- No `compras_gov`, Silver e Gold levam a sigla da camada no nome do modelo
+  (`silver/<dominio>/slv_{entidade}.sql`, ADR-0009), e a tabela é o nome sem
+  a sigla, pelo `generate_alias_name` do pacote: `silver/arp/slv_arp.sql` →
+  `002_slv_arp.arp`. A Bronze não leva sigla: o nome dela é a entidade da raw.
+  Não use `alias` à mão. `tests/unit/test_nomenclatura_modelos_dbt.py` reprova,
+  no `compras_gov`, Silver sem sigla; e, em todo o monorepo, nome de modelo
+  repetido entre pacotes e tabela física repetida.
 
 ### Metadados dbt (ADR-0013)
 
@@ -576,6 +583,13 @@ O que está feito e o que não está, para você não redescobrir.
   que a publicação valida; não há validação genérica de `schema.yml` no CI.
 - CODEOWNERS tem as linhas de órgão (ipea, mir, mcid, minc) comentadas até os
   projetos migrarem.
+- Cinco Silvers do `compras_gov` ainda sem a sigla do
+  ADR-0009: `contratos`, `contratos_item`, `fornecedor`, `orgao` e `uasg`.
+  Estão em `LEGADO_SEM_PREFIXO`
+  (`tests/unit/test_nomenclatura_modelos_dbt.py`), lista que só pode
+  diminuir. Dívida: essas Silvers leem a raw direto por `source()`, sem
+  Bronze materializada. Enquanto não migrarem, uma Bronze nova com um desses
+  nomes no `compras_gov` colide com a Silver legada.
 - Renomear o schema raw para o padrão `001_bnz_<sistema>` do ADR-0010 quando
   os consumidores de BI puderem ser coordenados (hoje é `compras_gov`).
 

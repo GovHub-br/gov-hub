@@ -6,6 +6,7 @@ DAG que roda no PostgreSQL. Os testes percorrem os arquivos do pacote, então
 valem para todo domínio novo sem mudança aqui.
 """
 
+import re
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -48,6 +49,12 @@ def config_modelos():
     return config["models"]["compras_gov"]
 
 
+def le_a_bronze(texto, bronze):
+    """O SQL dá `ref()` na Bronze, com aspas simples ou duplas."""
+    padrao = r"ref\(\s*['\"]" + re.escape(bronze) + r"['\"]\s*\)"
+    return re.search(padrao, texto) is not None
+
+
 @pytest.mark.parametrize("arquivo", SILVERS, ids=lambda p: p.parent.name + "/" + p.stem)
 def test_cada_silver_fica_no_schema_do_proprio_dominio(arquivo):
     dominio = arquivo.parent.name
@@ -87,9 +94,22 @@ def test_bronze_toda_em_parquet_leva_a_tag_duckdb():
 def test_silver_que_le_bronze_parquet_leva_a_tag_duckdb(arquivo):
     """Silver sobre Bronze em Parquet precisa rodar no DuckDB, e só ela."""
     bronzes = {p.stem for p in (PACOTE / "models/bronze").glob("*.sql")}
-    le_parquet = any(f'ref("{b}")' in arquivo.read_text() for b in bronzes)
+    le_parquet = any(le_a_bronze(arquivo.read_text(), b) for b in bronzes)
     tags = config_modelos()["silver"].get(arquivo.parent.name, {}).get("+tags", [])
     assert ("duckdb" in tags) == le_parquet
+
+
+@pytest.mark.parametrize(
+    "sql,le",
+    [
+        ('ref("arp")', True),
+        ("ref('arp')", True),
+        ('ref( "arp" )', True),
+        ('ref("arp_item")', False),
+    ],
+)
+def test_detecta_ref_da_bronze_com_aspas_simples_ou_duplas(sql, le):
+    assert le_a_bronze(sql, "arp") == le
 
 
 @pytest.mark.parametrize(

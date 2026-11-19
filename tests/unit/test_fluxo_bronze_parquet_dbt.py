@@ -155,12 +155,26 @@ def _renderizar(caminho, gov_bricks):
     )
 
 
+def _le_a_bronze(texto, entidade):
+    """O SQL dá `ref()` na Bronze da entidade, com aspas simples ou duplas."""
+    padrao = r"ref\(\s*['\"]" + re.escape(entidade) + r"['\"]\s*\)"
+    return re.search(padrao, texto) is not None
+
+
+def _metadados(silver):
+    """Entrada da Silver no schema.yml da pasta do domínio. A pasta tem um
+    schema.yml só, que documenta todas as Silvers do domínio."""
+    modelos = yaml.safe_load(silver.with_name("schema.yml").read_text())["models"]
+    (metadados,) = [m for m in modelos if m["name"] == silver.stem]
+    return metadados
+
+
 def _silver_sobre(entidade):
     """A Silver de um domínio DuckDB que lê a Bronze da entidade."""
     (silver,) = [
         p
         for p in (PACOTE / "models/silver").glob("*/*.sql")
-        if f'ref("{entidade}")' in p.read_text()
+        if _le_a_bronze(p.read_text(), entidade)
     ]
     return silver
 
@@ -217,9 +231,7 @@ def test_bronze_e_silver_preservam_linhas_valores_e_tipos(
         assert tipos_silver == {gov_bricks.snake_case(c): tipos[c] for c in colunas}
 
         # schema.yml documenta exatamente as colunas da Silver, na ordem.
-        (metadados,) = yaml.safe_load(silver.with_name("schema.yml").read_text())[
-            "models"
-        ]
+        metadados = _metadados(silver)
         assert [c["name"] for c in metadados["columns"]] == list(tipos_silver)
         assert all(
             c["description"] and c["meta"]["classificacao"] in CLASSIFICACOES
@@ -262,7 +274,18 @@ def test_bronze_materializada_e_declarada_no_catalogo_e_no_source(entidade):
     assert bronze["schema"] == f"001_bnz_{SISTEMA}"
     assert entidade in {t["identifier"] for t in bronze["tables"]}
     assert entidade not in {t["name"] for t in fontes[SISTEMA]["tables"]}
-    assert f'ref("{entidade}")' in _silver_sobre(entidade).read_text()
+    assert _le_a_bronze(_silver_sobre(entidade).read_text(), entidade)
+
+
+def test_metadados_acham_a_silver_pelo_nome_com_tres_no_dominio(tmp_path):
+    (tmp_path / "schema.yml").write_text(
+        "models:\n"
+        "  - {name: slv_a, columns: [{name: a}]}\n"
+        "  - {name: slv_b, columns: [{name: b}]}\n"
+        "  - {name: slv_c, columns: [{name: c}]}\n"
+    )
+    for nome in ("a", "b", "c"):
+        assert _metadados(tmp_path / f"slv_{nome}.sql")["columns"] == [{"name": nome}]
 
 
 @pytest.mark.parametrize(

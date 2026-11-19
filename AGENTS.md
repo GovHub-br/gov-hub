@@ -284,7 +284,9 @@ dos arquivos de Bronze.
 3. Catálogo: `origem_atual: 001_bnz_<sistema>.<entidade>` e
    `make modelo ARGS="--camada bronze --sistema <sistema>"`, que move a
    entidade para o source `<sistema>_bronze`.
-4. Silver: `models/silver/<dominio>/`, com a pasta listada sob `silver:` no
+4. Silver: `models/silver/<dominio>/slv_<entidade>.sql`, que vira a tabela
+   `002_slv_<dominio>.<entidade>` (a sigla sai pelo `generate_alias_name` do
+   pacote, ADR-0009; hoje só o `compras_gov` tem), com a pasta listada sob `silver:` no
    `dbt_project.yml` do pacote com `+tags: ["duckdb"]`. Na Silver inicial
    (só renomeia para snake_case), declare `gov_bricks.mesma_contagem` e
    `gov_bricks.mesmo_conteudo_em_snake_case` com `comparar_com: ref("<entidade>")`.
@@ -423,9 +425,17 @@ Cada item abaixo já quebrou algo. Os comentários no código explicam mais.
 - `GOV_BRICKS_DBT_DIR` é injetado pela `DbtDag` porque o Cosmos copia o
   projeto para um diretório temporário antes do `dbt deps`; de lá, o
   `../gov_bricks` do `packages.yml` apontaria para fora do monorepo.
-- `generate_schema_name` precisa existir em **cada projeto raiz**
-  (`compras_gov/macros/`, `mgi/macros/`) delegando para
-  `gov_bricks.schema_medallion`; dbt só honra a sobrescrita no projeto raiz.
+- `generate_schema_name` existe em cada projeto (`compras_gov/macros/`,
+  `mgi/macros/`, `contratos_gov/macros/`) delegando para
+  `gov_bricks.schema_medallion`. Mantenha um em cada: ele vale para os modelos
+  do próprio pacote, com precedência sobre o da raiz (ver o item abaixo), e
+  também quando o pacote roda sozinho como raiz.
+- O `generate_alias_name` (tira a sigla `slv_`/`gld_` da tabela) existe só em
+  `compras_gov/macros/`, e basta: o dbt usa o `generate_*_name` de um pacote
+  instalado nos modelos dele, com precedência sobre o da raiz, mesmo quando a
+  raiz é o `mgi` (dbt-core, `parser/base.py`, `RelationUpdate`). Pacote que
+  adotar a sigla precisa do próprio; sem ele, `slv_x.sql` cria a tabela
+  `slv_x`, sem erro.
 - Macros compartilhados são sempre qualificados: `gov_bricks.chave_conformada`,
   não `chave_conformada`.
 - `test_behavior=AFTER_EACH`: o teste roda logo após cada modelo, então um
@@ -549,8 +559,8 @@ O que está feito e o que não está, para você não redescobrir.
 - Há 14 marcadores `PREENCHER:` nos `schema.yml` de Silver do `compras_gov`
   e no SQL da Gold `contratos_por_orgao` (`grep -rn PREENCHER airflow/dags/dbt`).
 - A ARP é o primeiro domínio no modelo Parquet → DuckDB → PostgreSQL (receita
-  na seção 5): Bronze `001_bnz_compras_gov.arp` e Silver
-  `002_slv_arp.silver_compras_gov_arp`, na `duckdb_mgi_transform_dag`. As
+  na seção 5): Bronze `001_bnz_compras_gov.arp` (modelo `arp`) e Silver
+  `002_slv_arp.arp` (modelo `slv_arp`), na `duckdb_mgi_transform_dag`. As
   entidades `arp_item` e `arp_detalhes` ainda não são modeladas. O padrão é o
   ADR-0022, que registra como pendente a conversão de
   `gov_bricks.bronze_parquet()` para `adapter.dispatch()` (exceção ao ADR-0011).

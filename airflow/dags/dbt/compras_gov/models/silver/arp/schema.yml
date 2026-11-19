@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: silver_compras_gov_arp
+  - name: slv_arp
     description: >-
       Silver inicial das Atas de Registro de Preço para validar o fluxo dbt.
       Preserva todas as linhas e valores da Bronze, inclusive repetições entre

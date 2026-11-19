@@ -9,7 +9,8 @@
 #
 # Para um domínio novo nesse modelo:
 #   1. models/bronze/<entidade>.sql com `{{ gov_bricks.bronze_parquet() }}`;
-#   2. a Silver em models/silver/<dominio>/ e a pasta listada abaixo com a tag.
+#   2. a Silver em models/silver/<dominio>/slv_<entidade>.sql (a tabela perde a
+#      sigla, ADR-0009) e a pasta listada abaixo com a tag.
 
 name: "compras_gov"
 version: "0.1.0"

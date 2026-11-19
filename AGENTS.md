@@ -111,7 +111,7 @@ catalogo/
 scripts/modelagem/                 # python -m scripts.modelagem {validar,sync,mapa,gerar}
 scripts/publicacao/                # python -m scripts.publicacao {validar,sync,matriz,plano}
 docker/                            # Dockerfile (airflow:3.2.2-python3.11), compose, init do Postgres
-docs/adr/                          # ADR-0000 a ADR-0022
+docs/adr/                          # ADR-0000 a ADR-0023
 tests/unit/                        # roda no CI; importa DAGs via DagBag
 tests/integration/                 # marcador `integration`; exige compose
 ```
@@ -347,7 +347,7 @@ dos arquivos de Bronze.
 ### Novo ADR
 
 Copie `docs/adr/template.md` para `NNNN-titulo-kebab.md` (próximo número:
-0023), preencha **todas** as seções, inclusive Alternativas e Tradeoffs com
+0024), preencha **todas** as seções, inclusive Alternativas e Tradeoffs com
 `[Alto/Médio/Baixo impacto]` e uma Avaliação explícita. Um ADR só cita ADRs
 de número menor. Adicione a linha ao índice do `docs/adr/README.md`. ADR
 aceito não é editado retroativamente: crie um novo e marque o antigo como

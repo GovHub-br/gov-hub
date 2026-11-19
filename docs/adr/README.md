@@ -144,3 +144,4 @@ substitui o corpo pelo conteúdo de `template.md`, preenchido normalmente.
 | [0020](./0020-niveis-acesso-consumo-dados.md) | Níveis de acesso derivados da classificação de sensibilidade | Proposto |
 | [0021](./0021-zona-raw-com-backend-intercambiavel.md) | Zona raw com backend intercambiável e Bronze lendo da raw | Proposto |
 | [0022](./0022-transformacao-parquet-com-duckdb-e-assets.md) | Transformação da raw em Parquet com DuckDB e agendamento por Assets | Proposto |
+| [0023](./0023-sigla-de-camada-no-nome-dos-modelos-dbt.md) | Sigla de camada no nome dos modelos dbt de Silver e Gold | Proposto |

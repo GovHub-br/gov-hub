@@ -242,7 +242,7 @@ relatório ficam na Variable declarada em `destinatarios_variavel`.
 ### Novo modelo dbt
 
 ```bash
-make modelo ARGS="--camada silver --sistema compras_gov --entidade contratos"
+make modelo ARGS="--camada silver --sistema compras_gov --entidade <entidade>"
 make modelo ARGS="--camada gold --orgao mgi --produto contratacoes --entidade x \
                   --cruzar compras_gov.contratos --cruzar compras_gov.uasg"
 ```
@@ -258,6 +258,10 @@ acrescenta o bloco ao `schema.yml`. Depois:
   sempre pela chave conformada.
 - `uv run sqlfmt airflow/dags/dbt` antes de commitar.
 - O gerador não sobrescreve arquivo existente sem `--forcar`.
+- Silver sobre Bronze modelada: crie `models/bronze/<entidade>.sql` antes de
+  `make modelo --camada silver`. O gerador só lê a Bronze por `ref()` se o
+  arquivo já existe; sem ele, a Silver sai com `source()` e a task dela não
+  espera a da Bronze.
 - Gold só cruza por ponte com `confiabilidade: total` ou `parcial`;
   `indicio` é proibido em Gold (ADR-0017).
 

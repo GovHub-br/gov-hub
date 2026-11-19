@@ -255,6 +255,32 @@ def test_dois_modelos_convivem_no_mesmo_schema_yml(catalogo) -> None:
     assert nomes == ["isolada"]
 
 
+def test_silver_leva_a_sigla_quando_o_pacote_tira_ela_da_tabela(catalogo) -> None:
+    macro = gerador.caminho_pacote("compras") / "macros/generate_alias_name.sql"
+    macro.parent.mkdir(parents=True)
+    macro.write_text("{# macro do pacote #}\n", encoding="utf-8")
+
+    sql, doc = gerador.gerar_silver(catalogo, "compras", "contratos")
+
+    assert sql.caminho.name == "slv_contratos.sql"
+    assert _yaml_do(doc.caminho)["models"][0]["name"] == "slv_contratos"
+
+
+def test_silver_le_por_ref_a_bronze_modelada_no_pacote(catalogo) -> None:
+    bronze = gerador.caminho_pacote("compras") / "models/bronze/contratos.sql"
+    bronze.parent.mkdir(parents=True, exist_ok=True)
+    bronze.write_text("{{ gov_bricks.bronze_parquet() }}\n", encoding="utf-8")
+
+    sql, _ = gerador.gerar_silver(catalogo, "compras", "contratos")
+    conteudo = sql.caminho.read_text(encoding="utf-8")
+    assert '{{ ref("contratos") }}' in conteudo
+    assert "source(" not in conteudo
+
+    sql, _ = gerador.gerar_silver(catalogo, "compras", "unidades")
+    conteudo = sql.caminho.read_text(encoding="utf-8")
+    assert '{{ source("compras", "unidades") }}' in conteudo
+
+
 def test_nao_sobrescreve_sem_forcar(catalogo) -> None:
     sql, _ = gerador.gerar_silver(catalogo, "compras", "contratos")
     sql.caminho.write_text("-- editado à mão\n", encoding="utf-8")

@@ -19,7 +19,7 @@ entidades:
     granularidade: um registro por código de órgão
     dominio: organizacional
     dag: orgao_ingest_dag
-    origem_atual: compras_gov.raw_orgao
+    origem_atual: 001_bnz_compras_gov.orgao
     chave_primaria: [codigoorgao]
     classificacao: publico
     chaves:

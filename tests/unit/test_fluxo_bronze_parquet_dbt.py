@@ -13,7 +13,7 @@ import re
 from collections import Counter
 from pathlib import Path
 from types import SimpleNamespace
-from typing import TypedDict
+from typing import NotRequired, TypedDict
 
 import duckdb
 import pytest
@@ -34,11 +34,18 @@ CLASSIFICACOES = {"publico", "interno", "pessoal", "pessoal_sensivel"}
 class Amostra(TypedDict):
     colunas: list[str]
     tipos: dict[str, str]
+    # Silver que já trata o dado (deduplica): não preserva as linhas da Bronze.
+    silver_tratada: NotRequired[bool]
 
 
 # Contrato observado nos Parquets de cada entidade: colunas na ordem em que
 # chegam da raw e os tipos que não são texto, para detectar conversão acidental.
 AMOSTRAS: dict[str, Amostra] = {
+    "orgao": {
+        "colunas": ["codigoOrgao", "nomeOrgao", "dt_ingest"],
+        "tipos": {},
+        "silver_tratada": True,
+    },
     "arp": {
         "colunas": [
             "numeroAtaRegistroPreco",
@@ -141,6 +148,8 @@ def _gov_bricks(conexao, entidade):
     )
     gov_bricks.snake_case = lambda nome: _chamar(modulo_testes.snake_case, nome)
     gov_bricks.bronze_parquet = modulo_bronze.bronze_parquet
+    # A normalização real é coberta em test_macros_dbt.py.
+    gov_bricks.chave_conformada = lambda chave, coluna: f"cast({coluna} as varchar)"
     gov_bricks.teste = lambda nome, **kw: str(
         getattr(modulo_testes, f"test_{nome}")(**kw)
     )
@@ -205,6 +214,12 @@ def test_bronze_e_silver_preservam_linhas_valores_e_tipos(
 
         silver = _silver_sobre(entidade)
         sql_silver = _renderizar(silver, gov_bricks)
+        if AMOSTRAS[entidade].get("silver_tratada"):
+            # Duas linhas iguais e uma nula na Bronze: sobra um órgão só, sem o nulo.
+            conexao.execute(f'create table "{silver.stem}" as {sql_silver}')
+            assert conexao.sql(f'select count(*) from "{silver.stem}"').fetchone() == (1,)
+            assert conexao.sql(f'select count(*) from "{entidade}"').fetchone() == (3,)
+            return
         for _ in range(2):
             conexao.execute(f'create or replace table "{silver.stem}" as {sql_silver}')
             assert Counter(conexao.sql(f'select * from "{silver.stem}"').fetchall()) == (

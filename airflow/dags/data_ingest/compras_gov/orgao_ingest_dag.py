@@ -8,7 +8,7 @@ from airflow.sdk import dag, task
 
 from batching import page_starts
 from cliente_compras_gov import ClienteComprasGov
-from landing_zone import write_raw
+from landing_zone import asset_raw, write_raw
 
 SISTEMA = "compras_gov"
 PAGE_SIZE = 500
@@ -110,9 +110,15 @@ def orgao_dag() -> None:
         wait_for_completion=False,
     )
 
+    # Só roda depois de tudo: avisa a duckdb_<orgao>_transform_dag que a raw está
+    # completa. Lote que falha ou validação que reprova não dispara a transformação.
+    @task(outlets=[asset_raw(SISTEMA, ENTIDADE)])
+    def avisar_raw_completa() -> None:
+        logging.info("[%s] Raw de %s completa.", ENDPOINT, ENTIDADE)
+
     starts = get_page_starts()
     results = fetch_block.expand(pagina_inicio=starts)
-    validate(results) >> trigger_contratos
+    validate(results) >> trigger_contratos >> avisar_raw_completa()
 
 
 orgao_dag()

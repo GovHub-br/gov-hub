@@ -86,9 +86,10 @@ class TestGrafoDbtRenderizado:
         dag = dagbag.dags["mgi_transform_dag"]
         tasks = {t.task_id for t in dag.tasks}
 
+        # (O órgão roda no ramo DuckDB, não neste grafo.)
         # A Silver do pacote compras_gov e a Gold do próprio MGI, cada modelo
         # como sua própria task.
-        for modelo in ("contratos", "uasg", "orgao", "contratos_por_orgao"):
+        for modelo in ("contratos", "uasg", "contratos_por_orgao"):
             assert any(
                 t.startswith(modelo) for t in tasks
             ), f"modelo '{modelo}' não virou task: {sorted(tasks)}"

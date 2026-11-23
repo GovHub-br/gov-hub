@@ -1,10 +1,12 @@
 version: 2
 
 models:
-  - name: orgao
+  - name: slv_orgao
     description: >
-      Órgãos cadastrados no Compras.gov.br. Uma linha por órgão. Granularidade: um
-      registro por código de órgão.
+      Órgãos cadastrados no Compras.gov.br. Uma linha por órgão. A Bronze acumula
+      uma linha por ingestão; esta Silver deduplica por código de órgão e mantém a
+      versão mais recente (dt_ingest). Granularidade: um registro por código de
+      órgão.
     meta:
       owner: "@GovHub-br/oss"
       sistema_origem: compras_gov
@@ -16,15 +18,18 @@ models:
             Código do órgão. Código do órgão na estrutura organizacional do Poder
             Executivo federal. É a chave de agregação institucional mais alta usada
             pelos sistemas estruturantes — quase todo cruzamento "por órgão" passa por
-            ela. Normalizada a partir da coluna de origem 'codigoorgao'.
+            ela. Normalizada a partir da coluna de origem 'codigoOrgao'.
         meta:
           classificacao: publico
         data_tests:
           - not_null
-      - name: codigoorgao
-        description: >
-            PREENCHER: o que a coluna 'codigoorgao' significa, na origem
-            compras_gov.raw_orgao.
+          - unique
+      - name: codigo_orgao
+        description: Código do órgão como informado pela fonte, sem normalização.
+        meta:
+          classificacao: publico
+      - name: nome_orgao
+        description: Nome do órgão informado pela fonte.
         meta:
           classificacao: publico
       - name: dt_ingest

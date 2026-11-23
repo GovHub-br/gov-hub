@@ -26,3 +26,29 @@ models:
         description: Data e hora da ingestão do registro.
         meta:
           classificacao: publico
+
+  - name: orgao
+    description: >-
+      Camada Bronze dos órgãos do Compras.gov.br. Preserva os registros
+      retornados pela API, uma linha por órgão a cada ingestão, sem aplicação
+      de regras de negócio.
+    meta:
+      owner: "@GovHub-br/oss"
+      sistema_origem: compras_gov
+      camada: bronze
+      classificacao: publico
+    columns:
+      - name: codigoOrgao
+        description: Código do órgão.
+        meta:
+          classificacao: publico
+
+      - name: nomeOrgao
+        description: Nome do órgão.
+        meta:
+          classificacao: publico
+
+      - name: dt_ingest
+        description: Data e hora da ingestão do registro.
+        meta:
+          classificacao: publico

@@ -71,8 +71,10 @@ def test_cada_silver_fica_no_schema_do_proprio_dominio(arquivo):
 
 def test_silvers_que_ja_existiam_continuam_fora_do_ramo_duckdb():
     silver = config_modelos()["silver"]
-    for dominio in ("contratacoes", "fornecedores", "organizacional"):
+    for dominio in ("contratacoes", "fornecedores"):
         assert dominio not in silver
+    # organizacional divide a pasta: só o órgão lê Parquet; a uasg segue no PostgreSQL.
+    assert set(silver["organizacional"]) == {"slv_orgao"}
 
 
 def test_bronze_toda_em_parquet_leva_a_tag_duckdb():
@@ -88,7 +90,8 @@ def test_silver_que_le_bronze_parquet_leva_a_tag_duckdb(arquivo):
     """Silver sobre Bronze em Parquet precisa rodar no DuckDB, e só ela."""
     bronzes = {p.stem for p in (PACOTE / "models/bronze").glob("*.sql")}
     le_parquet = any(f'ref("{b}")' in arquivo.read_text() for b in bronzes)
-    tags = config_modelos()["silver"].get(arquivo.parent.name, {}).get("+tags", [])
+    dominio = config_modelos()["silver"].get(arquivo.parent.name, {})
+    tags = dominio.get("+tags", []) + dominio.get(arquivo.stem, {}).get("+tags", [])
     assert ("duckdb" in tags) == le_parquet
 
 

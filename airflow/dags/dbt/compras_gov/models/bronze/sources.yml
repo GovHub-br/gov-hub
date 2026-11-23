@@ -202,14 +202,14 @@ sources:
           classificacao: publico
           dag_ingestao: catalogo_servico_natureza_despesa_ingest_dag
 
-      - name: orgao
-        identifier: raw_orgao
+      - name: pdm_material
+        identifier: raw_pdm_material
         description: >
-            Órgãos cadastrados no Compras.gov.br. Uma linha por órgão. Granularidade: um
-            registro por código de órgão.
+            Padrões descritivos de material (PDM) da hierarquia do catálogo de
+            materiais. Granularidade: uma linha por PDM.
         meta:
           classificacao: publico
-          dag_ingestao: orgao_ingest_dag
+          dag_ingestao: catalogo_material_pdm_ingest_dag
 
       - name: pesquisa_preco_material
         identifier: raw_pesquisa_preco_material
@@ -246,14 +246,6 @@ sources:
         meta:
           classificacao: publico
           dag_ingestao: pesquisa_preco_servico_ingest_dag
-      - name: pdm_material
-        identifier: raw_pdm_material
-        description: >
-            Padrões descritivos de material (PDM) da hierarquia do catálogo de
-            materiais. Granularidade: uma linha por PDM.
-        meta:
-          classificacao: publico
-          dag_ingestao: catalogo_material_pdm_ingest_dag
 
       - name: pgc_agregacao
         identifier: raw_pgc_agregacao
@@ -362,3 +354,12 @@ sources:
         meta:
           classificacao: publico
           dag_ingestao: arp_ingest_dag
+
+      - name: orgao
+        identifier: orgao
+        description: >
+            Órgãos cadastrados no Compras.gov.br. Uma linha por órgão. Granularidade: um
+            registro por código de órgão.
+        meta:
+          classificacao: publico
+          dag_ingestao: orgao_ingest_dag

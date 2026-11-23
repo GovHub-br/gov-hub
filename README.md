@@ -83,6 +83,7 @@ de relatório).
 |---|---|
 | `estado_catalogo.py` | `contar_inativos`: códigos de catálogo cujo registro mais recente na raw está inativo |
 | `landing_zone.py` | `build_landing_path`, `write_parquet`, `read_parquet`, `list_files`, `asset_raw` (Asset da raw que aciona a transformação, [ADR-0022](docs/adr/0022-transformacao-parquet-com-duckdb-e-assets.md)) |
+| `contratos_gov_scope.py` | Escopo de detalhamento do Contratos.gov.br: lê a Variable `contratos_gov_escopo_orgaos` e devolve os ids de contrato da raw para as DAGs de sub-recurso |
 | `homologation_helpers.py` | Checks de qualidade em Polars (`not_null`, `schema`, `row_count`, `no_duplicates`, `null_rate`) |
 | `homologation_flow.py` | Fluxo landing zone → validação → Postgres |
 | `postgres_helpers.py` | Resolução de connection string a partir de uma connection do Airflow |

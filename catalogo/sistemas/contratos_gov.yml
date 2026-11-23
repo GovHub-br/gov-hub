@@ -6,8 +6,8 @@
 # max, em /api/v1/* e /api/v2/*) exigem JWT de usuário e ficam fora — é o que
 # impede a carga incremental e obriga a varredura full por UG.
 #
-# As entidades ainda não têm DAG: cada uma é uma issue filha da feature #15, e
-# `status` vira `ingerido` quando a última fechar. `origem_atual` já aponta para
+# Cada entidade é uma issue filha da feature #15 e ganha DAG quando a issue
+# fecha; `status` vira `ingerido` quando a última fechar. `origem_atual` já aponta para
 # onde `write_raw` vai gravar (backend `warehouse`, ADR-0021), porque é disso
 # que o `sources.yml` da Bronze é gerado.
 #
@@ -19,7 +19,8 @@
 #     por isso as colunas de chave abaixo são os nomes já achatados;
 #   - sub-recurso não traz contrato_id de forma confiável (publicacoes traz
 #     contratohistorico_id, empenhos não traz nenhum dos dois), então o cliente
-#     injeta contrato_id a partir da URL da chamada.
+#     injeta contrato_id a partir da URL da chamada; quando o payload traz o
+#     campo (itens), o cliente o confere contra a URL em vez de sobrescrever.
 
 sistema: contratos_gov
 nome: Contratos.gov.br (Comprasnet Contratos)
@@ -54,8 +55,10 @@ entidades:
 
   unidade_contratante:
     descricao: >-
-      Unidades gestoras com contrato registrado no Contratos.gov.br. Enumeração
-      pura, só o código. É a lista que dirige a varredura de cabeçalhos por UG.
+      Unidades gestoras com contrato ativo no Contratos.gov.br: numa amostra de
+      60 UGs (2026-10-07), nenhuma estava sem contrato ativo, então UG só com
+      contrato inativo não aparece aqui. Enumeração pura, só o código. É a lista
+      que dirige a varredura de cabeçalhos por UG.
     granularidade: um registro por código de unidade gestora
     dominio: organizacional
     dag: unidade_contratante_ingest_dag
@@ -165,11 +168,14 @@ entidades:
     dominio: contratacoes
     dag: contrato_empenho_ingest_dag
     origem_atual: contratos_gov.raw_contrato_empenho
-    chave_primaria: [id]
+    chave_primaria: [contrato_id, id]
     classificacao: publico
     chaves: []
     # O payload não traz contrato_id: ele é injetado pelo cliente a partir da
     # URL da chamada, sem o que não haveria como ligar o empenho ao contrato.
+    # O id é o da nota de empenho, que a fonte vincula a vários contratos (715
+    # de 1.627 ids em mais de um contrato, amostra de 2026-10-08); por isso
+    # contrato_id faz parte da chave.
 
   contrato_fatura:
     descricao: >-
@@ -283,15 +289,30 @@ entidades:
 
   contrato_ocorrencia:
     descricao: >-
-      Ocorrências registradas na execução do contrato.
+      Ocorrências registradas na execução do contrato. A origem entrega o usuário
+      que registrou a ocorrência (nome completo e CPF parcial) e o e-mail do
+      preposto notificado.
     granularidade: uma linha por ocorrência registrada em um contrato
     dominio: contratacoes
     dag: contrato_ocorrencia_ingest_dag
     origem_atual: contratos_gov.raw_contrato_ocorrencia
     chave_primaria: [id]
-    classificacao: publico
+    classificacao: pessoal
     chaves: []
-    # Fase 4: mesma ressalva de contrato_terceirizado — estrutura não observada.
+    # Fase 4: a API devolveu 200 [] nos 40 contratos da UG 201057 (órgão 46000)
+    # consultados em 2026-11-16, então a estrutura não foi observada em dado
+    # real. Ela foi conferida no código-fonte público (gitlab.com/comprasnet/
+    # contratos, Contratoocorrencia::ocorrenciaAPI) e no schema `Ocorrencias` da
+    # spec OpenAPI: id, contrato_id, numero, usuario, data, ocorrencia,
+    # notificapreposto, emailpreposto, numeroocorrencia, novasituacao, situacao
+    # e arquivos (lista de objetos).
+    # - chave_primaria [id]: `id` é a chave da tabela contratoocorrencias, e a
+    #   consulta filtra por contrato_id direto nela, sem tabela de vínculo —
+    #   ao contrário de empenhos, o mesmo id não aparece em dois contratos.
+    # - classificacao pessoal: `usuario` sai da mesma função
+    #   (usuarioTransparencia) que mascara prepostos e responsáveis, com nome
+    #   completo e CPF parcial, e `emailpreposto` é e-mail de pessoa física.
+    # Confirmar ambas quando a primeira ocorrência real for ingerida.
 
   contrato_domicilio_bancario:
     descricao: >-

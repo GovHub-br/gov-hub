@@ -7,6 +7,8 @@
 
 ## Introdução ao problema
 
+Revisada em 2026-11-18.
+
 O [ADR-0012](./0012-ingestao-object-storage-vs-database.md) levou a ingestão
 para object storage, e o
 [ADR-0021](./0021-zona-raw-com-backend-intercambiavel.md) tornou a zona raw
@@ -59,20 +61,36 @@ ingestão emitem ao terminar.**
 O profile compartilhado (`airflow/dags/dbt/profiles.yml`) ganha o target
 `prod_duckdb`. Nele, o DuckDB lê o object storage pela extensão `httpfs` e
 anexa o PostgreSQL do órgão pela extensão `postgres`, com o alias
-`data_warehouse`. Os modelos desse ramo declaram `database` igual a esse alias,
-então as tabelas ficam fisicamente no PostgreSQL. Nada de útil fica no banco
-DuckDB local, e por isso a DAG o abre em memória (`:memory:`): um arquivo teria
-lock de escrita disputado por tasks paralelas.
+`data_warehouse`. O pacote declara `+database` para todos os seus modelos: o
+valor é `data_warehouse` quando o target é DuckDB e `target.database` no
+PostgreSQL. Assim, as tabelas do ramo DuckDB ficam fisicamente no PostgreSQL, e
+os demais modelos do pacote continuam no banco do target. Nada de útil fica no
+banco DuckDB local, e por isso a DAG o abre em memória
+(`DUCKDB_GOVHUB_PATH=:memory:`): um arquivo teria lock de escrita disputado por
+tasks paralelas. Fora das DAGs, o profile usa `/tmp/govhub_local.duckdb`.
 
 A Bronze em Parquet é um modelo dbt materializado como tabela, no schema
 `001_bnz_<sistema>` do
 [ADR-0010](./0010-nomenclatura-schemas-tabelas-bronze-silver-gold.md). O SQL
 específico do DuckDB fica num único macro, `gov_bricks.bronze_parquet()`, que
 lê `s3://<bucket>/<sistema>/<entidade>/**/*.parquet` com `union_by_name`. O
-caminho segue uma convenção: o pacote do modelo é o sistema, e o nome do
-arquivo é a entidade, o mesmo par usado pela ingestão. Uma Bronze nova é só o
-arquivo `models/bronze/<entidade>.sql` chamando o macro. A Silver é construída
-sobre ela no schema do próprio domínio, como qualquer outra.
+`<bucket>` vem de `MINIO_BUCKET` (padrão `data-lake`), a mesma variável que a
+ingestão usa. O target lê por S3 com URL de caminho e sem TLS
+(`s3_url_style: path`, `s3_use_ssl: false`), que é a configuração do MinIO. Um
+deployment com `STORAGE_BACKEND=adls` grava a raw num lugar que este macro não
+lê.
+
+O caminho segue uma convenção: o pacote do modelo é o sistema, e o nome do
+arquivo é a entidade, o mesmo par usado pela ingestão. Por isso o nome do
+modelo da Bronze é a entidade da raw, sem sigla de camada: é dele que saem o
+caminho do Parquet e o Asset que agenda a DAG. Uma Bronze nova é o arquivo
+`models/bronze/<entidade>.sql` chamando o macro, mais o que não é gerado nem
+derivado dele: a documentação em `models/bronze/schema.yml`, escrita à mão;
+`origem_atual: 001_bnz_<sistema>.<entidade>` no catálogo, seguido de
+`make modelo --camada bronze`, que regenera o `sources.yml`; e o `outlet` na
+DAG de ingestão. A Silver é construída sobre ela no schema do próprio domínio,
+como qualquer outra, e a lê por `ref()`: é o que põe a dependência no grafo do
+dbt e, com ela, a ordem das tasks do Cosmos.
 
 ### A tag `duckdb` separa os dois ramos
 
@@ -109,7 +127,8 @@ Um domínio novo nesse modelo entra sem mudar o arquivo da DAG.
   o backend não quebra o agendamento.
 - A DAG de ingestão declara esse Asset como `outlet` da task que só roda
   depois de todos os lotes. Se um lote falha, a task não roda e o evento não é
-  emitido.
+  emitido. Uma diferença entre o total ingerido e o total que a API informa só
+  gera aviso no log: o evento é emitido mesmo assim.
 - A DAG DuckDB deriva a lista de Assets dos arquivos de Bronze dos pacotes que o
   projeto do órgão importa, pela mesma convenção do macro.
 
@@ -125,22 +144,49 @@ tabelas. Cada execução reconstrói todas as tabelas do ramo, e duas em paralel
 só disputariam o mesmo destino. Um evento que chega durante uma execução não se
 perde: resulta numa execução seguinte.
 
+O ramo DuckDB só tem o que ler quando a ingestão grava Parquet, isto é, com
+`RAW_BACKEND=object_storage`, o padrão. A variável vale para o deployment
+inteiro, e não por entidade. As Silvers que já existiam no ramo PostgreSQL
+(`contratos`, `contratos_item`, `fornecedor`, `orgao`, `uasg`) leem as tabelas
+`raw_<entidade>`, que só o backend `warehouse` grava. Hoje, portanto, um
+deployment alimenta um dos ramos de cada vez. O `local.env` versionado define
+`warehouse`; com ele, a ARP é gravada em `compras_gov.raw_arp`. Nesse caso a
+Bronze em Parquet não tem arquivo para ler: com o DuckDB local, em disco,
+`read_parquet` sobre um glob sem arquivos termina em
+`IOException: No files found`. Isso não foi confirmado contra o MinIO.
+Continuam não verificados o disparo da DAG DuckDB pelo scheduler nesse
+cenário, o attach do PostgreSQL e o valor de `RAW_BACKEND` com que a ARP foi
+executada no compose. O nome do Asset não depende do backend, então a DAG
+continua agendada pelo mesmo Asset de qualquer forma.
+
 ### Relação com ADRs anteriores
 
 - **ADR-0021**: para as entidades em Parquet, a Bronze deixa de ser um
   `source` sobre a raw e passa a ser uma tabela materializada pelo dbt. É a
   mitigação que o próprio ADR-0021 previa para a leitura de arquivos a cada
   execução. O catálogo registra isso com `origem_atual:
-  001_bnz_<sistema>.<entidade>`, e o `sources.yml` gerado declara essas tabelas
-  no source `<sistema>_bronze`.
+  001_bnz_<sistema>.<entidade>`, e o `sources.yml`, gerado por `make modelo
+  --camada bronze`, declara essas tabelas no source `<sistema>_bronze`. Hoje
+  nenhum modelo lê esse source: a Silver usa `ref()`.
+- **ADR-0017**: a seção "Bronze é `source`, não modelo" decidiu que a Bronze
+  não é modelo dbt. Para os domínios em Parquet, este ADR reverte esse ponto:
+  a Bronze é o modelo `models/bronze/<entidade>.sql`. Com isso volta a colisão
+  de nome que o ADR-0017 apontava como primeira razão, entre a Bronze e a
+  Silver da mesma entidade no mesmo pacote. Ela é resolvida no pacote com a
+  sigla de camada nos modelos de Silver e Gold.
 - **ADR-0012**: para essas entidades, a DAG DuckDB faz o papel do estágio de
   promoção da landing zone para a Bronze, em dbt, e não numa DAG de
   homologação em Python.
-- **ADR-0011**: este ADR abre uma exceção aos itens 2 e 6. O `read_parquet` é
-  específico do DuckDB, e o modelo que o usa fica num pacote de sistema
-  compartilhado (`dbt/<sistema>/`). A especificidade fica confinada a um macro
-  e a nós identificados pela tag, mas o macro ainda não usa
-  `adapter.dispatch()`.
+- **ADR-0011**: este ADR abre exceção aos itens 2, 3 e 6. Itens 2 e 6: o
+  `read_parquet` é específico do DuckDB, e o modelo que o usa fica num pacote
+  de sistema compartilhado (`dbt/<sistema>/`). A especificidade fica confinada
+  a um macro e a nós identificados pela tag, mas o macro ainda não usa
+  `adapter.dispatch()`. Item 3 ("o motor é configuração, não código"): de
+  propósito, o motor do ramo é escolhido no código. A DAG DuckDB fixa o target
+  `prod_duckdb`, e o pacote decide o `database` por `target.type` na própria
+  configuração (`dbt_project.yml` e o `sources.yml` gerado), não no SQL dos
+  modelos, para que as tabelas do ramo DuckDB fiquem fisicamente no
+  PostgreSQL.
 - **ADR-0018**: o `{escopo}` da DAG DuckDB é um recorte por motor, e não um
   produto ou um domínio como o ADR-0018 exemplifica. Continua sendo um
   seletor dbt, como ele exige.
@@ -220,14 +266,18 @@ aceitável.
   executa, e uma falha no ramo DuckDB não a afeta.
 - **[Alto impacto]** A transformação de uma entidade só começa depois que a
   ingestão dela gravou todos os lotes, sem depender de janela de horário.
-- **[Médio impacto]** Um domínio novo em Parquet entra só com arquivos dbt (a
-  Bronze de uma linha, a tag na pasta da Silver) e o `outlet` na ingestão. A
-  DAG e os testes genéricos não mudam.
+- **[Médio impacto]** Um domínio novo em Parquet entra sem código de
+  orquestração: a Bronze de uma linha e o `schema.yml` dela, a tag na pasta da
+  Silver, a entrada no catálogo e o `outlet` na ingestão. O arquivo da DAG não
+  muda.
 - **[Médio impacto]** Um modelo no PostgreSQL pode dar `ref()` numa tabela
-  feita pelo DuckDB. Verificado no compose: um modelo no target PostgreSQL leu,
-  via `ref()`, a Silver construída pelo DuckDB.
+  feita pelo DuckDB. Verificação manual no compose, sem teste automatizado: um
+  modelo no target PostgreSQL leu, via `ref()`, a Silver construída pelo
+  DuckDB.
 - **[Médio impacto]** A leitura da raw `object_storage` por um engine, risco
-  ativo do ADR-0021, passa a ser executada e testada.
+  ativo do ADR-0021, passa a ser executada. Os testes unitários rodam a Bronze e
+  a Silver reais num DuckDB local, com o object storage emulado em disco. No
+  compose, ela depende de `RAW_BACKEND=object_storage`, e o CI não a exercita.
 - **[Baixo impacto]** O DuckDB em memória dispensa arquivo local, volume e
   coordenação de lock.
 
@@ -236,6 +286,10 @@ aceitável.
 - **[Alto impacto]** O pacote compartilhado passa a ter SQL de um motor
   específico, contra os itens 2 e 6 do ADR-0011. Um deployment sem DuckDB não
   materializa essas Bronzes.
+- **[Alto impacto]** Os dois ramos pedem valores diferentes de `RAW_BACKEND`: o
+  DuckDB lê Parquet, e as Silvers legadas do PostgreSQL leem as tabelas
+  `raw_*`. Até as legadas migrarem, um deployment só mantém um dos ramos
+  atualizado.
 - **[Médio impacto]** Cada órgão passa a ter duas DAGs de transformação, e a
   ordem entre elas não é derivada dos `ref()`. Uma Gold no PostgreSQL sobre uma
   Silver do DuckDB depende de horário até haver um Asset entre as duas DAGs.
@@ -249,7 +303,8 @@ aceitável.
   ADR-0021 queria evitar.
 - **[Baixo impacto]** A convenção "arquivo da Bronze = entidade da raw" e "a
   pasta `bronze/` só tem Parquet" é verificada por testes do repositório, não
-  pelo dbt nem pelo Airflow.
+  pelo dbt nem pelo Airflow, e só no pacote `compras_gov`: a DAG deriva Assets
+  de qualquer pacote importado, mas os testes estão fixados nesse pacote.
 
 ### Avaliação
 
@@ -270,7 +325,10 @@ Permanecem como riscos ativos:
 - a exceção ao ADR-0011, mitigada por confinar o SQL de motor num macro e por
   marcar os nós com a tag, mas ainda sem `adapter.dispatch()`;
 - o custo de reconstrução integral, que deve ser medido quando houver mais de
-  um domínio ou volume maior.
+  um domínio ou volume maior;
+- o `RAW_BACKEND` único por deployment, que hoje só alimenta um dos dois ramos;
+- a leitura restrita a object storage compatível com S3, configurado para o
+  MinIO.
 
 ## Consequências
 
@@ -289,8 +347,13 @@ Permanecem como riscos ativos:
   - Ordenar a DAG do projeto depois da DAG DuckDB, por Asset, quando a
     primeira Gold depender de uma Silver feita no DuckDB.
   - Avaliar a leitura incremental dos Parquets quando o volume crescer.
-  - Fazer o gerador de modelos (`make modelo`) emitir a Bronze em Parquet e a
-    Silver inicial no formato deste ADR.
+  - Fazer o gerador de modelos (`make modelo`) emitir o `.sql` e o `schema.yml`
+    da Bronze em Parquet e a Silver inicial deste ADR, que só renomeia e
+    declara os testes de contagem e de conteúdo. Hoje ele escreve só o
+    `sources.yml` da Bronze; a Silver sai no formato com deduplicação, mas já lê
+    a Bronze por `ref()` quando o arquivo dela existe.
+  - Decidir como um mesmo deployment alimenta os dois ramos: migrar as Silvers
+    legadas para Bronze em Parquet ou permitir backend por entidade.
   - Pré-instalar as extensões `httpfs` e `postgres` do DuckDB na imagem, para
     o worker não baixá-las em tempo de execução.
   - Ao copiar a DAG DuckDB para outro órgão, trocar apenas `ORGAO`, como já se
@@ -301,6 +364,7 @@ Permanecem como riscos ativos:
 - [ADR-0010 — Padrão de nomenclatura de schemas e tabelas bronze/silver/gold](./0010-nomenclatura-schemas-tabelas-bronze-silver-gold.md)
 - [ADR-0011 — Arquitetura agnóstica a motor de processamento de dados](./0011-arquitetura-agnostica-motor-processamento.md)
 - [ADR-0012 — Ingestão em object storage em vez de banco diretamente](./0012-ingestao-object-storage-vs-database.md)
+- [ADR-0017 — Chaves conformadas e catálogo de cruzamento entre sistemas estruturantes](./0017-chaves-conformadas-cruzamento-sistemas-estruturantes.md)
 - [ADR-0018 — Padrão de nomenclatura e execução das DAGs de transformação](./0018-nomenclatura-execucao-dags-transformacao.md)
 - [ADR-0021 — Zona raw com backend intercambiável e Bronze lendo da raw](./0021-zona-raw-com-backend-intercambiavel.md)
 - [dbt-duckdb — adapter, `attach` e extensões](https://github.com/duckdb/dbt-duckdb)

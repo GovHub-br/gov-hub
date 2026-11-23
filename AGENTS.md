@@ -111,7 +111,7 @@ catalogo/
 scripts/modelagem/                 # python -m scripts.modelagem {validar,sync,mapa,gerar}
 scripts/publicacao/                # python -m scripts.publicacao {validar,sync,matriz,plano}
 docker/                            # Dockerfile (airflow:3.2.2-python3.11), compose, init do Postgres
-docs/adr/                          # ADR-0000 a ADR-0022
+docs/adr/                          # ADR-0000 a ADR-0023
 tests/unit/                        # roda no CI; importa DAGs via DagBag
 tests/integration/                 # marcador `integration`; exige compose
 ```
@@ -142,6 +142,13 @@ Estas não são preferências. Violar qualquer uma quebra `make lint` ou
   O schema de destino é derivado da pasta pelo macro `schema_medallion`:
   `silver/contratacoes/x.sql` → `002_slv_contratacoes.x`. Não use `+schema`
   no `dbt_project.yml` sem justificativa.
+- No `compras_gov`, Silver e Gold levam a sigla da camada no nome do modelo
+  (`silver/<dominio>/slv_{entidade}.sql`, ADR-0009), e a tabela é o nome sem
+  a sigla, pelo `generate_alias_name` do pacote: `silver/arp/slv_arp.sql` →
+  `002_slv_arp.arp`. A Bronze não leva sigla: o nome dela é a entidade da raw.
+  Não use `alias` à mão. `tests/unit/test_nomenclatura_modelos_dbt.py` reprova,
+  no `compras_gov`, Silver sem sigla; e, em todo o monorepo, nome de modelo
+  repetido entre pacotes e tabela física repetida.
 
 ### Metadados dbt (ADR-0013)
 
@@ -242,7 +249,7 @@ relatório ficam na Variable declarada em `destinatarios_variavel`.
 ### Novo modelo dbt
 
 ```bash
-make modelo ARGS="--camada silver --sistema compras_gov --entidade contratos"
+make modelo ARGS="--camada silver --sistema compras_gov --entidade <entidade>"
 make modelo ARGS="--camada gold --orgao mgi --produto contratacoes --entidade x \
                   --cruzar compras_gov.contratos --cruzar compras_gov.uasg"
 ```
@@ -258,6 +265,10 @@ acrescenta o bloco ao `schema.yml`. Depois:
   sempre pela chave conformada.
 - `uv run sqlfmt airflow/dags/dbt` antes de commitar.
 - O gerador não sobrescreve arquivo existente sem `--forcar`.
+- Silver sobre Bronze modelada: crie `models/bronze/<entidade>.sql` antes de
+  `make modelo --camada silver`. O gerador só lê a Bronze por `ref()` se o
+  arquivo já existe; sem ele, a Silver sai com `source()` e a task dela não
+  espera a da Bronze.
 - Gold só cruza por ponte com `confiabilidade: total` ou `parcial`;
   `indicio` é proibido em Gold (ADR-0017).
 
@@ -284,7 +295,9 @@ dos arquivos de Bronze.
 3. Catálogo: `origem_atual: 001_bnz_<sistema>.<entidade>` e
    `make modelo ARGS="--camada bronze --sistema <sistema>"`, que move a
    entidade para o source `<sistema>_bronze`.
-4. Silver: `models/silver/<dominio>/`, com a pasta listada sob `silver:` no
+4. Silver: `models/silver/<dominio>/slv_<entidade>.sql`, que vira a tabela
+   `002_slv_<dominio>.<entidade>` (a sigla sai pelo `generate_alias_name` do
+   pacote, ADR-0009; hoje só o `compras_gov` tem), com a pasta listada sob `silver:` no
    `dbt_project.yml` do pacote com `+tags: ["duckdb"]`. Na Silver inicial
    (só renomeia para snake_case), declare `gov_bricks.mesma_contagem` e
    `gov_bricks.mesmo_conteudo_em_snake_case` com `comparar_com: ref("<entidade>")`.
@@ -334,7 +347,7 @@ dos arquivos de Bronze.
 ### Novo ADR
 
 Copie `docs/adr/template.md` para `NNNN-titulo-kebab.md` (próximo número:
-0023), preencha **todas** as seções, inclusive Alternativas e Tradeoffs com
+0024), preencha **todas** as seções, inclusive Alternativas e Tradeoffs com
 `[Alto/Médio/Baixo impacto]` e uma Avaliação explícita. Um ADR só cita ADRs
 de número menor. Adicione a linha ao índice do `docs/adr/README.md`. ADR
 aceito não é editado retroativamente: crie um novo e marque o antigo como
@@ -423,9 +436,17 @@ Cada item abaixo já quebrou algo. Os comentários no código explicam mais.
 - `GOV_BRICKS_DBT_DIR` é injetado pela `DbtDag` porque o Cosmos copia o
   projeto para um diretório temporário antes do `dbt deps`; de lá, o
   `../gov_bricks` do `packages.yml` apontaria para fora do monorepo.
-- `generate_schema_name` precisa existir em **cada projeto raiz**
-  (`compras_gov/macros/`, `mgi/macros/`) delegando para
-  `gov_bricks.schema_medallion`; dbt só honra a sobrescrita no projeto raiz.
+- `generate_schema_name` existe em cada projeto (`compras_gov/macros/`,
+  `mgi/macros/`, `contratos_gov/macros/`) delegando para
+  `gov_bricks.schema_medallion`. Mantenha um em cada: ele vale para os modelos
+  do próprio pacote, com precedência sobre o da raiz (ver o item abaixo), e
+  também quando o pacote roda sozinho como raiz.
+- O `generate_alias_name` (tira a sigla `slv_`/`gld_` da tabela) existe só em
+  `compras_gov/macros/`, e basta: o dbt usa o `generate_*_name` de um pacote
+  instalado nos modelos dele, com precedência sobre o da raiz, mesmo quando a
+  raiz é o `mgi` (dbt-core, `parser/base.py`, `RelationUpdate`). Pacote que
+  adotar a sigla precisa do próprio; sem ele, `slv_x.sql` cria a tabela
+  `slv_x`, sem erro.
 - Macros compartilhados são sempre qualificados: `gov_bricks.chave_conformada`,
   não `chave_conformada`.
 - `test_behavior=AFTER_EACH`: o teste roda logo após cada modelo, então um
@@ -549,8 +570,8 @@ O que está feito e o que não está, para você não redescobrir.
 - Há 14 marcadores `PREENCHER:` nos `schema.yml` de Silver do `compras_gov`
   e no SQL da Gold `contratos_por_orgao` (`grep -rn PREENCHER airflow/dags/dbt`).
 - A ARP é o primeiro domínio no modelo Parquet → DuckDB → PostgreSQL (receita
-  na seção 5): Bronze `001_bnz_compras_gov.arp` e Silver
-  `002_slv_arp.silver_compras_gov_arp`, na `duckdb_mgi_transform_dag`. As
+  na seção 5): Bronze `001_bnz_compras_gov.arp` (modelo `arp`) e Silver
+  `002_slv_arp.arp` (modelo `slv_arp`), na `duckdb_mgi_transform_dag`. As
   entidades `arp_item` e `arp_detalhes` ainda não são modeladas. O padrão é o
   ADR-0022, que registra como pendente a conversão de
   `gov_bricks.bronze_parquet()` para `adapter.dispatch()` (exceção ao ADR-0011).
@@ -562,6 +583,13 @@ O que está feito e o que não está, para você não redescobrir.
   que a publicação valida; não há validação genérica de `schema.yml` no CI.
 - CODEOWNERS tem as linhas de órgão (ipea, mir, mcid, minc) comentadas até os
   projetos migrarem.
+- Cinco Silvers do `compras_gov` ainda sem a sigla do
+  ADR-0009: `contratos`, `contratos_item`, `fornecedor`, `orgao` e `uasg`.
+  Estão em `LEGADO_SEM_PREFIXO`
+  (`tests/unit/test_nomenclatura_modelos_dbt.py`), lista que só pode
+  diminuir. Dívida: essas Silvers leem a raw direto por `source()`, sem
+  Bronze materializada. Enquanto não migrarem, uma Bronze nova com um desses
+  nomes no `compras_gov` colide com a Silver legada.
 - Renomear o schema raw para o padrão `001_bnz_<sistema>` do ADR-0010 quando
   os consumidores de BI puderem ser coordenados (hoje é `compras_gov`).
 

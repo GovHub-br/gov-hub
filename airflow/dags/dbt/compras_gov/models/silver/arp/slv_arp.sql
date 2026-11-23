@@ -1,4 +1,5 @@
--- Schema derivado da pasta (002_slv_arp, ADR-0010); database, materialização e a
+-- Tabela 002_slv_arp.arp: o schema vem da pasta (ADR-0010) e a tabela é o nome do
+-- modelo sem a sigla `slv_` (generate_alias_name, ADR-0009). Database, materialização e a
 -- tag `duckdb` vêm de dbt_project.yml. A tag leva este nó para a
 -- duckdb_<orgao>_transform_dag, no target prod_duckdb, porque a Bronze lê Parquet.
 -- Silver inicial: valida o percurso Bronze → Silver, ainda sem limpeza.

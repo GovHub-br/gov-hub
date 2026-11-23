@@ -263,7 +263,7 @@ def _colunas_silver(entidade: Entidade) -> list[tuple[str, str]]:
     return colunas
 
 
-def _sql_silver(sistema: Sistema, entidade: Entidade) -> str:
+def _sql_silver(sistema: Sistema, entidade: Entidade, bronze_modelada: bool) -> str:
     colunas = _colunas_silver(entidade)
     projecao = ",\n".join(
         f"        {expr} as {alias}" if expr != alias else f"        {alias}"
@@ -296,6 +296,8 @@ def _sql_silver(sistema: Sistema, entidade: Entidade) -> str:
         else sistema.id
     )
     fonte = f'{{{{ source("{nome_source}", "{entidade.id}") }}}}'
+    if bronze_modelada:
+        fonte = f'{{{{ ref("{entidade.id}") }}}}'
     linhas = [
         *cabecalho,
         "",
@@ -431,9 +433,11 @@ def gerar_silver(
         )
 
     base = caminho_pacote(sistema.id) / "models" / "silver" / entidade.dominio
-    escritas = [
-        _escrever(base / f"{entidade.id}.sql", _sql_silver(sistema, entidade), forcar)
-    ]
+    tem_alias = (caminho_pacote(sistema.id) / "macros/generate_alias_name.sql").is_file()
+    nome_modelo = f"slv_{entidade.id}" if tem_alias else entidade.id
+    bronze = caminho_pacote(sistema.id) / "models" / "bronze" / f"{entidade.id}.sql"
+    sql = _sql_silver(sistema, entidade, bronze_modelada=bronze.is_file())
+    escritas = [_escrever(base / f"{nome_modelo}.sql", sql, forcar)]
 
     por_chave = _chaves_de(entidade)
     colunas = [
@@ -446,7 +450,7 @@ def gerar_silver(
     ]
     bloco = _yaml_modelo(
         catalogo,
-        nome=entidade.id,
+        nome=nome_modelo,
         descricao=entidade.descricao,
         granularidade=entidade.granularidade,
         owner=sistema.owner,
@@ -455,7 +459,7 @@ def gerar_silver(
         colunas=colunas,
     )
     escritas.append(
-        _acrescentar_ao_schema(base / "schema.yml", entidade.id, bloco, forcar)
+        _acrescentar_ao_schema(base / "schema.yml", nome_modelo, bloco, forcar)
     )
     return escritas
 

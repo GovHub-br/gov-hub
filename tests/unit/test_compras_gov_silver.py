@@ -80,8 +80,8 @@ def test_silvers_que_ja_existiam_continuam_fora_do_ramo_duckdb():
     silver = config_modelos()["silver"]
     for dominio in ("contratacoes", "fornecedores"):
         assert dominio not in silver
-    # organizacional divide a pasta: só o órgão lê Parquet; a uasg segue no PostgreSQL.
-    assert set(silver["organizacional"]) == {"slv_orgao"}
+    # uasg divide a pasta: só o órgão lê Parquet; a uasg segue no PostgreSQL.
+    assert set(silver["uasg"]) == {"slv_orgao"}
 
 
 def test_bronze_toda_em_parquet_leva_a_tag_duckdb():

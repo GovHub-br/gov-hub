@@ -41,7 +41,7 @@ models:
       +materialized: table
       arp:
         +tags: ["duckdb"]
-      # uasg, da mesma pasta, ainda lê a raw relacional: só o órgão vai ao DuckDB.
-      organizacional:
+      # uasg ainda lê a raw relacional: só o órgão vai ao DuckDB.
+      uasg:
         slv_orgao:
           +tags: ["duckdb"]

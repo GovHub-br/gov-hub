@@ -17,7 +17,7 @@ entidades:
     descricao: >-
       Órgãos cadastrados no Compras.gov.br. Uma linha por órgão.
     granularidade: um registro por código de órgão
-    dominio: organizacional
+    dominio: uasg
     dag: orgao_ingest_dag
     origem_atual: 001_bnz_compras_gov.orgao
     chave_primaria: [codigoorgao]
@@ -31,7 +31,7 @@ entidades:
     descricao: >-
       Unidades administrativas de serviços gerais. Uma linha por UASG.
     granularidade: um registro por código de UASG
-    dominio: organizacional
+    dominio: uasg
     dag: uasg_ingest_dag
     origem_atual: compras_gov.raw_uasg
     chave_primaria: [codigouasg]

@@ -127,7 +127,7 @@ pyproject, compose). Por isso as DAGs importam `from batching import ...` e
 Estas não são preferências. Violar qualquer uma quebra `make lint` ou
 `make test`.
 
-### Nomenclatura (ADR-0007, 0008, 0009, 0010, 0018, 0019)
+### Nomenclatura (ADR-0007, 0008, 0009, 0010, 0018, 0019, 0023)
 
 - Só `a-z`, `0-9` e `_` em nomes de pasta, arquivo, `dag_id`, modelo, schema
   e tabela. Nada de hífen, acento ou maiúscula.
@@ -143,7 +143,7 @@ Estas não são preferências. Violar qualquer uma quebra `make lint` ou
   `silver/contratacoes/x.sql` → `002_slv_contratacoes.x`. Não use `+schema`
   no `dbt_project.yml` sem justificativa.
 - No `compras_gov`, Silver e Gold levam a sigla da camada no nome do modelo
-  (`silver/<dominio>/slv_{entidade}.sql`, ADR-0009), e a tabela é o nome sem
+  (`silver/<dominio>/slv_{entidade}.sql`, ADR-0023), e a tabela é o nome sem
   a sigla, pelo `generate_alias_name` do pacote: `silver/arp/slv_arp.sql` →
   `002_slv_arp.arp`. A Bronze não leva sigla: o nome dela é a entidade da raw.
   Não use `alias` à mão. `tests/unit/test_nomenclatura_modelos_dbt.py` reprova,
@@ -254,9 +254,13 @@ make modelo ARGS="--camada gold --orgao mgi --produto contratacoes --entidade x 
                   --cruzar compras_gov.contratos --cruzar compras_gov.uasg"
 ```
 
-O gerador escreve o `.sql` com as chaves conformadas via
-`gov_bricks.chave_conformada(...)` e a deduplicação por `dt_ingest`, e
-acrescenta o bloco ao `schema.yml`. Depois:
+O gerador escreve o `.sql` com a deduplicação por `dt_ingest` e, nas entidades
+com `chaves:` no catálogo, as chaves conformadas via
+`gov_bricks.chave_conformada(...)`; também acrescenta o bloco ao `schema.yml`.
+A chave conformada ainda não funciona no fluxo Parquet (DuckDB): o teste do
+fluxo não renderiza a macro, e no DuckDB ela falha nas chaves com `tamanho`,
+porque o `lpad` recebe o `BIGINT` de `greatest(length(...), <tamanho>)` e só
+aceita `INTEGER`. Depois:
 
 - Troque todo `PREENCHER:` por descrição real. O CI de publicação lê esses
   metadados.
@@ -268,7 +272,11 @@ acrescenta o bloco ao `schema.yml`. Depois:
 - Silver sobre Bronze modelada: crie `models/bronze/<entidade>.sql` antes de
   `make modelo --camada silver`. O gerador só lê a Bronze por `ref()` se o
   arquivo já existe; sem ele, a Silver sai com `source()` e a task dela não
-  espera a da Bronze.
+  espera a da Bronze. Sobre Bronze em Parquet, a Silver gerada não passa no
+  teste do fluxo sem ajuste: ela só projeta as colunas de chave e o
+  `dt_ingest`, com o nome que o catálogo dá a elas (em minúsculas, como
+  `codigoorgao`, nas entidades que vieram do warehouse) e sem snake_case.
+  Ajuste à mão como na receita da seção seguinte.
 - Gold só cruza por ponte com `confiabilidade: total` ou `parcial`;
   `indicio` é proibido em Gold (ADR-0017).
 
@@ -297,13 +305,37 @@ dos arquivos de Bronze.
    entidade para o source `<sistema>_bronze`.
 4. Silver: `models/silver/<dominio>/slv_<entidade>.sql`, que vira a tabela
    `002_slv_<dominio>.<entidade>` (a sigla sai pelo `generate_alias_name` do
-   pacote, ADR-0009; hoje só o `compras_gov` tem), com a pasta listada sob `silver:` no
+   pacote, ADR-0023; hoje só o `compras_gov` tem), com a pasta listada sob `silver:` no
    `dbt_project.yml` do pacote com `+tags: ["duckdb"]`. Na Silver inicial
    (só renomeia para snake_case), declare `gov_bricks.mesma_contagem` e
    `gov_bricks.mesmo_conteudo_em_snake_case` com `comparar_com: ref("<entidade>")`.
+   Na Silver tratada (uma linha por chave, a de maior `dt_ingest`), mantenha
+   todas as colunas da Bronze, com os mesmos tipos, só renomeadas para
+   snake_case, e descarte a chave nula antes do `partition by`. Não declare
+   `mesma_contagem` nem `mesmo_conteudo_em_snake_case`, que exigem as mesmas
+   linhas da Bronze; declare `not_null` em cada coluna da chave, mais `unique`
+   (uma coluna) ou, no modelo, `gov_bricks.unicidade_composta` (várias), com os
+   argumentos sob `arguments:`:
+   ```yaml
+   data_tests:
+     - gov_bricks.unicidade_composta:
+         arguments:
+           colunas: [<coluna_a>, <coluna_b>]
+   ```
+   `make modelo --camada silver` gera a deduplicação, mas não renomeia para
+   snake_case nem filtra chave nula: ajuste à mão.
 5. Testes: uma amostra da entidade em `AMOSTRAS` de
-   `tests/unit/test_fluxo_bronze_parquet_dbt.py`. Os demais testes percorrem
-   os arquivos e já cobrem o domínio novo.
+   `tests/unit/test_fluxo_bronze_parquet_dbt.py`. Se a Silver deduplica, a
+   amostra leva `chave`: as colunas que identificam o registro na fonte, com o
+   nome em camelCase do Parquet (`codigoOrgao`), e não o minúsculo que o
+   catálogo guarda nas entidades que vieram do warehouse (`codigoorgao`). A
+   chave não pode ser nula e não inclui `dt_ingest`. Chave do tipo "uma ou
+   outra" (ex.: `fornecedor`, com `cnpj` ou `cpf`) não é coberta pelo teste:
+   converse antes. Sem `chave`, o teste exige Silver inicial, que é o caso
+   quando nenhuma chave identifica o registro. Silver com chave conformada
+   (`chaves:` no catálogo) ainda não é suportada no fluxo Parquet (ver "Novo
+   modelo dbt"): avise antes de começar. Os demais testes percorrem os arquivos
+   e já cobrem o domínio novo.
 
 ### Novo sistema estruturante
 
@@ -461,6 +493,12 @@ Cada item abaixo já quebrou algo. Os comentários no código explicam mais.
   por mudanças nos pacotes que o projeto importa (`compras_gov`, por exemplo).
   Ao testar uma mudança no pacote, use `AIRFLOW__COSMOS__ENABLE_CACHE=False`
   ou apague a Variable; senão a DAG pode mostrar o grafo antigo.
+- Renomear um modelo com o cache ativo (ex. `silver_compras_gov_arp` →
+  `slv_arp`) deixa no grafo a task com o nome antigo. Ela seleciona um modelo
+  que não existe mais, o dbt não roda nada e a task termina com sucesso. Depois
+  do merge, apague `cosmos_cache__duckdb_mgi_transform_dag` e
+  `cosmos_cache__mgi_transform_dag` em cada ambiente (local, homologação e
+  produção).
 - Nós com tag dbt `duckdb` leem Parquet com funções do DuckDB e só rodam no
   target `prod_duckdb`, na `duckdb_<orgao>_transform_dag`. A DAG do projeto
   inteiro os exclui com `exclude=["tag:duckdb"]`, e um `dbt build` manual no
@@ -584,7 +622,7 @@ O que está feito e o que não está, para você não redescobrir.
 - CODEOWNERS tem as linhas de órgão (ipea, mir, mcid, minc) comentadas até os
   projetos migrarem.
 - Cinco Silvers do `compras_gov` ainda sem a sigla do
-  ADR-0009: `contratos`, `contratos_item`, `fornecedor`, `orgao` e `uasg`.
+  ADR-0023: `contratos`, `contratos_item`, `fornecedor`, `orgao` e `uasg`.
   Estão em `LEGADO_SEM_PREFIXO`
   (`tests/unit/test_nomenclatura_modelos_dbt.py`), lista que só pode
   diminuir. Dívida: essas Silvers leem a raw direto por `source()`, sem

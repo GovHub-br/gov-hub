@@ -1,5 +1,5 @@
 {#
-    Nome da tabela a partir do nome do modelo (ADR-0009, ADR-0010).
+    Nome da tabela a partir do nome do modelo (ADR-0010, ADR-0023).
 
     Silver e Gold levam a sigla da camada no nome do modelo (`slv_arp.sql`) para
     que a mesma entidade exista em camadas diferentes sem colidir: o dbt recusa

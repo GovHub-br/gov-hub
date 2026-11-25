@@ -95,7 +95,7 @@ def test_silver_e_gold_levam_a_sigla_da_camada(modelo):
         sigla = SIGLAS[modelo.camada]
         assert modelo.nome.startswith(sigla), (
             f"{modelo}: modelo de {modelo.camada} se chama {sigla}<entidade>.sql "
-            f"(ADR-0009); a tabela continua <entidade>."
+            f"(ADR-0023); a tabela continua <entidade>."
         )
     else:
         assert not modelo.nome.startswith(

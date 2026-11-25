@@ -1,8 +1,18 @@
-"""Exercita o fluxo Parquet → Bronze → Silver inicial de cada domínio DuckDB.
+"""Exercita o fluxo Parquet → Bronze → Silver de cada domínio DuckDB.
 
 Roda os SQLs reais (a Bronze via `gov_bricks.bronze_parquet`, a Silver do
 domínio e os testes genéricos `mesma_contagem` e `mesmo_conteudo_em_snake_case`)
 num DuckDB local, com o object storage emulado em disco, sem serviços externos.
+
+Sem `chave` na amostra, a Silver é a inicial: só renomeia e preserva a Bronze.
+Com `chave`, é tratada: a linha com chave nula é descartada, e a Silver tem uma
+linha por chave, a de maior `dt_ingest`. Nesse modo, o teste não roda os
+genéricos `mesma_contagem` e `mesmo_conteudo_em_snake_case` e exige que o
+schema.yml não os declare, mas declare `not_null` em cada coluna da chave e
+`unique`, se a chave é simples, ou `gov_bricks.unicidade_composta`, se composta.
+
+Limitação conhecida: a amostra anula só a última coluna da chave; uma Silver
+composta que filtre nulo só nessa coluna passa.
 
 Cada Bronze em Parquet precisa de uma amostra em AMOSTRAS: é o único dado por
 domínio; o resto do teste vale para qualquer um.
@@ -34,7 +44,11 @@ CLASSIFICACOES = {"publico", "interno", "pessoal", "pessoal_sensivel"}
 class Amostra(TypedDict):
     colunas: list[str]
     tipos: dict[str, str]
-    # Silver que já trata o dado (deduplica): não preserva as linhas da Bronze.
+    # Colunas da raw (camelCase) que identificam o registro na fonte. Sem chave,
+    # a Silver é a inicial; com chave, a tratada, que deduplica por ela.
+    chave: NotRequired[list[str]]
+    # Silver tratada com chave conformada (ex.: slv_orgao), que o modo `chave`
+    # ainda não cobre: só confere a deduplicação e o descarte do nulo.
     silver_tratada: NotRequired[bool]
 
 
@@ -84,7 +98,13 @@ AMOSTRAS: dict[str, Amostra] = {
     },
 }
 
-VALORES = {"BIGINT": 48000, "DOUBLE": 12.5, "BOOLEAN": True, "VARCHAR": "  original  "}
+VALORES = {
+    "BIGINT": 48000,
+    "DOUBLE": 12.5,
+    "BOOLEAN": True,
+    "VARCHAR": "  original  ",
+    "INTEGER": 7,
+}
 
 BRONZES = sorted(p.stem for p in (PACOTE / "models/bronze").glob("*.sql"))
 
@@ -178,6 +198,26 @@ def _metadados(silver):
     return metadados
 
 
+def _linhas_tratadas(colunas, tipos, chave):
+    nova = {c: VALORES[tipos[c]] for c in colunas} | {"dt_ingest": "2026-10-02 00:00:00"}
+    texto = next(
+        c
+        for c in colunas
+        if tipos[c] == "VARCHAR" and c not in chave and c != "dt_ingest"
+    )
+    antiga = nova | {texto: "versão antiga", "dt_ingest": "2026-10-01 00:00:00"}
+    ultima = chave[-1]
+    valor = nova[ultima]
+    outra = nova | {ultima: f"{valor} outra" if isinstance(valor, str) else valor + 1}
+    nula = nova | {ultima: None}
+    linhas = [[linha[c] for c in colunas] for linha in (antiga, nova, nova, outra, nula)]
+    return linhas, [tuple(linha[c] for c in colunas) for linha in (nova, outra)]
+
+
+def _nome_teste(teste):
+    return teste if isinstance(teste, str) else next(iter(teste))
+
+
 def _silver_sobre(entidade):
     """A Silver de um domínio DuckDB que lê a Bronze da entidade."""
     (silver,) = [
@@ -203,6 +243,7 @@ def test_bronze_e_silver_preservam_linhas_valores_e_tipos(
         monkeypatch.setenv("MINIO_BUCKET", bucket)
     colunas = AMOSTRAS[entidade]["colunas"]
     tipos = {c: AMOSTRAS[entidade]["tipos"].get(c, "VARCHAR") for c in colunas}
+    chave = AMOSTRAS[entidade].get("chave")
 
     class S3Local(DirFileSystem):
         protocol = "s3"
@@ -214,9 +255,11 @@ def test_bronze_e_silver_preservam_linhas_valores_e_tipos(
         declaracoes = ", ".join(f'"{c}" {tipos[c]}' for c in colunas)
         conexao.execute(f"create table amostra ({declaracoes})")
         linha = [VALORES[tipos[c]] for c in colunas]
+        linhas, esperadas = [linha, linha, [None] * len(colunas)], []
+        if chave:
+            linhas, esperadas = _linhas_tratadas(colunas, tipos, chave)
         conexao.executemany(
-            f"insert into amostra values ({', '.join('?' for _ in colunas)})",
-            [linha, linha, [None] * len(colunas)],
+            f"insert into amostra values ({', '.join('?' for _ in colunas)})", linhas
         )
         pasta = tmp_path / (bucket or "data-lake") / SISTEMA / entidade / "2026/10"
         pasta.mkdir(parents=True)
@@ -236,9 +279,18 @@ def test_bronze_e_silver_preservam_linhas_valores_e_tipos(
             return
         for _ in range(2):
             conexao.execute(f'create or replace table "{silver.stem}" as {sql_silver}')
-            assert Counter(conexao.sql(f'select * from "{silver.stem}"').fetchall()) == (
-                Counter(conexao.sql(f'select * from "{entidade}"').fetchall())
-            )
+            if chave:
+                # A Bronze guarda todas as versões; a Silver, só a nova de cada chave.
+                bronze = conexao.sql(f'select count(*) from "{entidade}"').fetchone()
+                assert bronze == (len(linhas),)
+                nomes = ", ".join(gov_bricks.snake_case(c) for c in colunas)
+                assert Counter(
+                    conexao.sql(f'select {nomes} from "{silver.stem}"').fetchall()
+                ) == Counter(esperadas)
+            else:
+                assert Counter(
+                    conexao.sql(f'select * from "{silver.stem}"').fetchall()
+                ) == Counter(conexao.sql(f'select * from "{entidade}"').fetchall())
 
         # Mesmo tipo em cada coluna, pelo nome em snake_case.
         descricao = conexao.sql(f'describe "{silver.stem}"').fetchall()
@@ -253,23 +305,48 @@ def test_bronze_e_silver_preservam_linhas_valores_e_tipos(
             for c in metadados["columns"]
         )
 
-        # Os testes genéricos passam e detectam divergência.
-        def teste(nome):
-            sql = gov_bricks.teste(
-                nome, model=f'"{silver.stem}"', comparar_com=f'"{entidade}"'
-            )
-            return conexao.sql(sql).fetchall()
+        if chave:
+            # Silver tratada: chave única e não nula, sem os testes da Silver inicial,
+            # que exigem as mesmas linhas da Bronze.
+            do_modelo = metadados.get("data_tests", [])
+            assert not {_nome_teste(t) for t in do_modelo} & {
+                "gov_bricks.mesma_contagem",
+                "gov_bricks.mesmo_conteudo_em_snake_case",
+            }
+            da_coluna = {
+                c["name"]: {_nome_teste(t) for t in c.get("data_tests", [])}
+                for c in metadados["columns"]
+            }
+            chave_silver = [gov_bricks.snake_case(c) for c in chave]
+            assert all("not_null" in da_coluna[c] for c in chave_silver)
+            if len(chave_silver) == 1:
+                assert "unique" in da_coluna[chave_silver[0]]
+            else:
+                assert {
+                    "gov_bricks.unicidade_composta": {
+                        "arguments": {"colunas": chave_silver}
+                    }
+                } in do_modelo
+        else:
+            # Os testes genéricos passam e detectam divergência.
+            def teste(nome):
+                sql = gov_bricks.teste(
+                    nome, model=f'"{silver.stem}"', comparar_com=f'"{entidade}"'
+                )
+                return conexao.sql(sql).fetchall()
 
-        assert teste("mesma_contagem") == []
-        assert teste("mesmo_conteudo_em_snake_case") == []
-        texto = gov_bricks.snake_case(next(c for c in colunas if tipos[c] == "VARCHAR"))
-        conexao.execute(
-            f"update \"{silver.stem}\" set {texto} = 'alterado' where {texto} is not null"
-        )
-        assert teste("mesma_contagem") == []
-        assert len(teste("mesmo_conteudo_em_snake_case")) == 4
-        conexao.execute(f'delete from "{silver.stem}" where {texto} is null')
-        assert len(teste("mesma_contagem")) == 1
+            assert teste("mesma_contagem") == []
+            assert teste("mesmo_conteudo_em_snake_case") == []
+            texto = gov_bricks.snake_case(
+                next(c for c in colunas if tipos[c] == "VARCHAR")
+            )
+            conexao.execute(
+                f"update \"{silver.stem}\" set {texto} = 'alterado' where {texto} is not null"
+            )
+            assert teste("mesma_contagem") == []
+            assert len(teste("mesmo_conteudo_em_snake_case")) == 4
+            conexao.execute(f'delete from "{silver.stem}" where {texto} is null')
+            assert len(teste("mesma_contagem")) == 1
 
 
 @pytest.mark.parametrize("entidade", BRONZES)

@@ -202,8 +202,9 @@ partir do momento em que a Bronze vira modelo.
 
 - **[Alto impacto]** Bronze e Silver da mesma entidade coexistem no pacote, e o
   Cosmos monta as DAGs sem `DuplicateTaskIdFound`.
-- **[Médio impacto]** As tabelas seguem o ADR-0010, e os consumidores (Superset,
-  bundles, catálogo) não mudam.
+- **[Médio impacto]** As tabelas seguem o ADR-0010, e, nas Silvers novas, os
+  consumidores (Superset, bundles, catálogo) não mudam. A exceção é a Silver da
+  ARP, cuja tabela muda de nome (ver Consequências).
 - **[Médio impacto]** A regra é garantida por teste, e não por revisão.
 - **[Baixo impacto]** A sigla mostra a camada no id da task do Airflow e no
   grafo do dbt.
@@ -228,7 +229,8 @@ Os ganhos superam os custos. Sem a sigla, a Bronze modelada pelo ADR-0022 não
 cabe no mesmo pacote que a Silver da mesma entidade. Entre as alternativas que
 resolvem a colisão, o macro de alias é a que menos se afasta do ADR-0009 e não
 toca no ADR-0010: o desvio fica restrito ao nome do arquivo, e o nome que os
-consumidores veem não muda.
+consumidores veem não muda nas Silvers novas. A exceção é a Silver da ARP,
+anterior a este ADR, cuja tabela passa a `002_slv_arp.arp` (ver Consequências).
 
 Permanecem como riscos ativos:
 
@@ -239,9 +241,14 @@ Permanecem como riscos ativos:
 ## Consequências
 
 - **Positivas**: nomes de modelo únicos no monorepo, tabelas com nome estável
-  para os consumidores e uma regra verificada a cada execução dos testes.
+  para os consumidores nas Silvers novas e uma regra verificada a cada execução
+  dos testes.
 - **Negativas**: o nome do arquivo deixa de coincidir com o da tabela, e a
-  dívida das cinco Silvers legadas fica registrada numa lista de exceções.
+  dívida das cinco Silvers legadas fica registrada numa lista de exceções. A
+  Silver da ARP, criada antes deste ADR como `silver_compras_gov_arp.sql`, vira
+  `slv_arp.sql`, e a tabela dela passa de `002_slv_arp.silver_compras_gov_arp`
+  para `002_slv_arp.arp`. O dbt não apaga a tabela antiga, que fica órfã no
+  banco, e quem a consome precisa passar a ler `002_slv_arp.arp`.
 - **Ações decorrentes**:
   - Migrar as cinco Silvers legadas para `slv_<entidade>`, com Bronze própria,
     até esvaziar `LEGADO_SEM_PREFIXO`.
@@ -250,8 +257,6 @@ Permanecem como riscos ativos:
     exemplo, `compras_gov.arp`) ou falha quando ela não existe. Precisa apontar
     para `slv_<entidade>`.
   - Decidir se o `sources.yml` da Bronze materializada continua sendo gerado.
-  - Atualizar o código e a documentação que atribuem a sigla ao ADR-0009 para
-    citar este ADR.
   - Avaliar marcar o ADR-0009 como parcialmente substituído por este ADR.
 
 ## Referências

@@ -56,8 +56,11 @@ sources:
       - name: contrato_despesa_acessoria
         identifier: raw_contrato_despesa_acessoria
         description: >
-            Despesas acessórias vinculadas ao contrato. Granularidade: uma linha por
-            despesa acessória de um contrato.
+            Despesas acessórias vinculadas ao contrato (condomínio, tributo, taxa,
+            seguro ou garantia estendida), com recorrência, vencimento e valor. tipo_id
+            e recorrencia_id trazem a descrição do código, não o identificador, e valor
+            vem como texto pt-BR. Granularidade: uma linha por despesa acessória de um
+            contrato.
         meta:
           classificacao: publico
           dag_ingestao: contrato_despesa_acessoria_ingest_dag
@@ -190,9 +193,11 @@ sources:
       - name: unidade_contratante
         identifier: raw_unidade_contratante
         description: >
-            Unidades gestoras com contrato registrado no Contratos.gov.br. Enumeração
-            pura, só o código. É a lista que dirige a varredura de cabeçalhos por UG.
-            Granularidade: um registro por código de unidade gestora.
+            Unidades gestoras com contrato ativo no Contratos.gov.br: numa amostra de 60
+            UGs (2026-10-07), nenhuma estava sem contrato ativo, então UG só com
+            contrato inativo não aparece aqui. Enumeração pura, só o código. É a lista
+            que dirige a varredura de cabeçalhos por UG. Granularidade: um registro por
+            código de unidade gestora.
         meta:
           classificacao: publico
           dag_ingestao: unidade_contratante_ingest_dag

@@ -78,6 +78,48 @@ O sábado é deliberado: a varredura de cabeçalhos leva mais de uma hora, os
 sub-recursos vêm depois dela, e assim a cadeia inteira termina com folga antes da
 janela do `compras_gov` no domingo de madrugada.
 
+## Contratos inativos: UG vazia é a regra
+
+Amostra de 12 UGs sorteadas (semente 1) contra
+`/api/contrato/inativo/ug/{codigo}`, em **2026-10-07**, de um total de 3.786
+UGs:
+
+| UGs | Com inativo | Vazias | Contratos | `id` repetido |
+|---|---|---|---|---|
+| 12 | 4 | 8 | 100 | 0 |
+
+O formato é o mesmo do cabeçalho ativo, com `situacao: "Inativo"` e
+`justificativa_inativo` preenchida (ex.: `"Rescindido"`). Como dois terços das
+UGs não têm inativo, a `contrato_inativo_ingest_dag` não pode reprovar uma
+execução sem nenhum contrato da mesma forma que a de ativos faz: com as 10 UGs do
+`INGEST_MAX_UGS` local, isso aconteceria por acaso em cerca de 2% das execuções.
+A DAG só trata o zero como anomalia da fonte a partir de **50 UGs varridas**,
+onde a chance de todas virem vazias por acaso é da ordem de 1e-9.
+
+O mesmo `id` aparece em `raw_contrato_ativo` e em `raw_contrato_inativo` quando o
+contrato é inativado entre duas varreduras. A Silver que unifica as duas precisa
+deduplicar por `id` **entre** as duas raws, pelo `dt_ingest`.
+
+### Cobertura: UG só com contrato inativo fica de fora
+
+A varredura parte da raw de `unidade_contratante`, isto é, de
+`/api/contrato/unidades`. Numa segunda amostra, de 60 UGs dessa lista
+(sorteio com semente 7, em **2026-10-07**), as 59 que responderam ao endpoint
+de ativos tinham pelo menos um contrato ativo; a 60ª excedeu 180 s nele. A lista
+se comporta, então, como lista de UGs **com contrato ativo**, e uma UG cujos
+contratos estão todos inativos não é alcançada.
+
+A primeira versão aceita essa lacuna. Fechá-la pede outra fonte de UGs (a issue
+#19 propõe `compras_gov.uasg`), o que cria dependência entre sistemas e
+multiplica as chamadas por UGs que, na maioria, não têm contrato nenhum. O
+tamanho da lacuna ainda não foi medido; isso fica para quando a raw de
+`compras_gov.uasg` estiver disponível para comparar as duas listas.
+
+A mesma amostra mostrou menos UGs vazias de inativo do que a de 12: 17 das 60
+(28%), contra 8 das 12. Com menos UGs vazias, a chance de uma varredura vir
+inteira vazia por acaso só diminui, então o limiar de 50 UGs continua
+conservador.
+
 ## Escopo de detalhamento dos sub-recursos
 
 Detalhar todos os contratos a cada execução não é viável. O escopo é
@@ -92,14 +134,57 @@ As DAGs de sub-recurso (#20 a #33) leem essa Variable, filtram na raw os
 contratos cujas UGs pertencem a esses órgãos e só detalham esses. O default é o
 MGI, único órgão consumidor hoje.
 
+No compose, `INGEST_MAX_UGS=10` limita os cabeçalhos (#18 e #19). As dez
+primeiras UGs por código não incluem o MGI; portanto, numa raw local recém-criada,
+a DAG de empenhos (#22) falha corretamente por não encontrar contratos do órgão
+46000. Para validá-la, ingira primeiro cabeçalhos de uma UG do MGI (por exemplo,
+201057) nas duas raws ou ajuste **somente no ambiente de teste** a Variable de
+escopo para um órgão presente na amostra. Nenhuma dessas escolhas altera o
+escopo padrão de homologação ou produção.
+
 **Para ampliar**: acrescente o código do órgão à Variable. O custo cresce com o
 número de contratos dos órgãos incluídos, não com o número de órgãos — um órgão
 com muitos contratos pesa mais que vários pequenos. Antes de incluir um órgão
 grande, vale medir quantos contratos ele tem (`contrato_ativo` já na raw) e
 estimar: uma chamada por contrato por sub-recurso.
 
-O resolvedor dessa Variable não foi escrito na fundação: ele entra com a primeira
-DAG que precisa dele (#18/#19), para não versionar código que nada chama.
+O resolvedor dessa Variable é `airflow/helpers/contratos_gov_scope.py`, escrito
+com a primeira DAG de sub-recurso (#22). Ele valida a lista e une os `id` de
+`contrato_ativo` e `contrato_inativo` dos órgãos no escopo; as demais DAGs de
+sub-recurso reutilizam as mesmas duas funções.
+
+### Empenhos: o `id` não identifica a linha sozinho
+
+A issue #22 registrou `id` como chave de `contrato_empenho`, com base em
+contratos olhados um a um. Medição de **2026-10-08** em 80 contratos ativos da
+UG 201057 (órgão 46000), contra `GET /api/contrato/{contrato_id}/empenhos`:
+
+| Contratos | Com empenho | Linhas | `id` distintos | `id` em mais de um contrato | Linhas repetidas no mesmo contrato |
+|---|---|---|---|---|---|
+| 80 | 24 | 3.205 | 1.627 | 715 | 13 (12 no contrato 93055, 1 no 212249) |
+
+O `id` é o da nota de empenho, e a fonte vincula a mesma nota a vários
+contratos: o empenho 13243362 aparece nos contratos 2289, 212249, 213150,
+223657, 226366 e 227024. No código da fonte
+(`ContratoController::empenhosPorContratoId`, em gitlab.com/comprasnet/contratos)
+a consulta parte da tabela de vínculo `contratoempenhos` e devolve
+`empenho->id`, sem restrição de unicidade no vínculo.
+
+Daí duas decisões na `contrato_empenho_ingest_dag`:
+
+- a chave primária é `(contrato_id, id)`. Com `id` sozinho, o upsert do backend
+  `warehouse` reduziria os 3.192 vínculos distintos da amostra a 1.627 linhas e
+  deixaria em cada uma o `contrato_id` do último contrato lido;
+- linha idêntica repetida dentro do mesmo contrato é descartada antes da
+  escrita, com aviso no log. O contrato 93055 devolveu 563 linhas para 551 ids,
+  e as 13 linhas repetidas da amostra eram cópias exatas. Mesmo `id` com
+  conteúdo diferente no mesmo contrato continua sendo erro.
+
+Conferido no backend `warehouse` com as mesmas 80 chamadas: 3.192 linhas na
+raw, 3.192 pares `(contrato_id, id)` distintos, nenhum par da API faltando, e a
+mesma contagem depois de uma segunda execução.
+
+Os demais sub-recursos (#20 a #33) ainda não foram medidos dessa forma.
 
 ### Sobre o código do MGI: 46000, não 48000
 

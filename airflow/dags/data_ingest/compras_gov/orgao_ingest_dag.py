@@ -37,7 +37,7 @@ default_args = {
         "Ingere órgãos da API do Compras.gov.br para a zona raw "
         "e dispara a DAG de contratos."
     ),
-    tags=["sistema:compras_gov", "camada:raw", "dominio:uasg"],
+    tags=["sistema:compras_gov", "camada:raw", "dominio:organizacional"],
 )
 def orgao_dag() -> None:
     @task

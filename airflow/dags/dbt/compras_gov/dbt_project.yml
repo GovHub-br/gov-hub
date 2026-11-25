@@ -41,7 +41,8 @@ models:
       +materialized: table
       arp:
         +tags: ["duckdb"]
-      # uasg ainda lê a raw relacional: só o órgão vai ao DuckDB.
-      uasg:
+      # organizacional divide a pasta: o órgão lê Parquet e vai ao DuckDB; a uasg
+      # ainda lê a raw relacional e segue no PostgreSQL.
+      organizacional:
         slv_orgao:
           +tags: ["duckdb"]

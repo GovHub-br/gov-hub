@@ -315,7 +315,7 @@ dos arquivos de Bronze.
    declara `chaves:` para a entidade, exponha também cada chave conformada
    (`gov_bricks.chave_conformada`), deduplique por ela e filtre a chave
    conformada nula, não a coluna crua: um código sem dígitos vira nulo na
-   normalização. Modelo: `silver/uasg/slv_orgao.sql`. Não declare
+   normalização. Modelo: `silver/organizacional/slv_orgao.sql`. Não declare
    `mesma_contagem` nem `mesmo_conteudo_em_snake_case`, que exigem as mesmas
    linhas da Bronze; declare `not_null` em cada coluna da chave (na chave
    conformada, quando a coluna tem uma), mais `unique`
@@ -618,7 +618,7 @@ O que está feito e o que não está, para você não redescobrir.
   `002_slv_arp.arp` (modelo `slv_arp`), na `duckdb_mgi_transform_dag`. As
   entidades `arp_item` e `arp_detalhes` ainda não são modeladas. O órgão é o
   segundo, e o primeiro com Silver tratada e chave conformada: Bronze
-  `001_bnz_compras_gov.orgao` (modelo `orgao`) e Silver `002_slv_uasg.orgao`
+  `001_bnz_compras_gov.orgao` (modelo `orgao`) e Silver `002_slv_organizacional.orgao`
   (modelo `slv_orgao`, uma linha por `co_orgao`). O padrão é o
   ADR-0022, que registra como pendente a conversão de
   `gov_bricks.bronze_parquet()` para `adapter.dispatch()` (exceção ao ADR-0011).

@@ -1,4 +1,4 @@
--- Schema derivado da pasta (002_slv_uasg, ADR-0010); database, materialização e a
+-- Schema derivado da pasta (002_slv_organizacional, ADR-0010); database, materialização e a
 -- tag `duckdb` vêm de dbt_project.yml. A tag leva este nó para a
 -- duckdb_<orgao>_transform_dag, no target prod_duckdb, porque a Bronze lê Parquet.
 -- Silver tratada: um registro por órgão. A Bronze acumula uma linha por ingestão,

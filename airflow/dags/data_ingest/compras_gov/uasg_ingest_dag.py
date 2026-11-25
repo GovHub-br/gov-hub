@@ -35,7 +35,7 @@ default_args = {
     description=(
         "Ingere UASGs (unidades gestoras) da API do Compras.gov.br para a zona raw."
     ),
-    tags=["sistema:compras_gov", "camada:raw", "dominio:uasg"],
+    tags=["sistema:compras_gov", "camada:raw", "dominio:organizacional"],
 )
 def uasg_dag() -> None:
     @task

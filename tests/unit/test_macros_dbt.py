@@ -29,6 +29,7 @@ CHAVES = {
         "tamanho": 8,
         "classificacao": "publico",
     },
+    "co_orgao": {"normalizacao": "digitos", "tamanho": 5, "classificacao": "publico"},
     "nu_ni": {"normalizacao": "digitos", "tamanho": None, "classificacao": "publico"},
     "no_orgao": {"normalizacao": "texto", "tamanho": None, "classificacao": "publico"},
 }
@@ -117,6 +118,21 @@ def test_chave_com_tamanho_nunca_trunca_valor_mais_longo() -> None:
     assert "lpad(" in sql
     # O alvo é o maior entre o tamanho declarado e o comprimento real.
     assert ", 8)" in sql
+
+
+@pytest.mark.parametrize(
+    ("valor", "esperado"),
+    [(917, "00917"), (26000, "26000"), (1234567, "1234567"), ("abc", None)],
+)
+def test_chave_com_tamanho_executa_no_duckdb(valor, esperado) -> None:
+    """Regressão: no DuckDB o greatest() devolve BIGINT e o lpad só aceita
+    INTEGER; sem o cast, a Silver em Parquet falhava no bind. Executa a
+    expressão de verdade, porque o texto do SQL não revela o tipo."""
+    duckdb = pytest.importorskip("duckdb")
+    sql = _render("co_orgao", "valor")
+    with duckdb.connect() as conexao:
+        resultado = conexao.execute(f"select {sql} from (select ? as valor)", [valor])
+        assert resultado.fetchone() == (esperado,)
 
 
 def test_chave_sem_tamanho_nao_recebe_lpad() -> None:

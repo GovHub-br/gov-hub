@@ -257,10 +257,10 @@ make modelo ARGS="--camada gold --orgao mgi --produto contratacoes --entidade x 
 O gerador escreve o `.sql` com a deduplicação por `dt_ingest` e, nas entidades
 com `chaves:` no catálogo, as chaves conformadas via
 `gov_bricks.chave_conformada(...)`; também acrescenta o bloco ao `schema.yml`.
-A chave conformada ainda não funciona no fluxo Parquet (DuckDB): o teste do
-fluxo não renderiza a macro, e no DuckDB ela falha nas chaves com `tamanho`,
-porque o `lpad` recebe o `BIGINT` de `greatest(length(...), <tamanho>)` e só
-aceita `INTEGER`. Depois:
+O macro roda no PostgreSQL e no DuckDB: o tamanho do `lpad` tem `cast(... as
+integer)` porque, no DuckDB, `greatest(length(...), <tamanho>)` devolve `BIGINT`
+e o `lpad` só aceita `INTEGER`. Não tire o cast; `test_macros_dbt.py` executa a
+expressão no DuckDB para pegar isso. Depois:
 
 - Troque todo `PREENCHER:` por descrição real. O CI de publicação lê esses
   metadados.
@@ -311,9 +311,14 @@ dos arquivos de Bronze.
    `gov_bricks.mesmo_conteudo_em_snake_case` com `comparar_com: ref("<entidade>")`.
    Na Silver tratada (uma linha por chave, a de maior `dt_ingest`), mantenha
    todas as colunas da Bronze, com os mesmos tipos, só renomeadas para
-   snake_case, e descarte a chave nula antes do `partition by`. Não declare
+   snake_case, e descarte a chave nula antes do `partition by`. Se o catálogo
+   declara `chaves:` para a entidade, exponha também cada chave conformada
+   (`gov_bricks.chave_conformada`), deduplique por ela e filtre a chave
+   conformada nula, não a coluna crua: um código sem dígitos vira nulo na
+   normalização. Modelo: `silver/uasg/slv_orgao.sql`. Não declare
    `mesma_contagem` nem `mesmo_conteudo_em_snake_case`, que exigem as mesmas
-   linhas da Bronze; declare `not_null` em cada coluna da chave, mais `unique`
+   linhas da Bronze; declare `not_null` em cada coluna da chave (na chave
+   conformada, quando a coluna tem uma), mais `unique`
    (uma coluna) ou, no modelo, `gov_bricks.unicidade_composta` (várias), com os
    argumentos sob `arguments:`:
    ```yaml
@@ -332,10 +337,11 @@ dos arquivos de Bronze.
    chave não pode ser nula e não inclui `dt_ingest`. Chave do tipo "uma ou
    outra" (ex.: `fornecedor`, com `cnpj` ou `cpf`) não é coberta pelo teste:
    converse antes. Sem `chave`, o teste exige Silver inicial, que é o caso
-   quando nenhuma chave identifica o registro. Silver com chave conformada
-   (`chaves:` no catálogo) ainda não é suportada no fluxo Parquet (ver "Novo
-   modelo dbt"): avise antes de começar. Os demais testes percorrem os arquivos
-   e já cobrem o domínio novo.
+   quando nenhuma chave identifica o registro. Na Silver tratada, o teste roda o
+   `gov_bricks.chave_conformada` real, espera as chaves conformadas do catálogo
+   como colunas de texto a mais e confere que nenhuma sai nula. Os valores da
+   amostra são fixos por tipo (`VALORES`); chave de texto recebe dígitos. Os
+   demais testes percorrem os arquivos e já cobrem o domínio novo.
 
 ### Novo sistema estruturante
 
@@ -610,7 +616,10 @@ O que está feito e o que não está, para você não redescobrir.
 - A ARP é o primeiro domínio no modelo Parquet → DuckDB → PostgreSQL (receita
   na seção 5): Bronze `001_bnz_compras_gov.arp` (modelo `arp`) e Silver
   `002_slv_arp.arp` (modelo `slv_arp`), na `duckdb_mgi_transform_dag`. As
-  entidades `arp_item` e `arp_detalhes` ainda não são modeladas. O padrão é o
+  entidades `arp_item` e `arp_detalhes` ainda não são modeladas. O órgão é o
+  segundo, e o primeiro com Silver tratada e chave conformada: Bronze
+  `001_bnz_compras_gov.orgao` (modelo `orgao`) e Silver `002_slv_uasg.orgao`
+  (modelo `slv_orgao`, uma linha por `co_orgao`). O padrão é o
   ADR-0022, que registra como pendente a conversão de
   `gov_bricks.bronze_parquet()` para `adapter.dispatch()` (exceção ao ADR-0011).
 - `catalogo/publicacao/mgi.yml`: o consumidor `mgi` tem `abrangencia: total`

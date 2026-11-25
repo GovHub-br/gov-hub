@@ -11,6 +11,12 @@ genéricos `mesma_contagem` e `mesmo_conteudo_em_snake_case` e exige que o
 schema.yml não os declare, mas declare `not_null` em cada coluna da chave e
 `unique`, se a chave é simples, ou `gov_bricks.unicidade_composta`, se composta.
 
+Na Silver tratada, as chaves conformadas que o catálogo declara para a entidade
+(`chaves:` em catalogo/sistemas/compras_gov.yml) são colunas a mais, de texto, e
+os testes de chave ficam nelas quando mapeiam uma coluna da chave. A Silver
+roda o `gov_bricks.chave_conformada` real, para que um SQL que o DuckDB não
+aceita (como o lpad com tamanho BIGINT) falhe aqui e não em produção.
+
 Limitação conhecida: a amostra anula só a última coluna da chave; uma Silver
 composta que filtre nulo só nessa coluna passa.
 
@@ -47,18 +53,41 @@ class Amostra(TypedDict):
     # Colunas da raw (camelCase) que identificam o registro na fonte. Sem chave,
     # a Silver é a inicial; com chave, a tratada, que deduplica por ela.
     chave: NotRequired[list[str]]
-    # Silver tratada com chave conformada (ex.: slv_orgao), que o modo `chave`
-    # ainda não cobre: só confere a deduplicação e o descarte do nulo.
-    silver_tratada: NotRequired[bool]
 
 
 # Contrato observado nos Parquets de cada entidade: colunas na ordem em que
 # chegam da raw e os tipos que não são texto, para detectar conversão acidental.
 AMOSTRAS: dict[str, Amostra] = {
     "orgao": {
-        "colunas": ["codigoOrgao", "nomeOrgao", "dt_ingest"],
-        "tipos": {},
-        "silver_tratada": True,
+        "colunas": [
+            "codigoOrgao",
+            "nomeOrgao",
+            "nomeMnemonicoOrgao",
+            "cnpjCpfOrgao",
+            "codigoOrgaoVinculado",
+            "cnpjCpfOrgaoVinculado",
+            "nomeOrgaoVinculado",
+            "codigoOrgaoSuperior",
+            "cnpjCpfOrgaoSuperior",
+            "nomeOrgaoSuperior",
+            "codigoTipoAdministracao",
+            "nomeTipoAdministracao",
+            "poder",
+            "esfera",
+            "usoSisg",
+            "statusOrgao",
+            "dataHoraMovimento",
+            "dt_ingest",
+        ],
+        "tipos": {
+            "codigoOrgao": "BIGINT",
+            "codigoOrgaoVinculado": "BIGINT",
+            "codigoOrgaoSuperior": "BIGINT",
+            "codigoTipoAdministracao": "BIGINT",
+            "usoSisg": "BOOLEAN",
+            "statusOrgao": "BOOLEAN",
+        },
+        "chave": ["codigoOrgao"],
     },
     "arp": {
         "colunas": [
@@ -168,8 +197,18 @@ def _gov_bricks(conexao, entidade):
     )
     gov_bricks.snake_case = lambda nome: _chamar(modulo_testes.snake_case, nome)
     gov_bricks.bronze_parquet = modulo_bronze.bronze_parquet
-    # A normalização real é coberta em test_macros_dbt.py.
-    gov_bricks.chave_conformada = lambda chave, coluna: f"cast({coluna} as varchar)"
+    # O macro real, com as chaves geradas do catálogo: um stub esconderia SQL
+    # que o DuckDB recusa (foi o caso do lpad com tamanho BIGINT).
+    modulo_chaves = _modulo((MACROS / "chaves_geradas.sql").read_text())
+    gov_bricks.chaves_conformadas = lambda: _chamar(modulo_chaves.chaves_conformadas)
+    modulo_chave = _modulo(
+        (MACROS / "chave_conformada.sql").read_text(),
+        gov_bricks=gov_bricks,
+        exceptions=SimpleNamespace(raise_compiler_error=pytest.fail),
+    )
+    gov_bricks.chave_conformada = lambda chave, coluna: _chamar(
+        modulo_chave.chave_conformada, chave, coluna
+    )
     gov_bricks.teste = lambda nome, **kw: str(
         getattr(modulo_testes, f"test_{nome}")(**kw)
     )
@@ -198,8 +237,21 @@ def _metadados(silver):
     return metadados
 
 
+def _conformadas(entidade):
+    """Chaves conformadas que o catálogo declara para a entidade, por coluna de
+    origem em minúsculas (o catálogo guarda `codigoorgao`; o Parquet, `codigoOrgao`)."""
+    catalogo = yaml.safe_load((RAIZ / f"catalogo/sistemas/{SISTEMA}.yml").read_text())
+    return {
+        m["coluna"].lower(): m["chave"]
+        for m in catalogo["entidades"][entidade].get("chaves") or []
+    }
+
+
 def _linhas_tratadas(colunas, tipos, chave):
     nova = {c: VALORES[tipos[c]] for c in colunas} | {"dt_ingest": "2026-10-02 00:00:00"}
+    # Chave de texto com dígitos: a chave conformada "digitos" anularia o texto
+    # padrão, e todas as linhas cairiam na mesma partição.
+    nova |= {c: "48000" for c in chave if tipos[c] == "VARCHAR"}
     texto = next(
         c
         for c in colunas
@@ -208,7 +260,7 @@ def _linhas_tratadas(colunas, tipos, chave):
     antiga = nova | {texto: "versão antiga", "dt_ingest": "2026-10-01 00:00:00"}
     ultima = chave[-1]
     valor = nova[ultima]
-    outra = nova | {ultima: f"{valor} outra" if isinstance(valor, str) else valor + 1}
+    outra = nova | {ultima: str(int(valor) + 1) if isinstance(valor, str) else valor + 1}
     nula = nova | {ultima: None}
     linhas = [[linha[c] for c in colunas] for linha in (antiga, nova, nova, outra, nula)]
     return linhas, [tuple(linha[c] for c in colunas) for linha in (nova, outra)]
@@ -271,12 +323,7 @@ def test_bronze_e_silver_preservam_linhas_valores_e_tipos(
 
         silver = _silver_sobre(entidade)
         sql_silver = _renderizar(silver, gov_bricks)
-        if AMOSTRAS[entidade].get("silver_tratada"):
-            # Duas linhas iguais e uma nula na Bronze: sobra um órgão só, sem o nulo.
-            conexao.execute(f'create table "{silver.stem}" as {sql_silver}')
-            assert conexao.sql(f'select count(*) from "{silver.stem}"').fetchone() == (1,)
-            assert conexao.sql(f'select count(*) from "{entidade}"').fetchone() == (3,)
-            return
+        conformadas = _conformadas(entidade) if chave else {}
         for _ in range(2):
             conexao.execute(f'create or replace table "{silver.stem}" as {sql_silver}')
             if chave:
@@ -287,6 +334,13 @@ def test_bronze_e_silver_preservam_linhas_valores_e_tipos(
                 assert Counter(
                     conexao.sql(f'select {nomes} from "{silver.stem}"').fetchall()
                 ) == Counter(esperadas)
+                # A chave conformada é calculada (não nula) e distingue as versões
+                # mantidas, uma por chave.
+                for conformada in conformadas.values():
+                    assert conexao.sql(
+                        f"select count({conformada}), count(distinct {conformada}) "
+                        f'from "{silver.stem}"'
+                    ).fetchone() == (len(esperadas), len(esperadas))
             else:
                 assert Counter(
                     conexao.sql(f'select * from "{silver.stem}"').fetchall()
@@ -295,7 +349,10 @@ def test_bronze_e_silver_preservam_linhas_valores_e_tipos(
         # Mesmo tipo em cada coluna, pelo nome em snake_case.
         descricao = conexao.sql(f'describe "{silver.stem}"').fetchall()
         tipos_silver = {nome: tipo for nome, tipo, *_ in descricao}
-        assert tipos_silver == {gov_bricks.snake_case(c): tipos[c] for c in colunas}
+        # Mais as chaves conformadas do catálogo, que são texto.
+        assert tipos_silver == {gov_bricks.snake_case(c): tipos[c] for c in colunas} | {
+            conformada: "VARCHAR" for conformada in conformadas.values()
+        }
 
         # schema.yml documenta exatamente as colunas da Silver, na ordem.
         metadados = _metadados(silver)
@@ -317,7 +374,11 @@ def test_bronze_e_silver_preservam_linhas_valores_e_tipos(
                 c["name"]: {_nome_teste(t) for t in c.get("data_tests", [])}
                 for c in metadados["columns"]
             }
-            chave_silver = [gov_bricks.snake_case(c) for c in chave]
+            # A coluna da chave que tem chave conformada é testada por ela, que é
+            # por onde a Silver deduplica e por onde os outros sistemas cruzam.
+            chave_silver = [
+                conformadas.get(c.lower(), gov_bricks.snake_case(c)) for c in chave
+            ]
             assert all("not_null" in da_coluna[c] for c in chave_silver)
             if len(chave_silver) == 1:
                 assert "unique" in da_coluna[chave_silver[0]]

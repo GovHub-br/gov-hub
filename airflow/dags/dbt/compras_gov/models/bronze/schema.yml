@@ -29,9 +29,11 @@ models:
 
   - name: orgao
     description: >-
-      Camada Bronze dos órgãos do Compras.gov.br. Preserva os registros
+      Camada Bronze dos órgãos do Compras.gov.br (endpoint
+      /modulo-uasg/2_consultarOrgao, só órgãos ativos). Preserva os registros
       retornados pela API, uma linha por órgão a cada ingestão, sem aplicação
-      de regras de negócio.
+      de regras de negócio: o mesmo código aparece uma vez por execução da
+      orgao_ingest_dag. A deduplicação é feita na Silver slv_orgao.
     meta:
       owner: "@GovHub-br/oss"
       sistema_origem: compras_gov
@@ -39,16 +41,125 @@ models:
       classificacao: publico
     columns:
       - name: codigoOrgao
-        description: Código do órgão.
+        description: >-
+          Código do órgão no Compras.gov.br. Chega como inteiro, então perde os
+          zeros à esquerda (há códigos de 3 e 4 dígitos); a Silver expõe a chave
+          conformada co_orgao, com 5 dígitos. Identifica o órgão na fonte.
         meta:
           classificacao: publico
 
       - name: nomeOrgao
-        description: Nome do órgão.
+        description: Nome do órgão. Pode mudar entre ingestões.
+        meta:
+          classificacao: publico
+
+      - name: nomeMnemonicoOrgao
+        description: Sigla ou nome abreviado do órgão (ex. "PMLP/MG"). Pode ser nulo.
+        meta:
+          classificacao: publico
+
+      - name: cnpjCpfOrgao
+        description: >-
+          CNPJ do órgão, como texto só com dígitos. A fonte perde os zeros à
+          esquerda (há valores com 12 e 13 dígitos) e usa "0" quando não há
+          documento. Apesar do nome, não havia CPF (11 dígitos) nas ingestões
+          de novembro de 2026.
+        meta:
+          classificacao: publico
+
+      - name: codigoOrgaoVinculado
+        description: >-
+          Código do órgão ao qual este está vinculado (ex. o estado, para um
+          órgão estadual ou municipal). Nulo quando não há vínculo.
+        meta:
+          classificacao: publico
+
+      - name: cnpjCpfOrgaoVinculado
+        description: >-
+          CNPJ do órgão vinculado, com as mesmas ressalvas de cnpjCpfOrgao.
+          Nulo quando não há vínculo.
+        meta:
+          classificacao: publico
+
+      - name: nomeOrgaoVinculado
+        description: Nome do órgão vinculado. Nulo quando não há vínculo.
+        meta:
+          classificacao: publico
+
+      - name: codigoOrgaoSuperior
+        description: >-
+          Código do órgão superior na hierarquia do cadastro. Para entes
+          estaduais e municipais costuma ser um agrupamento geográfico (ex.
+          "REGIAO SUDESTE"), não um órgão. Pode ser nulo.
+        meta:
+          classificacao: publico
+
+      - name: cnpjCpfOrgaoSuperior
+        description: >-
+          CNPJ do órgão superior, com as mesmas ressalvas de cnpjCpfOrgao. É "0"
+          quando o superior é um agrupamento sem CNPJ, o caso da maioria das
+          linhas. Pode ser nulo.
+        meta:
+          classificacao: publico
+
+      - name: nomeOrgaoSuperior
+        description: Nome do órgão superior ou do agrupamento. Pode ser nulo.
+        meta:
+          classificacao: publico
+
+      - name: codigoTipoAdministracao
+        description: >-
+          Código do tipo de administração do órgão (1 a 15), descrito em
+          nomeTipoAdministracao.
+        meta:
+          classificacao: publico
+
+      - name: nomeTipoAdministracao
+        description: >-
+          Tipo de administração do órgão (ex. "ADMINISTRACAO DIRETA MUNICIPAL",
+          "AUTARQUIA", "FUNDOS", "EMPRESA PRIVADA").
+        meta:
+          classificacao: publico
+
+      - name: poder
+        description: >-
+          Poder ao qual o órgão pertence: E (Executivo), L (Legislativo) ou J
+          (Judiciário). Pode ser nulo.
+        meta:
+          classificacao: publico
+
+      - name: esfera
+        description: >-
+          Esfera de governo do órgão: F (federal), E (estadual) ou M
+          (municipal). Pode ser nulo.
+        meta:
+          classificacao: publico
+
+      - name: usoSisg
+        description: >-
+          Indica se o órgão usa o SISG (Sistema de Serviços Gerais). Booleano;
+          pode ser nulo.
+        meta:
+          classificacao: publico
+
+      - name: statusOrgao
+        description: >-
+          Indica se o órgão está ativo. Sempre verdadeiro aqui, porque a
+          orgao_ingest_dag consulta a API com statusOrgao=true.
+        meta:
+          classificacao: publico
+
+      - name: dataHoraMovimento
+        description: >-
+          Data e hora da última movimentação do cadastro do órgão na fonte,
+          como texto ISO 8601 sem fuso (ex. "2026-04-06T10:37:00"). Pode ser
+          nulo.
         meta:
           classificacao: publico
 
       - name: dt_ingest
-        description: Data e hora da ingestão do registro.
+        description: >-
+          Data e hora em que a orgao_ingest_dag gravou o registro na raw, como
+          texto ISO 8601.
         meta:
           classificacao: publico

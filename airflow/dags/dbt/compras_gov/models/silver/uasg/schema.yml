@@ -4,9 +4,9 @@ models:
   - name: slv_orgao
     description: >
       Órgãos cadastrados no Compras.gov.br. Uma linha por órgão. A Bronze acumula
-      uma linha por ingestão; esta Silver deduplica por código de órgão e mantém a
-      versão mais recente (dt_ingest). Granularidade: um registro por código de
-      órgão.
+      uma linha por ingestão; esta Silver deduplica pela chave conformada co_orgao
+      e mantém a versão mais recente (dt_ingest), com todas as colunas da Bronze
+      renomeadas para snake_case. Granularidade: um registro por código de órgão.
     meta:
       owner: "@GovHub-br/oss"
       sistema_origem: compras_gov
@@ -14,27 +14,117 @@ models:
       classificacao: publico
     columns:
       - name: co_orgao
-        description: >
-            Código do órgão. Código do órgão na estrutura organizacional do Poder
-            Executivo federal. É a chave de agregação institucional mais alta usada
-            pelos sistemas estruturantes — quase todo cruzamento "por órgão" passa por
-            ela. Normalizada a partir da coluna de origem 'codigoOrgao'.
+        description: >-
+          Código do órgão. Código do órgão na estrutura organizacional do Poder
+          Executivo federal. É a chave de agregação institucional mais alta usada
+          pelos sistemas estruturantes — quase todo cruzamento "por órgão" passa por
+          ela. Normalizada a partir da coluna de origem 'codigoOrgao': só dígitos, com
+          zeros à esquerda até 5 posições. Chave da deduplicação desta Silver.
         meta:
           classificacao: publico
         data_tests:
           - not_null
           - unique
       - name: codigo_orgao
-        description: Código do órgão como informado pela fonte, sem normalização.
+        description: >-
+          Código do órgão como informado pela fonte (codigoOrgao), inteiro e sem
+          normalização. Para cruzar com outros sistemas, use co_orgao.
         meta:
           classificacao: publico
       - name: nome_orgao
-        description: Nome do órgão informado pela fonte.
+        description: >-
+          Nome do órgão na ingestão mais recente.
+        meta:
+          classificacao: publico
+      - name: nome_mnemonico_orgao
+        description: >-
+          Sigla ou nome abreviado do órgão. Pode ser nulo.
+        meta:
+          classificacao: publico
+      - name: cnpj_cpf_orgao
+        description: >-
+          CNPJ do órgão, como texto só com dígitos. A fonte perde os zeros à esquerda
+          e usa "0" quando não há documento.
+        meta:
+          classificacao: publico
+      - name: codigo_orgao_vinculado
+        description: >-
+          Código do órgão ao qual este está vinculado. Nulo quando não há vínculo.
+        meta:
+          classificacao: publico
+      - name: cnpj_cpf_orgao_vinculado
+        description: >-
+          CNPJ do órgão vinculado, com as mesmas ressalvas de cnpj_cpf_orgao. Nulo
+          quando não há vínculo.
+        meta:
+          classificacao: publico
+      - name: nome_orgao_vinculado
+        description: >-
+          Nome do órgão vinculado. Nulo quando não há vínculo.
+        meta:
+          classificacao: publico
+      - name: codigo_orgao_superior
+        description: >-
+          Código do órgão superior na hierarquia do cadastro; para entes estaduais e
+          municipais costuma ser um agrupamento geográfico. Pode ser nulo.
+        meta:
+          classificacao: publico
+      - name: cnpj_cpf_orgao_superior
+        description: >-
+          CNPJ do órgão superior, com as mesmas ressalvas de cnpj_cpf_orgao; "0"
+          quando o superior é um agrupamento sem CNPJ.
+        meta:
+          classificacao: publico
+      - name: nome_orgao_superior
+        description: >-
+          Nome do órgão superior ou do agrupamento. Pode ser nulo.
+        meta:
+          classificacao: publico
+      - name: codigo_tipo_administracao
+        description: >-
+          Código do tipo de administração do órgão (1 a 15), descrito em
+          nome_tipo_administracao.
+        meta:
+          classificacao: publico
+      - name: nome_tipo_administracao
+        description: >-
+          Tipo de administração do órgão (ex. "ADMINISTRACAO DIRETA MUNICIPAL",
+          "AUTARQUIA", "EMPRESA PRIVADA").
+        meta:
+          classificacao: publico
+      - name: poder
+        description: >-
+          Poder ao qual o órgão pertence: E (Executivo), L (Legislativo) ou J
+          (Judiciário). Pode ser nulo.
+        meta:
+          classificacao: publico
+      - name: esfera
+        description: >-
+          Esfera de governo do órgão: F (federal), E (estadual) ou M (municipal). Pode
+          ser nulo.
+        meta:
+          classificacao: publico
+      - name: uso_sisg
+        description: >-
+          Indica se o órgão usa o SISG (Sistema de Serviços Gerais). Pode ser nulo.
+        meta:
+          classificacao: publico
+      - name: status_orgao
+        description: >-
+          Indica se o órgão está ativo. Sempre verdadeiro, porque a ingestão só
+          consulta órgãos ativos.
+        meta:
+          classificacao: publico
+      - name: data_hora_movimento
+        description: >-
+          Data e hora da última movimentação do cadastro do órgão na fonte, como texto
+          ISO 8601 sem fuso. Pode ser nulo.
         meta:
           classificacao: publico
       - name: dt_ingest
-        description: >
-            Data e hora em que o registro foi gravado na Bronze pela DAG de ingestão.
+        description: >-
+          Data e hora em que o registro foi gravado na raw pela DAG de ingestão. É a
+          versão mantida: a mais recente de cada co_orgao.
         meta:
           classificacao: publico
   - name: uasg

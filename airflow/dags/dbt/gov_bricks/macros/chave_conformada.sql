@@ -40,8 +40,13 @@
                 si só, TRUNCA valores mais longos que o alvo, o que produziria
                 um join silenciosamente errado; greatest() garante que o alvo
                 nunca seja menor que o próprio valor.
+
+                O cast para integer é para o DuckDB: lá o greatest() devolve
+                BIGINT e o lpad só aceita INTEGER, e a Silver falhava no bind
+                ("No function matches lpad(VARCHAR, BIGINT, ...)"). No
+                PostgreSQL o greatest() já é integer e o cast não muda nada.
             -#}
-            {%- set alvo = "greatest(length(" ~ limpo ~ "), " ~ definicao["tamanho"] ~ ")" -%}
+            {%- set alvo = "cast(greatest(length(" ~ limpo ~ "), " ~ definicao["tamanho"] ~ ") as integer)" -%}
             {{ return("lpad(" ~ limpo ~ ", " ~ alvo ~ ", '0')") }}
         {%- else -%} {{ return(limpo) }}
         {%- endif -%}

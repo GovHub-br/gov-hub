@@ -90,7 +90,12 @@ derivado dele: a documentação em `models/bronze/schema.yml`, escrita à mão;
 `make modelo --camada bronze`, que regenera o `sources.yml`; e o `outlet` na
 DAG de ingestão. A Silver é construída sobre ela no schema do próprio domínio,
 como qualquer outra, e a lê por `ref()`: é o que põe a dependência no grafo do
-dbt e, com ela, a ordem das tasks do Cosmos.
+dbt e, com ela, a ordem das tasks do Cosmos. A exceção, por enquanto, é a chave
+conformada do ADR-0017. No DuckDB, o macro `gov_bricks.chave_conformada` falha
+nas chaves com `tamanho`, porque o `lpad` recebe o `BIGINT` de
+`greatest(length(...), <tamanho>)` e só aceita `INTEGER`; o teste do fluxo
+também não renderiza o macro. Até isso mudar, a Silver deste ramo não usa
+chave conformada.
 
 ### A tag `duckdb` separa os dois ramos
 
@@ -107,7 +112,9 @@ Os nós continuam habilitados, e não com `enabled=false`. Um modelo
 desabilitado não pode ser alvo de `ref()`, e uma Gold que roda no PostgreSQL
 vai precisar ler uma Silver feita pelo DuckDB. O `+database` resolve para
 `data_warehouse` no DuckDB e para `target.database` no PostgreSQL, e os dois
-apontam para a mesma tabela física.
+apontam para a mesma tabela física. O `ref()` já funciona, mas, sem chave
+conformada no DuckDB, essa Silver ainda não expõe a chave pela qual a Gold
+cruza sistemas (ADR-0017).
 
 ### Uma DAG DuckDB por órgão
 
@@ -351,7 +358,14 @@ Permanecem como riscos ativos:
     da Bronze em Parquet e a Silver inicial deste ADR, que só renomeia e
     declara os testes de contagem e de conteúdo. Hoje ele escreve só o
     `sources.yml` da Bronze; a Silver sai no formato com deduplicação, mas já lê
-    a Bronze por `ref()` quando o arquivo dela existe.
+    a Bronze por `ref()` quando o arquivo dela existe. Essa Silver só projeta as
+    colunas de chave e o `dt_ingest`, com o nome do catálogo e sem snake_case,
+    e, nas entidades com `chaves:` no catálogo, chama
+    `gov_bricks.chave_conformada`, que falha no DuckDB: não passa no teste do
+    fluxo sem ajuste à mão.
+  - Fazer `gov_bricks.chave_conformada` funcionar no DuckDB (o tamanho do
+    `lpad` precisa ser `INTEGER`) e cobrir a chave conformada no teste do
+    fluxo.
   - Decidir como um mesmo deployment alimenta os dois ramos: migrar as Silvers
     legadas para Bronze em Parquet ou permitir backend por entidade.
   - Pré-instalar as extensões `httpfs` e `postgres` do DuckDB na imagem, para

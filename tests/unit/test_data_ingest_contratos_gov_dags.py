@@ -78,6 +78,12 @@ class TestContratosGovDagsIntegrity:
         ]
         assert not missing, f"DAGs sem owner em default_args: {missing}"
 
+    def test_contrato_fatura_tem_metadados_do_dominio(self, dagbag: DagBag) -> None:
+        dag = dagbag.dags["contrato_fatura_ingest_dag"]
+        assert {"sistema:contratos_gov", "dominio:contratacoes"}.issubset(dag.tags)
+        assert dag.default_args["owner"] == "mgi"
+        assert dag.description
+
 
 def _preparar_fetch_and_store(
     dagbag: DagBag,

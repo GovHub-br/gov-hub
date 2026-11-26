@@ -257,10 +257,9 @@ make modelo ARGS="--camada gold --orgao mgi --produto contratacoes --entidade x 
 O gerador escreve o `.sql` com a deduplicação por `dt_ingest` e, nas entidades
 com `chaves:` no catálogo, as chaves conformadas via
 `gov_bricks.chave_conformada(...)`; também acrescenta o bloco ao `schema.yml`.
-A chave conformada ainda não funciona no fluxo Parquet (DuckDB): o teste do
-fluxo não renderiza a macro, e no DuckDB ela falha nas chaves com `tamanho`,
-porque o `lpad` recebe o `BIGINT` de `greatest(length(...), <tamanho>)` e só
-aceita `INTEGER`. Depois:
+A chave conformada ainda não funciona no fluxo Parquet (DuckDB): ela falha nas
+chaves com `tamanho`, porque o `lpad` recebe o `BIGINT` de
+`greatest(length(...), <tamanho>)` e só aceita `INTEGER`. Depois:
 
 - Troque todo `PREENCHER:` por descrição real. O CI de publicação lê esses
   metadados.
@@ -272,11 +271,10 @@ aceita `INTEGER`. Depois:
 - Silver sobre Bronze modelada: crie `models/bronze/<entidade>.sql` antes de
   `make modelo --camada silver`. O gerador só lê a Bronze por `ref()` se o
   arquivo já existe; sem ele, a Silver sai com `source()` e a task dela não
-  espera a da Bronze. Sobre Bronze em Parquet, a Silver gerada não passa no
-  teste do fluxo sem ajuste: ela só projeta as colunas de chave e o
-  `dt_ingest`, com o nome que o catálogo dá a elas (em minúsculas, como
-  `codigoorgao`, nas entidades que vieram do warehouse) e sem snake_case.
-  Ajuste à mão como na receita da seção seguinte.
+  espera a da Bronze. Sobre Bronze em Parquet, a Silver gerada só projeta as
+  colunas de chave e o `dt_ingest`, com o nome que o catálogo dá a elas (em
+  minúsculas, como `codigoorgao`, nas entidades que vieram do warehouse) e sem
+  snake_case: ajuste à mão como na receita da seção seguinte.
 - Gold só cruza por ponte com `confiabilidade: total` ou `parcial`;
   `indicio` é proibido em Gold (ADR-0017).
 
@@ -323,19 +321,13 @@ dos arquivos de Bronze.
            colunas: [<coluna_a>, <coluna_b>]
    ```
    `make modelo --camada silver` gera a deduplicação, mas não renomeia para
-   snake_case nem filtra chave nula: ajuste à mão.
-5. Testes: uma amostra da entidade em `AMOSTRAS` de
-   `tests/unit/test_fluxo_bronze_parquet_dbt.py`. Se a Silver deduplica, a
-   amostra leva `chave`: as colunas que identificam o registro na fonte, com o
-   nome em camelCase do Parquet (`codigoOrgao`), e não o minúsculo que o
-   catálogo guarda nas entidades que vieram do warehouse (`codigoorgao`). A
-   chave não pode ser nula e não inclui `dt_ingest`. Chave do tipo "uma ou
-   outra" (ex.: `fornecedor`, com `cnpj` ou `cpf`) não é coberta pelo teste:
-   converse antes. Sem `chave`, o teste exige Silver inicial, que é o caso
-   quando nenhuma chave identifica o registro. Silver com chave conformada
-   (`chaves:` no catálogo) ainda não é suportada no fluxo Parquet (ver "Novo
-   modelo dbt"): avise antes de começar. Os demais testes percorrem os arquivos
-   e já cobrem o domínio novo.
+   snake_case nem filtra chave nula: ajuste à mão. `dt_ingest` não entra na
+   chave. Chave do tipo "uma ou outra" (ex.: `fornecedor`, com `cnpj` ou
+   `cpf`) não cabe nesta receita, que pede `not_null` em cada coluna da chave:
+   converse antes. Sem chave que identifique o registro, a Silver é a inicial
+   (só renomeia para snake_case). Silver com chave conformada (`chaves:` no
+   catálogo) ainda não é suportada no fluxo Parquet (ver "Novo modelo dbt"):
+   avise antes de começar.
 
 ### Novo sistema estruturante
 

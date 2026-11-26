@@ -93,9 +93,8 @@ como qualquer outra, e a lê por `ref()`: é o que põe a dependência no grafo 
 dbt e, com ela, a ordem das tasks do Cosmos. A exceção, por enquanto, é a chave
 conformada do ADR-0017. No DuckDB, o macro `gov_bricks.chave_conformada` falha
 nas chaves com `tamanho`, porque o `lpad` recebe o `BIGINT` de
-`greatest(length(...), <tamanho>)` e só aceita `INTEGER`; o teste do fluxo
-também não renderiza o macro. Até isso mudar, a Silver deste ramo não usa
-chave conformada.
+`greatest(length(...), <tamanho>)` e só aceita `INTEGER`. Até isso mudar, a
+Silver deste ramo não usa chave conformada.
 
 ### A tag `duckdb` separa os dois ramos
 
@@ -282,9 +281,8 @@ aceitável.
   modelo no target PostgreSQL leu, via `ref()`, a Silver construída pelo
   DuckDB.
 - **[Médio impacto]** A leitura da raw `object_storage` por um engine, risco
-  ativo do ADR-0021, passa a ser executada. Os testes unitários rodam a Bronze e
-  a Silver reais num DuckDB local, com o object storage emulado em disco. No
-  compose, ela depende de `RAW_BACKEND=object_storage`, e o CI não a exercita.
+  ativo do ADR-0021, passa a ser executada. No compose, ela depende de
+  `RAW_BACKEND=object_storage`, e o CI não a exercita.
 - **[Baixo impacto]** O DuckDB em memória dispensa arquivo local, volume e
   coordenação de lock.
 
@@ -361,11 +359,9 @@ Permanecem como riscos ativos:
     a Bronze por `ref()` quando o arquivo dela existe. Essa Silver só projeta as
     colunas de chave e o `dt_ingest`, com o nome do catálogo e sem snake_case,
     e, nas entidades com `chaves:` no catálogo, chama
-    `gov_bricks.chave_conformada`, que falha no DuckDB: não passa no teste do
-    fluxo sem ajuste à mão.
+    `gov_bricks.chave_conformada`, que falha no DuckDB: exige ajuste à mão.
   - Fazer `gov_bricks.chave_conformada` funcionar no DuckDB (o tamanho do
-    `lpad` precisa ser `INTEGER`) e cobrir a chave conformada no teste do
-    fluxo.
+    `lpad` precisa ser `INTEGER`).
   - Decidir como um mesmo deployment alimenta os dois ramos: migrar as Silvers
     legadas para Bronze em Parquet ou permitir backend por entidade.
   - Pré-instalar as extensões `httpfs` e `postgres` do DuckDB na imagem, para

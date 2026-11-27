@@ -304,16 +304,13 @@ dos arquivos de Bronze.
 4. Silver: `models/silver/<dominio>/slv_<entidade>.sql`, que vira a tabela
    `002_slv_<dominio>.<entidade>` (a sigla sai pelo `generate_alias_name` do
    pacote, ADR-0023; hoje só o `compras_gov` tem), com a pasta listada sob `silver:` no
-   `dbt_project.yml` do pacote com `+tags: ["duckdb"]`. Na Silver inicial
-   (só renomeia para snake_case), declare `gov_bricks.mesma_contagem` e
-   `gov_bricks.mesmo_conteudo_em_snake_case` com `comparar_com: ref("<entidade>")`.
+   `dbt_project.yml` do pacote com `+tags: ["duckdb"]`.
    Na Silver tratada (uma linha por chave, a de maior `dt_ingest`), mantenha
    todas as colunas da Bronze, com os mesmos tipos, só renomeadas para
-   snake_case, e descarte a chave nula antes do `partition by`. Não declare
-   `mesma_contagem` nem `mesmo_conteudo_em_snake_case`, que exigem as mesmas
-   linhas da Bronze; declare `not_null` em cada coluna da chave, mais `unique`
-   (uma coluna) ou, no modelo, `gov_bricks.unicidade_composta` (várias), com os
-   argumentos sob `arguments:`:
+   snake_case, e descarte a chave nula antes do `partition by`. Declare
+   `not_null` em cada coluna da chave, mais `unique` (uma coluna) ou, no
+   modelo, `gov_bricks.unicidade_composta` (várias), com os argumentos sob
+   `arguments:`:
    ```yaml
    data_tests:
      - gov_bricks.unicidade_composta:
@@ -323,11 +320,10 @@ dos arquivos de Bronze.
    `make modelo --camada silver` gera a deduplicação, mas não renomeia para
    snake_case nem filtra chave nula: ajuste à mão. `dt_ingest` não entra na
    chave. Chave do tipo "uma ou outra" (ex.: `fornecedor`, com `cnpj` ou
-   `cpf`) não cabe nesta receita, que pede `not_null` em cada coluna da chave:
-   converse antes. Sem chave que identifique o registro, a Silver é a inicial
-   (só renomeia para snake_case). Silver com chave conformada (`chaves:` no
-   catálogo) ainda não é suportada no fluxo Parquet (ver "Novo modelo dbt"):
-   avise antes de começar.
+   `cpf`) ou entidade sem chave que identifique o registro não cabe nesta
+   receita, que pede `not_null` em cada coluna da chave: converse antes. Silver
+   com chave conformada (`chaves:` no catálogo) ainda não é suportada no fluxo
+   Parquet (ver "Novo modelo dbt"): avise antes de começar.
 
 ### Novo sistema estruturante
 
@@ -475,8 +471,8 @@ Cada item abaixo já quebrou algo. Os comentários no código explicam mais.
   não `chave_conformada`.
 - `test_behavior=AFTER_EACH`: o teste roda logo após cada modelo, então um
   defeito na Silver para o ramo antes da Gold.
-- Teste que dá `ref()` em dois modelos (ex. `gov_bricks.mesma_contagem`
-  entre Silver e Bronze) entra, no `AFTER_EACH`, no `.test` do primeiro
+- Teste que dá `ref()` em dois modelos (ex. um `relationships`) entra, no
+  `AFTER_EACH`, no `.test` do primeiro
   modelo, antes de o segundo ser reconstruído. Na primeira execução a tabela
   nem existe; nas seguintes, o teste compara com a versão anterior. Use
   `RenderConfig(should_detach_multiple_parents_tests=True)`, que move esses

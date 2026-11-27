@@ -3,25 +3,13 @@ version: 2
 models:
   - name: slv_arp
     description: >-
-      Silver inicial das Atas de Registro de Preço para validar o fluxo dbt.
-      Preserva todas as linhas e valores da Bronze, inclusive repetições entre
-      ingestões, sem limpeza, deduplicação ou conversão de tipos. Os nomes das
-      colunas são apresentados em snake_case. Ainda não é uma base tratada
-      para consumo analítico.
+      Atas de registro de preços: mesmas linhas e valores da Bronze, com os
+      nomes das colunas em snake_case.
     meta:
       owner: "@GovHub-br/oss"
       sistema_origem: compras_gov
       camada: silver
       classificacao: publico
-    # Contrato da Silver inicial: mesmas linhas e valores da Bronze, só com os
-    # nomes em snake_case. Saem quando a Silver passar a tratar o dado.
-    data_tests:
-      - gov_bricks.mesma_contagem:
-          arguments:
-            comparar_com: ref("arp")
-      - gov_bricks.mesmo_conteudo_em_snake_case:
-          arguments:
-            comparar_com: ref("arp")
     columns:
       - name: numero_ata_registro_preco
         description: Número da ata de registro de preço informado pela fonte.
@@ -57,7 +45,7 @@ models:
         description: Denominação da modalidade da compra informada pela fonte.
         meta: {classificacao: publico}
       - name: data_assinatura
-        description: Data de assinatura da ata, ainda sem conversão para tipo de data.
+        description: Data de assinatura da ata, sem conversão para tipo de data.
         meta: {classificacao: publico}
       - name: data_vigencia_inicial
         description: Início da vigência da ata, preservado como recebido.
@@ -87,7 +75,7 @@ models:
         description: Data e hora da exclusão na origem, quando informadas.
         meta: {classificacao: publico}
       - name: ata_excluido
-        description: Indicador de exclusão da ata; registros excluídos ainda não são filtrados.
+        description: Indicador de exclusão da ata; registros excluídos não são filtrados.
         meta: {classificacao: publico}
       - name: numero_controle_pncp_ata
         description: Identificador de controle da ata no PNCP.

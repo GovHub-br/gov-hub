@@ -36,8 +36,7 @@ expôs três problemas:
   `+contratos_por_orgao` nesse target terminou com `ERROR=4`.
 - **Ingestão e transformação rodavam no mesmo horário.** A Bronze lê todos os
   Parquets disponíveis no momento em que roda; disparada por cron junto com a
-  ingestão, ela pode capturar só parte dos lotes do dia. Os testes que comparam
-  Bronze e Silver passariam mesmo assim.
+  ingestão, ela pode capturar só parte dos lotes do dia.
 
 A decisão precisa ser tomada agora porque a ARP é só o primeiro domínio: os
 próximos que tiverem a raw em Parquet vão repetir o mesmo caminho. Sem um
@@ -121,8 +120,8 @@ A DAG fica em `data_transform/<orgao>/duckdb_<orgao>_transform_dag.py`, no
 formato `{escopo}_{orgao}_transform_dag` do ADR-0018, com o recorte expresso
 pelo seletor `tag:duckdb`. Ela usa o mesmo projeto dbt do órgão, Cosmos e
 `TestBehavior.AFTER_EACH`. Também usa `should_detach_multiple_parents_tests`:
-os testes que comparam Silver e Bronze têm dois pais, e sem essa opção o Cosmos
-os rodaria junto com o teste da Bronze, antes de a Silver ser reconstruída.
+sem essa opção, um teste com dois pais, como um `relationships`, rodaria junto
+com o teste do primeiro pai, antes de o segundo ser reconstruído.
 
 Um domínio novo nesse modelo entra sem mudar o arquivo da DAG.
 
@@ -237,8 +236,7 @@ continua agendada pelo mesmo Asset de qualquer forma.
   faz.
 - Prós: não introduz Assets; segue o padrão que já existe.
 - Contras: a dependência fica implícita no relógio. Uma ingestão que atrase ou
-  falhe não impede a transformação de ler lotes parciais, e os testes Bronze ×
-  Silver não detectam isso.
+  falhe não impede a transformação de ler lotes parciais.
 
 ### Alternativa E: `AssetAll`, esperar todas as entidades
 
@@ -353,8 +351,8 @@ Permanecem como riscos ativos:
     primeira Gold depender de uma Silver feita no DuckDB.
   - Avaliar a leitura incremental dos Parquets quando o volume crescer.
   - Fazer o gerador de modelos (`make modelo`) emitir o `.sql` e o `schema.yml`
-    da Bronze em Parquet e a Silver inicial deste ADR, que só renomeia e
-    declara os testes de contagem e de conteúdo. Hoje ele escreve só o
+    da Bronze em Parquet e da Silver, com os nomes das colunas em
+    snake_case. Hoje ele escreve só o
     `sources.yml` da Bronze; a Silver sai no formato com deduplicação, mas já lê
     a Bronze por `ref()` quando o arquivo dela existe. Essa Silver só projeta as
     colunas de chave e o `dt_ingest`, com o nome do catálogo e sem snake_case,

@@ -2,8 +2,7 @@
 -- modelo sem a sigla `slv_` (generate_alias_name, ADR-0023). Database, materialização e a
 -- tag `duckdb` vêm de dbt_project.yml. A tag leva este nó para a
 -- duckdb_<orgao>_transform_dag, no target prod_duckdb, porque a Bronze lê Parquet.
--- Silver inicial: valida o percurso Bronze → Silver, ainda sem limpeza.
--- Mantém todas as linhas, valores e tipos; somente os nomes seguem snake_case.
+-- Mesmas linhas, valores e tipos da Bronze, com os nomes das colunas em snake_case.
 select
     "numeroAtaRegistroPreco" as numero_ata_registro_preco,
     "codigoUnidadeGerenciadora" as codigo_unidade_gerenciadora,

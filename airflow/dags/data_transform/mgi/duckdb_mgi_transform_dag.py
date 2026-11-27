@@ -91,9 +91,9 @@ duckdb_mgi_transform_dag = DbtDag(
         # Os testes dos nós selecionados entram por seleção indireta.
         select=["tag:duckdb"],
         test_behavior=TestBehavior.AFTER_EACH,
-        # Testes que comparam Silver e Bronze têm dois pais. Sem isto, o Cosmos
-        # os roda junto com os testes da Bronze, antes de a Silver ser
-        # reconstruída, e eles comparariam a Bronze nova com a Silver anterior.
+        # Teste com dois pais (ex.: `relationships`). Sem isto, o Cosmos o roda
+        # junto com os testes do primeiro pai, antes de o segundo ser
+        # reconstruído, e ele compararia um pai novo com a versão anterior do outro.
         should_detach_multiple_parents_tests=True,
     ),
     # Qualquer entidade que termine de ser ingerida dispara a reconstrução.

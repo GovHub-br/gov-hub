@@ -148,8 +148,9 @@ class TestSeparacaoPostgresDuckdb:
                 assert "duckdb" in _no(task)["tags"], task.task_id
 
     def test_testes_com_dois_pais_rodam_depois_de_todos(self, dagbag, orgao) -> None:
-        """Os que comparam Silver e Bronze: rodar junto com o teste da Bronze
-        compararia a Bronze nova com a Silver da execução anterior."""
+        """Testes com dois pais, como um `relationships`: rodar junto com o teste
+        do primeiro pai compararia a versão nova dele com a do outro pai da
+        execução anterior."""
         dag = dagbag.dags[f"duckdb_{orgao}_transform_dag"]
         run = {
             _no(t)["unique_id"]: t.task_id for t in dag.tasks if t.task_id.endswith("run")
